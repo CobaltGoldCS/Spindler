@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:models="clr-namespace:Spindler.Models"
+             
+             x:Class="Spindler.BookPage"
+             Title="{Binding Name}">
+    <ContentPage.BindingContext>
+        <models:BookList/>
+    </ContentPage.BindingContext>
+
+    <ContentPage.ToolbarItems>
+        <ToolbarItem StyleClass="Plus" Order="Primary" Priority="0"
+                     x:Name="addToolbarItem"
+                 Clicked="addToolbarItem_Clicked"/>
+    </ContentPage.ToolbarItems>
+    
+    <CollectionView x:Name="BooksList"
+              Margin="5"
+              SelectionChanged="SelectionChanged"
+              SelectionMode="Single">
+        <CollectionView.ItemTemplate>
+            <DataTemplate>
+                <ContentView Margin="0,5,0,5" Padding="5" BindingContext="models:Config">
+                    <Grid Padding="10,0,0,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="auto"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="30"/>
+                            <RowDefinition Height="20"/>
+                        </Grid.RowDefinitions>
+                        <Label   HeightRequest="30"
+                        VerticalTextAlignment="Center" FontSize="Medium" x:Name="TitleLabel" Text="{Binding Title}"/>
+                        <Label x:Name="UrlLabel" Text="{Binding Url}" FontSize="Small" Grid.Row="1"/>
+                        <ImageButton  StyleClass="Kebab" HorizontalOptions="EndAndExpand" VerticalOptions="FillAndExpand" Grid.Column="1" Grid.RowSpan="2"
+                        Padding="0,3,5,3" WidthRequest="20" Aspect="AspectFill" x:Name="ConfigButton" Pressed="ConfigButtonPressed" BindingContext="{Binding Id}" />
+                    </Grid>
+                </ContentView>
+            </DataTemplate>
+        </CollectionView.ItemTemplate>
+    </CollectionView>
+</ContentPage>

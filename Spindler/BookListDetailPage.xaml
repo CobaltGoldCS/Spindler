@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:models="clr-namespace:Spindler.Models"
+             x:Class="Spindler.BookListDetailPage"
+             Title="Add or Modify Book List">
+    <ContentPage.BindingContext>
+        <models:BookList/>
+    </ContentPage.BindingContext>
+    <StackLayout Orientation="Vertical">
+        <Entry x:Name="nameEntry"
+               HeightRequest="50"
+               Placeholder="Name of the Book List" Text="{Binding Name}"/>
+        <Entry x:Name="imageUrlEntry"
+               HeightRequest="50"
+               Placeholder="[Optional] Url for an image to represent the book list" Text="{Binding ImageUrl}"/>
+        <Label Text="{Binding LastAccessed}" HeightRequest="200" HorizontalTextAlignment="Center"/>
+        <StackLayout Orientation="Horizontal" HorizontalOptions="Fill">
+            <Button Text="Delete" 
+                    WidthRequest="100" HeightRequest="100"
+                    FontSize="Large"
+                    Clicked="DeleteButton_clicked" BackgroundColor="OrangeRed"/>
+            <Button x:Name="okButton" 
+                    FontSize="Large"
+                    HeightRequest="100" HorizontalOptions="FillAndExpand"
+                    Clicked="okButton_Clicked"/>
+        </StackLayout>
+        <Button x:Name="Cancel" 
+                HorizontalOptions="FillAndExpand"
+                FontSize="40"
+                HeightRequest="100"
+                Text="Cancel" 
+                Clicked="Cancel_Clicked"/>
+    </StackLayout>
+</ContentPage>

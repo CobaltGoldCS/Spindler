@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Spindler.ReaderPage"
+             xmlns:Model="clr-namespace:Spindler.Models"
+             Title="{Binding title}">
+
+    <ContentPage.BindingContext>
+        <Model:LoadedData/>
+    </ContentPage.BindingContext>
+    <ScrollView x:Name="ReadingLayout" Orientation="Vertical" IsEnabled="True">
+        <Grid VerticalOptions="FillAndExpand" RowDefinitions="auto, auto, *, auto">
+            <Label x:Name="TitleView" Text="Loading" FontSize="Title" Padding="5,0,5,20"/>
+            <Button x:Name="PrevButton" Grid.Row="1" Text="Previous" Clicked="Previous_Clicked" FontSize="Large" HorizontalOptions="FillAndExpand"/>
+            <Label  x:Name="ContentView" Grid.Row="2"
+                    Padding="5,0,5,0"
+                    FontSize="Body" 
+                    VerticalOptions="FillAndExpand"
+            />
+            <Button x:Name="NextButton" Grid.Row="3" Text="Next" FontSize="Large" HorizontalOptions="FillAndExpand" Clicked="Next_Clicked"/>
+        </Grid>
+    </ScrollView>
+</ContentPage>
