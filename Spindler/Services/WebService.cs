@@ -74,7 +74,7 @@ public class WebService
     {
         Uri uriResult;
         bool created = Uri.TryCreate(url, UriKind.RelativeOrAbsolute, out uriResult);
-        return created;
+        return created && url.Length > 0;
     }
     #endregion
 

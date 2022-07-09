@@ -36,6 +36,7 @@
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net6.0-android|AnyCPU'">
+    <TargetFrameworkVersion>30.0</TargetFrameworkVersion>
 	  <AndroidKeyStore>True</AndroidKeyStore>
     <AndroidSigningKeyStore>spindler.keystore</AndroidSigningKeyStore>
     <AndroidSigningKeyAlias>key</AndroidSigningKeyAlias>
