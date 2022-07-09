@@ -32,7 +32,7 @@ public partial class ReaderPage : ContentPage
     private async void LoadBook(int id)
     {
         currentBook = await App.Database.GetBookByIdAsync(id);
-        Config config = await App.Database.GetConfigByDomainNameAsync(new UriBuilder(currentBook.Url).Host);
+        config = await App.Database.GetConfigByDomainNameAsync(new UriBuilder(currentBook.Url).Host);
 
         if (FailIfNull(config, "Configuration does not exist")) return;
         LoadedData data = await webService.PreloadUrl(currentBook.Url, config);
