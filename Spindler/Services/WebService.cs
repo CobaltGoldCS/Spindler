@@ -43,7 +43,6 @@ public class WebService
         {
             return null;
         }
-        url.Replace("www.", "");
         if (client.BaseAddress == null)
         {
             Uri uri;

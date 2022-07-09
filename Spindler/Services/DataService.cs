@@ -90,7 +90,7 @@ public class DataService
 
     public async Task<Config> GetConfigByDomainNameAsync(string domain)
         => await database.Table<Config>()
-        .Where((item) => item.DomainName == domain)
+        .Where((item) => item.DomainName == domain.Replace("www.", ""))
         .FirstOrDefaultAsync();
     public Task<List<Config>> GetConfigsAsync() => database.Table<Config>().ToListAsync();
     #endregion
