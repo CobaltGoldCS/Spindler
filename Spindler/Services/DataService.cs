@@ -18,7 +18,24 @@ public class DataService
         database.CreateTablesAsync<BookList, Book, Config>().Wait();
     }
 
-    public async Task SaveItemAsync(IIndexedModel item)
+    public async Task SaveItemAsync(Config item)
+    {
+        if (item.GetId() < 0)
+        {
+            await database.InsertAsync(item);
+        }
+        await database.UpdateAsync(item);
+    }
+    public async Task SaveItemAsync(Book item)
+    {
+        if (item.GetId() < 0)
+        {
+            await database.InsertAsync(item);
+        }
+        await database.UpdateAsync(item);
+    }
+
+    public async Task SaveItemAsync(BookList item)
     {
         if (item.GetId() < 0)
         {
@@ -69,9 +86,7 @@ public class DataService
     #region CONFIGS RUD
     public async Task<int> DeleteConfigAsync(Config item) => await database.DeleteAsync(item);
     public async Task<Config> GetConfigByIdAsync(int id)
-        => await database.Table<Config>()
-        .Where((item) => item.GetId() == id)
-        .FirstOrDefaultAsync();
+        => await database.Table<Config>().Where((item) => item.Id == id).FirstOrDefaultAsync();
 
     public async Task<Config> GetConfigByDomainNameAsync(string domain)
         => await database.Table<Config>()

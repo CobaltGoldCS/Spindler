@@ -18,11 +18,11 @@ public partial class App : Application
 			return database;
         }
     }
-	public App(AppShell mainpage)
+	public App(AppShell shell)
 	{
 		InitializeComponent();
 		Batteries.Init();
-		MainPage = mainpage;
+		MainPage = shell;
 		Routing.RegisterRoute(nameof(BookPage), typeof(BookPage));
 		Routing.RegisterRoute($"{nameof(BookPage)}/{nameof(BookDetailPage)}", typeof(BookDetailPage));
 		Routing.RegisterRoute($"{nameof(BookPage)}/{nameof(ReaderPage)}", typeof(ReaderPage));

@@ -32,36 +32,41 @@ public partial class ReaderPage : ContentPage
     private async void LoadBook(int id)
     {
         currentBook = await App.Database.GetBookByIdAsync(id);
-        Task<Config> getConfigTask = App.Database.GetConfigByDomainNameAsync(new UriBuilder(currentBook.Url).Host);
+        Config config = await App.Database.GetConfigByDomainNameAsync(new UriBuilder(currentBook.Url).Host);
 
-        config = await getConfigTask;
         if (FailIfNull(config, "Configuration does not exist")) return;
-
-        var data = await webService.PreloadUrl(currentBook.Url, config);
-        FailIfNull(data, "Data load failed; Check configuration and url");
-        if (data == null) return;
+        LoadedData data = await webService.PreloadUrl(currentBook.Url, config);
+        if (FailIfNull(data, "Invalid Url")) return;
         loadedData = data;
         DataChanged();
     }
     #endregion
 
-    public ReaderPage(WebService webService)
+    public ReaderPage()
     {
-        this.webService = webService;
+        webService = new WebService();
         InitializeComponent();
     }
 
     #region Click Handlers
     private async void Previous_Clicked(object sender, EventArgs e)
     {
-		loadedData = (await PreloadDataTask)[0];
-        DataChanged();
+        var prevdata = (await PreloadDataTask)[0];
+        if (!FailIfNull(prevdata, "Invalid Url"))
+        {
+            loadedData = prevdata;
+            DataChanged();
+        }
     }
 
     private async void Next_Clicked(object sender, EventArgs e)
     {
-        loadedData = (await PreloadDataTask)[1];
-        DataChanged();
+        var nextdata = (await PreloadDataTask)[1];
+        if (!FailIfNull(nextdata, "Invalid Url"))
+        {
+            loadedData = nextdata;
+            DataChanged();
+        }
     }
     #endregion
 
@@ -116,16 +121,22 @@ public partial class ReaderPage : ContentPage
         bool nullobj = value == null;
         if (nullobj)
         {
-            loadedData = new LoadedData
-            {
-                prevUrl = "",
-                nextUrl = "",
-                text = message,
-                title = "An unexpected error has occured"
-            };
+            loadedData = MakeFailMessage(message);
             DataChanged();
         }
         return nullobj;
+    }
+
+    private LoadedData MakeFailMessage(string message)
+    {
+        return new LoadedData
+        {
+            prevUrl = "",
+            nextUrl = "",
+            currentUrl = currentBook.Url,
+            text = message,
+            title = "An unexpected error has occured"
+        };
     }
 #nullable disable
     #endregion

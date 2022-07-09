@@ -51,7 +51,7 @@ public partial class BookListDetailPage : ContentPage
 
     private async void okButton_Clicked(object sender, EventArgs e)
     {
-		if (!string.IsNullOrWhiteSpace(nameEntry.Text) && !string.IsNullOrWhiteSpace(imageUrlEntry.Text))
+		if (!string.IsNullOrWhiteSpace(nameEntry.Text))
         {
 			BookList list = new BookList { 
 				Id = _booklistId, 

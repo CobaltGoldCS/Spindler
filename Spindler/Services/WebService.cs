@@ -43,15 +43,26 @@ public class WebService
         {
             return null;
         }
-
+        url.Replace("www.", "");
         if (client.BaseAddress == null)
         {
             Uri uri;
             if (!Uri.TryCreate(url, UriKind.Absolute, out uri)) return null;
-            client.BaseAddress = uri;
+            client.BaseAddress = new Uri(uri.GetLeftPart(UriPartial.Authority) + "/", UriKind.Absolute);
         }
-        var html = await client.GetStringAsync(url);
-        return await LoadHTML(url, config, html);
+        try
+        {
+            // Rediculous workaround
+            Uri uri;
+            Uri.TryCreate(url, UriKind.RelativeOrAbsolute, out uri);
+            if (!uri.IsAbsoluteUri && uri.ToString().StartsWith("/"))
+                url = uri.ToString().Substring(1);
+            var html = await client.GetStringAsync(url);
+            return await LoadHTML(url, config, html);
+        } catch(System.Net.Http.HttpRequestException e) {
+            Console.WriteLine(e.Message);
+            return null;
+        }
     }
 
     /// <summary>

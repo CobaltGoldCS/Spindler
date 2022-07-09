@@ -17,9 +17,8 @@ public static class MauiProgram
 			});
 		builder.Services
 			.AddSingleton<AppShell>()
-			.AddSingleton<ReaderPage>()
-			.AddSingleton<BookListPage>()
-			.AddTransient<WebService>();
+			.AddSingleton<WebService>()
+			;
         return builder.Build();
 	}
 }
