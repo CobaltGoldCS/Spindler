@@ -51,14 +51,18 @@ public class WebService
         }
         try
         {
-            // Rediculous workaround
+            // Ridiculous workaround because HttpClient class doesn't know how to deal with 'improperly' formatted relative urls
             Uri uri;
-            Uri.TryCreate(url, UriKind.RelativeOrAbsolute, out uri);
-            if (!uri.IsAbsoluteUri && uri.ToString().StartsWith("/"))
-                url = uri.ToString().Substring(1);
+            if (Uri.TryCreate(url, UriKind.RelativeOrAbsolute, out uri) && 
+                !uri.IsAbsoluteUri                                      &&
+                uri.ToString().StartsWith("/"))
+            {
+                url = uri.ToString()[1..];
+            }
+
             var html = await client.GetStringAsync(url);
             return await LoadHTML(url, config, html);
-        } catch(System.Net.Http.HttpRequestException e) {
+        } catch(HttpRequestException e) {
             Console.WriteLine(e.Message);
             return null;
         }
@@ -93,6 +97,18 @@ public class WebService
     #endregion
 
     #region Html Selectors
+
+    enum SelectorType
+    {
+        /// <summary>
+        /// Denotes a preference for links (target href if possible)
+        /// </summary>
+        Link,
+        /// <summary>
+        /// Denotes a preference for text of html elements (target text)
+        /// </summary>
+        Text,
+    }
     /// <summary>
     /// Attempt to get text from element pointed to by xpath
     /// </summary>
@@ -100,18 +116,20 @@ public class WebService
     /// <param name="path">A string representation of the target's xpath</param>
     /// <returns cref="String">A string containing the target text, or an empty string if nothing is found</returns>
     /// <exception cref="XPathException">If there is any error in the xpath</exception>
-    private static string PrettyWrapSelector(HtmlDocument nav, string path)
+    private static string PrettyWrapSelector(HtmlDocument nav, string path, SelectorType type)
     {
         try
         {
             string value;
+            // Xpath Handler
             if (path.StartsWith("/"))
             {
                 value = HttpUtility.HtmlDecode(nav.DocumentNode.SelectSingleNode(path)?.CreateNavigator().Value);
             }
+            // CssPath Handler
             else
             {
-                value = HttpUtility.HtmlDecode(cssElementHandler(nav, path));
+                value = HttpUtility.HtmlDecode(CssElementHandler(nav, path, type));
             }
             return value;
         }
@@ -121,18 +139,26 @@ public class WebService
         }
     }
 
-    private static string cssElementHandler(HtmlDocument nav, string path)
+    private static string CssElementHandler(HtmlDocument nav, string path, SelectorType type)
     {
 
         MatchCollection attributes = Regex.Matches(path, "(.+) \\$(.+)");
         if (attributes.Any())
         {
             var cleanpath = attributes[0].Groups[1].Value;
-            var modifier = attributes[0].Groups[2].Value;
+            var modifier =  attributes[0].Groups[2].Value;
             HtmlNode node = nav.QuerySelector(cleanpath);
             return node?.GetAttributeValue(modifier, null);
         }
-        return nav.QuerySelector(path)?.CreateNavigator().Value;
+        switch(type)
+        {
+            case SelectorType.Text:
+                return nav.QuerySelector(path)?.CreateNavigator().Value;
+            case SelectorType.Link:
+                return nav.QuerySelector(path)?.GetAttributeValue("href", null);
+            default:
+                throw new NotImplementedException("The selectortype is not implemented");
+        }
     }
 
     /// <summary>
@@ -143,20 +169,18 @@ public class WebService
     /// <returns>A String containing the text of the content matched by <paramref name="path"/></returns>
     private static string GetContent(HtmlDocument nav, string path)
     {
-        HtmlNode node;
-        if (path.StartsWith("/"))
-            node = nav.DocumentNode.SelectSingleNode(path);
-        else
-            node = nav.QuerySelector(path);
-        if (node == null) return "";
+        HtmlNode node = path.StartsWith("/") ? nav.DocumentNode.SelectSingleNode(path) : nav.QuerySelector(path);
+
+        if (node == null) return String.Empty;
         if (!node.HasChildNodes)
         {
             return HttpUtility.HtmlDecode(node.InnerText);
         }
+
         StringWriter stringWriter = new();
         foreach (HtmlNode child in node.ChildNodes)
         {
-            if (child.Name == "br")
+            if (child.OriginalName == "br")
             {
                 stringWriter.Write("\n");
                 continue;
@@ -190,9 +214,9 @@ public class WebService
         LoadedData data = new()
         {
             text = await text,
-            nextUrl = PrettyWrapSelector(doc, config.NextUrlPath),
-            prevUrl = PrettyWrapSelector(doc, config.PrevUrlPath),
-            title   = PrettyWrapSelector(doc, config.TitlePath),
+            nextUrl = PrettyWrapSelector(doc, config.NextUrlPath, type: SelectorType.Link),
+            prevUrl = PrettyWrapSelector(doc, config.PrevUrlPath, type: SelectorType.Link),
+            title   = PrettyWrapSelector(doc, config.TitlePath  , type: SelectorType.Text),
             config = config,
             currentUrl = new Uri(this.client.BaseAddress, url).ToString()
         };
