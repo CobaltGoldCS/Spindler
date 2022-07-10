@@ -54,7 +54,7 @@ public partial class ConfigDetailPage : ContentPage
     {
         if (ConfigurationId < 0)
             return;
-        await App.Database.DeleteConfigAsync(await App.Database.GetConfigByIdAsync(ConfigurationId));
+        await App.Database.DeleteItemAsync(await App.Database.GetConfigByIdAsync(ConfigurationId));
         await Shell.Current.GoToAsync("..");
     }
 

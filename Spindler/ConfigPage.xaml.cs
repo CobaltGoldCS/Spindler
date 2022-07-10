@@ -11,7 +11,7 @@ public partial class ConfigPage : ContentPage
     protected async override void OnAppearing()
     {
         base.OnAppearing();
-        list.ItemsSource = await App.Database.GetConfigsAsync();
+        list.ItemsSource = await App.Database.GetAllItemsAsync<Config>();
         list.Unfocus();
     }
 

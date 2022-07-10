@@ -28,7 +28,7 @@ public partial class BookListDetailPage : ContentPage
             Title = "Add a new Book List";
             return;
         }
-        BookList list = await App.Database.GetBookListByIdAsync(booklistId);
+        BookList list = await App.Database.GetBooklistByIdAsync(booklistId);
         okButton.Text = $"Modify {list.Name}";
         Title = $"Modify {list.Name}";
         BindingContext = list;
@@ -74,7 +74,7 @@ public partial class BookListDetailPage : ContentPage
 			nameEntry.Text.Length > 0 &&
 			imageUrlEntry.Text.Length > 0)
         {
-			await App.Database.DeleteBookListAsync(await App.Database.GetBookListByIdAsync(_booklistId));
+			await App.Database.DeleteBookListAsync(await App.Database.GetBooklistByIdAsync(_booklistId));
 		}
 		await Close();
 	}

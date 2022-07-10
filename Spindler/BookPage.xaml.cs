@@ -21,7 +21,7 @@ public partial class BookPage : ContentPage
 
     public async void LoadBookList(int id)
     {
-        BookList list = await App.Database.GetBookListByIdAsync(id);
+        BookList list = await App.Database.GetBooklistByIdAsync(id);
         list.LastAccessed = DateTime.UtcNow;
         await App.Database.SaveItemAsync(list);
         BindingContext = list;

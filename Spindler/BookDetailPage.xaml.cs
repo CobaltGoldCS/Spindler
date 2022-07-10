@@ -69,7 +69,7 @@ public partial class BookDetailPage : ContentPage
 	{
 		if (_bookId > 0)
 		{
-			await App.Database.DeleteBookAsync(await App.Database.GetBookByIdAsync(_bookId));
+			await App.Database.DeleteItemAsync(await App.Database.GetBookByIdAsync(_bookId));
 		}
 		await Close();
 	}

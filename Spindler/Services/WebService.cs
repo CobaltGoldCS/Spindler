@@ -81,7 +81,7 @@ public class WebService
     }
     #endregion
 
-    #region client
+    #region Client
     private HttpClient _client;
     private HttpClient client
     {
