@@ -73,7 +73,7 @@ public class WebService
     {
         Uri uriResult;
         bool created = Uri.TryCreate(url, UriKind.RelativeOrAbsolute, out uriResult);
-        return created && url.Length > 0;
+        return created && (url.StartsWith("http") || url.StartsWith('/'));
     }
     #endregion
 
