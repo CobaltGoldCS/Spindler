@@ -14,7 +14,6 @@
             <Button x:Name="PrevButton" Grid.Row="1" Text="Previous" Clicked="Previous_Clicked" FontSize="Large" HorizontalOptions="FillAndExpand"/>
             <Label  x:Name="ContentView" Grid.Row="2"
                     Padding="5,0,5,0"
-                    FontSize="Body" 
                     VerticalOptions="FillAndExpand"
             />
             <Button x:Name="NextButton" Grid.Row="3" Text="Next" FontSize="Large" HorizontalOptions="FillAndExpand" Clicked="Next_Clicked"/>

@@ -216,7 +216,7 @@ public class WebService
             text = await text,
             nextUrl = PrettyWrapSelector(doc, config.NextUrlPath, type: SelectorType.Link),
             prevUrl = PrettyWrapSelector(doc, config.PrevUrlPath, type: SelectorType.Link),
-            title   = PrettyWrapSelector(doc, config.TitlePath  , type: SelectorType.Text),
+            title   = HttpUtility.HtmlDecode(PrettyWrapSelector(doc, config.TitlePath  , type: SelectorType.Text)),
             config = config,
             currentUrl = new Uri(this.client.BaseAddress, url).ToString()
         };

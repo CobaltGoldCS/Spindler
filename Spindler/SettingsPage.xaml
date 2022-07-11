@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Spindler.SettingsPage"
+             xmlns:Viewmodels="clr-namespace:Spindler.ViewModels"
+             Title="SettingsPage">
+    <ContentPage.BindingContext>
+        <Viewmodels:SettingsViewmodel/>
+    </ContentPage.BindingContext>
+    <ScrollView x:Name="Scroll" Orientation="Vertical" IsEnabled="True">
+        <VerticalStackLayout VerticalOptions="FillAndExpand">
+            <Label Text="The quick brown fox jumps over the lazy dog" FontSize="{Binding FontSize}" FontFamily="{Binding Font}" HeightRequest="{Binding RequestSize}"/>
+            <HorizontalStackLayout HorizontalOptions="CenterAndExpand">
+                <Picker Title="Select a Font" SelectedItem="{Binding Font}">
+                    <Picker.Items>
+                        <x:String>OpenSansRegular</x:String>
+                        <x:String>OpenSansSemibold</x:String>
+                        <x:String>DroidSans</x:String>
+                        <x:String>DroidSansBold</x:String>
+                        <x:String>Merriweather</x:String>
+                        <x:String>MerriweatherBold</x:String>
+                        <x:String>Signika</x:String>
+                        <x:String>SignikaBold</x:String>
+                    </Picker.Items>
+                </Picker>
+                <Entry Text="{Binding FontSize}" Keyboard="Numeric"/>
+            </HorizontalStackLayout>
+            <Button Text="Apply Settings" Command="{Binding SaveSettingsCommand}" HorizontalOptions="Center"/>
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

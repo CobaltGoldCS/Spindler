@@ -19,6 +19,12 @@
                 ContentTemplate="{DataTemplate local:ConfigPage}"
                 Route="Config" />
         </Tab>
+        <Tab Title="Settings">
+            <ShellContent
+                Title="Settings"
+                ContentTemplate="{DataTemplate local:SettingsPage}"
+                Route="Settings" />
+        </Tab>
     </TabBar>
 
 </Shell>

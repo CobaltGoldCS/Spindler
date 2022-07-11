@@ -14,6 +14,12 @@ public static class MauiProgram
 			{
 				fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
 				fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
+				fonts.AddFont("DroidSans.ttf", "DroidSans");
+				fonts.AddFont("DroidSans-Bold.ttf", "DroidSansBold");
+				fonts.AddFont("Merriweather-Regular.ttf", "Merriweather");
+				fonts.AddFont("Merriweather-Bold.ttf", "MerriweatherBold");
+				fonts.AddFont("SignikaNegative-Bold.ttf", "SignikaBold");
+				fonts.AddFont("SignikaNegative-Regular.ttf", "Signika");
 			});
 		builder.Services
 			.AddSingleton<AppShell>()

@@ -46,6 +46,10 @@ public partial class ReaderPage : ContentPage
     {
         webService = new WebService();
         InitializeComponent();
+
+        ContentView.FontFamily = Preferences.Default.Get("font", "OpenSansRegular");
+        ContentView.FontSize = Preferences.Default.Get("font_size", 15);
+        TitleView.FontFamily = Preferences.Default.Get("font", "OpenSansRegular");
     }
 
     #region Click Handlers
