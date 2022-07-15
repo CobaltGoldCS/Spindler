@@ -7,14 +7,14 @@ public partial class BookListDetailPage : ContentPage
 {
     #region QueryProperty handler
     private int _booklistId;
-	public string BooklistId
-	{
-		set
-		{
-			LoadBookList(value);
-			_booklistId = Convert.ToInt32(value);
-		}
-	}
+    public string BooklistId
+    {
+        set
+        {
+            LoadBookList(value);
+            _booklistId = Convert.ToInt32(value);
+        }
+    }
 
     public async void LoadBookList(string id)
     {
@@ -36,9 +36,9 @@ public partial class BookListDetailPage : ContentPage
     #endregion
 
     public BookListDetailPage()
-	{
-		InitializeComponent();
-	}
+    {
+        InitializeComponent();
+    }
 
     private async Task Close()
     {
@@ -51,38 +51,39 @@ public partial class BookListDetailPage : ContentPage
 
     private async void okButton_Clicked(object sender, EventArgs e)
     {
-		if (!string.IsNullOrWhiteSpace(nameEntry.Text))
+        if (!string.IsNullOrWhiteSpace(nameEntry.Text))
         {
-			BookList list = new BookList { 
-				Id = _booklistId, 
-				ImageUrl = imageUrlEntry.Text,
-				Name = nameEntry.Text,
-				LastAccessed = DateTime.UtcNow
-			};
-			if (list.ImageUrl.Length == 0)
+            BookList list = new BookList
+            {
+                Id = _booklistId,
+                ImageUrl = imageUrlEntry.Text,
+                Name = nameEntry.Text,
+                LastAccessed = DateTime.UtcNow
+            };
+            if (list.ImageUrl.Length == 0)
             {
                 list.ImageUrl = BookList.GetRandomPlaceholderImageUrl();
             }
-			await App.Database.SaveItemAsync(list);
-		}
-		await Close();
+            await App.Database.SaveItemAsync(list);
+        }
+        await Close();
     }
 
     private async void DeleteButton_clicked(object sender, EventArgs e)
     {
-		if (_booklistId > 0 &&
-			nameEntry.Text.Length > 0 &&
-			imageUrlEntry.Text.Length > 0)
+        if (_booklistId > 0 &&
+            nameEntry.Text.Length > 0 &&
+            imageUrlEntry.Text.Length > 0)
         {
-			await App.Database.DeleteBookListAsync(await App.Database.GetBooklistByIdAsync(_booklistId));
-		}
-		await Close();
-	}
+            await App.Database.DeleteBookListAsync(await App.Database.GetBooklistByIdAsync(_booklistId));
+        }
+        await Close();
+    }
 
     private async void Cancel_Clicked(object sender, EventArgs e)
     {
-		await Close();
-	}
+        await Close();
+    }
 
     #endregion
 }

@@ -1,4 +1,3 @@
-using CommunityToolkit.Maui.Alerts;
 using Spindler.Models;
 using Spindler.Services;
 
@@ -12,7 +11,7 @@ public partial class ReaderPage : ContentPage
 
     public Book currentBook;
     public Config config { get; set; }
-	private LoadedData loadedData { get; set; }
+    private LoadedData loadedData { get; set; }
 
     /// <summary>
     /// Task that should hold an array of length 2 containing (previous chapter, next chapter) in that order
@@ -23,11 +22,11 @@ public partial class ReaderPage : ContentPage
     #region QueryProperty Handler
     public string BookId
     {
-		set
+        set
         {
-			LoadBook(Convert.ToInt32(value));
+            LoadBook(Convert.ToInt32(value));
         }
-	}
+    }
 
     private async void LoadBook(int id)
     {

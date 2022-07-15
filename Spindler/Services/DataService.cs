@@ -1,17 +1,17 @@
-﻿using SQLite;
-using Spindler.Models;
+﻿using Spindler.Models;
+using SQLite;
 
 namespace Spindler.Services;
 
 public class DataService
 {
-    readonly SQLiteAsyncConnection database;
+    private readonly SQLiteAsyncConnection database;
 
     public DataService(string dbPath)
     {
         database = new SQLiteAsyncConnection(dbPath,
                 SQLiteOpenFlags.ReadWrite |
-                SQLiteOpenFlags.Create    |
+                SQLiteOpenFlags.Create |
                 SQLiteOpenFlags.SharedCache
             );
         database.CreateTablesAsync<BookList, Book, Config>().Wait();
@@ -20,7 +20,7 @@ public class DataService
     #region Generic functions for database
 
     public async Task SaveItemAsync<T>(T item)
-        where T: IIndexedModel, new()
+        where T : IIndexedModel, new()
     {
         if (item.GetId() < 0)
         {
@@ -29,15 +29,15 @@ public class DataService
         await database.UpdateAsync(item);
     }
 
-    public async Task<List<T>> GetAllItemsAsync<T>() where T: IIndexedModel, new()
+    public async Task<List<T>> GetAllItemsAsync<T>() where T : IIndexedModel, new()
         => await database.Table<T>().ToListAsync();
 
-    public async Task<int> DeleteItemAsync<T>(T item) where T: IIndexedModel, new()
+    public async Task<int> DeleteItemAsync<T>(T item) where T : IIndexedModel, new()
         => await database.DeleteAsync(item);
     #endregion
 
     #region BOOKLISTS Unique Methods
-    public async Task<List<BookList>> GetBookListsAsync()    
+    public async Task<List<BookList>> GetBookListsAsync()
         => await database.Table<BookList>()
         .OrderByDescending((list) => list.LastAccessed)
         .ToListAsync();

@@ -1,18 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
+﻿using System.ComponentModel;
 using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Input;
 
 namespace Spindler.ViewModels
 {
     public class SettingsViewmodel : INotifyPropertyChanged
     {
-        string font = Preferences.Default.Get("font", "OpenSansRegular");
-        int fontSize = Preferences.Default.Get("font_size", 12);
+        private string font = Preferences.Default.Get("font", "OpenSansRegular");
+        private int fontSize = Preferences.Default.Get("font_size", 12);
 
         public ICommand SaveSettingsCommand { get; private set; }
 

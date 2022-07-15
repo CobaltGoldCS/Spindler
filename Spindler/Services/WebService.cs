@@ -1,9 +1,9 @@
-﻿using System.Text.RegularExpressions;
-using System.Web;
-using System.Xml.XPath;
-using HtmlAgilityPack;
+﻿using HtmlAgilityPack;
 using HtmlAgilityPack.CssSelectors.NetCore;
 using Spindler.Models;
+using System.Text.RegularExpressions;
+using System.Web;
+using System.Xml.XPath;
 
 namespace Spindler.Services;
 
@@ -13,8 +13,8 @@ public class WebService
     /// <summary>
     /// The constructor that should be used for WebService
     /// </summary>
-    public WebService() 
-    { 
+    public WebService()
+    {
     }
     /// <summary>
     /// Preload the next and previous urls with valid values into LoadedData
@@ -53,8 +53,8 @@ public class WebService
         {
             // Ridiculous workaround because HttpClient class doesn't know how to deal with 'improperly' formatted relative urls
             Uri uri;
-            if (Uri.TryCreate(url, UriKind.RelativeOrAbsolute, out uri) && 
-                !uri.IsAbsoluteUri                                      &&
+            if (Uri.TryCreate(url, UriKind.RelativeOrAbsolute, out uri) &&
+                !uri.IsAbsoluteUri &&
                 uri.ToString().StartsWith("/"))
             {
                 url = uri.ToString()[1..];
@@ -62,7 +62,9 @@ public class WebService
 
             var html = await client.GetStringAsync(url);
             return await LoadHTML(url, config, html);
-        } catch(HttpRequestException e) {
+        }
+        catch (HttpRequestException e)
+        {
             Console.WriteLine(e.Message);
             return null;
         }
@@ -98,7 +100,7 @@ public class WebService
 
     #region Html Selectors
 
-    enum SelectorType
+    private enum SelectorType
     {
         /// <summary>
         /// Denotes a preference for links (target href if possible)
@@ -146,11 +148,11 @@ public class WebService
         if (attributes.Any())
         {
             var cleanpath = attributes[0].Groups[1].Value;
-            var modifier =  attributes[0].Groups[2].Value;
+            var modifier = attributes[0].Groups[2].Value;
             HtmlNode node = nav.QuerySelector(cleanpath);
             return node?.GetAttributeValue(modifier, null);
         }
-        switch(type)
+        switch (type)
         {
             case SelectorType.Text:
                 return nav.QuerySelector(path)?.CreateNavigator().Value;
@@ -216,7 +218,7 @@ public class WebService
             text = await text,
             nextUrl = PrettyWrapSelector(doc, config.NextUrlPath, type: SelectorType.Link),
             prevUrl = PrettyWrapSelector(doc, config.PrevUrlPath, type: SelectorType.Link),
-            title   = HttpUtility.HtmlDecode(PrettyWrapSelector(doc, config.TitlePath  , type: SelectorType.Text)),
+            title = HttpUtility.HtmlDecode(PrettyWrapSelector(doc, config.TitlePath, type: SelectorType.Text)),
             config = config,
             currentUrl = new Uri(this.client.BaseAddress, url).ToString()
         };

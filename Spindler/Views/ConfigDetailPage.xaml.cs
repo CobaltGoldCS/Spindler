@@ -37,7 +37,7 @@ public partial class ConfigDetailPage : ContentPage
             return;
         }
         Config config = await App.Database.GetConfigByIdAsync(id);
-        
+
         okButton.Text = $"Modify {config.DomainName}";
         Title = $"Modify {config.DomainName}";
         BindingContext = config;
@@ -45,9 +45,9 @@ public partial class ConfigDetailPage : ContentPage
     #endregion
 
     public ConfigDetailPage()
-	{
-		InitializeComponent();
-	}
+    {
+        InitializeComponent();
+    }
 
     #region Click Handlers
     private async void DeleteButton_Clicked(object sender, EventArgs e)
@@ -60,11 +60,11 @@ public partial class ConfigDetailPage : ContentPage
 
     private async void okButton_Clicked(object sender, EventArgs e)
     {
-        if (domainEntry.Text.Length  < 0 ||
+        if (domainEntry.Text.Length < 0 ||
             contentEntry.Text.Length < 0 ||
-            nextEntry.Text.Length    < 0 || 
-            prevEntry.Text.Length    < 0 || 
-            titleEntry.Text.Length   < 0 )
+            nextEntry.Text.Length < 0 ||
+            prevEntry.Text.Length < 0 ||
+            titleEntry.Text.Length < 0)
         {
             return;
         }

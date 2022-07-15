@@ -8,16 +8,16 @@ public partial class BookPage : ContentPage
     #region QueryProperty Handler
 
     private int _id = -1;
-    public string BooklistId 
-	{
-		get => _id.ToString();
-		set 
-		{ 
-			if (value == null) throw new ArgumentNullException("BookListId cannot be set to null");
-			LoadBookList(Convert.ToInt32(value));
-			_id = Convert.ToInt32(value);
-		}
-	}
+    public string BooklistId
+    {
+        get => _id.ToString();
+        set
+        {
+            if (value == null) throw new ArgumentNullException("BookListId cannot be set to null");
+            LoadBookList(Convert.ToInt32(value));
+            _id = Convert.ToInt32(value);
+        }
+    }
 
     public async void LoadBookList(int id)
     {
@@ -30,21 +30,21 @@ public partial class BookPage : ContentPage
         loaded = true;
     }
 
-	#endregion
+    #endregion
 
-	public BookPage()
-	{
-		InitializeComponent();
-	}
+    public BookPage()
+    {
+        InitializeComponent();
+    }
 
 
     private bool loaded = false;
     protected override async void OnAppearing()
-	{
-		base.OnAppearing();
-		BooksList.Unfocus();
-		int id;
-		if (loaded && int.TryParse(BooklistId, out id))
+    {
+        base.OnAppearing();
+        BooksList.Unfocus();
+        int id;
+        if (loaded && int.TryParse(BooklistId, out id))
         {
             BooksList.ItemsSource = await App.Database.GetBooksByBooklistIdAsync(id);
         }
@@ -54,20 +54,20 @@ public partial class BookPage : ContentPage
 
     private async void ConfigButtonPressed(object sender, EventArgs e)
     {
-		int id = await Task.Run(() => Convert.ToInt32((sender as ImageButton).BindingContext));
+        int id = await Task.Run(() => Convert.ToInt32((sender as ImageButton).BindingContext));
         await Shell.Current.GoToAsync($"{nameof(BookDetailPage)}?id={id}|04923102-afb|{BooklistId}");
-	}
+    }
 
     private async void addToolbarItem_Clicked(object sender, EventArgs e)
     {
-		await Shell.Current.GoToAsync($"{nameof(BookDetailPage)}?id=-1|04923102-afb|{BooklistId}");
-	}
+        await Shell.Current.GoToAsync($"{nameof(BookDetailPage)}?id=-1|04923102-afb|{BooklistId}");
+    }
 
     private async void SelectionChanged(object sender, SelectionChangedEventArgs e)
     {
-		Book book = e.CurrentSelection.FirstOrDefault() as Book;
-		await Shell.Current.GoToAsync($"{nameof(ReaderPage)}?id={book.Id}");
+        Book book = e.CurrentSelection.FirstOrDefault() as Book;
+        await Shell.Current.GoToAsync($"{nameof(ReaderPage)}?id={book.Id}");
     }
 
-	#endregion
+    #endregion
 }

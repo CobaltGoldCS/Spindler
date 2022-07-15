@@ -7,9 +7,9 @@ public partial class BookListPage : ContentPage
 {
 
     public BookListPage()
-	{
-		InitializeComponent();
-	}
+    {
+        InitializeComponent();
+    }
 
     protected override async void OnAppearing()
     {

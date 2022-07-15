@@ -3,12 +3,12 @@ namespace Spindler;
 
 public partial class ConfigPage : ContentPage
 {
-	public ConfigPage()
-	{
-		InitializeComponent();
-	}
+    public ConfigPage()
+    {
+        InitializeComponent();
+    }
 
-    protected async override void OnAppearing()
+    protected override async void OnAppearing()
     {
         base.OnAppearing();
         list.ItemsSource = await App.Database.GetAllItemsAsync<Config>();

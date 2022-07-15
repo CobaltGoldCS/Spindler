@@ -19,12 +19,12 @@ public class Config : IIndexedModel
     /// <summary>
     /// The domain name associated with the config (IE: example.com)
     /// </summary>
-    public string DomainName  { get; set; }
+    public string DomainName { get; set; }
 
     /// <summary>
     /// The path pointing to the title element (if specified) otherwise null
     /// </summary>
-    public string TitlePath   { get; set; }
+    public string TitlePath { get; set; }
 
     /// <summary>
     /// The path pointing to the main content of the website
@@ -46,7 +46,7 @@ public class Config : IIndexedModel
     /// <summary>
     /// The type of path that is denoted in the configuration (usually xpath)
     /// </summary>
-    public string PathType    { get => _pathType; private set => _pathType = value; }
+    public string PathType { get => _pathType; private set => _pathType = value; }
 
 
     public void SetPathType(string pathType)
