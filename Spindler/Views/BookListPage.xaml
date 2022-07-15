@@ -18,7 +18,10 @@
               >
         <CollectionView.ItemTemplate>
             <DataTemplate>
-                <ContentView Margin="0,5,0,0" Padding="5" BindingContext="models:BookList">
+                <ContentView Margin="0,5,0,0" Padding="5">
+                    <ContentView.BindingContext>
+                        <models:BookList/>
+                    </ContentView.BindingContext>
                     <Grid>
                         <Grid.RowDefinitions>
                             <RowDefinition Height="50"/>

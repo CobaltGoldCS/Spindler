@@ -21,7 +21,10 @@
               SelectionMode="Single">
         <CollectionView.ItemTemplate>
             <DataTemplate>
-                <ContentView Margin="0,5,0,5" Padding="5" BindingContext="models:Config">
+                <ContentView Margin="0,5,0,5" Padding="5">
+                    <ContentView.BindingContext>
+                        <models:Book/>
+                    </ContentView.BindingContext>
                     <Grid Padding="10,0,0,0">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*"/>
