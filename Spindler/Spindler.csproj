@@ -113,28 +113,28 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <MauiXaml Update="BookDetailPage.xaml">
+	  <MauiXaml Update="Views\BookDetailPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
-	  <MauiXaml Update="BookListDetailPage.xaml">
+	  <MauiXaml Update="Views\BookListDetailPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
-	  <MauiXaml Update="BookListPage.xaml">
+	  <MauiXaml Update="Views\BookListPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
-	  <MauiXaml Update="BookPage.xaml">
+	  <MauiXaml Update="Views\BookPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
-	  <MauiXaml Update="ConfigDetailPage.xaml">
+	  <MauiXaml Update="Views\ConfigDetailPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
-	  <MauiXaml Update="ConfigPage.xaml">
+	  <MauiXaml Update="Views\ConfigPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
-	  <MauiXaml Update="ReaderPage.xaml">
+	  <MauiXaml Update="Views\ReaderPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
-	  <MauiXaml Update="SettingsPage.xaml">
+	  <MauiXaml Update="Views\SettingsPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	</ItemGroup>
