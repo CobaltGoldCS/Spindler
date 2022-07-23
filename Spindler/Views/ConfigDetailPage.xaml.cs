@@ -10,6 +10,10 @@ public partial class ConfigDetailPage : ContentPage
 {
     private int ConfigurationId = -1;
 
+    #region Constants
+    private readonly Regex domainValidationRegex = new(@"^(?!www\.)(((?!\-))(xn\-\-)?[a-z0-9\-_]{0,61}[a-z0-9]{1,1}\.)*(xn\-\-)?([a-z0-9\-]{1,61}|[a-z0-9\-]{1,30})\.[a-z]{2,}$");
+    #endregion
+
     #region QueryProperty handler
     public string ConfigId
     {
@@ -57,7 +61,7 @@ public partial class ConfigDetailPage : ContentPage
 
         domainEntry.Behaviors.Add(new TextValidationBehavior((string value) =>
         {
-            return new Regex(@"^(?!www\.)(((?!\-))(xn\-\-)?[a-z0-9\-_]{0,61}[a-z0-9]{1,1}\.)*(xn\-\-)?([a-z0-9\-]{1,61}|[a-z0-9\-]{1,30})\.[a-z]{2,}$").IsMatch(value);
+            return domainValidationRegex.IsMatch(value);
         }));
 
         TextValidationBehavior validSelectorBehavior = new((string value) => WebService.IsValidSelector(value));
@@ -77,9 +81,7 @@ public partial class ConfigDetailPage : ContentPage
 
     private async void okButton_Clicked(object sender, EventArgs e)
     {
-        // Regex Check if domain is valid input 
-        bool validDomain = new Regex("^(?!www\\.)[a-zA-z0-9\\-]+[a-zA-z0-9\\-].+$").IsMatch(domainEntry.Text);
-        if (!validDomain ||
+        if (!domainValidationRegex.IsMatch(domainEntry.Text) ||
             !WebService.IsValidSelector(contentEntry.Text) ||
             !WebService.IsValidSelector(nextEntry.Text)    ||
             !WebService.IsValidSelector(prevEntry.Text))
