@@ -1,5 +1,6 @@
 using Spindler.Models;
 using Spindler.Services;
+using Spindler.Behaviors;
 using System.Text.RegularExpressions;
 
 namespace Spindler;
@@ -46,9 +47,21 @@ public partial class ConfigDetailPage : ContentPage
     }
     #endregion
 
+
+
     public ConfigDetailPage()
     {
         InitializeComponent();
+
+        domainEntry.Behaviors.Add(new TextValidationBehavior((string value) =>
+        {
+            return new Regex(@"^(?!www\.)(((?!\-))(xn\-\-)?[a-z0-9\-_]{0,61}[a-z0-9]{1,1}\.)*(xn\-\-)?([a-z0-9\-]{1,61}|[a-z0-9\-]{1,30})\.[a-z]{2,}$").IsMatch(value);
+        }));
+
+        TextValidationBehavior validSelectorBehavior = new((string value) => WebService.IsValidSelector(value));
+        contentEntry.Behaviors.Add(validSelectorBehavior);
+        nextEntry.Behaviors.Add(validSelectorBehavior);
+        prevEntry.Behaviors.Add(validSelectorBehavior);
     }
 
     #region Click Handlers
