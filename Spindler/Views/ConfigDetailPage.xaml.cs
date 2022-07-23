@@ -1,5 +1,6 @@
 using Spindler.Models;
 using Spindler.Services;
+using System.Text.RegularExpressions;
 
 namespace Spindler;
 
@@ -61,7 +62,9 @@ public partial class ConfigDetailPage : ContentPage
 
     private async void okButton_Clicked(object sender, EventArgs e)
     {
-        if (domainEntry.Text.Length <= 0 ||
+        // Regex Check if domain is valid input 
+        bool validDomain = new Regex("^(?!www\\.)[a-zA-z0-9\\-]+[a-zA-z0-9\\-].+$").IsMatch(domainEntry.Text);
+        if (!validDomain ||
             !WebService.IsValidSelector(contentEntry.Text) ||
             !WebService.IsValidSelector(nextEntry.Text)    ||
             !WebService.IsValidSelector(prevEntry.Text))
