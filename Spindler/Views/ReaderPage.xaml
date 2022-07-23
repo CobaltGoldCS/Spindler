@@ -3,7 +3,9 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="Spindler.ReaderPage"
              xmlns:Model="clr-namespace:Spindler.Models"
-             Title="{Binding title}">
+             Title="{Binding title}"
+             Shell.TabBarIsVisible="False"
+             >
 
     <ContentPage.BindingContext>
         <Model:LoadedData/>
