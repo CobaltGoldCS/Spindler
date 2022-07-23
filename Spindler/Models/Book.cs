@@ -33,4 +33,6 @@ public class Book : IIndexedModel
     /// A date time representing when this book was last opened
     /// </summary>
     public DateTime LastViewed { get; set; }
+
+    public double Position { get; set; }
 }

@@ -4,8 +4,7 @@
              x:Class="Spindler.ReaderPage"
              xmlns:Model="clr-namespace:Spindler.Models"
              Title="{Binding title}"
-             Shell.TabBarIsVisible="False"
-             >
+             Shell.TabBarIsVisible="False">
 
     <ContentPage.BindingContext>
         <Model:LoadedData/>

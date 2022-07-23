@@ -1,3 +1,5 @@
+using Android.Views;
+using AndroidX.Lifecycle;
 using Spindler.Models;
 using Spindler.Services;
 
@@ -38,6 +40,7 @@ public partial class ReaderPage : ContentPage
         if (FailIfNull(data, "Invalid Url")) return;
         loadedData = data;
         DataChanged();
+        await ReadingLayout.ScrollToAsync(ReadingLayout.ScrollX, currentBook.Position, true);
     }
     #endregion
 
@@ -49,6 +52,19 @@ public partial class ReaderPage : ContentPage
         ContentView.FontFamily = Preferences.Default.Get("font", "OpenSansRegular");
         ContentView.FontSize = Preferences.Default.Get("font_size", 15);
         TitleView.FontFamily = Preferences.Default.Get("font", "OpenSansRegular");
+        Shell.Current.Navigating += OnShellNavigated;
+        
+    }
+
+    // FIXME: This does not handle android back buttons
+    private async void OnShellNavigated(object sender,
+                           ShellNavigatingEventArgs e)
+    {
+        if (e.Current.Location.OriginalString == "//BookLists/BookPage/ReaderPage")
+        {
+            currentBook.Position = ReadingLayout.ScrollY;
+            await App.Database.SaveItemAsync(currentBook);
+        }
     }
 
     #region Click Handlers
