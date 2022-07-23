@@ -24,9 +24,10 @@ public partial class ConfigDetailPage : ContentPage
 
     private async void InitializePage(int id)
     {
+        Config config;
         if (ConfigurationId < 0)
         {
-            BindingContext = new Config
+            config = new Config
             {
                 Id = -1,
                 DomainName = "",
@@ -37,12 +38,13 @@ public partial class ConfigDetailPage : ContentPage
             };
             okButton.Text = "Add a new Config";
             Title = "Add a new Config";
-            return;
         }
-        Config config = await App.Database.GetConfigByIdAsync(id);
-
-        okButton.Text = $"Modify {config.DomainName}";
-        Title = $"Modify {config.DomainName}";
+        else
+        {
+            config = await App.Database.GetConfigByIdAsync(id);
+            okButton.Text = $"Modify {config.DomainName}";
+            Title = $"Modify {config.DomainName}";
+        }
         BindingContext = config;
     }
     #endregion
