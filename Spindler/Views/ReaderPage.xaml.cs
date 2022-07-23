@@ -1,5 +1,3 @@
-using Android.Views;
-using AndroidX.Lifecycle;
 using Spindler.Models;
 using Spindler.Services;
 

@@ -10,9 +10,6 @@ public class MainActivity : MauiAppCompatActivity
 {
     protected override void OnCreate(Bundle savedInstanceState)
     {
-        Window.DecorView.SystemUiVisibility = (StatusBarVisibility)
-            (SystemUiFlags.ImmersiveSticky | SystemUiFlags.HideNavigation |
-             SystemUiFlags.Fullscreen | SystemUiFlags.Immersive);
         base.OnCreate(savedInstanceState);
     }
 }
