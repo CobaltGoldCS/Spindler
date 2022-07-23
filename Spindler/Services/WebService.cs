@@ -81,6 +81,32 @@ public class WebService
         bool created = Uri.TryCreate(url, UriKind.RelativeOrAbsolute, out uriResult);
         return created && (url.StartsWith("http") || url.StartsWith('/'));
     }
+
+    public static bool IsValidSelector(string path)
+    {
+        HtmlDocument nav = new HtmlDocument();
+        try
+        {
+            if (path.StartsWith("/"))
+            {
+                var value = XPathExpression.Compile(path);
+            }
+            // CssPath Handler
+            else
+            {
+                var value = CssElementHandler(nav, path, SelectorType.Link);
+            }
+            return true;
+        }
+        catch (Exception _) when (
+        _ is XPathException ||
+        _ is ArgumentException ||
+        _ is ArgumentNullException ||
+        _ is InvalidOperationException)
+        {
+            return false;
+        }
+    }
     #endregion
 
     #region Client
@@ -116,7 +142,7 @@ public class WebService
     /// </summary>
     /// <param name="nav">The HtmlDocument to get the text from</param>
     /// <param name="path">A string representation of the target's xpath</param>
-    /// <returns cref="String">A string containing the target text, or an empty string if nothing is found</returns>
+    /// <returns cref="string">A string containing the target text, or an empty string if nothing is found</returns>
     /// <exception cref="XPathException">If there is any error in the xpath</exception>
     private static string PrettyWrapSelector(HtmlDocument nav, string path, SelectorType type)
     {
@@ -152,15 +178,12 @@ public class WebService
             HtmlNode node = nav.QuerySelector(cleanpath);
             return node?.GetAttributeValue(modifier, null);
         }
-        switch (type)
+        return type switch
         {
-            case SelectorType.Text:
-                return nav.QuerySelector(path)?.CreateNavigator().Value;
-            case SelectorType.Link:
-                return nav.QuerySelector(path)?.GetAttributeValue("href", null);
-            default:
-                throw new NotImplementedException("The selectortype is not implemented");
-        }
+            SelectorType.Text => nav.QuerySelector(path)?.CreateNavigator().Value,
+            SelectorType.Link => nav.QuerySelector(path)?.GetAttributeValue("href", null),
+            _ => throw new NotImplementedException("This selectortype is not implemented"),
+        };
     }
 
     /// <summary>

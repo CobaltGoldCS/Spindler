@@ -1,4 +1,5 @@
 using Spindler.Models;
+using Spindler.Services;
 
 namespace Spindler;
 
@@ -60,14 +61,15 @@ public partial class ConfigDetailPage : ContentPage
 
     private async void okButton_Clicked(object sender, EventArgs e)
     {
-        if (domainEntry.Text.Length < 0 ||
-            contentEntry.Text.Length < 0 ||
-            nextEntry.Text.Length < 0 ||
-            prevEntry.Text.Length < 0 ||
-            titleEntry.Text.Length < 0)
+        if (domainEntry.Text.Length <= 0 ||
+            !WebService.IsValidSelector(contentEntry.Text) ||
+            !WebService.IsValidSelector(nextEntry.Text)    ||
+            !WebService.IsValidSelector(prevEntry.Text))
         {
             return;
         }
+
+
         Config config = new Config
         {
             Id = ConfigurationId,
