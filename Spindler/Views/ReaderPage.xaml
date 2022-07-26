@@ -3,21 +3,23 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="Spindler.ReaderPage"
              xmlns:Model="clr-namespace:Spindler.Models"
-             Title="{Binding title}"
+             xmlns:ViewModel="clr-namespace:Spindler.ViewModels"
+             Title="{Binding Title}"
              Shell.TabBarIsVisible="False">
 
     <ContentPage.BindingContext>
-        <Model:LoadedData/>
+        <ViewModel:ReaderViewModel/>
     </ContentPage.BindingContext>
-    <ScrollView x:Name="ReadingLayout" Orientation="Vertical" IsEnabled="True">
+    <ScrollView x:Name="ReadingLayout" Orientation="Vertical" IsEnabled="True" >
         <Grid VerticalOptions="FillAndExpand" RowDefinitions="auto, auto, *, auto">
-            <Label x:Name="TitleView" Text="Loading" FontSize="Title" Padding="5,0,5,20"/>
-            <Button x:Name="PrevButton" Grid.Row="1" Text="Previous" Clicked="Previous_Clicked" FontSize="Large" HorizontalOptions="FillAndExpand"/>
+            <Label x:Name="TitleView" Text="{Binding Title}" FontSize="Title" Padding="5,0,5,20"/>
+            <Button x:Name="PrevButton" IsVisible="{Binding PrevButtonIsVisible}" Grid.Row="1" Text="Previous" Command="{Binding PrevClickHandler}" FontSize="Large" HorizontalOptions="FillAndExpand"/>
             <Label  x:Name="ContentView" Grid.Row="2"
                     Padding="5,0,5,0"
                     VerticalOptions="FillAndExpand"
+                    Text="{Binding Text}"
             />
-            <Button x:Name="NextButton" Grid.Row="3" Text="Next" FontSize="Large" HorizontalOptions="FillAndExpand" Clicked="Next_Clicked"/>
+            <Button x:Name="NextButton" IsVisible="{Binding NextButtonIsVisible}" Grid.Row="3" Text="Next" FontSize="Large" HorizontalOptions="FillAndExpand" Command="{Binding NextClickHandler}"/>
         </Grid>
     </ScrollView>
 </ContentPage>
