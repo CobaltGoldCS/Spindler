@@ -40,7 +40,7 @@ namespace Spindler.ViewModels
             }
         }
 
-        private string title;
+        private string title = "Loading";
         public string Title
         {
             get => title;
@@ -52,7 +52,7 @@ namespace Spindler.ViewModels
                 OnPropertyChanged();
             }
         }
-        private string text;
+        private string text = "Content is currently loading";
         public string Text
         {
             get => text;
