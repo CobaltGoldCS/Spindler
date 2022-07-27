@@ -91,16 +91,17 @@ namespace Spindler.ViewModels
         #endregion
         #endregion
 
-        #region Click Handlers
+        #region Command Definitions
         public ICommand NextClickHandler { get; private set; }
         public ICommand PrevClickHandler { get; private set; }
         #endregion
 
+        #region Initialization Functions
 #nullable enable
         public ReaderViewModel()
         {
             webService = new WebService();
-            #region Click Handler Implementations
+            #region Command Implementations
             PrevClickHandler = new Command(async () =>
             {
                 var prevdata = (await PreloadDataTask)[0];
@@ -138,6 +139,7 @@ namespace Spindler.ViewModels
         {
             ReadingLayout = readingLayout;
         }
+        #endregion
 
         #region Helperfunctions
 
