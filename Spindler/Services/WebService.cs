@@ -159,6 +159,10 @@ public class WebService
             {
                 value = HttpUtility.HtmlDecode(CssElementHandler(nav, path, type));
             }
+            if (type is SelectorType.Link)
+            {
+                value = Regex.Match(value, "(((http|https)://([\\w-\\d]+\\.)+[\\w-\\d]+){0,1}(/[\\w~,;\\-\\./?%&+#=]*))").Value;
+            }
             return value;
         }
         catch (XPathException e)
