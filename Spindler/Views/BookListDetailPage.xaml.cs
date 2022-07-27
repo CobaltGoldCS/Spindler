@@ -1,4 +1,5 @@
 using Spindler.Models;
+using Spindler.Behaviors;
 
 namespace Spindler;
 
@@ -38,6 +39,11 @@ public partial class BookListDetailPage : ContentPage
     public BookListDetailPage()
     {
         InitializeComponent();
+        imageUrlEntry.Behaviors.Add(new TextValidationBehavior((string text) =>
+        {
+            bool validUrl = Uri.TryCreate(text, UriKind.Absolute, out Uri uriresult) && (uriresult.Scheme == Uri.UriSchemeHttp || uriresult.Scheme == Uri.UriSchemeHttps);
+            return validUrl || text.Length == 0;
+        }));
     }
 
     private async Task Close()
@@ -71,9 +77,7 @@ public partial class BookListDetailPage : ContentPage
 
     private async void DeleteButton_clicked(object sender, EventArgs e)
     {
-        if (_booklistId > 0 &&
-            nameEntry.Text.Length > 0 &&
-            imageUrlEntry.Text.Length > 0)
+        if (_booklistId > 0)
         {
             await App.Database.DeleteBookListAsync(await App.Database.GetBooklistByIdAsync(_booklistId));
         }

@@ -1,5 +1,5 @@
 using Spindler.Models;
-
+using Spindler.Behaviors;
 namespace Spindler;
 
 [QueryProperty(nameof(BookId), "id")]
@@ -44,6 +44,10 @@ public partial class BookDetailPage : ContentPage
     public BookDetailPage()
     {
         InitializeComponent();
+        urlEntry.Behaviors.Add(new TextValidationBehavior((string text) =>
+        {
+            return Uri.TryCreate(text, UriKind.Absolute, out Uri uriresult) && (uriresult.Scheme == Uri.UriSchemeHttp || uriresult.Scheme == Uri.UriSchemeHttps);
+        }));
     }
 
     private async Task Close()

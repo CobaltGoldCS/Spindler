@@ -23,7 +23,7 @@
                         <x:String>SignikaBold</x:String>
                     </Picker.Items>
                 </Picker>
-                <Entry Text="{Binding FontSize}" Keyboard="Numeric"/>
+                <Entry x:Name="FontSizeEntry" Text="{Binding FontSize}" Keyboard="Numeric"/>
             </HorizontalStackLayout>
             <Button Text="Apply Settings" Command="{Binding SaveSettingsCommand}" HorizontalOptions="Center"/>
         </VerticalStackLayout>
