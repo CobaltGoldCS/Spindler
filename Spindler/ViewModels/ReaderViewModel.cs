@@ -65,7 +65,7 @@ namespace Spindler.ViewModels
             }
         }
 
-        bool defaultvisible = true;
+        readonly bool defaultvisible = false;
         public bool PrevButtonIsVisible {
             get
             {
