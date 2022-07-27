@@ -176,13 +176,17 @@ public class WebService
             var cleanpath = attributes[0].Groups[1].Value;
             var modifier = attributes[0].Groups[2].Value;
             HtmlNode node = nav.QuerySelector(cleanpath);
+            if (modifier == "text")
+            {
+                return node.InnerText;
+            }
             return node?.GetAttributeValue(modifier, null);
         }
         return type switch
         {
             SelectorType.Text => nav.QuerySelector(path)?.CreateNavigator().Value,
             SelectorType.Link => nav.QuerySelector(path)?.GetAttributeValue("href", null),
-            _ => throw new NotImplementedException("This selectortype is not implemented"),
+            _ => throw new NotImplementedException($"This type: {type} is not implemented"),
         };
     }
 
@@ -196,7 +200,7 @@ public class WebService
     {
         HtmlNode node = path.StartsWith("/") ? nav.DocumentNode.SelectSingleNode(path) : nav.QuerySelector(path);
 
-        if (node == null) return String.Empty;
+        if (node == null) return string.Empty;
         if (!node.HasChildNodes)
         {
             return HttpUtility.HtmlDecode(node.InnerText);
