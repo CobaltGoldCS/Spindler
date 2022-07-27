@@ -25,7 +25,11 @@ namespace Spindler.ViewModels
         private Task<LoadedData[]> PreloadDataTask;
 
         #region Bindable Properties
-        private LoadedData loadedData;
+        private LoadedData loadedData = new LoadedData 
+        { 
+            title = "Loading",
+            text = "Content is currently loading"
+        };
         public LoadedData LoadedData
         {
             get => loadedData;
