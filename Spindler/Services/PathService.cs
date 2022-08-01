@@ -150,7 +150,7 @@ namespace Spindler.Services
                     stringWriter.Write("\n");
                     continue;
                 }
-                stringWriter.WriteLine($"\t\t{HttpUtility.HtmlDecode(child.InnerText)}");
+                stringWriter.WriteLine($"\t\t{HttpUtility.HtmlDecode(child.InnerText)}\n");
             }
             return stringWriter.ToString();
         }
