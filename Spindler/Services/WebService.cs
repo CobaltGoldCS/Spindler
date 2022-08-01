@@ -12,8 +12,10 @@ namespace Spindler.Services;
 
 public class WebService
 {
+    #region Class Attributes
     private PathService pathService;
     private Config config;
+    #endregion
     #region Public-Facing APIs
     /// <summary>
     /// The constructor that should be used for WebService
