@@ -23,6 +23,11 @@ public class WebService
     public WebService()
     {
     }
+
+    public WebService(Config config)
+    {
+        AttachConfig(config);
+    }
     public void AttachConfig(Config config)
     {
         this.config = config;

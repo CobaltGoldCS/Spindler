@@ -14,7 +14,18 @@ namespace Spindler.ViewModels
     public class ReaderViewModel : INotifyPropertyChanged
     {
         #region Class Attributes
-        private readonly WebService webService;
+        private WebService _webservice = null;
+        private WebService webService
+        {
+            get
+            {
+                if (_webservice is null)
+                {
+                   _webservice = new(Config);
+                }
+                return _webservice;
+            }
+        }
 
         public Book CurrentBook;
         public Config Config { get; set; }
@@ -126,7 +137,6 @@ namespace Spindler.ViewModels
         public async Task StartLoad()
         {
             if (FailIfNull(Config, "Configuration does not exist")) return;
-            webService.AttachConfig(Config);
             LoadedData data = await webService.PreloadUrl(CurrentBook.Url);
             if (FailIfNull(data, "Invalid Url")) return;
             LoadedData = data;
