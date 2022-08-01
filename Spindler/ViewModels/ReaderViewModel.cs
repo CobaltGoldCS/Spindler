@@ -126,7 +126,8 @@ namespace Spindler.ViewModels
         public async Task StartLoad()
         {
             if (FailIfNull(Config, "Configuration does not exist")) return;
-            LoadedData data = await webService.PreloadUrl(CurrentBook.Url, Config);
+            webService.AttachConfig(Config);
+            LoadedData data = await webService.PreloadUrl(CurrentBook.Url);
             if (FailIfNull(data, "Invalid Url")) return;
             LoadedData = data;
             DataChanged();
@@ -161,7 +162,7 @@ namespace Spindler.ViewModels
             Title = loadedData.title;
             Text = loadedData.text;
 
-            PreloadDataTask = webService.PreloadData(LoadedData.prevUrl, LoadedData.nextUrl, Config);
+            PreloadDataTask = webService.PreloadData(LoadedData.prevUrl, LoadedData.nextUrl);
             ScrollWorkaround();
             await ReadingLayout.ScrollToAsync(ReadingLayout.ScrollX, 0, false);
         }
