@@ -5,15 +5,15 @@
              x:Class="Spindler.GeneralizedConfigDetailPage"
              Title="Generalized Config Detail Page">
     <ContentPage.BindingContext>
-        <models:Config/>
+        <models:GeneralizedConfig/>
     </ContentPage.BindingContext>
     <StackLayout Orientation="Vertical">
         <Entry x:Name="domainEntry"
                HeightRequest="50"
-               Placeholder="Domain name of the website ex: google.com" Text="{Binding DomainName}"/>
+               Placeholder="Name to give the configuration" Text="{Binding DomainName}"/>
         <Entry x:Name="matchEntry"
                HeightRequest="50"
-               Placeholder="Path to match to verify that the config works" Text="{Binding DomainName}"/>
+               Placeholder="Path to match to verify that the config works" Text="{Binding MatchPath}"/>
         <Entry x:Name="titleEntry"
                HeightRequest="50"
                Placeholder="[Optional] Path pointing to the title element" Text="{Binding TitlePath}"/>

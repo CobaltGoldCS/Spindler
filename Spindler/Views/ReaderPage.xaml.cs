@@ -23,7 +23,7 @@ public partial class ReaderPage : ContentPage
     private async void LoadBook(int id)
     {
         Book currentBook = await App.Database.GetItemByIdAsync<Book>(id);
-        Config config = await App.Database.GetConfigByDomainNameAsync(new UriBuilder(currentBook.Url).Host);
+        Config config = await WebService.FindValidConfig(currentBook.Url);
         BindingContext = new ReaderViewModel();
         ((ReaderViewModel)BindingContext).CurrentBook = currentBook;
         ((ReaderViewModel)BindingContext).Config = config;

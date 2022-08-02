@@ -19,10 +19,14 @@
                 Title="Website Configs"
                 ContentTemplate="{DataTemplate local:ConfigPage}"
                 Route="Config" />
+        </Tab>
+        
+        <!--FIXME: This should not be a separate tab, but OnAppearing is not called when it is combined within 'Configs'-->
+        <Tab Title="General Configs">
             <ShellContent
                 Title="General Configs"
                 ContentTemplate="{DataTemplate views:GeneralizedConfigPage}"
-                Route="GeneralConfig" />
+                Route="GeneralConfig"/>
         </Tab>
         <Tab Title="Settings">
             <ShellContent

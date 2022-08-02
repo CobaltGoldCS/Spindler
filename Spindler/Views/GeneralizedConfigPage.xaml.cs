@@ -1,4 +1,6 @@
 using Spindler.Models;
+using Spindler.ViewModels;
+
 namespace Spindler.Views;
 
 public partial class GeneralizedConfigPage : ContentPage
@@ -6,9 +8,9 @@ public partial class GeneralizedConfigPage : ContentPage
 	public GeneralizedConfigPage()
 	{
 		InitializeComponent();
-	}
+    }
 
-    protected override async void OnAppearing()
+    protected async override void OnAppearing()
     {
         base.OnAppearing();
         list.ItemsSource = await App.Database.GetAllItemsAsync<GeneralizedConfig>();
@@ -16,15 +18,17 @@ public partial class GeneralizedConfigPage : ContentPage
     }
 
     #region Click Handlers
-    private async void addToolbarItem_Clicked(object sender, EventArgs e)
-    {
-        await Shell.Current.GoToAsync($"/{nameof(GeneralizedConfigDetailPage)}?id=-1");
-    }
 
     private async void list_SelectionChanged(object sender, SelectionChangedEventArgs e)
     {
         GeneralizedConfig config = e.CurrentSelection.FirstOrDefault() as GeneralizedConfig;
+        list.Unfocus();
         await Shell.Current.GoToAsync($"/{nameof(GeneralizedConfigDetailPage)}?id={config.Id}");
     }
     #endregion
+
+    private async void Button_Clicked(object sender, EventArgs e)
+    {
+        await Shell.Current.GoToAsync($"/{nameof(GeneralizedConfigDetailPage)}?id=-1");
+    }
 }

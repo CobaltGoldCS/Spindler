@@ -10,12 +10,15 @@
         <vms:ConfigViewModel/>
     </ContentPage.BindingContext>
     <StackLayout Orientation="Vertical">
-        <Button HeightRequest="50" CornerRadius="0" Text="Add A Config +" FontSize="Large"  Command="{Binding AddConfigCommand}"/>
+        <Button HeightRequest="50" CornerRadius="0" Text="Add A Config +" FontSize="Large"  Command="{Binding AddCommand}"/>
         <CollectionView x:Name="list"
               Margin="5, 0"
               SelectionChanged="list_SelectionChanged"
               SelectionMode="Single"
-              ItemsSource="{Binding configs}">
+              >
+            <CollectionView.BindingContext>
+                <models:Config/>
+            </CollectionView.BindingContext>
             <CollectionView.ItemTemplate>
                 <DataTemplate>
                     <ContentView Margin="0,5,0,5" Padding="5">

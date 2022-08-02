@@ -1,4 +1,5 @@
 using Spindler.Models;
+using Spindler.ViewModels;
 namespace Spindler;
 
 public partial class ConfigPage : ContentPage
@@ -6,20 +7,17 @@ public partial class ConfigPage : ContentPage
     public ConfigPage()
     {
         InitializeComponent();
+        BindingContext = new ConfigViewModel();
     }
 
-    protected override async void OnAppearing()
+    protected async override void OnAppearing()
     {
         base.OnAppearing();
-        list.ItemsSource = await App.Database.GetAllItemsAsync<Config>();
         list.Unfocus();
+        list.ItemsSource = await App.Database.GetAllItemsAsync<Config>();
     }
 
     #region Click Handlers
-    private async void addToolbarItem_Clicked(object sender, EventArgs e)
-    {
-        await Shell.Current.GoToAsync($"/{nameof(ConfigDetailPage)}?id=-1");
-    }
 
     private async void list_SelectionChanged(object sender, SelectionChangedEventArgs e)
     {

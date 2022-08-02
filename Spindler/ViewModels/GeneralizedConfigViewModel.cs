@@ -1,16 +1,11 @@
 ﻿using Spindler.Models;
-using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Input;
 
 namespace Spindler.ViewModels
 {
-    public class ConfigViewModel : INotifyPropertyChanged
+    public class GeneralizedConfigViewModel : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -19,14 +14,14 @@ namespace Spindler.ViewModels
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
         }
 
+
         public ICommand AddCommand { get; private set; }
 
-        public ConfigViewModel()
+        public GeneralizedConfigViewModel()
         {
-
             AddCommand = new Command(async () =>
             {
-                await Shell.Current.GoToAsync($"/{nameof(ConfigDetailPage)}?id=-1");
+                await Shell.Current.GoToAsync($"/{nameof(GeneralizedConfigDetailPage)}?id=-1");
             });
         }
     }

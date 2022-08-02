@@ -10,10 +10,6 @@ public partial class GeneralizedConfigDetailPage : ContentPage
 {
     private int ConfigurationId = -1;
 
-    #region Constants
-    private readonly Regex domainValidationRegex = new(@"^(?!www\.)(((?!\-))(xn\-\-)?[a-z0-9\-_]{0,61}[a-z0-9]{1,1}\.)*(xn\-\-)?([a-z0-9\-]{1,61}|[a-z0-9\-]{1,30})\.[a-z]{2,}$");
-    #endregion
-
     #region QueryProperty handler
     public string ConfigId
     {
@@ -60,10 +56,6 @@ public partial class GeneralizedConfigDetailPage : ContentPage
     {
         InitializeComponent();
 
-        domainEntry.Behaviors.Add(new TextValidationBehavior((string value) =>
-        {
-            return domainValidationRegex.IsMatch(value);
-        }));
 
         TextValidationBehavior validSelectorBehavior = new((string value) => ConfigService.IsValidSelector(value));
         matchEntry.Behaviors.Add(validSelectorBehavior);
@@ -71,6 +63,8 @@ public partial class GeneralizedConfigDetailPage : ContentPage
         nextEntry.Behaviors.Add(validSelectorBehavior);
         prevEntry.Behaviors.Add(validSelectorBehavior);
     }
+
+
 
     #region Click Handlers
     private async void DeleteButton_Clicked(object sender, EventArgs e)
@@ -83,7 +77,7 @@ public partial class GeneralizedConfigDetailPage : ContentPage
 
     private async void okButton_Clicked(object sender, EventArgs e)
     {
-        if (!domainValidationRegex.IsMatch(domainEntry.Text) ||
+        if (
             !ConfigService.IsValidSelector(matchEntry.Text) ||
             !ConfigService.IsValidSelector(contentEntry.Text) ||
             !ConfigService.IsValidSelector(nextEntry.Text)    ||

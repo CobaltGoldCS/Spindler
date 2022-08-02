@@ -16,8 +16,15 @@ namespace Spindler.Services
         public Path nextpath;
         public Path previouspath;
 
+        public bool IsNull = false;
+
         public ConfigService(Config config)
         {
+            if (config is null)
+            {
+                IsNull = true;
+                return;
+            }
             titlepath = new Path(config.TitlePath);
             contentpath = new Path(config.ContentPath);
             nextpath = new Path(config.NextUrlPath);
@@ -49,7 +56,7 @@ namespace Spindler.Services
             {
                 bool _ = temppath.type switch
                 {
-                    Path.Type.Css => CssElementHandler(nav, path, SelectorType.Link) != null,
+                    Path.Type.Css => CssElementHandler(nav, path, SelectorType.Text) != null,
                     Path.Type.XPath => XPathExpression.Compile(path) != null,
                     _ => throw new NotImplementedException("This path type has not been implemented")
                 };
