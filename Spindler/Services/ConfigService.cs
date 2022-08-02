@@ -8,7 +8,7 @@ using System.Xml.XPath;
 namespace Spindler.Services
 {
     using Path = Models.Path;
-    public class PathService
+    public class ConfigService
     {
         
         public Path titlepath;
@@ -16,7 +16,7 @@ namespace Spindler.Services
         public Path nextpath;
         public Path previouspath;
 
-        public PathService(Config config)
+        public ConfigService(Config config)
         {
             titlepath = new Path(config.TitlePath);
             contentpath = new Path(config.ContentPath);
@@ -37,10 +37,10 @@ namespace Spindler.Services
         }
 
         /// <summary>
-        /// Checks if a selector is of valid syntax
+        /// Naively Checks if a selector is of valid syntax
         /// </summary>
         /// <param name="path">The selector to test (string)</param>
-        /// <returns></returns>
+        /// <returns>If the selector is valid or not</returns>
         public static bool IsValidSelector(string path)
         {
             HtmlDocument nav = new HtmlDocument();

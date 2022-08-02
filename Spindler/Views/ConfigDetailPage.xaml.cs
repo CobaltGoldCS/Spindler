@@ -64,7 +64,7 @@ public partial class ConfigDetailPage : ContentPage
             return domainValidationRegex.IsMatch(value);
         }));
 
-        TextValidationBehavior validSelectorBehavior = new((string value) => PathService.IsValidSelector(value));
+        TextValidationBehavior validSelectorBehavior = new((string value) => ConfigService.IsValidSelector(value));
         contentEntry.Behaviors.Add(validSelectorBehavior);
         nextEntry.Behaviors.Add(validSelectorBehavior);
         prevEntry.Behaviors.Add(validSelectorBehavior);
@@ -82,9 +82,9 @@ public partial class ConfigDetailPage : ContentPage
     private async void okButton_Clicked(object sender, EventArgs e)
     {
         if (!domainValidationRegex.IsMatch(domainEntry.Text) ||
-            !PathService.IsValidSelector(contentEntry.Text) ||
-            !PathService.IsValidSelector(nextEntry.Text)    ||
-            !PathService.IsValidSelector(prevEntry.Text))
+            !ConfigService.IsValidSelector(contentEntry.Text) ||
+            !ConfigService.IsValidSelector(nextEntry.Text)    ||
+            !ConfigService.IsValidSelector(prevEntry.Text))
         {
             return;
         }

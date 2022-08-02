@@ -1,6 +1,5 @@
 ﻿using HtmlAgilityPack;
 using HtmlAgilityPack.CssSelectors.NetCore;
-using Java.Security.Cert;
 using Microsoft.Maui.Controls;
 using Spindler.Models;
 using System.Text.RegularExpressions;
@@ -13,7 +12,7 @@ namespace Spindler.Services;
 public class WebService
 {
     #region Class Attributes
-    private PathService pathService;
+    private ConfigService pathService;
     private Config config;
     #endregion
     #region Public-Facing APIs
@@ -32,7 +31,7 @@ public class WebService
     {
         this.config = config;
         if (pathService == null)
-            pathService = new PathService(config);
+            pathService = new ConfigService(config);
     }
     /// <summary>
     /// Preload the next and previous urls with valid values into LoadedData
@@ -132,8 +131,8 @@ public class WebService
         LoadedData data = new()
         {
             text = await text,
-            nextUrl = PathService.PrettyWrapSelector(doc, pathService.nextpath, type: PathService.SelectorType.Link),
-            prevUrl = PathService.PrettyWrapSelector(doc, pathService.previouspath, type: PathService.SelectorType.Link),
+            nextUrl = ConfigService.PrettyWrapSelector(doc, pathService.nextpath, type: ConfigService.SelectorType.Link),
+            prevUrl = ConfigService.PrettyWrapSelector(doc, pathService.previouspath, type: ConfigService.SelectorType.Link),
             title = pathService.GetTitle(doc),
             config = config,
             currentUrl = new Uri(client.BaseAddress, url).ToString()

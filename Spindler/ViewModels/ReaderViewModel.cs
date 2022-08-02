@@ -106,7 +106,6 @@ namespace Spindler.ViewModels
 #nullable enable
         public ReaderViewModel()
         {
-            webService = new WebService();
             #region Command Implementations
             PrevClickHandler = new Command(async () =>
             {
