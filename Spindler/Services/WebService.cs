@@ -89,6 +89,26 @@ public class WebService
         bool created = Uri.TryCreate(url, UriKind.RelativeOrAbsolute, out uriResult);
         return created && (url.StartsWith("http") || url.StartsWith('/'));
     }
+
+    public static async Task<Config> FindValidConfig(string url)
+    {
+        Config c = await App.Database.GetConfigByDomainNameAsync(new UriBuilder(url).Host);
+        if (c != null) return c;
+        var html = await new HttpClient().GetStringAsync(url);
+
+        HtmlDocument doc = new();
+        doc.LoadHtml(html);
+        Config selectedConfig = null;
+        Parallel.ForEach(await App.Database.GetAllItemsAsync<GeneralizedConfig>(), (GeneralizedConfig config, ParallelLoopState state) =>
+        {
+            if (ConfigService.PrettyWrapSelector(doc, new Path(config.MatchPath), ConfigService.SelectorType.Text) != null)
+            {
+                selectedConfig = config;
+                state.Stop();
+            }
+        });
+        return selectedConfig;
+    }
     #endregion
 
     #region Client
@@ -128,6 +148,10 @@ public class WebService
 
         Task<string> text = Task.Run(() => { return pathService.GetContent(doc); });
 
+        if (pathService.IsNull)
+        {
+            return MakeError(url, "There is no available configuration for this url");
+        }
         LoadedData data = new()
         {
             text = await text,
@@ -140,5 +164,15 @@ public class WebService
 
         return data;
     }
+
+    private LoadedData MakeError(string currenturl, string message) => new()
+    {
+        text = message,
+        title = "An Error Has occurred",
+        prevUrl = null,
+        nextUrl = null,
+        currentUrl = currenturl,
+        config = config,
+    };
     #endregion
 }
