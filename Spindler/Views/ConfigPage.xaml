@@ -1,19 +1,21 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vms="clr-namespace:Spindler.ViewModels"
              xmlns:models="clr-namespace:Spindler.Models"
              x:Class="Spindler.ConfigPage"
              Title="Configurations">
 
+    <ContentPage.BindingContext>
+        <vms:ConfigViewModel/>
+    </ContentPage.BindingContext>
     <StackLayout Orientation="Vertical">
-        <Button HeightRequest="50" CornerRadius="0" Text="Add A Config +" FontSize="Large"  Clicked="addToolbarItem_Clicked"/>
+        <Button HeightRequest="50" CornerRadius="0" Text="Add A Config +" FontSize="Large"  Command="{Binding AddConfigCommand}"/>
         <CollectionView x:Name="list"
               Margin="5, 0"
               SelectionChanged="list_SelectionChanged"
-                    SelectionMode="Single">
-            <CollectionView.BindingContext>
-                <models:Config/>
-            </CollectionView.BindingContext>
+              SelectionMode="Single"
+              ItemsSource="{Binding configs}">
             <CollectionView.ItemTemplate>
                 <DataTemplate>
                     <ContentView Margin="0,5,0,5" Padding="5">
