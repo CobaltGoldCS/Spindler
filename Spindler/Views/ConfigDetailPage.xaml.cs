@@ -45,7 +45,7 @@ public partial class ConfigDetailPage : ContentPage
         }
         else
         {
-            config = await App.Database.GetConfigByIdAsync(id);
+            config = await App.Database.GetItemByIdAsync<Config>(id);
             okButton.Text = $"Modify {config.DomainName}";
             Title = $"Modify {config.DomainName}";
         }
@@ -75,7 +75,7 @@ public partial class ConfigDetailPage : ContentPage
     {
         if (ConfigurationId < 0)
             return;
-        await App.Database.DeleteItemAsync(await App.Database.GetConfigByIdAsync(ConfigurationId));
+        await App.Database.DeleteItemAsync(await App.Database.GetItemByIdAsync<Config>(ConfigurationId));
         await Shell.Current.GoToAsync("..");
     }
 

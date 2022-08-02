@@ -33,7 +33,7 @@ public partial class BookDetailPage : ContentPage
             Title = "Add a new Book";
             return;
         }
-        Book book = await App.Database.GetBookByIdAsync(bookId);
+        Book book = await App.Database.GetItemByIdAsync<Book>(bookId);
         okButton.Text = $"Modify {book.Title}";
         Title = $"Modify {book.Title}";
         BindingContext = book;
@@ -73,7 +73,7 @@ public partial class BookDetailPage : ContentPage
     {
         if (_bookId > 0)
         {
-            await App.Database.DeleteItemAsync(await App.Database.GetBookByIdAsync(_bookId));
+            await App.Database.DeleteItemAsync(await App.Database.GetItemByIdAsync<Book>(_bookId));
         }
         await Close();
     }

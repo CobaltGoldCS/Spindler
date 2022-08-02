@@ -14,7 +14,7 @@ public class DataService
                 SQLiteOpenFlags.Create |
                 SQLiteOpenFlags.SharedCache
             );
-        database.CreateTablesAsync<BookList, Book, Config>().Wait();
+        database.CreateTablesAsync(createFlags: CreateFlags.None, typeof(Book), typeof(BookList), typeof(Config), typeof(GeneralizedConfig)).Wait();
     }
 
     #region Generic functions for database
@@ -34,6 +34,9 @@ public class DataService
 
     public async Task<int> DeleteItemAsync<T>(T item) where T : IIndexedModel, new()
         => await database.DeleteAsync(item);
+
+    public async Task<T> GetItemByIdAsync<T>(int id) where T : IIndexedModel, new()
+        => await database.FindAsync<T>(id);
     #endregion
 
     #region BOOKLISTS Unique Methods
@@ -58,9 +61,6 @@ public class DataService
         await Task.WhenAll(tasks);
         return tasks.Count - 1;
     }
-
-    public async Task<BookList> GetBooklistByIdAsync(int id)
-        => await database.Table<BookList>().Where((item) => item.Id == id).FirstOrDefaultAsync();
     #endregion
 
     #region BOOKS Unique Methods
@@ -68,9 +68,6 @@ public class DataService
         => await database.Table<Book>()
             .Where((item) => item.BookListId == id)
             .OrderByDescending((book) => book.LastViewed).ToListAsync();
-
-    public async Task<Book> GetBookByIdAsync(int id)
-        => await database.Table<Book>().Where((item) => item.Id == id).FirstOrDefaultAsync();
     #endregion
 
     #region CONFIGS Unique Methods
@@ -78,8 +75,6 @@ public class DataService
         => await database.Table<Config>()
         .Where((item) => item.DomainName == domain.Replace("www.", ""))
         .FirstOrDefaultAsync();
-    public async Task<Config> GetConfigByIdAsync(int id)
-        => await database.Table<Config>().Where((item) => item.Id == id).FirstOrDefaultAsync();
     #endregion
 }
 
