@@ -2,17 +2,17 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:models="clr-namespace:Spindler.Models"
-             x:Class="Spindler.ConfigPage"
+             x:Class="Spindler.Views.GeneralizedConfigPage"
              Title="Configurations">
 
     <StackLayout Orientation="Vertical">
         <Button HeightRequest="50" CornerRadius="0" Text="Add A Config +" FontSize="Large"  Clicked="addToolbarItem_Clicked"/>
         <CollectionView x:Name="list"
               Margin="5, 0"
-              SelectionChanged="list_SelectionChanged"
-                    SelectionMode="Single">
+              SelectionMode="Single"
+              SelectionChanged="list_SelectionChanged">
             <CollectionView.BindingContext>
-                <models:Config/>
+                <models:GeneralizedConfig/>
             </CollectionView.BindingContext>
             <CollectionView.ItemTemplate>
                 <DataTemplate>

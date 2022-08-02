@@ -4,6 +4,7 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:local="clr-namespace:Spindler"
+    xmlns:views="clr-namespace:Spindler.Views"
     Shell.FlyoutBehavior="Disabled">
 
     <TabBar>
@@ -15,9 +16,13 @@
         </Tab>
         <Tab Title="Configs">
             <ShellContent
-                Title="Configurations"
+                Title="Website Configs"
                 ContentTemplate="{DataTemplate local:ConfigPage}"
                 Route="Config" />
+            <ShellContent
+                Title="General Configs"
+                ContentTemplate="{DataTemplate views:GeneralizedConfigPage}"
+                Route="GeneralConfig" />
         </Tab>
         <Tab Title="Settings">
             <ShellContent
