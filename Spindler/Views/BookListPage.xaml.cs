@@ -16,6 +16,11 @@ public partial class BookListPage : ContentPage
         base.OnAppearing();
         // Attach booklists to the main list
         list.ItemsSource = await App.Database.GetBookListsAsync();
+        PermissionStatus status = await Permissions.CheckStatusAsync<Permissions.NetworkState>();
+        if (status != PermissionStatus.Granted)
+        {
+            await Permissions.RequestAsync<Permissions.NetworkState>();
+        }
     }
 
     #region Click Handlers
