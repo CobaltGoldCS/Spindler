@@ -68,8 +68,20 @@ public class WebService
         {
             url = FormatRelativeUrlProperly(url);
 
-            var html = await client.GetStringAsync(url);
-            return await LoadHTML(url, html);
+            var html = await HtmlOrError(url);
+            if (html.result is Request<string>.Result.Failure)
+            {
+                return new()
+                {
+                    text = html.errorMessage,
+                    title = "An unexpected Error has occurred",
+                    nextUrl = null,
+                    prevUrl = null,
+                    config = config,
+                    currentUrl = url,
+                };
+            }
+            return await LoadHTML(url, html.value);
         }
         catch (HttpRequestException e)
         {
@@ -93,21 +105,28 @@ public class WebService
     public static async Task<Config> FindValidConfig(string url)
     {
         Config c = await App.Database.GetConfigByDomainNameAsync(new UriBuilder(url).Host);
+        
         if (c != null) return c;
-        var html = await new HttpClient().GetStringAsync(url);
-
-        HtmlDocument doc = new();
-        doc.LoadHtml(html);
-        Config selectedConfig = null;
-        Parallel.ForEach(await App.Database.GetAllItemsAsync<GeneralizedConfig>(), (GeneralizedConfig config, ParallelLoopState state) =>
+        try
         {
-            if (ConfigService.PrettyWrapSelector(doc, new Path(config.MatchPath), ConfigService.SelectorType.Text) != null)
+            var html = await new HttpClient().GetStringAsync(url);
+            HtmlDocument doc = new();
+            doc.LoadHtml(html);
+            Config selectedConfig = null;
+            Parallel.ForEach(await App.Database.GetAllItemsAsync<GeneralizedConfig>(), (GeneralizedConfig config, ParallelLoopState state) =>
             {
-                selectedConfig = config;
-                state.Stop();
-            }
-        });
-        return selectedConfig;
+                if (ConfigService.PrettyWrapSelector(doc, new Path(config.MatchPath), ConfigService.SelectorType.Text) != null)
+                {
+                    selectedConfig = config;
+                    state.Stop();
+                }
+            });
+            return selectedConfig;
+        }
+        catch(IOException)
+        {
+            return null;
+        }
     }
     #endregion
 
@@ -127,6 +146,43 @@ public class WebService
     #endregion
 
     #region HelperFunctions
+    public class Request<T>
+    {
+        public Result result;
+        public T value;
+        public string errorMessage;
+        public enum Result
+        {
+            Success,
+            Failure,
+        }
+
+        public static Request<T> BuildError(string errormessage)
+        {
+            return new(default, errormessage, Result.Failure);
+        }
+        public static Request<T> BuildSuccess(T value)
+        {
+            return new(value, default, Result.Success);
+        }
+        private Request(T value, string errormessage, Result result)
+        {
+            this.value = value;
+            this.errorMessage = errormessage;
+            this.result = result;
+        }
+    }
+    private async Task<Request<string>> HtmlOrError(string url)
+    {
+        try
+        {
+            return Request<string>.BuildSuccess(await client.GetStringAsync(url));
+        }
+        catch (IOException e)
+        {
+            return Request<string>.BuildError($"Invalid request: {e}");
+        }
+    }
     private static string FormatRelativeUrlProperly(string url)
     {
         // Ridiculous workaround because HttpClient class doesn't know how to deal with 'improperly' formatted relative urls
