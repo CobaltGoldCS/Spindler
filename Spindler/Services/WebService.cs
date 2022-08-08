@@ -180,7 +180,15 @@ public class WebService
         }
         catch (IOException e)
         {
-            return Request<string>.BuildError($"Invalid request: {e}");
+            return Request<string>.BuildError($"Invalid request format: {e}");
+        }
+        catch (InvalidOperationException e)
+        {
+            return Request<string>.BuildError($"Invalid Operation: {e}");
+        }
+        catch (TaskCanceledException e)
+        {
+            return Request<string>.BuildError($"Task Cancelled: {e}");
         }
     }
     private static string FormatRelativeUrlProperly(string url)
