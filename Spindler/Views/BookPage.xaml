@@ -2,7 +2,7 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:models="clr-namespace:Spindler.Models"
-             
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
              x:Class="Spindler.BookPage"
              Title="{Binding Name}">
     <ContentPage.BindingContext>
@@ -10,9 +10,10 @@
     </ContentPage.BindingContext>
 
     <ContentPage.ToolbarItems>
-        <ToolbarItem StyleClass="Plus" Order="Primary" Priority="0"
+        <ToolbarItem Order="Primary" Priority="0"
                      x:Name="addToolbarItem"
-                 Clicked="addToolbarItem_Clicked"/>
+                 Clicked="addToolbarItem_Clicked">
+        </ToolbarItem>
     </ContentPage.ToolbarItems>
     
     <CollectionView x:Name="BooksList"
@@ -37,8 +38,12 @@
                         <Label   HeightRequest="30"
                         VerticalTextAlignment="Center" FontSize="Medium" x:Name="TitleLabel" Text="{Binding Title}"/>
                         <Label x:Name="UrlLabel" Text="{Binding Url}" FontSize="Small" Grid.Row="1"/>
-                        <ImageButton  StyleClass="Kebab" HorizontalOptions="EndAndExpand" VerticalOptions="FillAndExpand" Grid.Column="1" Grid.RowSpan="2"
-                        Padding="0,3,5,3" WidthRequest="20" Aspect="AspectFill" x:Name="ConfigButton" Pressed="ConfigButtonPressed" BindingContext="{Binding Id}" />
+                        <ImageButton HorizontalOptions="EndAndExpand" VerticalOptions="FillAndExpand" Grid.Column="1" Grid.RowSpan="2"
+                        Padding="0,3,5,3" WidthRequest="20" Aspect="AspectFill" x:Name="ConfigButton" Pressed="ConfigButtonPressed" BindingContext="{Binding Id}">
+                            <ImageButton.Behaviors>
+                                <toolkit:IconTintColorBehavior TintColor="{AppThemeBinding Dark={StaticResource White}, Light={StaticResource SpaceCadet}}"/>
+                            </ImageButton.Behaviors>
+                        </ImageButton>
                     </Grid>
                 </ContentView>
             </DataTemplate>

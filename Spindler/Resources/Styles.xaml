@@ -66,14 +66,6 @@
         <Setter Property="IconImageSource" Value="{AppThemeBinding Light='kebab.svg', Dark='kebab_light.svg'}"/>
     </Style>
 
-    <Style Class="Plus" TargetType="ImageButton">
-        <Setter Property="Source" Value="{AppThemeBinding Light='plus.svg', Dark='plus_light.svg'}"/>
-    </Style>
-
-    <Style Class="Kebab" TargetType="ImageButton">
-        <Setter Property="Source" Value="{AppThemeBinding Light='kebab.svg', Dark='kebab_light.svg'}"/>
-    </Style>
-
 
     <Style TargetType="Border">
         <Setter Property="Stroke" Value="{AppThemeBinding Light={StaticResource LightGray}, Dark={StaticResource DarkGray}}" />
