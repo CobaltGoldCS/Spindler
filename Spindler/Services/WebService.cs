@@ -183,15 +183,14 @@ public class WebService
 
     private async Task<LoadedData> LoadHTML(string url, string html)
     {
-        HtmlDocument doc = new();
-        doc.LoadHtml(html);
-
-        Task<string> text = Task.Run(() => { return pathService.GetContent(doc); });
-
         if (pathService.IsNull)
         {
             return MakeError(url, "There is no available configuration for this url");
         }
+        HtmlDocument doc = new();
+        doc.LoadHtml(html);
+
+        Task<string> text = Task.Run(() => { return pathService.GetContent(doc); });
         LoadedData data = new()
         {
             text = await text,
