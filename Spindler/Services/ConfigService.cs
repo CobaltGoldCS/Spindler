@@ -154,7 +154,7 @@ namespace Spindler.Services
             StringWriter stringWriter = new();
             foreach (HtmlNode child in node.ChildNodes)
             {
-                if (child.OriginalName == "br")
+                if (child.OriginalName == "br" && child.NextSibling.OriginalName != "br")
                 {
                     stringWriter.Write("\n");
                     continue;
