@@ -1,10 +1,6 @@
 ﻿using HtmlAgilityPack;
-using HtmlAgilityPack.CssSelectors.NetCore;
-using Microsoft.Maui.Controls;
 using Spindler.Models;
-using System.Text.RegularExpressions;
-using System.Web;
-using System.Xml.XPath;
+using Spindler.Utils;
 using Path = Spindler.Models.Path;
 
 namespace Spindler.Services;
@@ -146,28 +142,6 @@ public class WebService
     #endregion
 
     #region HelperFunctions
-    public class ErrorOr<T>
-    {
-        public class Error : ErrorOr<T>
-        {
-            public string message;
-            public Error(string message)
-            {
-                this.message = message;
-            }
-        }
-        public class Success : ErrorOr<T>
-        {
-            public T value;
-            public Success(T value)
-            {
-                this.value = value;
-            }
-        }
-        private ErrorOr() 
-        { 
-        }
-    }
 
     private async Task<ErrorOr<string>> HtmlOrError(string url)
     {
