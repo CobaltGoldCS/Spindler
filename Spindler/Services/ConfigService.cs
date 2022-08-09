@@ -50,6 +50,7 @@ namespace Spindler.Services
         /// <returns>If the selector is valid or not</returns>
         public static bool IsValidSelector(string path)
         {
+            if (path == null) return false;
             HtmlDocument nav = new HtmlDocument();
             var temppath = new Path(path);
             try
