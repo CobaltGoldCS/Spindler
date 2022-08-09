@@ -11,10 +11,10 @@ namespace Spindler.Services
     public class ConfigService
     {
         
-        public Path titlepath;
-        public Path contentpath;
-        public Path nextpath;
-        public Path previouspath;
+        public Path titlepath = null;
+        public Path contentpath = null;
+        public Path nextpath = null;
+        public Path previouspath = null;
 
         public bool IsNull = false;
 
