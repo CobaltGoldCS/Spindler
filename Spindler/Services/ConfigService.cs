@@ -119,7 +119,7 @@ namespace Spindler.Services
                 HtmlNode node = nav.QuerySelector(cleanpath);
                 if (modifier == "text")
                 {
-                    return node.InnerText;
+                    return node?.InnerText;
                 }
                 return node?.GetAttributeValue(modifier, null);
             }
