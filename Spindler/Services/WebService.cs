@@ -67,15 +67,7 @@ public class WebService
             ErrorOr<string> html = await HtmlOrError(url);
             if (html is ErrorOr<string>.Error error)
             {
-                return new()
-                {
-                    text = error.message,
-                    title = "An unexpected Error has occurred",
-                    nextUrl = null,
-                    prevUrl = null,
-                    config = config,
-                    currentUrl = url,
-                };
+                return MakeError(url, error.message);
             }
             return await LoadHTML(url, ((ErrorOr<string>.Success)html).value);
         }
@@ -183,10 +175,7 @@ public class WebService
 
     private async Task<LoadedData> LoadHTML(string url, string html)
     {
-        if (pathService.IsNull)
-        {
-            return MakeError(url, "There is no available configuration for this url");
-        }
+
         HtmlDocument doc = new();
         doc.LoadHtml(html);
 
