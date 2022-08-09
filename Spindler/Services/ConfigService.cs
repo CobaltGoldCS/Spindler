@@ -66,7 +66,8 @@ namespace Spindler.Services
             e is XPathException ||
             e is ArgumentException ||
             e is ArgumentNullException ||
-            e is InvalidOperationException)
+            e is InvalidOperationException ||
+            e is NotSupportedException)
             {
                 return false;
             }
