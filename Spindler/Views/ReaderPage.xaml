@@ -15,7 +15,7 @@
         <ToolbarItem Command="{Binding BookmarkCommand}" x:Name="BookmarkItem"/>
     </ContentPage.ToolbarItems>
     <ScrollView x:Name="ReadingLayout" Orientation="Vertical" IsEnabled="True" >
-        <Grid VerticalOptions="FillAndExpand" RowDefinitions="auto, auto, *, auto">
+        <Grid x:Name="Scroller" VerticalOptions="FillAndExpand" RowDefinitions="auto, auto, *, auto">
             <Label x:Name="TitleView" Text="{Binding Title}" FontSize="Title" Padding="5,0,5,20"/>
             <Button x:Name="PrevButton" IsVisible="{Binding PrevButtonIsVisible}" Grid.Row="1" Text="Previous" Command="{Binding PrevClickHandler}" FontSize="Large" HorizontalOptions="FillAndExpand"/>
             <Label  x:Name="ContentView" Grid.Row="2"

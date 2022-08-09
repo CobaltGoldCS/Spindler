@@ -115,6 +115,7 @@ namespace Spindler.ViewModels
                 {
                     loadedData = prevdata;
                     DataChanged();
+                    await ReadingLayout.ScrollToAsync(ReadingLayout.ScrollX, 0, false);
                 }
             });
             NextClickHandler = new Command(async () =>
@@ -124,6 +125,7 @@ namespace Spindler.ViewModels
                 {
                     loadedData = nextdata;
                     DataChanged();
+                    await ReadingLayout.ScrollToAsync(ReadingLayout.ScrollX, 0, false);
                 }
             });
             BookmarkCommand = new Command(async () =>
@@ -148,13 +150,15 @@ namespace Spindler.ViewModels
             if (FailIfNull(data, "Invalid Url")) return;
             LoadedData = data;
             DataChanged();
-            await ReadingLayout.ScrollToAsync(ReadingLayout.ScrollX, CurrentBook.Position, true);
+            await DelayScroll();
         }
 #nullable disable
 
         private ScrollView ReadingLayout;
-        public void AttachReferencesToUI(ScrollView readingLayout)
+        private Button PrevButton;
+        public void AttachReferencesToUI(ScrollView readingLayout, Button prevButton)
         {
+            PrevButton = prevButton;
             ReadingLayout = readingLayout;
         }
         #endregion
@@ -181,7 +185,6 @@ namespace Spindler.ViewModels
 
             PreloadDataTask = webService.LoadData(LoadedData.prevUrl, LoadedData.nextUrl);
             ScrollWorkaround();
-            await ReadingLayout.ScrollToAsync(ReadingLayout.ScrollX, 0, false);
         }
 
         private void ScrollWorkaround()
@@ -191,6 +194,19 @@ namespace Spindler.ViewModels
             ReadingLayout.Content = content;
         }
 
+        private async Task DelayScroll()
+        {
+            await Task.Run(async () =>
+            {
+                await Task.Delay(100);
+                double buttonheight = PrevButton.IsVisible ? PrevButton.Height : 0;
+                MainThread.BeginInvokeOnMainThread(async () =>
+                {
+                    await ReadingLayout.ScrollToAsync(ReadingLayout.ScrollX, Math.Clamp(CurrentBook.Position, 0d, 1d) * (ReadingLayout.ContentSize.Height - buttonheight), true);
+                });
+                
+            });
+        }
         #region Error Handlers
 #nullable enable
         /// <summary>
