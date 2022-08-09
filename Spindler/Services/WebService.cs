@@ -68,12 +68,12 @@ public class WebService
         {
             url = FormatRelativeUrlProperly(url);
 
-            var html = await HtmlOrError(url);
-            if (html.result is Request<string>.Result.Failure)
+            ErrorOr<string> html = await HtmlOrError(url);
+            if (html is ErrorOr<string>.Error error)
             {
                 return new()
                 {
-                    text = html.errorMessage,
+                    text = error.message,
                     title = "An unexpected Error has occurred",
                     nextUrl = null,
                     prevUrl = null,
@@ -81,7 +81,7 @@ public class WebService
                     currentUrl = url,
                 };
             }
-            return await LoadHTML(url, html.value);
+            return await LoadHTML(url, ((ErrorOr<string>.Success)html).value);
         }
         catch (HttpRequestException e)
         {
@@ -146,49 +146,46 @@ public class WebService
     #endregion
 
     #region HelperFunctions
-    public class Request<T>
+    public class ErrorOr<T>
     {
-        public Result result;
-        public T value;
-        public string errorMessage;
-        public enum Result
+        public class Error : ErrorOr<T>
         {
-            Success,
-            Failure,
+            public string message;
+            public Error(string message)
+            {
+                this.message = message;
+            }
         }
-
-        public static Request<T> BuildError(string errormessage)
+        public class Success : ErrorOr<T>
         {
-            return new(default, errormessage, Result.Failure);
+            public T value;
+            public Success(T value)
+            {
+                this.value = value;
+            }
         }
-        public static Request<T> BuildSuccess(T value)
-        {
-            return new(value, default, Result.Success);
-        }
-        private Request(T value, string errormessage, Result result)
-        {
-            this.value = value;
-            this.errorMessage = errormessage;
-            this.result = result;
+        private ErrorOr() 
+        { 
         }
     }
-    private async Task<Request<string>> HtmlOrError(string url)
+
+    private async Task<ErrorOr<string>> HtmlOrError(string url)
     {
         try
         {
-            return Request<string>.BuildSuccess(await client.GetStringAsync(url));
+            return new ErrorOr<string>.Success(await client.GetStringAsync(url));
         }
         catch (IOException e)
         {
-            return Request<string>.BuildError($"Invalid request format: {e}");
+            return new ErrorOr<string>.Error($"Invalid request format: {e}");
         }
         catch (InvalidOperationException e)
         {
-            return Request<string>.BuildError($"Invalid Operation: {e}");
+            return new ErrorOr<string>.Error($"Invalid Operation: {e}");
         }
         catch (TaskCanceledException e)
         {
-            return Request<string>.BuildError($"Task Cancelled: {e}");
+            return new ErrorOr<string>.Error($"Task Cancelled: {e}");
         }
     }
     private static string FormatRelativeUrlProperly(string url)
