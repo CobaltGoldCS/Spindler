@@ -8,7 +8,7 @@ namespace Spindler.Services;
 public class WebService
 {
     #region Class Attributes
-    private ConfigService pathService;
+    private ConfigService configService;
     private Config config;
     #endregion
     #region Public-Facing APIs
@@ -20,8 +20,8 @@ public class WebService
     public void AttachConfig(Config config)
     {
         this.config = config;
-        if (pathService == null)
-            pathService = new ConfigService(config);
+        if (configService == null)
+            configService = new ConfigService(config);
     }
     /// <summary>
     /// Preload the next and previous urls with valid values into LoadedData
@@ -173,13 +173,13 @@ public class WebService
         HtmlDocument doc = new();
         doc.LoadHtml(html);
 
-        Task<string> text = Task.Run(() => { return pathService.GetContent(doc); });
+        Task<string> text = Task.Run(() => { return configService.GetContent(doc); });
         LoadedData data = new()
         {
             text = await text,
-            nextUrl = ConfigService.PrettyWrapSelector(doc, pathService.nextpath, type: ConfigService.SelectorType.Link),
-            prevUrl = ConfigService.PrettyWrapSelector(doc, pathService.previouspath, type: ConfigService.SelectorType.Link),
-            title = pathService.GetTitle(doc),
+            nextUrl = ConfigService.PrettyWrapSelector(doc, configService.nextpath, type: ConfigService.SelectorType.Link),
+            prevUrl = ConfigService.PrettyWrapSelector(doc, configService.previouspath, type: ConfigService.SelectorType.Link),
+            title = configService.GetTitle(doc),
             config = config,
             currentUrl = new Uri(client.BaseAddress, url).ToString()
         };
