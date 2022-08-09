@@ -100,6 +100,7 @@ namespace Spindler.ViewModels
         #region Command Definitions
         public ICommand NextClickHandler { get; private set; }
         public ICommand PrevClickHandler { get; private set; }
+        public ICommand BookmarkCommand  { get; private set; }
         #endregion
 
         #region Initialization Functions
@@ -124,6 +125,18 @@ namespace Spindler.ViewModels
                     loadedData = nextdata;
                     DataChanged();
                 }
+            });
+            BookmarkCommand = new Command(async () =>
+            {
+                await App.Database.SaveItemAsync<Book>(new()
+                {
+                    BookListId = CurrentBook.BookListId,
+                    Id = -1,
+                    Title = "Bookmark: " + loadedData.title,
+                    Url = loadedData.currentUrl,
+                    Position = ReadingLayout.ScrollY,
+                    LastViewed = DateTime.UtcNow,
+                });
             });
             #endregion
         }

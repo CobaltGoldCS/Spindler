@@ -40,7 +40,6 @@ public partial class ReaderPage : ContentPage
         ContentView.FontSize = Preferences.Default.Get("font_size", 15);
         TitleView.FontFamily = Preferences.Default.Get("font", "OpenSansRegular");
         Shell.Current.Navigating += OnShellNavigated;
-
     }
 
     // FIXME: This does not handle android back buttons
