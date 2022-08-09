@@ -12,12 +12,6 @@ public class WebService
     private Config config;
     #endregion
     #region Public-Facing APIs
-    /// <summary>
-    /// The constructor that should be used for WebService
-    /// </summary>
-    public WebService()
-    {
-    }
 
     public WebService(Config config)
     {
