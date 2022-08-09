@@ -35,10 +35,10 @@ public class WebService
     /// <param name="prevUrl">The previous url (will be loaded into index 0)</param>
     /// <param name="nextUrl">The next url (will be loaded into index 1)</param>
     /// <returns>A Task containing a LoadedData array of length 2 [prevdata, nextdata]</returns>
-    public async Task<LoadedData[]> PreloadData(string prevUrl, string nextUrl)
+    public async Task<LoadedData[]> LoadData(string prevUrl, string nextUrl)
     {
-        Task<LoadedData> prevTask = PreloadUrl(prevUrl);
-        Task<LoadedData> nextTask = PreloadUrl(nextUrl);
+        Task<LoadedData> prevTask = LoadUrl(prevUrl);
+        Task<LoadedData> nextTask = LoadUrl(nextUrl);
         var loaded = await Task.WhenAll(prevTask, nextTask);
         return loaded;
     }
@@ -48,7 +48,7 @@ public class WebService
     /// </summary>
     /// <param name="url">The url to obtain data from</param>
     /// <returns>A LoadedData task holding either a null LoadedData, or a LoadedData with valid values</returns>
-    public async Task<LoadedData> PreloadUrl(string url)
+    public async Task<LoadedData> LoadUrl(string url)
     {
         if (!IsUrl(url))
         {
@@ -62,7 +62,7 @@ public class WebService
         }
         try
         {
-            url = FormatRelativeUrlProperly(url);
+            url = TrimRelativeUrl(url);
 
             ErrorOr<string> html = await HtmlOrError(url);
             if (html is ErrorOr<string>.Error error)
@@ -162,7 +162,12 @@ public class WebService
             return new ErrorOr<string>.Error($"Task Cancelled: {e}");
         }
     }
-    private static string FormatRelativeUrlProperly(string url)
+    /// <summary>
+    /// Trims the leading '/' of a relative url if present for HttpClient
+    /// </summary>
+    /// <param name="url">The url to trim</param>
+    /// <returns>A trimmed url, or normal absolute url</returns>
+    private static string TrimRelativeUrl(string url)
     {
         // Ridiculous workaround because HttpClient class doesn't know how to deal with 'improperly' formatted relative urls
         Uri uri;
