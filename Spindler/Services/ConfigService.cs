@@ -168,7 +168,7 @@ namespace Spindler.Services
         /// Get title from <paramref name="nav"/>
         /// </summary>
         /// <param name="nav">The document to get the title from</param>
-        /// <returns>The title</returns>
+        /// <returns>A title determined by the titlepath</returns>
         public string GetTitle(HtmlDocument nav)
         {
             if (string.IsNullOrWhiteSpace(titlepath.path))
