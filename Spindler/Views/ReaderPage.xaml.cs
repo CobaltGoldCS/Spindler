@@ -27,7 +27,7 @@ public partial class ReaderPage : ContentPage
         BindingContext = new ReaderViewModel();
         ((ReaderViewModel)BindingContext).CurrentBook = currentBook;
         ((ReaderViewModel)BindingContext).Config = config;
-        ((ReaderViewModel)BindingContext).AttachReferencesToUI(ReadingLayout, PrevButton);
+        ((ReaderViewModel)BindingContext).AttachReferencesToUI(ReadingLayout, PrevButton.Height);
         await ((ReaderViewModel)BindingContext).StartLoad();
     }
     #endregion
@@ -48,8 +48,9 @@ public partial class ReaderPage : ContentPage
     {
         if (e.Current.Location.OriginalString == "//BookLists/BookPage/ReaderPage")
         {
-            double buttonheight = PrevButton.IsVisible ? PrevButton.Height : 0;
-            ((ReaderViewModel)BindingContext).CurrentBook.Position = ReadingLayout.ScrollY / (ReadingLayout.ContentSize.Height - buttonheight);
+            double prevbuttonheight = PrevButton.IsVisible ? PrevButton.Height : 0;
+            double nextbuttonheight = NextButton.IsVisible ? PrevButton.Height : 0;
+            ((ReaderViewModel)BindingContext).CurrentBook.Position = ReadingLayout.ScrollY / (ReadingLayout.ContentSize.Height - (prevbuttonheight + nextbuttonheight));
 
             await App.Database.SaveItemAsync(((ReaderViewModel)BindingContext).CurrentBook);
         }

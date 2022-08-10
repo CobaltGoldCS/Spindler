@@ -130,13 +130,15 @@ namespace Spindler.ViewModels
             });
             BookmarkCommand = new Command(async () =>
             {
+                double prevbuttonheight = PrevButtonIsVisible ? ButtonHeight : 0;
+                double nextbuttonheight = NextButtonIsVisible ? ButtonHeight : 0;
                 await App.Database.SaveItemAsync<Book>(new()
                 {
                     BookListId = CurrentBook.BookListId,
                     Id = -1,
                     Title = "Bookmark: " + loadedData.title,
                     Url = loadedData.currentUrl,
-                    Position = ReadingLayout.ScrollY,
+                    Position = ReadingLayout.ScrollY / (ReadingLayout.ContentSize.Height - (prevbuttonheight + nextbuttonheight)),
                     LastViewed = DateTime.UtcNow,
                 });
             });
@@ -155,10 +157,10 @@ namespace Spindler.ViewModels
 #nullable disable
 
         private ScrollView ReadingLayout;
-        private Button PrevButton;
-        public void AttachReferencesToUI(ScrollView readingLayout, Button prevButton)
+        public double ButtonHeight { get; set; }
+        public void AttachReferencesToUI(ScrollView readingLayout, double buttonheight)
         {
-            PrevButton = prevButton;
+            ButtonHeight = buttonheight;
             ReadingLayout = readingLayout;
         }
         #endregion
@@ -198,11 +200,12 @@ namespace Spindler.ViewModels
         {
             await Task.Run(async () =>
             {
+                double prevbuttonheight = PrevButtonIsVisible ? ButtonHeight : 0;
+                double nextbuttonheight = NextButtonIsVisible ? ButtonHeight : 0;
                 await Task.Delay(100);
-                double buttonheight = PrevButton.IsVisible ? PrevButton.Height : 0;
                 MainThread.BeginInvokeOnMainThread(async () =>
                 {
-                    await ReadingLayout.ScrollToAsync(ReadingLayout.ScrollX, Math.Clamp(CurrentBook.Position, 0d, 1d) * (ReadingLayout.ContentSize.Height - buttonheight), true);
+                    await ReadingLayout.ScrollToAsync(ReadingLayout.ScrollX, Math.Clamp(CurrentBook.Position, 0d, 1d) * (ReadingLayout.ContentSize.Height - (prevbuttonheight + nextbuttonheight)), true);
                 });
                 
             });
