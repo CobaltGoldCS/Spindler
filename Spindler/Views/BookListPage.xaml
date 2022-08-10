@@ -2,14 +2,29 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:models="clr-namespace:Spindler.Models"
-             x:Class="Spindler.BookListPage"
-             Title="Book Lists">
-    
-    <ContentPage.ToolbarItems>
-        <ToolbarItem StyleClass="Plus" Order="Primary" Priority="0"
-                     x:Name="addToolbarItem"
-                 Clicked="addToolbarItem_Clicked"/>
-    </ContentPage.ToolbarItems>
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             x:Class="Spindler.BookListPage" BackgroundColor="{AppThemeBinding Dark={StaticResource SpaceCadet}, Light={StaticResource White}}">
+
+    <Shell.TitleView>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+
+            <Label Text="Book Lists" Grid.Column="0" FontSize="Large" VerticalOptions="Center" HorizontalOptions="FillAndExpand"/>
+            <StackLayout Grid.Column="1" HorizontalOptions="EndAndExpand" Orientation="Horizontal" VerticalOptions="Center" Margin="0,0,10,0">
+                <ImageButton HeightRequest="25"
+                             WidthRequest="25"
+                             Source="plus.svg"
+                             Clicked="addToolbarItem_Clicked">
+                    <ImageButton.Behaviors>
+                        <toolkit:IconTintColorBehavior TintColor="{AppThemeBinding Dark={StaticResource White}, Light={StaticResource Black}}"/>
+                    </ImageButton.Behaviors>
+                </ImageButton>
+            </StackLayout>
+        </Grid>
+    </Shell.TitleView>
 
     <CollectionView x:Name="list"
               Margin="5, 0"
@@ -34,8 +49,12 @@
                         <Image x:Name="backgroundImage" Source="{Binding ImageUrl}" MaximumHeightRequest="25" MaximumWidthRequest="25" Aspect="AspectFit" Margin="10,0,0,0"/>
                         <Label  HorizontalTextAlignment="Center" Grid.Column="1" Margin="10,0,0,0"
                             VerticalTextAlignment="Center" FontSize="Large" x:Name="TitleLabel" Text="{Binding Name}"/>
-                        <ImageButton  StyleClass="Kebab" WidthRequest="20" Aspect="AspectFill" VerticalOptions="FillAndExpand" HorizontalOptions="EndAndExpand" Grid.Column="2"
-                                  Padding ="0,3,5,3" x:Name="ConfigButton" Pressed="ConfigButtonPressed" BindingContext="{Binding Id}" />
+                        <ImageButton  Source="kebab.svg" WidthRequest="20" Aspect="AspectFill" VerticalOptions="FillAndExpand" HorizontalOptions="EndAndExpand" Grid.Column="2"
+                                  Padding ="0,3,5,3" x:Name="ConfigButton" Pressed="ConfigButtonPressed" BindingContext="{Binding Id}">
+                            <ImageButton.Behaviors>
+                                <toolkit:IconTintColorBehavior TintColor="{AppThemeBinding Dark={StaticResource White}, Light={StaticResource SpaceCadet}}"/>
+                            </ImageButton.Behaviors>
+                        </ImageButton>
                     </Grid>
                 </ContentView>
             </DataTemplate>
