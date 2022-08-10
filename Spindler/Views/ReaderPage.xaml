@@ -12,7 +12,7 @@
     </ContentPage.BindingContext>
 
     <ContentPage.ToolbarItems>
-        <ToolbarItem Command="{Binding BookmarkCommand}" x:Name="BookmarkItem"/>
+        <ToolbarItem Command="{Binding BookmarkCommand}" x:Name="BookmarkItem" IconImageSource="bookmark.svg"/>
     </ContentPage.ToolbarItems>
     <ScrollView x:Name="ReadingLayout" Orientation="Vertical" IsEnabled="True" >
         <Grid x:Name="Scroller" VerticalOptions="FillAndExpand" RowDefinitions="auto, auto, *, auto">

@@ -103,6 +103,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <None Remove="Resources\Images\bookmark.svg" />
 	  <None Remove="Resources\Images\kebab.svg" />
 	</ItemGroup>
 
