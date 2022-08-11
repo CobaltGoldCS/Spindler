@@ -18,8 +18,15 @@
                 this.value = value;
             }
         }
-
+        /// <summary>
+        /// Will attempt to cast ErrorOr to Ok value
+        /// </summary>
+        /// <returns>ErrorOr.Ok or fails with default typecast exception</returns>
         public Ok AsOk() => this as Ok;
+        /// <summary>
+        /// Will attempt to cast ErrorOr to Error value
+        /// </summary>
+        /// <returns>ErrorOr.Error or fails with default typecast exception</returns>
         public Error AsError() => this as Error;
     }
     public class ErrorOr
