@@ -59,11 +59,11 @@ public class WebService
             url = TrimRelativeUrl(url);
 
             ErrorOr<string> html = await HtmlOrError(url);
-            if (html is ErrorOr<string>.Error error)
+            if (ErrorOr.IsError(ref html))
             {
-                return MakeError(url, error.message);
+                return MakeError(url, html.AsError().message);
             }
-            return await LoadHTML(url, ((ErrorOr<string>.Success)html).value);
+            return await LoadHTML(url, html.AsOk().value);
         }
         catch (HttpRequestException e)
         {
@@ -133,7 +133,7 @@ public class WebService
     {
         try
         {
-            return new ErrorOr<string>.Success(await client.GetStringAsync(url));
+            return new ErrorOr<string>.Ok(await client.GetStringAsync(url));
         }
         catch (IOException e)
         {
