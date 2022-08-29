@@ -1,5 +1,5 @@
-﻿using SQLite;
-
+﻿using Newtonsoft.Json;
+using SQLite;
 
 namespace Spindler.Models;
 
@@ -48,7 +48,21 @@ public class Config : IIndexedModel
     /// </summary>
     public string PathType { get => _pathType; private set => _pathType = value; }
 
+    /// <summary>
+    /// The extra configs in string form. Use <see ref="ExtraConfigs"/> instead
+    /// </summary>
+    public string ExtraConfigsBlobbed { get; set; }
 
+
+    [Ignore]
+    public Dictionary<string, object> ExtraConfigs 
+    {
+        get => JsonConvert.DeserializeObject<Dictionary<string, object>>(ExtraConfigsBlobbed); 
+        set
+        {
+            ExtraConfigsBlobbed = JsonConvert.SerializeObject(value);
+        }
+    }
     public void SetPathType(string pathType)
     {
         PathType = pathType;
