@@ -53,7 +53,9 @@ public class Config : IIndexedModel
     /// </summary>
     public string ExtraConfigsBlobbed { get; set; }
 
-
+    /// <summary>
+    /// A dictionary containing extra configuration settings
+    /// </summary>
     [Ignore]
     public Dictionary<string, object> ExtraConfigs 
     {
