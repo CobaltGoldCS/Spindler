@@ -1,6 +1,7 @@
 ﻿using HtmlAgilityPack;
 using HtmlAgilityPack.CssSelectors.NetCore;
 using Spindler.Models;
+using Spindler.Utils;
 using System.Text.RegularExpressions;
 using System.Web;
 using System.Xml.XPath;
@@ -15,6 +16,7 @@ namespace Spindler.Services
         public Path contentpath = null;
         public Path nextpath = null;
         public Path previouspath = null;
+        public Dictionary<string, object> extraconfigs = default;
 
         public bool IsNull = false;
 
@@ -29,6 +31,7 @@ namespace Spindler.Services
             contentpath = new Path(config.ContentPath);
             nextpath = new Path(config.NextUrlPath);
             previouspath = new Path(config.PrevUrlPath);
+            extraconfigs = config.ExtraConfigs;
         }
 
         public enum SelectorType
@@ -87,10 +90,10 @@ namespace Spindler.Services
             try
             {
                 string value = path.type switch
-                {
+                {region
                     Path.Type.XPath => nav.DocumentNode.SelectSingleNode(path.path)?.CreateNavigator().Value,
                     Path.Type.Css => CssElementHandler(nav, path.path, type),
-                    _ => throw new NotImplementedException("This type is not implemented"),
+                    _ => throw new NotImplementedException("This type is not implemented (PrettyWrapSelector)"),
                 };
                 return HttpUtility.HtmlDecode(value);
             }
@@ -127,7 +130,7 @@ namespace Spindler.Services
             {
                 SelectorType.Text => nav.QuerySelector(path)?.CreateNavigator().Value,
                 SelectorType.Link => nav.QuerySelector(path)?.GetAttributeValue("href", null),
-                _ => throw new NotImplementedException($"This type: {type} is not implemented"),
+                _ => throw new NotImplementedException($"This selector type: {type} is not implemented (CssElementHandler)"),
             };
         }
 
@@ -142,7 +145,7 @@ namespace Spindler.Services
             {
                 Path.Type.Css => nav.QuerySelector(contentpath.path),
                 Path.Type.XPath => nav.DocumentNode.SelectSingleNode(contentpath.path),
-                _ => throw new NotImplementedException("This type is not implemented"),
+                _ => throw new NotImplementedException("This path type has not been implemented {ConfigService.GetContent}"),
             };
 
             if (node == null) return string.Empty;
@@ -151,7 +154,9 @@ namespace Spindler.Services
                 return HttpUtility.HtmlDecode(node.InnerText);
             }
 
+            // Node contains child nodes, so we must get the text of each
             StringWriter stringWriter = new();
+            string separator = (string)extraconfigs.GetOrDefault("separator", "\n");
             foreach (HtmlNode child in node.ChildNodes)
             {
                 if (child.OriginalName == "br" && child.NextSibling.OriginalName != "br")
@@ -159,7 +164,7 @@ namespace Spindler.Services
                     stringWriter.Write("\n");
                     continue;
                 }
-                stringWriter.WriteLine($"\t\t{HttpUtility.HtmlDecode(child.InnerText)}\n");
+                stringWriter.WriteLine($"\t\t{HttpUtility.HtmlDecode(child.InnerText)}{separator}");
             }
             return stringWriter.ToString();
         }
