@@ -8,34 +8,30 @@
     Shell.FlyoutBehavior="Disabled">
 
     <TabBar>
-        <Tab Title="Books">
+        <Tab Title="Books" Icon="book.svg">
             <ShellContent
                 Title="Book Lists"
                 ContentTemplate="{DataTemplate local:BookListPage}"
-                Icon="book.svg"
                 Route="BookLists" />
         </Tab>
-        <Tab Title="Configs">
+        <Tab Title="Configs" Icon="gear.svg">
             <ShellContent
                 Title="Website Configs"
                 ContentTemplate="{DataTemplate local:ConfigPage}"
-                Icon="gear.svg"
                 Route="Config" />
         </Tab>
         
         <!--FIXME: This should not be a separate tab, but OnAppearing is not called when it is combined within 'Configs'-->
-        <Tab Title="General Configs">
+        <Tab Title="General Configs" Icon="multiple_gears.svg">
             <ShellContent
                 Title="General Configs"
                 ContentTemplate="{DataTemplate views:GeneralizedConfigPage}"
-                Icon="multiple_gears.svg"
                 Route="GeneralConfig"/>
         </Tab>
-        <Tab Title="Settings">
+        <Tab Title="Settings" Icon="profile_gear.svg">
             <ShellContent
                 Title="Settings"
                 ContentTemplate="{DataTemplate local:SettingsPage}"
-                Icon="profile_gear.svg"
                 Route="Settings" />
         </Tab>
     </TabBar>
