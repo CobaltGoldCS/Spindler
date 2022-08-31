@@ -137,15 +137,15 @@ public class WebService
         }
         catch (IOException e)
         {
-            return new ErrorOr<string>.Error($"Invalid request format: {e}");
+            return new ErrorOr<string>.Error($"Invalid request format: {e.Message}");
         }
         catch (InvalidOperationException e)
         {
-            return new ErrorOr<string>.Error($"Invalid Operation: {e}");
+            return new ErrorOr<string>.Error($"Invalid Operation: {e.Message}");
         }
         catch (TaskCanceledException e)
         {
-            return new ErrorOr<string>.Error($"Task Cancelled: {e}");
+            return new ErrorOr<string>.Error($"Task Cancelled: {e.Message}");
         }
     }
     /// <summary>
