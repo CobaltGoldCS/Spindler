@@ -90,7 +90,7 @@ namespace Spindler.Services
             try
             {
                 string value = path.type switch
-                {region
+                {
                     Path.Type.XPath => nav.DocumentNode.SelectSingleNode(path.path)?.CreateNavigator().Value,
                     Path.Type.Css => CssElementHandler(nav, path.path, type),
                     _ => throw new NotImplementedException("This type is not implemented (PrettyWrapSelector)"),

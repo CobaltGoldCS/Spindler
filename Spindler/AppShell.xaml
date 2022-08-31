@@ -12,12 +12,14 @@
             <ShellContent
                 Title="Book Lists"
                 ContentTemplate="{DataTemplate local:BookListPage}"
+                Icon="book.svg"
                 Route="BookLists" />
         </Tab>
         <Tab Title="Configs">
             <ShellContent
                 Title="Website Configs"
                 ContentTemplate="{DataTemplate local:ConfigPage}"
+                Icon="gear.svg"
                 Route="Config" />
         </Tab>
         
@@ -26,12 +28,14 @@
             <ShellContent
                 Title="General Configs"
                 ContentTemplate="{DataTemplate views:GeneralizedConfigPage}"
+                Icon="multiple_gears.svg"
                 Route="GeneralConfig"/>
         </Tab>
         <Tab Title="Settings">
             <ShellContent
                 Title="Settings"
                 ContentTemplate="{DataTemplate local:SettingsPage}"
+                Icon="profile_gear.svg"
                 Route="Settings" />
         </Tab>
     </TabBar>

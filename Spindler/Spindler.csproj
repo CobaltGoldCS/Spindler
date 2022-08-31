@@ -103,8 +103,19 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <None Remove="Resources\Fonts\book.svg" />
+	  <None Remove="Resources\Fonts\gear.svg" />
+	  <None Remove="Resources\Fonts\multiple-gears.svg" />
+	  <None Remove="Resources\Fonts\profile-gear.svg" />
 	  <None Remove="Resources\Images\bookmark.svg" />
 	  <None Remove="Resources\Images\kebab.svg" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <MauiFont Include="Resources\Images\book.svg" />
+	  <MauiFont Include="Resources\Images\gear.svg" />
+	  <MauiFont Include="Resources\Images\multiple_gears.svg" />
+	  <MauiFont Include="Resources\Images\profile_gear.svg" />
 	</ItemGroup>
 
 	<ItemGroup>
