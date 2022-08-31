@@ -4,6 +4,7 @@
     {
         public static Value GetOrDefault<Key, Value>(this Dictionary<Key, Value> dict, Key key, Value @default)
         {
+            if (dict is null) return @default;
             return dict.TryGetValue(key, out Value value) ? value : @default;
         }
     }
