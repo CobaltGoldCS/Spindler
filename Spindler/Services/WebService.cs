@@ -63,7 +63,7 @@ public class WebService
             {
                 return MakeError(url, html.AsError().message);
             }
-            return await LoadHTML(url, html.AsOk().value);
+            return await LoadWebData(url, html.AsOk().value);
         }
         catch (HttpRequestException e)
         {
@@ -181,8 +181,13 @@ public class WebService
 
         return url;
     }
-
-    private async Task<LoadedData> LoadHTML(string url, string html)
+    /// <summary>
+    /// Loads all necessary web data into a LoadedData object
+    /// </summary>
+    /// <param name="url">The url used to obtain the web data (this is not processed in this function)</param>
+    /// <param name="html">The html to search for relevant data</param>
+    /// <returns>A loaded data object containing the required data from the website</returns>
+    private async Task<LoadedData> LoadWebData(string url, string html)
     {
 
         HtmlDocument doc = new();
