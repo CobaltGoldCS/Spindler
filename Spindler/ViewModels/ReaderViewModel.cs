@@ -242,7 +242,7 @@ namespace Spindler.ViewModels
                 prevText = "Open in Web View?";
                 PrevClickHandler = new Command(async () =>
                 {
-                    await Shell.Current.GoToAsync($"{nameof(WebviewReaderPage)}?id={CurrentBook.Id}");
+                    await Shell.Current.GoToAsync($"../{nameof(WebviewReaderPage)}?id={CurrentBook.Id}");
                 });
                 DataChanged();
             }

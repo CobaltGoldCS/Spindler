@@ -4,6 +4,7 @@
              x:Class="Spindler.Views.WebviewReaderPage"
              Title="WebviewReaderPage">
     <StackLayout>
-        <WebView x:Name="ReaderBrowser" VerticalOptions="Fill" HorizontalOptions="Fill" />
+        <WebView x:Name="ReaderBrowser" VerticalOptions="Fill" HorizontalOptions="Fill">
+        </WebView>
     </StackLayout>
 </ContentPage>

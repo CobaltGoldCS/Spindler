@@ -21,7 +21,6 @@ public partial class WebviewReaderPage : ContentPage
     {
         currentBook = await App.Database.GetItemByIdAsync<Book>(id);
         ReaderBrowser.Source = currentBook.Url;
-        Config config = await WebService.FindValidConfig(currentBook.Url);
     }
     #endregion
     public WebviewReaderPage()
