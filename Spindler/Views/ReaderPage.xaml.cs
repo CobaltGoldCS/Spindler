@@ -16,12 +16,13 @@ public partial class ReaderPage : ContentPage
     {
         set
         {
-            LoadBook(Convert.ToInt32(value));
+            LoadBook(value);
         }
     }
 
-    private async void LoadBook(int id)
+    private async void LoadBook(string str_id)
     {
+        int id = Convert.ToInt32(str_id);
         Book currentBook = await App.Database.GetItemByIdAsync<Book>(id);
         Config config = await WebService.FindValidConfig(currentBook.Url);
         BindingContext = new ReaderViewModel();
@@ -50,9 +51,12 @@ public partial class ReaderPage : ContentPage
         {
             double prevbuttonheight = PrevButton.IsVisible ? PrevButton.Height : 0;
             double nextbuttonheight = NextButton.IsVisible ? PrevButton.Height : 0;
-            ((ReaderViewModel)BindingContext).CurrentBook.Position = ReadingLayout.ScrollY / (ReadingLayout.ContentSize.Height - (prevbuttonheight + nextbuttonheight));
-
-            await App.Database.SaveItemAsync(((ReaderViewModel)BindingContext).CurrentBook);
+            var currentbook = ((ReaderViewModel)BindingContext).CurrentBook;
+            if (currentbook != null)
+            {
+                ((ReaderViewModel)BindingContext).CurrentBook.Position = ReadingLayout.ScrollY / (ReadingLayout.ContentSize.Height - (prevbuttonheight + nextbuttonheight));
+                await App.Database.SaveItemAsync(((ReaderViewModel)BindingContext).CurrentBook);
+            }
         }
         Shell.Current.Navigating -= OnShellNavigated;
     }

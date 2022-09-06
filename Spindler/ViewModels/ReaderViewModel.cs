@@ -1,8 +1,9 @@
 ﻿using Spindler.Services;
 using Spindler.Models;
+using Spindler.Views;
 using System.ComponentModel;
-using System.Runtime.CompilerServices;
 using System.Windows.Input;
+using System.Runtime.CompilerServices;
 
 namespace Spindler.ViewModels
 {
@@ -92,6 +93,19 @@ namespace Spindler.ViewModels
                     return WebService.IsUrl(LoadedData.nextUrl);
                 else
                     return defaultvisible;
+            }
+        }
+
+        private string prevText = "Previous";
+        public string PrevText
+        {
+            get => prevText;
+            set
+            {
+                if (prevText == value)
+                    return;
+                prevText = value;
+                OnPropertyChanged();
             }
         }
         #endregion
@@ -224,6 +238,12 @@ namespace Spindler.ViewModels
             if (nullobj)
             {
                 LoadedData = MakeFailMessage(message);
+                // Change Previous Chapter button to a button that navigates to the WebviewReaderPage
+                prevText = "Open in Web View?";
+                PrevClickHandler = new Command(async () =>
+                {
+                    await Shell.Current.GoToAsync($"{nameof(WebviewReaderPage)}?id={CurrentBook.Id}");
+                });
                 DataChanged();
             }
             return nullobj;
@@ -233,7 +253,7 @@ namespace Spindler.ViewModels
         {
             return new LoadedData
             {
-                prevUrl = "",
+                prevUrl = "https://failed.com",
                 nextUrl = "",
                 currentUrl = CurrentBook.Url,
                 text = message,

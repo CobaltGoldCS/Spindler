@@ -91,9 +91,12 @@ public class WebService
         if (c != null) return c;
         try
         {
-            var html = await new HttpClient().GetStringAsync(url);
+            HttpClient client = new()
+            {
+                Timeout = new TimeSpan(0, 0, 10)
+            };
             HtmlDocument doc = new();
-            doc.LoadHtml(html);
+            doc.LoadHtml(await client.GetStringAsync(url));
             Config selectedConfig = null;
             Parallel.ForEach(await App.Database.GetAllItemsAsync<GeneralizedConfig>(), (GeneralizedConfig config, ParallelLoopState state) =>
             {
@@ -105,7 +108,15 @@ public class WebService
             });
             return selectedConfig;
         }
-        catch(IOException)
+        catch (IOException)
+        {
+            return null;
+        }
+        catch (TaskCanceledException)
+        {
+            return null;
+        }
+        catch (System.Net.WebException)
         {
             return null;
         }
@@ -128,7 +139,11 @@ public class WebService
     #endregion
 
     #region HelperFunctions
-
+    /// <summary>
+    /// Attempt to obtain html from a url
+    /// </summary>
+    /// <param name="url">The url to attempt to scrape</param>
+    /// <returns>Returns an ErrorOr object either containing the html or an error message string</returns>
     private async Task<ErrorOr<string>> HtmlOrError(string url)
     {
         try
