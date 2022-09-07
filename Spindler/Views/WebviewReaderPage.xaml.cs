@@ -20,9 +20,12 @@ public partial class WebviewReaderPage : ContentPage
     public async void LoadBook(int id)
     {
         currentBook = await App.Database.GetItemByIdAsync<Book>(id);
+        BindingContext = currentBook;
         ReaderBrowser.Source = currentBook.Url;
+        currentBook.LastViewed = DateTime.UtcNow;
     }
     #endregion
+
     public WebviewReaderPage()
 	{
 		InitializeComponent();
@@ -35,6 +38,10 @@ public partial class WebviewReaderPage : ContentPage
     {
         if (@event.Result != WebNavigationResult.Success) return;
         currentBook.Url = @event.Url;
+        currentBook.Position = 0;
+
+        backButton.IsEnabled = ReaderBrowser.CanGoBack;
+        forwardButton.IsEnabled = ReaderBrowser.CanGoForward;
     }
 
     // FIXME: This does not handle android back buttons
@@ -47,5 +54,22 @@ public partial class WebviewReaderPage : ContentPage
         }
         Shell.Current.Navigating -= OnShellNavigated;
         ReaderBrowser.Navigated -= WebViewOnNavigated;
+    }
+
+    private void Back_Clicked(object sender, EventArgs e)
+    {
+        if (!ReaderBrowser.CanGoBack) return;
+        ReaderBrowser.GoBack();
+    }
+
+    private void Reload_Clicked(object sender, EventArgs e)
+    {
+        ReaderBrowser.Reload();
+    }
+
+    private void Forward_Clicked(object sender, EventArgs e)
+    {
+        if(!ReaderBrowser.CanGoForward) return;
+        ReaderBrowser.GoForward();
     }
 }

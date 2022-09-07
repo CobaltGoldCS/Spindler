@@ -2,9 +2,29 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="Spindler.Views.WebviewReaderPage"
-             Title="WebviewReaderPage">
-    <StackLayout>
-        <WebView x:Name="ReaderBrowser" VerticalOptions="Fill" HorizontalOptions="Fill">
-        </WebView>
-    </StackLayout>
+             xmlns:Model="clr-namespace:Spindler.Models"
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             Title="{Binding Title}"
+             Shell.TabBarIsVisible="False">
+    <ContentPage.BindingContext>
+        <Model:Book/>
+    </ContentPage.BindingContext>
+    <Grid RowDefinitions="*, auto" ColumnDefinitions="*, *, *" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand">
+        <WebView x:Name="ReaderBrowser" Grid.Row="0" Grid.ColumnSpan="3" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand"/>
+        <ImageButton x:Name="backButton" Source="arrow_left.svg" Clicked="Back_Clicked" HeightRequest="30" Grid.Row="1" Grid.Column="0">
+            <ImageButton.Behaviors>
+                <toolkit:IconTintColorBehavior TintColor="{AppThemeBinding Dark={StaticResource White}, Light={StaticResource Black}}"/>
+            </ImageButton.Behaviors>
+        </ImageButton>
+        <ImageButton Source="rotate_right.svg" Clicked="Reload_Clicked" HeightRequest="30" Grid.Row="1" Grid.Column="1" Margin="10,10">
+            <ImageButton.Behaviors>
+                <toolkit:IconTintColorBehavior TintColor="{AppThemeBinding Dark={StaticResource White}, Light={StaticResource Black}}"/>
+            </ImageButton.Behaviors>
+        </ImageButton>
+        <ImageButton x:Name="forwardButton" Source="arrow_right.svg" Clicked="Forward_Clicked" HeightRequest="30" Grid.Row="1" Grid.Column="2">
+            <ImageButton.Behaviors>
+                <toolkit:IconTintColorBehavior TintColor="{AppThemeBinding Dark={StaticResource White}, Light={StaticResource Black}}"/>
+            </ImageButton.Behaviors>
+        </ImageButton>
+    </Grid>
 </ContentPage>
