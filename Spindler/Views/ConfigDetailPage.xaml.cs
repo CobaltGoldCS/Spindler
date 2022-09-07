@@ -52,6 +52,10 @@ public partial class ConfigDetailPage : ContentPage
         }
         BindingContext = config;
         switchWebView.On = (bool)config.ExtraConfigs.GetOrDefault("webview", false);
+        animationSwitch.On = (bool)config.ExtraConfigs.GetOrDefault("autoscrollanimation", true);
+        separatorEntry.Text = ((string)config.ExtraConfigs.GetOrDefault("separator", "\n"))
+            .Replace(System.Environment.NewLine, @"\n")
+            .Replace("\t", @"\t");
     }
     #endregion
 
@@ -93,7 +97,11 @@ public partial class ConfigDetailPage : ContentPage
 
         Dictionary<string, object> extras = new()
         {
-            { "webview", switchWebView.On }
+            { "webview", switchWebView.On },
+            { "autoscrollanimation", animationSwitch.On },
+            { "separator", separatorEntry.Text
+                            .Replace(@"\n", System.Environment.NewLine)
+                            .Replace(@"\t", "     ")},
         };
 
         Config config = new()

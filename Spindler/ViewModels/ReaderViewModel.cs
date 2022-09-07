@@ -1,6 +1,7 @@
 ﻿using Spindler.Services;
 using Spindler.Models;
 using Spindler.Views;
+using Spindler.Utils;
 using System.ComponentModel;
 using System.Windows.Input;
 using System.Runtime.CompilerServices;
@@ -219,7 +220,9 @@ namespace Spindler.ViewModels
                 await Task.Delay(100);
                 MainThread.BeginInvokeOnMainThread(async () =>
                 {
-                    await ReadingLayout.ScrollToAsync(ReadingLayout.ScrollX, Math.Clamp(CurrentBook.Position, 0d, 1d) * (ReadingLayout.ContentSize.Height - (prevbuttonheight + nextbuttonheight)), true);
+                    await ReadingLayout.ScrollToAsync(ReadingLayout.ScrollX,
+                        Math.Clamp(CurrentBook.Position, 0d, 1d) * (ReadingLayout.ContentSize.Height - (prevbuttonheight + nextbuttonheight)),
+                        (bool)Config.ExtraConfigs.GetOrDefault("autoscrollanimation", true));
                 });
                 
             });
