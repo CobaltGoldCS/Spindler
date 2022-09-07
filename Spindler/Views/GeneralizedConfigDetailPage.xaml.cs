@@ -2,6 +2,7 @@ using Spindler.Models;
 using Spindler.Services;
 using Spindler.Behaviors;
 using System.Text.RegularExpressions;
+using Spindler.Utils;
 
 namespace Spindler;
 
@@ -37,16 +38,17 @@ public partial class GeneralizedConfigDetailPage : ContentPage
                 PrevUrlPath = "",
                 TitlePath = "",
             };
-            okButton.Text = "Add a new Config";
+            okButton.Text = "Add";
             Title = "Add a new Config";
         }
         else
         {
             config = await App.Database.GetItemByIdAsync<GeneralizedConfig>(id);
-            okButton.Text = $"Modify {config.DomainName}";
+            okButton.Text = "Modify";
             Title = $"Modify {config.DomainName}";
         }
         BindingContext = config;
+        switchWebView.On = (bool)config.ExtraConfigs.GetOrDefault("webview", false);
     }
     #endregion
 
@@ -86,6 +88,10 @@ public partial class GeneralizedConfigDetailPage : ContentPage
             return;
         }
 
+        Dictionary<string, object> extras = new()
+        {
+            { "webview", switchWebView.On }
+        };
 
         GeneralizedConfig config = new()
         {
@@ -96,6 +102,7 @@ public partial class GeneralizedConfigDetailPage : ContentPage
             NextUrlPath = nextEntry.Text,
             PrevUrlPath = prevEntry.Text,
             TitlePath = titleEntry.Text,
+            ExtraConfigs = extras
         };
         await App.Database.SaveItemAsync(config);
         await Shell.Current.GoToAsync("..");
