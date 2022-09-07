@@ -7,37 +7,47 @@
     <ContentPage.BindingContext>
         <models:Config/>
     </ContentPage.BindingContext>
-    <StackLayout Orientation="Vertical">
-        <Entry x:Name="domainEntry"
-               HeightRequest="50"
-               Placeholder="Domain name of the website ex: google.com" Text="{Binding DomainName}"/>
-        <Entry x:Name="titleEntry"
-               HeightRequest="50"
-               Placeholder="[Optional] Path pointing to the title element" Text="{Binding TitlePath}"/>
-        <Entry x:Name="contentEntry"
-               HeightRequest="50"
-               Placeholder="Path pointing to the content of the page" Text="{Binding ContentPath}"/>
-        <Entry x:Name="prevEntry"
-               HeightRequest="50"
-               Placeholder="Path pointing to the previous url" Text="{Binding PrevUrlPath}"/>
-        <Entry x:Name="nextEntry"
-               HeightRequest="50"
-               Placeholder="Path pointing to the next url" Text="{Binding NextUrlPath}"/>
-        <StackLayout Orientation="Horizontal" HorizontalOptions="Fill">
-            <Button Text="Delete" 
-                    WidthRequest="100" HeightRequest="100"
+    <Grid ColumnDefinitions="*, *, *" RowDefinitions="auto, auto, auto, auto, auto, *, auto" VerticalOptions="FillAndExpand">
+        <StackLayout Orientation="Horizontal" Grid.ColumnSpan="3">
+            <Label Text="Domain:" Padding="0,17,5,0" Margin="5,0,36,5"/>
+            <Entry x:Name="domainEntry" HorizontalOptions="FillAndExpand" Margin="0,5,0,0"
+                               Placeholder="Domain name of the website ex: google.com" Text="{Binding DomainName}"/>
+        </StackLayout>
+        <StackLayout Orientation="Horizontal" Grid.ColumnSpan="3" Grid.Row="1">
+            <Label Text="Title Path:" Padding="0,17,5,0" Margin="5,0,28,5"/>
+            <Entry x:Name="titleEntry" HorizontalOptions="FillAndExpand" Margin="0,5,0,0"
+                               Placeholder="[Optional] Path pointing to the title element" Text="{Binding TitlePath}"/>
+        </StackLayout>
+        <StackLayout Orientation="Horizontal" Grid.ColumnSpan="3" Grid.Row="2">
+            <Label Text="Content Path:" Padding="0,17,5,0" Margin="5,0,5,5"/>
+            <Entry x:Name="contentEntry" HorizontalOptions="FillAndExpand" Margin="0,5,0,0"
+                               Placeholder="Path pointing to the content of the page" Text="{Binding ContentPath}"/>
+        </StackLayout>
+        <StackLayout Orientation="Horizontal" Grid.ColumnSpan="3" Grid.Row="3">
+            <Label Text="Previous Path:" Padding="0,17,5,0" Margin="5,0,0,0"/>
+            <Entry x:Name="prevEntry" HorizontalOptions="FillAndExpand" Margin="0,5,0,0"
+                               Placeholder="Path pointing to the previous url" Text="{Binding PrevUrlPath}"/>
+        </StackLayout>
+        <StackLayout Orientation="Horizontal" Grid.ColumnSpan="3" Grid.Row="4">
+            <Label Text="Next Path:" Padding="0,17,5,0" Margin="5,0,23,5"/>
+            <Entry x:Name="nextEntry" HorizontalOptions="FillAndExpand" Margin="0,5,0,0"
+                               Placeholder="Path pointing to the next url" Text="{Binding NextUrlPath}"/>
+        </StackLayout>
+        <TableView Grid.Row="5" Grid.ColumnSpan="3" VerticalOptions="StartAndExpand">
+            <TableSection Title="Web View">
+                <SwitchCell x:Name="switchWebView" Text="Use Web View for Viewing this website" On="False" />
+            </TableSection>
+        </TableView>
+
+        <Button Text="Delete" Grid.Row="6" Grid.Column="0" Margin="5,0,5,0"
                     FontSize="Large"
                     Clicked="DeleteButton_Clicked" BackgroundColor="OrangeRed"/>
-            <Button x:Name="okButton" 
-                    FontSize="Large"
-                    HeightRequest="100" HorizontalOptions="FillAndExpand"
-                    Clicked="okButton_Clicked"/>
-        </StackLayout>
-        <Button x:Name="Cancel" 
-                HorizontalOptions="FillAndExpand"
-                FontSize="40"
-                HeightRequest="100"
+        <Button x:Name="Cancel" Grid.Row="6" Grid.Column="1" Margin="5,0,5,0"
+                FontSize="Large"
                 Text="Cancel" 
                 Clicked="Cancel_Clicked"/>
-    </StackLayout>
+        <Button x:Name="okButton" Grid.Row="6" Grid.Column="2" Margin="5,0,5,0"
+                FontSize="Large"
+                Clicked="okButton_Clicked"/>
+    </Grid>
 </ContentPage>

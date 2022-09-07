@@ -25,7 +25,7 @@ public partial class BookListDetailPage : ContentPage
         {
 
             BindingContext = new BookList { Id = -1, ImageUrl = "", LastAccessed = DateTime.UtcNow, Name = "" };
-            okButton.Text = "Add a new Book List";
+            okButton.Text = "Add";
             Title = "Add a new Book List";
             return;
         }
@@ -42,7 +42,7 @@ public partial class BookListDetailPage : ContentPage
         imageUrlEntry.Behaviors.Add(new TextValidationBehavior((string text) =>
         {
             bool validUrl = Uri.TryCreate(text, UriKind.Absolute, out Uri uriresult) && (uriresult.Scheme == Uri.UriSchemeHttp || uriresult.Scheme == Uri.UriSchemeHttps);
-            return validUrl || text.Length == 0;
+                        return validUrl || text.Length == 0;
         }));
     }
 

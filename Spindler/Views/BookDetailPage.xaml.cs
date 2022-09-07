@@ -29,12 +29,12 @@ public partial class BookDetailPage : ContentPage
         {
             // This book is never referenced again, so the values technically do not matter.
             BindingContext = new Book { Id = -1, Url = "", LastViewed = DateTime.UtcNow, Title = "", BookListId = this.BookListId };
-            okButton.Text = "Add a new Book";
+            okButton.Text = "Add";
             Title = "Add a new Book";
             return;
         }
         Book book = await App.Database.GetItemByIdAsync<Book>(bookId);
-        okButton.Text = $"Modify {book.Title}";
+        okButton.Text = $"Modify";
         Title = $"Modify {book.Title}";
         BindingContext = book;
 
