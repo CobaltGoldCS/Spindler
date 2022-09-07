@@ -1,6 +1,8 @@
 using Spindler.Models;
 using Spindler.Services;
 using Spindler.ViewModels;
+using Spindler.Utils;
+using Spindler.Views;
 
 namespace Spindler;
 
@@ -25,6 +27,11 @@ public partial class ReaderPage : ContentPage
         int id = Convert.ToInt32(str_id);
         Book currentBook = await App.Database.GetItemByIdAsync<Book>(id);
         Config config = await WebService.FindValidConfig(currentBook.Url);
+        if ((bool)config.ExtraConfigs.GetOrDefault("webview", false))
+        {
+            await Shell.Current.GoToAsync($"../{nameof(WebviewReaderPage)}?id={currentBook.Id}");
+            return;
+        }
         BindingContext = new ReaderViewModel();
         ((ReaderViewModel)BindingContext).CurrentBook = currentBook;
         ((ReaderViewModel)BindingContext).Config = config;
