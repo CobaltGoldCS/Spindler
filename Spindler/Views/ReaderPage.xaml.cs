@@ -27,16 +27,18 @@ public partial class ReaderPage : ContentPage
         int id = Convert.ToInt32(str_id);
         Book currentBook = await App.Database.GetItemByIdAsync<Book>(id);
         Config config = await WebService.FindValidConfig(currentBook.Url);
-        if ((bool)config.ExtraConfigs.GetOrDefault("webview", false))
+
+        if ((bool?) config?.ExtraConfigs.GetOrDefault("webview", false) ?? false)
         {
             await Shell.Current.GoToAsync($"../{nameof(WebviewReaderPage)}?id={currentBook.Id}");
             return;
         }
-        BindingContext = new ReaderViewModel();
-        ((ReaderViewModel)BindingContext).CurrentBook = currentBook;
-        ((ReaderViewModel)BindingContext).Config = config;
-        ((ReaderViewModel)BindingContext).AttachReferencesToUI(ReadingLayout, PrevButton.Height);
-        await ((ReaderViewModel)BindingContext).StartLoad();
+        ReaderViewModel viewmodel = new();
+        viewmodel.CurrentBook = currentBook;
+        viewmodel.Config = config;
+        viewmodel.AttachReferencesToUI(ReadingLayout, PrevButton.Height);
+        BindingContext = viewmodel;
+        await viewmodel.StartLoad();
     }
     #endregion
 
@@ -58,11 +60,11 @@ public partial class ReaderPage : ContentPage
         {
             double prevbuttonheight = PrevButton.IsVisible ? PrevButton.Height : 0;
             double nextbuttonheight = NextButton.IsVisible ? PrevButton.Height : 0;
-            var currentbook = ((ReaderViewModel)BindingContext).CurrentBook;
+            var currentbook = (BindingContext as ReaderViewModel).CurrentBook;
             if (currentbook != null)
             {
-                ((ReaderViewModel)BindingContext).CurrentBook.Position = ReadingLayout.ScrollY / (ReadingLayout.ContentSize.Height - (prevbuttonheight + nextbuttonheight));
-                await App.Database.SaveItemAsync(((ReaderViewModel)BindingContext).CurrentBook);
+                currentbook.Position = ReadingLayout.ScrollY / (ReadingLayout.ContentSize.Height - (prevbuttonheight + nextbuttonheight));
+                await App.Database.SaveItemAsync(currentbook);
             }
         }
         Shell.Current.Navigating -= OnShellNavigated;
