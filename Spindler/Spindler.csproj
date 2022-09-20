@@ -128,43 +128,43 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Compile Update="Views\GeneralizedConfigDetailPage.xaml.cs">
+	  <Compile Update="Views\Configuration Pages\GeneralizedConfigDetailPage.xaml.cs">
 	    <DependentUpon>GeneralizedConfigDetailPage.xaml</DependentUpon>
 	  </Compile>
 	</ItemGroup>
 
 	<ItemGroup>
-	  <MauiXaml Update="Views\BookDetailPage.xaml">
+	  <MauiXaml Update="Views\Book Pages\BookDetailPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
-	  <MauiXaml Update="Views\BookListDetailPage.xaml">
+	  <MauiXaml Update="Views\Book List Page\BookListDetailPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
-	  <MauiXaml Update="Views\BookListPage.xaml">
+	  <MauiXaml Update="Views\Book List Page\BookListPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
-	  <MauiXaml Update="Views\BookPage.xaml">
+	  <MauiXaml Update="Views\Book Pages\BookPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
-	  <MauiXaml Update="Views\GeneralizedConfigDetailPage.xaml">
+	  <MauiXaml Update="Views\Configuration Pages\GeneralizedConfigDetailPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
-	  <MauiXaml Update="Views\ConfigDetailPage.xaml">
+	  <MauiXaml Update="Views\Configuration Pages\ConfigDetailPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
-	  <MauiXaml Update="Views\ConfigPage.xaml">
+	  <MauiXaml Update="Views\Configuration Pages\ConfigPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
-	  <MauiXaml Update="Views\GeneralizedConfigPage.xaml">
+	  <MauiXaml Update="Views\Configuration Pages\GeneralizedConfigPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
-	  <MauiXaml Update="Views\ReaderPage.xaml">
+	  <MauiXaml Update="Views\Reader Pages\ReaderPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="Views\SettingsPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
-	  <MauiXaml Update="Views\WebviewReaderPage.xaml">
+	  <MauiXaml Update="Views\Reader Pages\WebviewReaderPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	</ItemGroup>
