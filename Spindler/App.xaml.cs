@@ -22,8 +22,11 @@ public partial class App : Application
         MainPage = shell;
         Routing.RegisterRoute(nameof(BookPage), typeof(BookPage));
         Routing.RegisterRoute($"{nameof(BookPage)}/{nameof(BookDetailPage)}", typeof(BookDetailPage));
+
         Routing.RegisterRoute($"{nameof(BookPage)}/{nameof(ReaderPage)}", typeof(ReaderPage));
+        Routing.RegisterRoute($"{nameof(BookPage)}/{nameof(ReaderPage)}/{nameof(GetCookiesPage)}", typeof(GetCookiesPage));
         Routing.RegisterRoute($"{nameof(BookPage)}/{nameof(WebviewReaderPage)}", typeof(WebviewReaderPage));
+
         Routing.RegisterRoute("BookLists/" + nameof(BookListDetailPage), typeof(BookListDetailPage));
         Routing.RegisterRoute("Config/" + nameof(ConfigDetailPage), typeof(ConfigDetailPage));
         Routing.RegisterRoute("GeneralConfig/" + nameof(GeneralizedConfigDetailPage), typeof(GeneralizedConfigDetailPage));

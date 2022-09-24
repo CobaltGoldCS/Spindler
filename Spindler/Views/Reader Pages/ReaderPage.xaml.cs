@@ -7,6 +7,7 @@ using Spindler.Views;
 namespace Spindler;
 
 [QueryProperty(nameof(BookId), "id")]
+[QueryProperty(nameof(Cookies), "cookies")]
 public partial class ReaderPage : ContentPage
 {
     #region Class Attributes
@@ -22,20 +23,28 @@ public partial class ReaderPage : ContentPage
         }
     }
 
+    public string Cookies { get; set; } = null;
+
     private async void LoadBook(string str_id)
     {
         int id = Convert.ToInt32(str_id);
         Book currentBook = await App.Database.GetItemByIdAsync<Book>(id);
         Config config = await WebService.FindValidConfig(currentBook.Url);
 
-        if ((bool?) config?.ExtraConfigs.GetOrDefault("webview", false) ?? false)
+        var webview = (bool?)config?.ExtraConfigs.GetOrDefault("webview", false) ?? false;
+        if (webview)
         {
             await Shell.Current.GoToAsync($"../{nameof(WebviewReaderPage)}?id={currentBook.Id}");
             return;
         }
-        ReaderViewModel viewmodel = new();
-        viewmodel.CurrentBook = currentBook;
-        viewmodel.Config = config;
+        
+        ReaderViewModel viewmodel = new()
+        {
+            CurrentBook = currentBook,
+            Config = config
+        };
+        // FIXME: This might be a race condition due to the fact that Cookies should be updated at the same time
+        viewmodel.SetCookies(Cookies);
         viewmodel.AttachReferencesToUI(ReadingLayout, PrevButton.Height);
         BindingContext = viewmodel;
         await viewmodel.StartLoad();

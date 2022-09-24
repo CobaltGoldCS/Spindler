@@ -132,6 +132,9 @@
 	  <Compile Update="Views\Configuration Pages\GeneralizedConfigDetailPage.xaml.cs">
 	    <DependentUpon>GeneralizedConfigDetailPage.xaml</DependentUpon>
 	  </Compile>
+	  <Compile Update="Views\Reader Pages\GetCookiesPage.xaml.cs">
+	    <DependentUpon>GetCookiesPage.xaml</DependentUpon>
+	  </Compile>
 	</ItemGroup>
 
 	<ItemGroup>
@@ -160,6 +163,9 @@
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="Views\Reader Pages\ReaderPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Views\Reader Pages\GetCookiesPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="Views\SettingsPage.xaml">

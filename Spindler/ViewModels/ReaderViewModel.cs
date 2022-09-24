@@ -6,6 +6,8 @@ using System.ComponentModel;
 using System.Windows.Input;
 using System.Runtime.CompilerServices;
 using CommunityToolkit.Mvvm.ComponentModel;
+using Newtonsoft.Json;
+using System.Net;
 
 namespace Spindler.ViewModels
 {
@@ -120,19 +122,38 @@ namespace Spindler.ViewModels
         {
             if (FailIfNull(Config, "Configuration does not exist")) return;
             LoadedData data = await webService.LoadUrl(CurrentBook.Url);
+            VerifyCookies();
             if (FailIfNull(data, "Invalid Url")) return;
             loadedData = data;
             DataChanged();
             await DelayScroll();
         }
+
+        private async void VerifyCookies()
+        {
+            if (!(bool)Config.ExtraConfigs.GetOrDefault("requirescookies", false) || cookiestring is not null) return;
+
+            var state = Shell.Current.CurrentState;
+            await Shell.Current.GoToAsync($"{nameof(GetCookiesPage)}?id={CurrentBook.Id}");
+        }
+
 #nullable disable
 
         private ScrollView ReadingLayout;
         public double ButtonHeight { get; set; }
+
         public void AttachReferencesToUI(ScrollView readingLayout, double buttonheight)
         {
             ButtonHeight = buttonheight;
             ReadingLayout = readingLayout;
+        }
+
+        string cookiestring;
+        public void SetCookies(string cookies)
+        {
+            cookiestring = cookies;
+            if (cookies == null) return;
+            webService.SetCookies(new Uri(CurrentBook.Url), JsonConvert.DeserializeObject<IList<Cookie>>(cookies));
         }
         #endregion
 

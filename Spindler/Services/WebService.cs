@@ -10,6 +10,7 @@ public class WebService
     #region Class Attributes
     private ConfigService configService;
     private Config config;
+    private string cookiestring;
     #endregion
     #region Public-Facing APIs
 
@@ -22,6 +23,12 @@ public class WebService
         this.config = config;
         if (configService == null)
             configService = new ConfigService(config);
+    }
+    public void SetCookies(Uri baseaddress, ICollection<System.Net.Cookie> cookies)
+    {
+        var handler = new HttpClientHandler { UseCookies = false };
+        client = new HttpClient(handler) { BaseAddress = baseaddress };
+        cookiestring = string.Join("; ", cookies.Select(cookie => $"{cookie.Name}={cookie.Value}"));
     }
     /// <summary>
     /// Preload the next and previous urls with valid values into LoadedData
@@ -135,7 +142,9 @@ public class WebService
             }
             return _client;
         }
+        set => _client = value;
     }
+
     #endregion
 
     #region HelperFunctions
@@ -148,19 +157,16 @@ public class WebService
     {
         try
         {
-            return new ErrorOr<string>.Ok(await client.GetStringAsync(url));
+            var message = new HttpRequestMessage(HttpMethod.Get, url);
+            if (cookiestring != null)
+                message.Headers.Add("Cookie", cookiestring);
+            var result = await client.SendAsync(message);
+            result = result.EnsureSuccessStatusCode();
+            return new ErrorOr<string>.Ok(await result.Content.ReadAsStringAsync());
         }
-        catch (IOException e)
+        catch (HttpRequestException e)
         {
-            return new ErrorOr<string>.Error($"Invalid request format: {e.Message}");
-        }
-        catch (InvalidOperationException e)
-        {
-            return new ErrorOr<string>.Error($"Invalid Operation: {e.Message}");
-        }
-        catch (TaskCanceledException e)
-        {
-            return new ErrorOr<string>.Error($"Task Cancelled: {e.Message}");
+            return new ErrorOr<string>.Error($"Request Exception {e.StatusCode}: {e.Message}");
         }
     }
     /// <summary>

@@ -50,6 +50,7 @@ public partial class GeneralizedConfigDetailPage : ContentPage
         BindingContext = config;
         switchWebView.On = (bool)config.ExtraConfigs.GetOrDefault("webview", false);
         animationSwitch.On = (bool)config.ExtraConfigs.GetOrDefault("autoscrollanimation", true);
+        cookieSwitch.On = (bool)config.ExtraConfigs.GetOrDefault("requirescookies", false);
         separatorEntry.Text = ((string)config.ExtraConfigs.GetOrDefault("separator", "\n"))
             .Replace(Environment.NewLine, @"\n")
             .Replace("\t", @"\t");
@@ -99,6 +100,7 @@ public partial class GeneralizedConfigDetailPage : ContentPage
             { "separator", separatorEntry.Text
                             .Replace(@"\n", System.Environment.NewLine)
                             .Replace(@"\t", "     ")},
+            { "requirescookies", cookieSwitch.On },
         };
 
         GeneralizedConfig config = new()
