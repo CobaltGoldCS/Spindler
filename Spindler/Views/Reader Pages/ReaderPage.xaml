@@ -14,13 +14,12 @@
     <ContentPage.ToolbarItems>
         <ToolbarItem Command="{Binding BookmarkCommand}" x:Name="BookmarkItem" IconImageSource="bookmark.svg"/>
     </ContentPage.ToolbarItems>
-    <ScrollView x:Name="ReadingLayout" Orientation="Vertical" IsEnabled="True" >
+    <ScrollView x:Name="ReadingLayout" Orientation="Vertical" IsEnabled="True" VerticalScrollBarVisibility="Always" >
         <Grid x:Name="Scroller" VerticalOptions="FillAndExpand" RowDefinitions="auto, auto, *, auto">
             <Label x:Name="TitleView" Text="{Binding Title}" FontSize="Title" Padding="5,0,5,20"/>
             <Button x:Name="PrevButton" IsVisible="{Binding PrevButtonIsVisible}" Grid.Row="1" Text="{Binding PrevText}" Command="{Binding PrevClickHandler}" FontSize="Large" HorizontalOptions="FillAndExpand"/>
             <Label  x:Name="ContentView" Grid.Row="2"
                     Padding="5,0,5,0"
-                    VerticalOptions="FillAndExpand"
                     Text="{Binding Text}"
             />
             <Button x:Name="NextButton" IsVisible="{Binding NextButtonIsVisible}" Grid.Row="3" Text="Next" FontSize="Large" HorizontalOptions="FillAndExpand" Command="{Binding NextClickHandler}"/>

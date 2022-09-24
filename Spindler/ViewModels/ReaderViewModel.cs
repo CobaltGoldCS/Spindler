@@ -5,10 +5,11 @@ using Spindler.Utils;
 using System.ComponentModel;
 using System.Windows.Input;
 using System.Runtime.CompilerServices;
+using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace Spindler.ViewModels
 {
-    public class ReaderViewModel : INotifyPropertyChanged
+    public partial class ReaderViewModel : ObservableObject
     {
         #region Class Attributes
         private WebService _webservice = null;
@@ -16,10 +17,7 @@ namespace Spindler.ViewModels
         {
             get
             {
-                if (_webservice is null)
-                {
-                   _webservice = new(Config);
-                }
+                _webservice ??= new(Config);
                 return _webservice;
             }
         }
@@ -33,56 +31,24 @@ namespace Spindler.ViewModels
         private Task<LoadedData[]> PreloadDataTask;
 
         #region Bindable Properties
-        private LoadedData loadedData = new LoadedData 
-        { 
-            title = "Loading",
-            text = "Content is currently loading"
-        };
-        public LoadedData LoadedData
-        {
-            get => loadedData;
-            set
-            {
-                if (loadedData == value)
-                    return;
-                loadedData = value;
-                OnPropertyChanged();
-                OnPropertyChanged(nameof(PrevButtonIsVisible));
-                OnPropertyChanged(nameof(NextButtonIsVisible));
-            }
-        }
 
+        [ObservableProperty]
+        [NotifyPropertyChangedFor(nameof(PrevButtonIsVisible))]
+        [NotifyPropertyChangedFor(nameof(NextButtonIsVisible))]
+        public LoadedData loadedData;
+
+        [ObservableProperty]
         private string title = "Loading";
-        public string Title
-        {
-            get => title;
-            set
-            {
-                if (title == value)
-                    return;
-                title = value;
-                OnPropertyChanged();
-            }
-        }
+        [ObservableProperty]
         private string text = "Content is currently loading";
-        public string Text
-        {
-            get => text;
-            set
-            {
-                if (text == value)
-                    return;
-                text = value;
-                OnPropertyChanged();
-            }
-        }
+
 
         readonly bool defaultvisible = false;
         public bool PrevButtonIsVisible {
             get
             {
-                if (LoadedData is not null)
-                    return WebService.IsUrl(LoadedData.prevUrl);
+                if (loadedData is not null)
+                    return WebService.IsUrl(loadedData.prevUrl);
                 else
                     return defaultvisible;
             }
@@ -90,25 +56,15 @@ namespace Spindler.ViewModels
         public bool NextButtonIsVisible {
             get
             {
-                if (LoadedData is not null)
-                    return WebService.IsUrl(LoadedData.nextUrl);
+                if (loadedData is not null)
+                    return WebService.IsUrl(loadedData.nextUrl);
                 else
                     return defaultvisible;
             }
         }
 
+        [ObservableProperty]
         private string prevText = "Previous";
-        public string PrevText
-        {
-            get => prevText;
-            set
-            {
-                if (prevText == value)
-                    return;
-                prevText = value;
-                OnPropertyChanged();
-            }
-        }
         #endregion
         #endregion
 
@@ -165,7 +121,7 @@ namespace Spindler.ViewModels
             if (FailIfNull(Config, "Configuration does not exist")) return;
             LoadedData data = await webService.LoadUrl(CurrentBook.Url);
             if (FailIfNull(data, "Invalid Url")) return;
-            LoadedData = data;
+            loadedData = data;
             DataChanged();
             await DelayScroll();
         }
@@ -182,33 +138,18 @@ namespace Spindler.ViewModels
 
         #region Helperfunctions
 
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        public void OnPropertyChanged([CallerMemberName] string name = null)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
-        }
-
         private async void DataChanged()
         {
-            if (FailIfNull(LoadedData, "This is an invalid url")) return;
+            if (FailIfNull(loadedData, "This is an invalid url")) return;
             // Database updates
-            CurrentBook.Url = LoadedData.currentUrl;
+            CurrentBook.Url = loadedData.currentUrl;
             CurrentBook.LastViewed = DateTime.UtcNow;
             await App.Database.SaveItemAsync(CurrentBook);
 
             Title = loadedData.title;
             Text = loadedData.text;
 
-            PreloadDataTask = webService.LoadData(LoadedData.prevUrl, LoadedData.nextUrl);
-            ScrollWorkaround();
-        }
-
-        private void ScrollWorkaround()
-        {
-            var content = ReadingLayout.Content;
-            ReadingLayout.Content = null;
-            ReadingLayout.Content = content;
+            PreloadDataTask = webService.LoadData(loadedData.prevUrl, loadedData.nextUrl);
         }
 
         private async Task DelayScroll()
@@ -240,7 +181,7 @@ namespace Spindler.ViewModels
             bool nullobj = value == null;
             if (nullobj)
             {
-                LoadedData = MakeFailMessage(message);
+                loadedData = MakeFailMessage(message);
                 // Change Previous Chapter button to a button that navigates to the WebviewReaderPage
                 prevText = "Open in Web View?";
                 PrevClickHandler = new Command(async () =>

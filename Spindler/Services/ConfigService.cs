@@ -159,9 +159,10 @@ namespace Spindler.Services
             string separator = (string)extraconfigs.GetOrDefault("separator", "\n");
             foreach (HtmlNode child in node.ChildNodes)
             {
-                if (child.OriginalName == "br" && child.NextSibling.OriginalName != "br")
+                if (child.OriginalName == "br")
                 {
-                    stringWriter.Write("\n");
+                    if (child.NextSibling?.OriginalName != "br")
+                        stringWriter.Write("\n");
                     continue;
                 }
                 stringWriter.WriteLine($"\t\t{HttpUtility.HtmlDecode(child.InnerText)}{separator}");

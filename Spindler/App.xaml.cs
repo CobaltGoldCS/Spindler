@@ -11,10 +11,7 @@ public partial class App : Application
     {
         get
         {
-            if (database == null)
-            {
-                database = new DataService(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Spindler.db"));
-            }
+            database ??= new DataService(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Spindler.db"));
             return database;
         }
     }

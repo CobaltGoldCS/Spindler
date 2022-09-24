@@ -51,7 +51,7 @@ public partial class GeneralizedConfigDetailPage : ContentPage
         switchWebView.On = (bool)config.ExtraConfigs.GetOrDefault("webview", false);
         animationSwitch.On = (bool)config.ExtraConfigs.GetOrDefault("autoscrollanimation", true);
         separatorEntry.Text = ((string)config.ExtraConfigs.GetOrDefault("separator", "\n"))
-            .Replace(System.Environment.NewLine, @"\n")
+            .Replace(Environment.NewLine, @"\n")
             .Replace("\t", @"\t");
     }
     #endregion
