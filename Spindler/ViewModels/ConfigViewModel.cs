@@ -1,4 +1,5 @@
-﻿using Spindler.Models;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using Spindler.Models;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -10,14 +11,8 @@ using System.Windows.Input;
 
 namespace Spindler.ViewModels
 {
-    public class ConfigViewModel : INotifyPropertyChanged
+    public class ConfigViewModel : ObservableObject
     {
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        public void OnPropertyChanged([CallerMemberName] string name = null)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
-        }
 
         public ICommand AddCommand { get; private set; }
 

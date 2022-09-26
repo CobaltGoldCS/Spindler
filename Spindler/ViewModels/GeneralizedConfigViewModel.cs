@@ -1,20 +1,13 @@
-﻿using Spindler.Models;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using Spindler.Models;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows.Input;
 
 namespace Spindler.ViewModels
 {
-    public class GeneralizedConfigViewModel : INotifyPropertyChanged
+    public class GeneralizedConfigViewModel : ObservableObject
     {
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        public void OnPropertyChanged([CallerMemberName] string name = null)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
-        }
-
-
         public ICommand AddCommand { get; private set; }
 
         public GeneralizedConfigViewModel()
