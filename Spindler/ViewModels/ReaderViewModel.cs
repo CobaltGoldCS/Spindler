@@ -1,13 +1,11 @@
-﻿using Spindler.Services;
-using Spindler.Models;
-using Spindler.Views;
-using Spindler.Utils;
-using System.ComponentModel;
-using System.Windows.Input;
-using System.Runtime.CompilerServices;
-using CommunityToolkit.Mvvm.ComponentModel;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
 using Newtonsoft.Json;
+using Spindler.Models;
+using Spindler.Services;
+using Spindler.Utils;
+using Spindler.Views;
 using System.Net;
+using System.Windows.Input;
 
 namespace Spindler.ViewModels
 {
