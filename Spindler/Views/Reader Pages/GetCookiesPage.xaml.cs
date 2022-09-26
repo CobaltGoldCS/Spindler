@@ -1,6 +1,5 @@
 using Newtonsoft.Json;
 using Spindler.Models;
-using Spindler.Services;
 using System.Net;
 
 namespace Spindler.Views;
