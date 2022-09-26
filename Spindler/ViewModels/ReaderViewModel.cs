@@ -35,8 +35,6 @@ namespace Spindler.ViewModels
         #region Bindable Properties
 
         [ObservableProperty]
-        [NotifyPropertyChangedFor(nameof(PrevButtonIsVisible))]
-        [NotifyPropertyChangedFor(nameof(NextButtonIsVisible))]
         public LoadedData loadedData;
 
         [ObservableProperty]
@@ -169,6 +167,9 @@ namespace Spindler.ViewModels
 
             Title = loadedData.title;
             Text = loadedData.text;
+
+            OnPropertyChanged(nameof(NextButtonIsVisible));
+            OnPropertyChanged(nameof(PrevButtonIsVisible));
 
             PreloadDataTask = webService.LoadData(loadedData.prevUrl, loadedData.nextUrl);
         }
