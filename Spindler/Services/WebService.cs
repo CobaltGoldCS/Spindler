@@ -86,8 +86,7 @@ public class WebService
     /// <returns>if <paramref name="url"/> is valid</returns>
     public static bool IsUrl(string url)
     {
-        Uri uriResult;
-        bool created = Uri.TryCreate(url, UriKind.RelativeOrAbsolute, out uriResult);
+        bool created = Uri.TryCreate(url, UriKind.RelativeOrAbsolute, out Uri _);
         return created && (url.StartsWith("http") || url.StartsWith('/'));
     }
 
