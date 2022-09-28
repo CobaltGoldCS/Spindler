@@ -162,6 +162,9 @@
 	  <MauiXaml Update="Views\Configuration Pages\GeneralizedConfigPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
+	  <MauiXaml Update="Views\Reader Pages\ErrorPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
 	  <MauiXaml Update="Views\Reader Pages\ReaderPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
