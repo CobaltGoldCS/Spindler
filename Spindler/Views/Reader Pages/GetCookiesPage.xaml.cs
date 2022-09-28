@@ -48,12 +48,17 @@ public partial class GetCookiesPage : ContentPage
     public async void OnShellNavigated(object sender,
                            ShellNavigatingEventArgs e)
     {
+        Shell.Current.Navigating -= OnShellNavigated;
+        ReaderBrowser.Navigated -= WebViewOnNavigated;
+        // This should only be called when the back buttons are clicked
         if (e.Current.Location.OriginalString == "//BookLists/BookPage/ReaderPage/GetCookiesPage")
         {
             await App.Database.SaveItemAsync(currentBook);
+            // Properly redirect down two pages (so that we don't run into an inactive ReaderPage)
+            e.Cancel();
+            await Shell.Current.GoToAsync("../..");
+            return;
         }
-        Shell.Current.Navigating -= OnShellNavigated;
-        ReaderBrowser.Navigated -= WebViewOnNavigated;
     }
 
     private void Back_Clicked(object sender, EventArgs e)
@@ -81,6 +86,7 @@ public partial class GetCookiesPage : ContentPage
             .GetCookies(new Uri(currentBook.Url, UriKind.Absolute))
             .OfType<Cookie>()
             .ToList();
+        Shell.Current.Navigating -= OnShellNavigated;
         if (cookies != null)
         {
             string stringifiedcookies = JsonConvert.SerializeObject(cookies, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
