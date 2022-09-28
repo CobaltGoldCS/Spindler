@@ -80,7 +80,7 @@ namespace Spindler.ViewModels
             PrevClickHandler = new Command(async () =>
             {
                 var prevdata = (await PreloadDataTask)[0];
-                if (!FailIfNull(prevdata, "Invalid Url"))
+                if (!await FailIfNull(prevdata, "Invalid Url"))
                 {
                     loadedData = prevdata;
                     DataChanged();
@@ -90,7 +90,7 @@ namespace Spindler.ViewModels
             NextClickHandler = new Command(async () =>
             {
                 var nextdata = (await PreloadDataTask)[1];
-                if (!FailIfNull(nextdata, "Invalid Url"))
+                if (!await FailIfNull(nextdata, "Invalid Url"))
                 {
                     loadedData = nextdata;
                     DataChanged();
@@ -116,10 +116,10 @@ namespace Spindler.ViewModels
 
         public async Task StartLoad()
         {
-            if (FailIfNull(Config, "Configuration does not exist")) return;
+            if (await FailIfNull(Config, "Configuration does not exist")) return;
             LoadedData data = await webService.LoadUrl(CurrentBook.Url);
             VerifyCookies();
-            if (FailIfNull(data, "Invalid Url")) return;
+            if (await FailIfNull(data, "Invalid Url")) return;
             loadedData = data;
             DataChanged();
             await DelayScroll();
@@ -157,7 +157,7 @@ namespace Spindler.ViewModels
 
         private async void DataChanged()
         {
-            if (FailIfNull(loadedData, "This is an invalid url")) return;
+            if (await FailIfNull(loadedData, "This is an invalid url")) return;
             // Database updates
             CurrentBook.Url = loadedData.currentUrl;
             CurrentBook.LastViewed = DateTime.UtcNow;
@@ -196,33 +196,14 @@ namespace Spindler.ViewModels
         /// <param name="value">The value to check for nullability</param>
         /// <param name="message">The message to display</param>
         /// <returns>If the object is null or not</returns>
-        private bool FailIfNull(object? value, string message)
+        private async Task<bool> FailIfNull(object? value, string message)
         {
             bool nullobj = value == null;
             if (nullobj)
             {
-                loadedData = MakeFailMessage(message);
-                // Change Previous Chapter button to a button that navigates to the WebviewReaderPage
-                prevText = "Open in Web View?";
-                PrevClickHandler = new Command(async () =>
-                {
-                    await Shell.Current.GoToAsync($"../{nameof(WebviewReaderPage)}?id={CurrentBook.Id}");
-                });
-                DataChanged();
+                await Shell.Current.GoToAsync($"../{nameof(ErrorPage)}?id={CurrentBook.Id}&errormessage={message}");
             }
             return nullobj;
-        }
-
-        private LoadedData MakeFailMessage(string message)
-        {
-            return new LoadedData
-            {
-                prevUrl = "https://failed.com",
-                nextUrl = "",
-                currentUrl = CurrentBook.Url,
-                text = message,
-                title = "An unexpected error has occured"
-            };
         }
 #nullable disable
         #endregion
