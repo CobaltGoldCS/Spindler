@@ -215,7 +215,7 @@ public class WebService
     private LoadedData MakeError(string currenturl, string message) => new()
     {
         text = message,
-        title = "An Error Has occurred",
+        title = "afb-4893",
         prevUrl = null,
         nextUrl = null,
         currentUrl = currenturl,

@@ -158,6 +158,11 @@ namespace Spindler.ViewModels
         private async void DataChanged()
         {
             if (await FailIfNull(loadedData, "This is an invalid url")) return;
+            if (loadedData.title == "afb-4893") // This means an error has occured while getting data from the WebService
+            {
+                await Shell.Current.GoToAsync($"../{nameof(ErrorPage)}?id={CurrentBook.Id}&errormessage={loadedData.text}");
+                return;
+            }
             // Database updates
             CurrentBook.Url = loadedData.currentUrl;
             CurrentBook.LastViewed = DateTime.UtcNow;
