@@ -22,12 +22,12 @@ public class ErrorOr<T>
     /// Will attempt to cast ErrorOr to Ok value
     /// </summary>
     /// <returns>ErrorOr.Ok or fails with default typecast exception</returns>
-    public Ok AsOk() => this as Ok;
+    public Ok AsOk() => (Ok)this;
     /// <summary>
     /// Will attempt to cast ErrorOr to Error value
     /// </summary>
     /// <returns>ErrorOr.Error or fails with default typecast exception</returns>
-    public Error AsError() => this as Error;
+    public Error AsError() => (Error)this;
 }
 public class ErrorOr
 {

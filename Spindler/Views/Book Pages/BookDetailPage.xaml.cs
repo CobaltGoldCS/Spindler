@@ -46,7 +46,7 @@ public partial class BookDetailPage : ContentPage
         InitializeComponent();
         urlEntry.Behaviors.Add(new TextValidationBehavior((string text) =>
         {
-            return Uri.TryCreate(text, UriKind.Absolute, out Uri uriresult) && (uriresult.Scheme == Uri.UriSchemeHttp || uriresult.Scheme == Uri.UriSchemeHttps);
+            return Uri.TryCreate(text, UriKind.Absolute, out Uri? uriresult) && (uriresult.Scheme == Uri.UriSchemeHttp || uriresult.Scheme == Uri.UriSchemeHttps);
         }));
     }
 

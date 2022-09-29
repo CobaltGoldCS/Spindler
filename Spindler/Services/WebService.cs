@@ -10,19 +10,14 @@ public class WebService
     #region Class Attributes
     private ConfigService configService;
     private Config config;
-    private string cookiestring;
+    private string? cookiestring;
     #endregion
     #region Public-Facing APIs
 
     public WebService(Config config)
     {
-        AttachConfig(config);
-    }
-    public void AttachConfig(Config config)
-    {
         this.config = config;
-        if (configService == null)
-            configService = new ConfigService(config);
+        configService ??= new ConfigService(config);
     }
     public void SetCookies(Uri baseaddress, ICollection<System.Net.Cookie> cookies)
     {
@@ -36,10 +31,10 @@ public class WebService
     /// <param name="prevUrl">The previous url (will be loaded into index 0)</param>
     /// <param name="nextUrl">The next url (will be loaded into index 1)</param>
     /// <returns>A Task containing a LoadedData array of length 2 [prevdata, nextdata]</returns>
-    public async Task<LoadedData[]> LoadData(string prevUrl, string nextUrl)
+    public async Task<LoadedData?[]> LoadData(string prevUrl, string nextUrl)
     {
-        Task<LoadedData> prevTask = LoadUrl(prevUrl);
-        Task<LoadedData> nextTask = LoadUrl(nextUrl);
+        Task<LoadedData?> prevTask = LoadUrl(prevUrl);
+        Task<LoadedData?> nextTask = LoadUrl(nextUrl);
         var loaded = await Task.WhenAll(prevTask, nextTask);
         return loaded;
     }
@@ -49,7 +44,7 @@ public class WebService
     /// </summary>
     /// <param name="url">The url to obtain data from</param>
     /// <returns>A LoadedData task holding either a null LoadedData, or a LoadedData with valid values</returns>
-    public async Task<LoadedData> LoadUrl(string url)
+    public async Task<LoadedData?> LoadUrl(string url)
     {
         if (!IsUrl(url))
         {
@@ -57,8 +52,7 @@ public class WebService
         }
         if (client.BaseAddress == null)
         {
-            Uri uri;
-            if (!Uri.TryCreate(url, UriKind.Absolute, out uri)) return null;
+            if (!Uri.TryCreate(url, UriKind.Absolute, out Uri? uri)) return null;
             client.BaseAddress = new Uri(uri.GetLeftPart(UriPartial.Authority) + "/", UriKind.Absolute);
         }
         try
@@ -84,13 +78,13 @@ public class WebService
     /// </summary>
     /// <param name="url">The url to test validity of</param>
     /// <returns>if <paramref name="url"/> is valid</returns>
-    public static bool IsUrl(string url)
+    public static bool IsUrl(string? url)
     {
         bool created = Uri.TryCreate(url, UriKind.RelativeOrAbsolute, out Uri _);
-        return created && (url.StartsWith("http") || url.StartsWith('/'));
+        return created && (url!.StartsWith("http") || url.StartsWith('/'));
     }
 
-    public static async Task<Config> FindValidConfig(string url)
+    public static async Task<Config?> FindValidConfig(string url)
     {
         Config c = await App.Database.GetConfigByDomainNameAsync(new UriBuilder(url).Host);
         
@@ -103,7 +97,7 @@ public class WebService
             };
             HtmlDocument doc = new();
             doc.LoadHtml(await client.GetStringAsync(url));
-            Config selectedConfig = null;
+            Config? selectedConfig = null;
             Parallel.ForEach(await App.Database.GetAllItemsAsync<GeneralizedConfig>(), (GeneralizedConfig config, ParallelLoopState state) =>
             {
                 if (ConfigService.PrettyWrapSelector(doc, new Path(config.MatchPath), ConfigService.SelectorType.Text) != null)
@@ -130,7 +124,7 @@ public class WebService
     #endregion
 
     #region Client
-    private HttpClient _client;
+    private HttpClient? _client;
     private HttpClient client
     {
         get
@@ -176,8 +170,7 @@ public class WebService
     private static string TrimRelativeUrl(string url)
     {
         // Ridiculous workaround because HttpClient class doesn't know how to deal with 'improperly' formatted relative urls
-        Uri uri;
-        if (Uri.TryCreate(url, UriKind.RelativeOrAbsolute, out uri) &&
+        if (Uri.TryCreate(url, UriKind.RelativeOrAbsolute, out Uri? uri) &&
             !uri.IsAbsoluteUri &&
             uri.ToString().StartsWith("/"))
         {
@@ -198,15 +191,15 @@ public class WebService
         HtmlDocument doc = new();
         doc.LoadHtml(html);
 
-        Task<string> text = Task.Run(() => { return configService.GetContent(doc); });
+        Task<string> text = Task.Run(() => { return configService!.GetContent(doc); });
         LoadedData data = new()
         {
             text = await text,
-            nextUrl = ConfigService.PrettyWrapSelector(doc, configService.nextpath, type: ConfigService.SelectorType.Link),
-            prevUrl = ConfigService.PrettyWrapSelector(doc, configService.previouspath, type: ConfigService.SelectorType.Link),
+            nextUrl = ConfigService.PrettyWrapSelector(doc, configService!.nextpath!, type: ConfigService.SelectorType.Link),
+            prevUrl = ConfigService.PrettyWrapSelector(doc, configService.previouspath!, type: ConfigService.SelectorType.Link),
             title = configService.GetTitle(doc),
             config = config,
-            currentUrl = new Uri(client.BaseAddress, url).ToString()
+            currentUrl = new Uri(client.BaseAddress!, url).ToString()
         };
 
         return data;

@@ -8,7 +8,7 @@ namespace Spindler.Views;
 public partial class GetCookiesPage : ContentPage
 {
     #region Class Attributes
-    Book currentBook;
+    Book? currentBook;
     #endregion
     #region QueryProperty Handler
     public string BookId
@@ -38,10 +38,10 @@ public partial class GetCookiesPage : ContentPage
         ReaderBrowser.Navigated += WebViewOnNavigated;
     }
 
-    private void WebViewOnNavigated(object sender, WebNavigatedEventArgs @event)
+    private void WebViewOnNavigated(object? sender, WebNavigatedEventArgs @event)
     {
         if (@event.Result != WebNavigationResult.Success) return;
-        currentBook.Url = @event.Url;
+        currentBook!.Url = @event.Url;
         currentBook.Position = 0;
 
         backButton.IsEnabled = ReaderBrowser.CanGoBack;
@@ -49,14 +49,14 @@ public partial class GetCookiesPage : ContentPage
     }
 
     // FIXME: This does not handle android back buttons
-    public async void OnShellNavigated(object sender,
+    public async void OnShellNavigated(object? sender,
                            ShellNavigatingEventArgs e)
     {
         DetachEventHandlers();
         // This should only be called when the back buttons are clicked
         if (e.Current.Location.OriginalString == "//BookLists/BookPage/ReaderPage/GetCookiesPage")
         {
-            await App.Database.SaveItemAsync(currentBook);
+            await App.Database.SaveItemAsync(currentBook!);
             // Properly redirect down two pages (so that we don't run into an inactive ReaderPage)
             e.Cancel();
             await Shell.Current.GoToAsync("../..");
@@ -85,19 +85,20 @@ public partial class GetCookiesPage : ContentPage
     {
         // Detaching these first allows us to avoid triggering OnShellNavigated
         DetachEventHandlers();
+        await App.Database.SaveItemAsync(currentBook!);
 
         var cookies = ReaderBrowser
             .Cookies?
-            .GetCookies(new Uri(currentBook.Url, UriKind.Absolute))
+            .GetCookies(new Uri(currentBook!.Url, UriKind.Absolute))
             .OfType<Cookie>()
             .ToList();
         if (cookies != null)
         {
             string stringifiedcookies = JsonConvert.SerializeObject(cookies, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
-            await Shell.Current.GoToAsync($"..?cookies={stringifiedcookies}&id={currentBook.Id}");
+            await Shell.Current.GoToAsync($"..?cookies={stringifiedcookies}&id={currentBook!.Id}");
             return;
         }
-        await Shell.Current.GoToAsync("..?cookies=[]&id="+currentBook.Id);
+        await Shell.Current.GoToAsync("..?cookies=[]&id="+currentBook!.Id);
     }
 
     /// <summary>

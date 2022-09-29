@@ -12,28 +12,28 @@ namespace Spindler.ViewModels
     public partial class ReaderViewModel : ObservableObject
     {
         #region Class Attributes
-        private WebService _webservice = null;
+        private WebService? _webservice = null;
         private WebService webService
         {
             get
             {
-                _webservice ??= new(Config);
+                _webservice ??= new(Config!);
                 return _webservice;
             }
         }
 
-        public Book CurrentBook;
-        public Config Config { get; set; }
+        public Book? CurrentBook;
+        public Config? Config { get; set; }
 
         /// <summary>
         /// Task that should hold an array of length 2 containing (previous chapter, next chapter) in that order
         /// </summary>
-        private Task<LoadedData[]> PreloadDataTask;
+        private Task<LoadedData[]>? PreloadDataTask;
 
         #region Bindable Properties
 
         [ObservableProperty]
-        public LoadedData loadedData;
+        public LoadedData? loadedData;
 
         [ObservableProperty]
         private string title = "Loading";
@@ -60,9 +60,6 @@ namespace Spindler.ViewModels
                     return defaultvisible;
             }
         }
-
-        [ObservableProperty]
-        private string prevText = "Previous";
         #endregion
         #endregion
 
@@ -79,7 +76,7 @@ namespace Spindler.ViewModels
             #region Command Implementations
             PrevClickHandler = new Command(async () =>
             {
-                var prevdata = (await PreloadDataTask)[0];
+                var prevdata = (await PreloadDataTask!)[0];
                 if (!await FailIfNull(prevdata, "Invalid Url"))
                 {
                     loadedData = prevdata;
@@ -89,7 +86,7 @@ namespace Spindler.ViewModels
             });
             NextClickHandler = new Command(async () =>
             {
-                var nextdata = (await PreloadDataTask)[1];
+                var nextdata = (await PreloadDataTask!)[1];
                 if (!await FailIfNull(nextdata, "Invalid Url"))
                 {
                     loadedData = nextdata;
@@ -103,10 +100,10 @@ namespace Spindler.ViewModels
                 double nextbuttonheight = NextButtonIsVisible ? ButtonHeight : 0;
                 await App.Database.SaveItemAsync<Book>(new()
                 {
-                    BookListId = CurrentBook.BookListId,
+                    BookListId = CurrentBook!.BookListId,
                     Id = -1,
-                    Title = "Bookmark: " + loadedData.title,
-                    Url = loadedData.currentUrl,
+                    Title = "Bookmark: " + loadedData!.title,
+                    Url = loadedData.currentUrl!,
                     Position = ReadingLayout.ScrollY / (ReadingLayout.ContentSize.Height - (prevbuttonheight + nextbuttonheight)),
                     LastViewed = DateTime.UtcNow,
                 });
@@ -117,20 +114,11 @@ namespace Spindler.ViewModels
         public async Task StartLoad()
         {
             if (await FailIfNull(Config, "Configuration does not exist")) return;
-            LoadedData data = await webService.LoadUrl(CurrentBook.Url);
-            VerifyCookies();
+            LoadedData? data = await webService.LoadUrl(CurrentBook!.Url);
             if (await FailIfNull(data, "Invalid Url")) return;
-            loadedData = data;
+            loadedData = data!;
             DataChanged();
             await DelayScroll();
-        }
-
-        private async void VerifyCookies()
-        {
-            if (!(bool)Config.ExtraConfigs.GetOrDefault("requirescookies", false) || cookiestring is not null) return;
-
-            var state = Shell.Current.CurrentState;
-            await Shell.Current.GoToAsync($"{nameof(GetCookiesPage)}?id={CurrentBook.Id}");
         }
 
 #nullable disable
@@ -206,7 +194,7 @@ namespace Spindler.ViewModels
             bool nullobj = value == null;
             if (nullobj)
             {
-                await Shell.Current.GoToAsync($"../{nameof(ErrorPage)}?id={CurrentBook.Id}&errormessage={message}");
+                await Shell.Current.GoToAsync($"../{nameof(ErrorPage)}?id={CurrentBook!.Id}&errormessage={message}");
             }
             return nullobj;
         }

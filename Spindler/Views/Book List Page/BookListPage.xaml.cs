@@ -38,7 +38,7 @@ public partial class BookListPage : ContentPage
 
     private async void list_SelectionChanged(object sender, SelectionChangedEventArgs e)
     {
-        BookList list = e.CurrentSelection.FirstOrDefault() as BookList;
+        BookList list = (BookList)e.CurrentSelection.FirstOrDefault()!;
         list.LastAccessed = DateTime.UtcNow;
         await App.Database.SaveItemAsync(list);
         await Shell.Current.GoToAsync($"/{nameof(BookPage)}?id={list.Id}");

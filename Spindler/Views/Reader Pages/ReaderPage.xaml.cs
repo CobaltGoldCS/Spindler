@@ -10,9 +10,6 @@ namespace Spindler;
 [QueryProperty(nameof(Cookies), "cookies")]
 public partial class ReaderPage : ContentPage
 {
-    #region Class Attributes
-    public ReaderViewModel readerViewModel;
-    #endregion
 
     #region QueryProperty Handler
     public string BookId
@@ -23,13 +20,13 @@ public partial class ReaderPage : ContentPage
         }
     }
 
-    public string Cookies { get; set; } = null;
+    public string? Cookies { get; set; } = null;
 
     private async void LoadBook(string str_id)
     {
         int id = Convert.ToInt32(str_id);
         Book currentBook = await App.Database.GetItemByIdAsync<Book>(id);
-        Config config = await WebService.FindValidConfig(currentBook.Url);
+        Config? config = await WebService.FindValidConfig(currentBook.Url);
 
         var webview = (bool?)config?.ExtraConfigs.GetOrDefault("webview", false) ?? false;
         if (webview)
@@ -43,7 +40,6 @@ public partial class ReaderPage : ContentPage
             CurrentBook = currentBook,
             Config = config
         };
-        // FIXME: This might be a race condition due to the fact that Cookies should be updated at the same time
         viewmodel.SetCookies(Cookies);
         viewmodel.AttachReferencesToUI(ReadingLayout, PrevButton.Height);
         BindingContext = viewmodel;
@@ -62,14 +58,14 @@ public partial class ReaderPage : ContentPage
     }
 
     // FIXME: This does not handle android back buttons
-    public async void OnShellNavigated(object sender,
+    public async void OnShellNavigated(object? sender,
                            ShellNavigatingEventArgs e)
     {
         if (e.Current.Location.OriginalString == "//BookLists/BookPage/ReaderPage")
         {
             double prevbuttonheight = PrevButton.IsVisible ? PrevButton.Height : 0;
             double nextbuttonheight = NextButton.IsVisible ? PrevButton.Height : 0;
-            var currentbook = (BindingContext as ReaderViewModel).CurrentBook;
+            var currentbook = ((ReaderViewModel)BindingContext).CurrentBook;
             if (currentbook != null)
             {
                 currentbook.Position = ReadingLayout.ScrollY / (ReadingLayout.ContentSize.Height - (prevbuttonheight + nextbuttonheight));

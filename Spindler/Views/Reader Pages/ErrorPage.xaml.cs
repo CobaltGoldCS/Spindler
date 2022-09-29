@@ -5,7 +5,7 @@ namespace Spindler.Views;
 public partial class ErrorPage : ContentPage
 {
 
-	public string BookId { private get; set; } = null;
+	public string? BookId { private get; set; } = null;
     public string Message 
 	{ 
 		set

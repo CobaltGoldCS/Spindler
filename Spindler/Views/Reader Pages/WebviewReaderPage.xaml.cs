@@ -7,7 +7,7 @@ namespace Spindler.Views;
 public partial class WebviewReaderPage : ContentPage
 {
     #region Class Attributes
-    Book currentBook;
+    Book? currentBook;
     #endregion
     #region QueryProperty Handler
     public string BookId
@@ -34,10 +34,10 @@ public partial class WebviewReaderPage : ContentPage
         ReaderBrowser.Navigated += WebViewOnNavigated;
     }
 
-    private void WebViewOnNavigated(object sender, WebNavigatedEventArgs @event)
+    private void WebViewOnNavigated(object? sender, WebNavigatedEventArgs @event)
     {
         if (@event.Result != WebNavigationResult.Success) return;
-        currentBook.Url = @event.Url;
+        currentBook!.Url = @event.Url;
         currentBook.Position = 0;
 
         backButton.IsEnabled = ReaderBrowser.CanGoBack;
@@ -45,12 +45,12 @@ public partial class WebviewReaderPage : ContentPage
     }
 
     // FIXME: This does not handle android back buttons
-    public async void OnShellNavigated(object sender,
+    public async void OnShellNavigated(object? sender,
                            ShellNavigatingEventArgs e)
     {
         if (e.Current.Location.OriginalString == "//BookLists/BookPage/WebviewReaderPage")
         {
-            await App.Database.SaveItemAsync(currentBook);
+            await App.Database.SaveItemAsync(currentBook!);
         }
         Shell.Current.Navigating -= OnShellNavigated;
         ReaderBrowser.Navigated -= WebViewOnNavigated;

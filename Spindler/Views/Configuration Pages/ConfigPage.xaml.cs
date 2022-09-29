@@ -21,7 +21,7 @@ public partial class ConfigPage : ContentPage
 
     private async void list_SelectionChanged(object sender, SelectionChangedEventArgs e)
     {
-        Config config = e.CurrentSelection.FirstOrDefault() as Config;
+        Config config = (Config)e.CurrentSelection.FirstOrDefault()!;
         await Shell.Current.GoToAsync($"/{nameof(ConfigDetailPage)}?id={config.Id}");
     }
     #endregion

@@ -54,7 +54,7 @@ public partial class BookPage : ContentPage
 
     private async void ConfigButtonPressed(object sender, EventArgs e)
     {
-        int id = await Task.Run(() => Convert.ToInt32((sender as ImageButton).BindingContext));
+        int id = await Task.Run(() => Convert.ToInt32(((ImageButton)sender).BindingContext));
         await Shell.Current.GoToAsync($"{nameof(BookDetailPage)}?id={id}|04923102-afb|{BooklistId}");
     }
 
@@ -65,7 +65,7 @@ public partial class BookPage : ContentPage
 
     private async void SelectionChanged(object sender, SelectionChangedEventArgs e)
     {
-        Book book = e.CurrentSelection.FirstOrDefault() as Book;
+        Book book = (Book)e.CurrentSelection.FirstOrDefault()!;
         await Shell.Current.GoToAsync($"{nameof(ReaderPage)}?id={book.Id}");
     }
 

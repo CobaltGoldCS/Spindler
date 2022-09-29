@@ -12,11 +12,11 @@ using Path = Models.Path;
 public class ConfigService
 {
     
-    public Path titlepath = null;
-    public Path contentpath = null;
-    public Path nextpath = null;
-    public Path previouspath = null;
-    public Dictionary<string, object> extraconfigs = default;
+    public Path? titlepath = null;
+    public Path? contentpath = null;
+    public Path? nextpath = null;
+    public Path? previouspath = null;
+    public Dictionary<string, object>? extraconfigs = default;
 
     public bool IsNull = false;
 
@@ -85,11 +85,11 @@ public class ConfigService
     /// <param name="path">A string representation of the target's xpath</param>
     /// <returns cref="string">A string containing the target text, or an empty string if nothing is found</returns>
     /// <exception cref="XPathException">If there is any error in the xpath</exception>
-    public static string PrettyWrapSelector(HtmlDocument nav, Path path, SelectorType type)
+    public static string? PrettyWrapSelector(HtmlDocument nav, Path path, SelectorType type)
     {
         try
         {
-            string value = path.type switch
+            string? value = path.type switch
             {
                 Path.Type.XPath => nav.DocumentNode.SelectSingleNode(path.path)?.CreateNavigator().Value,
                 Path.Type.Css => CssElementHandler(nav, path.path, type),
@@ -111,7 +111,7 @@ public class ConfigService
     /// <param name="type">The specific type to prioritize</param>
     /// <returns>A string based on the css syntax used</returns>
     /// <exception cref="NotImplementedException">If they selector type has not been implemented</exception>
-    public static string CssElementHandler(HtmlDocument nav, string path, SelectorType type)
+    public static string? CssElementHandler(HtmlDocument nav, string path, SelectorType type)
     {
 
         MatchCollection attributes = Regex.Matches(path, "(.+) \\$(.+)");
@@ -141,7 +141,7 @@ public class ConfigService
     /// <returns>A String containing the text of the content matched by contentpath</returns>
     public string GetContent(HtmlDocument nav)
     {
-        HtmlNode node = contentpath.type switch
+        HtmlNode node = contentpath!.type switch
         {
             Path.Type.Css => nav.QuerySelector(contentpath.path),
             Path.Type.XPath => nav.DocumentNode.SelectSingleNode(contentpath.path),
@@ -156,7 +156,7 @@ public class ConfigService
 
         // Node contains child nodes, so we must get the text of each
         StringWriter stringWriter = new();
-        string separator = (string)extraconfigs.GetOrDefault("separator", "\n");
+        string separator = (string)extraconfigs!.GetOrDefault("separator", "\n");
         foreach (HtmlNode child in node.ChildNodes)
         {
             if (child.OriginalName == "br")
@@ -177,9 +177,9 @@ public class ConfigService
     /// <returns>A title determined by the titlepath</returns>
     public string GetTitle(HtmlDocument nav)
     {
-        if (string.IsNullOrWhiteSpace(titlepath.path))
+        if (string.IsNullOrWhiteSpace(titlepath!.path))
             titlepath = new Path("//title");
-        return HttpUtility.HtmlDecode(PrettyWrapSelector(nav, titlepath, type: SelectorType.Text));
+        return HttpUtility.HtmlDecode(PrettyWrapSelector(nav, titlepath, type: SelectorType.Text))!;
     }
     #endregion
 }

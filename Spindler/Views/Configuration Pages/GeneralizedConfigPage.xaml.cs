@@ -21,7 +21,7 @@ public partial class GeneralizedConfigPage : ContentPage
 
     private async void list_SelectionChanged(object sender, SelectionChangedEventArgs e)
     {
-        GeneralizedConfig config = e.CurrentSelection.FirstOrDefault() as GeneralizedConfig;
+        GeneralizedConfig config = (GeneralizedConfig)e.CurrentSelection.FirstOrDefault()!;
         list.Unfocus();
         await Shell.Current.GoToAsync($"/{nameof(GeneralizedConfigDetailPage)}?id={config.Id}");
     }
