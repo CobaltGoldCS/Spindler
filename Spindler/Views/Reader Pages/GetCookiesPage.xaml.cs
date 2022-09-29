@@ -18,6 +18,10 @@ public partial class GetCookiesPage : ContentPage
             LoadBook(Convert.ToInt32(value));
         }
     }
+    /// <summary>
+    /// Loads the Page based on book <paramref name="id"/>
+    /// </summary>
+    /// <param name="id">The book id to load</param>
     public async void LoadBook(int id)
     {
         currentBook = await App.Database.GetItemByIdAsync<Book>(id);
@@ -48,8 +52,7 @@ public partial class GetCookiesPage : ContentPage
     public async void OnShellNavigated(object sender,
                            ShellNavigatingEventArgs e)
     {
-        Shell.Current.Navigating -= OnShellNavigated;
-        ReaderBrowser.Navigated -= WebViewOnNavigated;
+        DetachEventHandlers();
         // This should only be called when the back buttons are clicked
         if (e.Current.Location.OriginalString == "//BookLists/BookPage/ReaderPage/GetCookiesPage")
         {
@@ -78,15 +81,16 @@ public partial class GetCookiesPage : ContentPage
         ReaderBrowser.GoForward();
     }
 
-    private async void getCookies_Clicked(object sender, EventArgs e)
+    private async void GetCookies_Clicked(object sender, EventArgs e)
     {
-        // Get readerbrowser cookies
+        // Detaching these first allows us to avoid triggering OnShellNavigated
+        DetachEventHandlers();
+
         var cookies = ReaderBrowser
             .Cookies?
             .GetCookies(new Uri(currentBook.Url, UriKind.Absolute))
             .OfType<Cookie>()
             .ToList();
-        Shell.Current.Navigating -= OnShellNavigated;
         if (cookies != null)
         {
             string stringifiedcookies = JsonConvert.SerializeObject(cookies, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
@@ -94,5 +98,14 @@ public partial class GetCookiesPage : ContentPage
             return;
         }
         await Shell.Current.GoToAsync("..?cookies=[]&id="+currentBook.Id);
+    }
+
+    /// <summary>
+    /// Detach event handlers so that we don't accidentally cause a memory leak when navigating between pages
+    /// </summary>
+    private void DetachEventHandlers()
+    {
+        Shell.Current.Navigating -= OnShellNavigated;
+        ReaderBrowser.Navigated -= WebViewOnNavigated;
     }
 }

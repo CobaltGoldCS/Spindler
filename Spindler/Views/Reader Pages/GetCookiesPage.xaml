@@ -11,7 +11,7 @@
     </ContentPage.BindingContext>
     <Grid RowDefinitions="*, auto, auto" ColumnDefinitions="*, *, *" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand">
         <WebView x:Name="ReaderBrowser" Grid.Row="0" Grid.ColumnSpan="3" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand"/>
-        <Button x:Name="getCookies" Clicked="getCookies_Clicked" Grid.Row="1" Grid.ColumnSpan="3" Text="Get Cookies Now"/>
+        <Button x:Name="getCookies" Clicked="GetCookies_Clicked" Grid.Row="1" Grid.ColumnSpan="3" Text="Get Cookies Now"/>
         <ImageButton x:Name="backButton" Source="arrow_left.svg" Clicked="Back_Clicked" HeightRequest="30" Grid.Row="2" Grid.Column="0">
             <ImageButton.Behaviors>
                 <toolkit:IconTintColorBehavior TintColor="{AppThemeBinding Dark={StaticResource White}, Light={StaticResource Black}}"/>
