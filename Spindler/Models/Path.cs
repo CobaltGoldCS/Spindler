@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Spindler.Models;
+﻿namespace Spindler.Models;
 
 /// <summary>
 /// Dataclass representing a selector path, such as an xpath or csspath
