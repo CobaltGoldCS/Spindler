@@ -6,7 +6,6 @@ using Spindler.Utils;
 using Spindler.Views;
 using System.Net;
 using System.Windows.Input;
-
 namespace Spindler.ViewModels
 {
     public partial class ReaderViewModel : ObservableObject
@@ -131,15 +130,9 @@ namespace Spindler.ViewModels
             ButtonHeight = buttonheight;
             ReadingLayout = readingLayout;
         }
-
-        string cookiestring;
-        public void SetCookies(string cookies)
-        {
-            cookiestring = cookies;
-            if (cookies == null) return;
-            webService.SetCookies(new Uri(CurrentBook.Url), JsonConvert.DeserializeObject<IList<Cookie>>(cookies));
-        }
         #endregion
+
+        public void ClearCookies() => webService.ClearCookies();
 
         #region Helperfunctions
 
@@ -165,6 +158,7 @@ namespace Spindler.ViewModels
             PreloadDataTask = webService.LoadData(loadedData.prevUrl, loadedData.nextUrl);
         }
 
+
         private async Task DelayScroll()
         {
             await Task.Run(async () =>
@@ -182,7 +176,6 @@ namespace Spindler.ViewModels
             });
         }
         #region Error Handlers
-#nullable enable
         /// <summary>
         /// Display <paramref name="message"/> if <paramref name="value"/> is <c>null</c>
         /// </summary>
@@ -198,7 +191,6 @@ namespace Spindler.ViewModels
             }
             return nullobj;
         }
-#nullable disable
         #endregion
         #endregion
     }

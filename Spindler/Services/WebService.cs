@@ -10,7 +10,6 @@ public class WebService
     #region Class Attributes
     private ConfigService configService;
     private Config config;
-    private string? cookiestring;
     #endregion
     #region Public-Facing APIs
 
@@ -19,12 +18,9 @@ public class WebService
         this.config = config;
         configService ??= new ConfigService(config);
     }
-    public void SetCookies(Uri baseaddress, ICollection<System.Net.Cookie> cookies)
-    {
-        var handler = new HttpClientHandler { UseCookies = false };
-        client = new HttpClient(handler) { BaseAddress = baseaddress };
-        cookiestring = string.Join("; ", cookies.Select(cookie => $"{cookie.Name}={cookie.Value}"));
-    }
+    ~WebService() => ClearCookies();
+    
+    public void ClearCookies() => App.SharedValues.cookies = new System.Net.CookieContainer();
     /// <summary>
     /// Preload the next and previous urls with valid values into LoadedData
     /// </summary>
@@ -131,7 +127,8 @@ public class WebService
         {
             if (_client is null)
             {
-                _client = new();
+                HttpClientHandler handler = new() { CookieContainer = App.SharedValues.cookies };
+                _client = new(handler) {};
             }
             return _client;
         }
@@ -151,8 +148,6 @@ public class WebService
         try
         {
             var message = new HttpRequestMessage(HttpMethod.Get, url);
-            if (cookiestring != null)
-                message.Headers.Add("Cookie", cookiestring);
             var result = await client.SendAsync(message);
             result = result.EnsureSuccessStatusCode();
             return new ErrorOr<string>.Ok(await result.Content.ReadAsStringAsync());

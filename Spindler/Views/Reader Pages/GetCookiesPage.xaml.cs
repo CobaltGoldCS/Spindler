@@ -86,19 +86,9 @@ public partial class GetCookiesPage : ContentPage
         // Detaching these first allows us to avoid triggering OnShellNavigated
         DetachEventHandlers();
         await App.Database.SaveItemAsync(currentBook!);
+        App.SharedValues.cookies = ReaderBrowser.Cookies;
 
-        var cookies = ReaderBrowser
-            .Cookies?
-            .GetCookies(new Uri(currentBook!.Url, UriKind.Absolute))
-            .OfType<Cookie>()
-            .ToList();
-        if (cookies != null)
-        {
-            string stringifiedcookies = JsonConvert.SerializeObject(cookies, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
-            await Shell.Current.GoToAsync($"..?cookies={stringifiedcookies}&id={currentBook!.Id}");
-            return;
-        }
-        await Shell.Current.GoToAsync("..?cookies=[]&id="+currentBook!.Id);
+        await Shell.Current.GoToAsync("..?&id="+currentBook!.Id);
     }
 
     /// <summary>

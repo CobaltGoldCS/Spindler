@@ -7,7 +7,6 @@ using Spindler.Views;
 namespace Spindler;
 
 [QueryProperty(nameof(BookId), "id")]
-[QueryProperty(nameof(Cookies), "cookies")]
 public partial class ReaderPage : ContentPage
 {
 
@@ -19,8 +18,6 @@ public partial class ReaderPage : ContentPage
             LoadBook(value);
         }
     }
-
-    public string? Cookies { get; set; } = null;
 
     private async void LoadBook(string str_id)
     {
@@ -40,7 +37,6 @@ public partial class ReaderPage : ContentPage
             CurrentBook = currentBook,
             Config = config
         };
-        viewmodel.SetCookies(Cookies);
         viewmodel.AttachReferencesToUI(ReadingLayout, PrevButton.Height);
         BindingContext = viewmodel;
         await viewmodel.StartLoad();
@@ -71,6 +67,7 @@ public partial class ReaderPage : ContentPage
                 currentbook.Position = ReadingLayout.ScrollY / (ReadingLayout.ContentSize.Height - (prevbuttonheight + nextbuttonheight));
                 await App.Database.SaveItemAsync(currentbook);
             }
+            (BindingContext as ReaderViewModel)?.ClearCookies();
         }
         Shell.Current.Navigating -= OnShellNavigated;
     }

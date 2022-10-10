@@ -1,4 +1,5 @@
 ﻿using Spindler.Services;
+using Spindler.Utils;
 using Spindler.Views;
 using SQLitePCL;
 
@@ -6,13 +7,22 @@ namespace Spindler;
 
 public partial class App : Application
 {
-    private static DataService database;
+    private static DataService? database;
     public static DataService Database
     {
         get
         {
             database ??= new DataService(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Spindler.db"));
             return database;
+        }
+    }
+    private static Shared? shared;
+    public static Shared SharedValues
+    {
+        get
+        {
+            shared ??= new Shared();
+            return shared;
         }
     }
     public App(AppShell shell)
