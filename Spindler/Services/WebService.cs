@@ -129,6 +129,7 @@ public class WebService
             {
                 HttpClientHandler handler = new() { CookieContainer = App.SharedValues.cookies };
                 _client = new(handler) {};
+                _client.DefaultRequestHeaders.Add("User-Agent", App.SharedValues.userAgent);
             }
             return _client;
         }
