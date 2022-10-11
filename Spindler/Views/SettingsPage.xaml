@@ -13,14 +13,14 @@
             <HorizontalStackLayout HorizontalOptions="CenterAndExpand">
                 <Picker Title="Select a Font" SelectedItem="{Binding Font}">
                     <Picker.Items>
-                        <x:String>OpenSansRegular</x:String>
-                        <x:String>OpenSansSemibold</x:String>
+                        <x:String>OpenSans (Regular)</x:String>
+                        <x:String>OpenSans (Semibold)</x:String>
                         <x:String>DroidSans</x:String>
-                        <x:String>DroidSansBold</x:String>
+                        <x:String>DroidSans (Bold)</x:String>
                         <x:String>Merriweather</x:String>
-                        <x:String>MerriweatherBold</x:String>
+                        <x:String>Merriweather (Bold)</x:String>
                         <x:String>Signika</x:String>
-                        <x:String>SignikaBold</x:String>
+                        <x:String>Signika (Bold)</x:String>
                     </Picker.Items>
                 </Picker>
                 <Entry x:Name="FontSizeEntry" Text="{Binding FontSize}" Keyboard="Numeric"/>

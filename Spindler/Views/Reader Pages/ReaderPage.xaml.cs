@@ -47,9 +47,9 @@ public partial class ReaderPage : ContentPage
     {
         InitializeComponent();
 
-        ContentView.FontFamily = Preferences.Default.Get("font", "OpenSansRegular");
+        ContentView.FontFamily = Preferences.Default.Get("font", "OpenSans (Regular)");
         ContentView.FontSize = Preferences.Default.Get("font_size", 15);
-        TitleView.FontFamily = Preferences.Default.Get("font", "OpenSansRegular");
+        TitleView.FontFamily = Preferences.Default.Get("font", "OpenSans (Regular)");
         Shell.Current.Navigating += OnShellNavigated;
     }
 
