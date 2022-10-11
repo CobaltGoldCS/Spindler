@@ -10,7 +10,6 @@ namespace Spindler.ViewModels
         [ObservableProperty]
         private string font = Preferences.Default.Get("font", "OpenSansRegular");
         [ObservableProperty]
-        [NotifyPropertyChangedFor(nameof(RequestSize))]
         private int fontSize = Preferences.Default.Get("font_size", 12);
 
         public ICommand SaveSettingsCommand { get; private set; }
@@ -22,15 +21,6 @@ namespace Spindler.ViewModels
                 Preferences.Set("font", font);
                 Preferences.Set("font_size", fontSize);
             });
-        }
-
-        public int RequestSize
-        {
-            get => FontSize + 5;
-            set
-            {
-                OnPropertyChanged();
-            }
         }
     }
 }

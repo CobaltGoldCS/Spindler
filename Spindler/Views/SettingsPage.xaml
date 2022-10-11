@@ -7,12 +7,12 @@
     <ContentPage.BindingContext>
         <Viewmodels:SettingsViewmodel/>
     </ContentPage.BindingContext>
-    <ScrollView x:Name="Scroll" Orientation="Vertical" IsEnabled="True">
-        <VerticalStackLayout VerticalOptions="FillAndExpand">
-            <Label Text="The quick brown fox jumps over the lazy dog" FontSize="{Binding FontSize}" FontFamily="{Binding Font}" HeightRequest="{Binding RequestSize}"/>
-            <HorizontalStackLayout HorizontalOptions="CenterAndExpand">
-                <Picker Title="Select a Font" SelectedItem="{Binding Font}">
-                    <Picker.Items>
+    <ScrollView x:Name="Scroll" Orientation="Vertical" IsEnabled="True" Margin="10,0">
+        <Grid ColumnDefinitions="*, *, auto" RowDefinitions="75, auto, auto" VerticalOptions="FillAndExpand">
+            <Label Text="The quick brown fox jumps over the lazy dog" FontSize="{Binding FontSize}" FontFamily="{Binding Font}" Grid.ColumnSpan="3"
+                   LineBreakMode="TailTruncation"/>
+            <Picker Title="Select a Font" SelectedItem="{Binding Font}" Grid.Row="1" Grid.ColumnSpan="2">
+                <Picker.Items>
                         <x:String>OpenSans (Regular)</x:String>
                         <x:String>OpenSans (Semibold)</x:String>
                         <x:String>DroidSans</x:String>
@@ -23,9 +23,8 @@
                         <x:String>Signika (Bold)</x:String>
                     </Picker.Items>
                 </Picker>
-                <Entry x:Name="FontSizeEntry" Text="{Binding FontSize}" Keyboard="Numeric"/>
-            </HorizontalStackLayout>
-            <Button Text="Apply Settings" Command="{Binding SaveSettingsCommand}" HorizontalOptions="Center"/>
-        </VerticalStackLayout>
+            <Entry x:Name="FontSizeEntry" Text="{Binding FontSize}" Keyboard="Numeric" Grid.Row="1" Grid.Column="2"/>
+            <Button Text="Apply Settings" Command="{Binding SaveSettingsCommand}" HorizontalOptions="End" Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="2"/>
+        </Grid>
     </ScrollView>
 </ContentPage>
