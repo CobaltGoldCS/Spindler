@@ -63,24 +63,28 @@ public partial class GetCookiesPage : ContentPage
             return;
         }
     }
-
+    /// Event that fires on the back button
     private void Back_Clicked(object sender, EventArgs e)
     {
         if (!ReaderBrowser.CanGoBack) return;
         ReaderBrowser.GoBack();
     }
-
+    /// Event that fires on the reload button
     private void Reload_Clicked(object sender, EventArgs e)
     {
         ReaderBrowser.Reload();
     }
-
+    /// Event that fires on the forward button
     private void Forward_Clicked(object sender, EventArgs e)
     {
         if(!ReaderBrowser.CanGoForward) return;
         ReaderBrowser.GoForward();
     }
-
+    /// <summary>
+    /// Event that fires when the 'Get Cookies' button is clicked
+    /// </summary>
+    /// <param name="sender">The sender of the event (should be a Button)</param>
+    /// <param name="e">The arguments of the event (goes unused)</param>
     private async void GetCookies_Clicked(object sender, EventArgs e)
     {
         // Detaching these first allows us to avoid triggering OnShellNavigated
