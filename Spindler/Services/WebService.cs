@@ -85,7 +85,7 @@ public class WebService
     /// Find a valid website configuration based on <paramref name="url"/>
     /// </summary>
     /// <param name="url">The url of the targeted website (handles http/https)</param>
-    /// <returns>A valid configuration, or <code>null</code> if no valid configuration was found</returns>
+    /// <returns>A valid configuration, or null if no valid configuration was found</returns>
     public static async Task<Config?> FindValidConfig(string url)
     {
         Config c = await App.Database.GetConfigByDomainNameAsync(new UriBuilder(url).Host);
