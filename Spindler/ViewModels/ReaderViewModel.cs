@@ -177,7 +177,7 @@ namespace Spindler.ViewModels
         /// Display <paramref name="message"/> if <paramref name="value"/> is <c>null</c>
         /// </summary>
         /// <param name="value">The value to check for nullability</param>
-        /// <param name="message">The message to display</param>
+        /// <param name="message">The value to display</param>
         /// <returns>If the object is null or not</returns>
         private async Task<bool> FailIfNull(object? value, string message)
         {
