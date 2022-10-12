@@ -27,7 +27,7 @@ namespace Spindler.ViewModels
         /// <summary>
         /// Task that should hold an array of length 2 containing (previous chapter, next chapter) in that order
         /// </summary>
-        private Task<LoadedData[]>? PreloadDataTask;
+        private Task<LoadedData?[]>? PreloadDataTask;
 
         #region Bindable Properties
 
@@ -69,28 +69,27 @@ namespace Spindler.ViewModels
         #endregion
 
         #region Initialization Functions
-#nullable enable
         public ReaderViewModel()
         {
             #region Command Implementations
             PrevClickHandler = new Command(async () =>
             {
-                var prevdata = (await PreloadDataTask!)[0];
+                var prevdata = (await PreloadDataTask!)![0];
                 if (!await FailIfNull(prevdata, "Invalid Url"))
                 {
                     loadedData = prevdata;
                     DataChanged();
-                    await ReadingLayout.ScrollToAsync(ReadingLayout.ScrollX, 0, false);
+                    await ReadingLayout!.ScrollToAsync(ReadingLayout.ScrollX, 0, false);
                 }
             });
             NextClickHandler = new Command(async () =>
             {
-                var nextdata = (await PreloadDataTask!)[1];
+                var nextdata = (await PreloadDataTask!)![1];
                 if (!await FailIfNull(nextdata, "Invalid Url"))
                 {
                     loadedData = nextdata;
                     DataChanged();
-                    await ReadingLayout.ScrollToAsync(ReadingLayout.ScrollX, 0, false);
+                    await ReadingLayout!.ScrollToAsync(ReadingLayout.ScrollX, 0, false);
                 }
             });
             BookmarkCommand = new Command(async () =>
@@ -103,7 +102,7 @@ namespace Spindler.ViewModels
                     Id = -1,
                     Title = "Bookmark: " + loadedData!.title,
                     Url = loadedData.currentUrl!,
-                    Position = ReadingLayout.ScrollY / (ReadingLayout.ContentSize.Height - (prevbuttonheight + nextbuttonheight)),
+                    Position = ReadingLayout!.ScrollY / (ReadingLayout.ContentSize.Height - (prevbuttonheight + nextbuttonheight)),
                     LastViewed = DateTime.UtcNow,
                 });
             });
@@ -120,9 +119,7 @@ namespace Spindler.ViewModels
             await DelayScroll();
         }
 
-#nullable disable
-
-        private ScrollView ReadingLayout;
+        private ScrollView? ReadingLayout;
         public double ButtonHeight { get; set; }
 
         public void AttachReferencesToUI(ScrollView readingLayout, double buttonheight)
@@ -139,18 +136,18 @@ namespace Spindler.ViewModels
         private async void DataChanged()
         {
             if (await FailIfNull(loadedData, "This is an invalid url")) return;
-            if (loadedData.title == "afb-4893") // This means an error has occured while getting data from the WebService
+            if (loadedData!.title == "afb-4893") // This means an error has occured while getting data from the WebService
             {
-                await Shell.Current.GoToAsync($"../{nameof(ErrorPage)}?id={CurrentBook.Id}&errormessage={loadedData.text}");
+                await Shell.Current.GoToAsync($"../{nameof(ErrorPage)}?id={CurrentBook!.Id}&errormessage={loadedData.text}");
                 return;
             }
             // Database updates
-            CurrentBook.Url = loadedData.currentUrl;
+            CurrentBook!.Url = loadedData.currentUrl!;
             CurrentBook.LastViewed = DateTime.UtcNow;
             await App.Database.SaveItemAsync(CurrentBook);
 
-            Title = loadedData.title;
-            Text = loadedData.text;
+            Title = loadedData.title ?? "";
+            Text = loadedData.text ?? "";
 
             OnPropertyChanged(nameof(NextButtonIsVisible));
             OnPropertyChanged(nameof(PrevButtonIsVisible));
@@ -168,9 +165,9 @@ namespace Spindler.ViewModels
                 await Task.Delay(100);
                 MainThread.BeginInvokeOnMainThread(async () =>
                 {
-                    await ReadingLayout.ScrollToAsync(ReadingLayout.ScrollX,
-                        Math.Clamp(CurrentBook.Position, 0d, 1d) * (ReadingLayout.ContentSize.Height - (prevbuttonheight + nextbuttonheight)),
-                        (bool)Config.ExtraConfigs.GetOrDefault("autoscrollanimation", true));
+                    await ReadingLayout!.ScrollToAsync(ReadingLayout.ScrollX,
+                        Math.Clamp(CurrentBook!.Position, 0d, 1d) * (ReadingLayout.ContentSize.Height - (prevbuttonheight + nextbuttonheight)),
+                        (bool)Config!.ExtraConfigs.GetOrDefault("autoscrollanimation", true));
                 });
                 
             });

@@ -29,7 +29,7 @@ public class WebService
     /// <param name="prevUrl">The previous url (will be loaded into index 0)</param>
     /// <param name="nextUrl">The next url (will be loaded into index 1)</param>
     /// <returns>A Task containing a LoadedData array of length 2 [prevdata, nextdata]</returns>
-    public async Task<LoadedData?[]> LoadData(string prevUrl, string nextUrl)
+    public async Task<LoadedData?[]> LoadData(string? prevUrl, string? nextUrl)
     {
         Task<LoadedData?> prevTask = LoadUrl(prevUrl);
         Task<LoadedData?> nextTask = LoadUrl(nextUrl);
@@ -42,7 +42,7 @@ public class WebService
     /// </summary>
     /// <param name="url">The url to obtain data from</param>
     /// <returns>A LoadedData task holding either a null LoadedData, or a LoadedData with valid values</returns>
-    public async Task<LoadedData?> LoadUrl(string url)
+    public async Task<LoadedData?> LoadUrl(string? url)
     {
         if (!IsUrl(url))
         {
@@ -55,7 +55,7 @@ public class WebService
         }
         try
         {
-            url = TrimRelativeUrl(url);
+            url = TrimRelativeUrl(url!);
 
             HtmlOrError html = await HtmlOrError(url);
             if (Result.IsError(html))

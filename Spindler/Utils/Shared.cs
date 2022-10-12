@@ -8,7 +8,16 @@ namespace Spindler.Utils
 {
     public class Shared
     {
-        public CookieContainer cookies = new();
+        private CookieContainer _cookies = new();
+        public CookieContainer cookies 
+        {
+            get => _cookies;
+            set
+            {
+                if (value is not null)
+                    _cookies = value;
+            }
+        }
 
         public readonly string userAgent;
 
