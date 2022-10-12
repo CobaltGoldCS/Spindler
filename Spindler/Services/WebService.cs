@@ -66,7 +66,7 @@ public class WebService
             HtmlOrError html = await HtmlOrError(url);
             if (Result.IsError(html))
             {
-                return MakeError(url, html.AsError().message);
+                return MakeError(url, html.AsError().value);
             }
             return await LoadWebData(url, html.AsOk().value);
         }
@@ -152,7 +152,7 @@ public class WebService
     /// Attempt to obtain html from a url
     /// </summary>
     /// <param name="url">The url to attempt to scrape</param>
-    /// <returns>Returns an ErrorOr object either containing the html or an error message string</returns>
+    /// <returns>Returns an ErrorOr object either containing the html or an error value string</returns>
     private async Task<HtmlOrError> HtmlOrError(string url)
     {
         try
