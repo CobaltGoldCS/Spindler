@@ -10,8 +10,8 @@ namespace Spindler.Services;
 public class WebService
 {
     #region Class Attributes
-    private ConfigService configService;
-    private Config config;
+    private readonly ConfigService configService;
+    private readonly Config config;
     #endregion
     #region Public-Facing APIs
 
@@ -20,9 +20,15 @@ public class WebService
         this.config = config;
         configService ??= new ConfigService(config);
     }
+
+    public WebService(Config config, ConfigService configService)
+    {
+        this.config = config;
+        this.configService = configService;
+    }
     ~WebService() => ClearCookies();
     
-    public void ClearCookies() => App.SharedValues.cookies = new System.Net.CookieContainer();
+    public static void ClearCookies() => App.SharedValues.cookies = new System.Net.CookieContainer();
     /// <summary>
     /// Preload the next and previous urls with valid values into LoadedData
     /// </summary>
