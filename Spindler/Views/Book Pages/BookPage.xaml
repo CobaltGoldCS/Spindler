@@ -49,8 +49,8 @@
                             <RowDefinition Height="20"/>
                         </Grid.RowDefinitions>
                         <Label   HeightRequest="30"
-                        VerticalTextAlignment="Center" FontSize="Medium" x:Name="TitleLabel" Text="{Binding Title}"/>
-                        <Label x:Name="UrlLabel" Text="{Binding Url}" FontSize="Small" Grid.Row="1"/>
+                        VerticalTextAlignment="Center" FontSize="Medium" x:Name="TitleLabel" Text="{Binding Title}" LineBreakMode="TailTruncation" Padding="0,0,5,0"/>
+                        <Label x:Name="UrlLabel" Text="{Binding Url}" FontSize="Small" Grid.Row="1" LineBreakMode="TailTruncation" Padding="0,0,5,0"/>
                         <ImageButton HorizontalOptions="EndAndExpand" VerticalOptions="FillAndExpand" Grid.Column="1" Grid.RowSpan="2" Source="kebab.svg"
                         Padding="0,3,5,3" WidthRequest="20" Aspect="AspectFill" x:Name="ConfigButton" Pressed="ConfigButtonPressed" BindingContext="{Binding Id}">
                             <ImageButton.Behaviors>
