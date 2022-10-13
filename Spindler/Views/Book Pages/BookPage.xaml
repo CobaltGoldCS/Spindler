@@ -15,7 +15,7 @@
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
 
-            <Label Text="{Binding Name}" Grid.Column="0" FontSize="Large" VerticalOptions="Center" HorizontalOptions="FillAndExpand"/>
+            <Label Text="{Binding Name}" Grid.Column="0" FontSize="Large" VerticalOptions="Center" HorizontalOptions="FillAndExpand" TextColor="{StaticResource Primary}"/>
             <StackLayout Grid.Column="1" HorizontalOptions="EndAndExpand" Orientation="Horizontal" VerticalOptions="Center" Margin="0,0,10,0">
                 <ImageButton HeightRequest="25"
                              WidthRequest="25"

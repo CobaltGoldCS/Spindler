@@ -1,15 +1,17 @@
 ﻿using HtmlAgilityPack;
 using Spindler.Models;
 using Spindler.Utils;
+
 using Path = Spindler.Models.Path;
+using HtmlOrError = Spindler.Utils.Result<string, string>;
 
 namespace Spindler.Services;
 
 public class WebService
 {
     #region Class Attributes
-    private ConfigService configService;
-    private Config config;
+    private readonly ConfigService configService;
+    private readonly Config config;
     #endregion
     #region Public-Facing APIs
 
@@ -18,9 +20,15 @@ public class WebService
         this.config = config;
         configService ??= new ConfigService(config);
     }
+
+    public WebService(Config config, ConfigService configService)
+    {
+        this.config = config;
+        this.configService = configService;
+    }
     ~WebService() => ClearCookies();
     
-    public void ClearCookies() => App.SharedValues.cookies = new System.Net.CookieContainer();
+    public static void ClearCookies() => App.SharedValues.cookies = new System.Net.CookieContainer();
     /// <summary>
     /// Preload the next and previous urls with valid values into LoadedData
     /// </summary>
@@ -55,10 +63,10 @@ public class WebService
         {
             url = TrimRelativeUrl(url!);
 
-            ErrorOr<string> html = await HtmlOrError(url);
-            if (ErrorOr.IsError(html))
+            HtmlOrError html = await HtmlOrError(url);
+            if (Result.IsError(html))
             {
-                return MakeError(url, html.AsError().message);
+                return MakeError(url, html.AsError().value);
             }
             return await LoadWebData(url, html.AsOk().value);
         }
@@ -79,7 +87,11 @@ public class WebService
         bool created = Uri.TryCreate(url, UriKind.RelativeOrAbsolute, out Uri _);
         return created && (url!.StartsWith("http") || url.StartsWith('/'));
     }
-
+    /// <summary>
+    /// Find a valid website configuration based on <paramref name="url"/>
+    /// </summary>
+    /// <param name="url">The url of the targeted website (handles http/https)</param>
+    /// <returns>A valid configuration, or null if no valid configuration was found</returns>
     public static async Task<Config?> FindValidConfig(string url)
     {
         Config c = await App.Database.GetConfigByDomainNameAsync(new UriBuilder(url).Host);
@@ -93,6 +105,8 @@ public class WebService
             };
             HtmlDocument doc = new();
             doc.LoadHtml(await client.GetStringAsync(url));
+            
+            // Parallel index through all generalized configs
             Config? selectedConfig = null;
             Parallel.ForEach(await App.Database.GetAllItemsAsync<GeneralizedConfig>(), (GeneralizedConfig config, ParallelLoopState state) =>
             {
@@ -104,15 +118,10 @@ public class WebService
             });
             return selectedConfig;
         }
-        catch (IOException)
-        {
-            return null;
-        }
-        catch (TaskCanceledException)
-        {
-            return null;
-        }
-        catch (System.Net.WebException)
+        catch (Exception e) when (
+        e is IOException           ||
+        e is TaskCanceledException ||
+        e is System.Net.WebException)
         {
             return null;
         }
@@ -143,19 +152,19 @@ public class WebService
     /// Attempt to obtain html from a url
     /// </summary>
     /// <param name="url">The url to attempt to scrape</param>
-    /// <returns>Returns an ErrorOr object either containing the html or an error message string</returns>
-    private async Task<ErrorOr<string>> HtmlOrError(string url)
+    /// <returns>Returns an ErrorOr object either containing the html or an error value string</returns>
+    private async Task<HtmlOrError> HtmlOrError(string url)
     {
         try
         {
             var message = new HttpRequestMessage(HttpMethod.Get, url);
             var result = await client.SendAsync(message);
             result = result.EnsureSuccessStatusCode();
-            return new ErrorOr<string>.Ok(await result.Content.ReadAsStringAsync());
+            return new HtmlOrError.Ok(await result.Content.ReadAsStringAsync());
         }
         catch (HttpRequestException e)
         {
-            return new ErrorOr<string>.Error($"Request Exception {e.StatusCode}: {e.Message}");
+            return new HtmlOrError.Error($"Request Exception {e.StatusCode}: {e.Message}");
         }
     }
     /// <summary>
