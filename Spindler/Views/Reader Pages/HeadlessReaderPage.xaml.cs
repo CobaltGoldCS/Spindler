@@ -126,7 +126,7 @@ public partial class HeadlessReaderPage : ContentPage
     public async void OnShellNavigated(object? sender,
                            ShellNavigatingEventArgs e)
     {
-        if (e.Current.Location.OriginalString == "//BookLists/BookPage/ReaderPage")
+        if (e.Current.Location.OriginalString == "//BookLists/BookPage/HeadlessReaderPage")
         {
             double prevbuttonheight = PrevButton.IsVisible ? PrevButton.Height : 0;
             double nextbuttonheight = NextButton.IsVisible ? PrevButton.Height : 0;
@@ -153,6 +153,9 @@ public partial class HeadlessReaderPage : ContentPage
         NextButton.IsEnabled = true;
         PrevButton.IsEnabled = true;
 
+        if (currentbook.Position == 0)
+            await ReadingLayout.ScrollToAsync(ReadingLayout.ScrollX, 0, false);
+
         // Turn relative urls into absolutes
         var baseUri = new Uri(loadedData.currentUrl!);
         loadedData.prevUrl = new Uri(baseUri, loadedData.prevUrl).ToString();
@@ -162,8 +165,6 @@ public partial class HeadlessReaderPage : ContentPage
         currentbook.LastViewed = DateTime.UtcNow;
         currentbook.Position = 0;
         await App.Database.SaveItemAsync(currentbook);
-
-        await ReadingLayout.ScrollToAsync(ReadingLayout.ScrollX, 0, false);
         
 	}
 
