@@ -61,7 +61,7 @@ public class ConfigService
             bool _ = temppath.type switch
             {
                 Path.Type.Css => CssElementHandler(nav, path, SelectorType.Text) != null,
-                Path.Type.XPath => XPathExpression.Compile(path) != null,
+                Path.Type.XPath => XPathHandler(nav, path, SelectorType.Text) != null,
                 _ => throw new NotImplementedException("This path type has not been implemented")
             };
             return true;
@@ -91,7 +91,7 @@ public class ConfigService
         {
             string? value = path.type switch
             {
-                Path.Type.XPath => nav.DocumentNode.SelectSingleNode(path.path)?.CreateNavigator().Value,
+                Path.Type.XPath => XPathHandler(nav, path.path, type),
                 Path.Type.Css => CssElementHandler(nav, path.path, type),
                 _ => throw new NotImplementedException("This type is not implemented (PrettyWrapSelector)"),
             };
@@ -125,7 +125,7 @@ public class ConfigService
                 return node?.InnerText;
             }
             var value = node?.GetAttributeValue(modifier, null);
-            if (type == SelectorType.Link && modifier != "href")
+            if (type == SelectorType.Link && modifier != "href" && value != null)
             {
                 value = Regex.Match(value, "((?:https?:/)?/[-a-zA-Z0-9+&@#/%?=~_|!:, .;]*[-a-zA-Z0-9+&@#/%=~_|])").Value;
             }
@@ -137,6 +137,27 @@ public class ConfigService
             SelectorType.Link => nav.QuerySelector(path)?.GetAttributeValue("href", null),
             _ => throw new NotImplementedException($"This selector type: {type} is not implemented (CssElementHandler)"),
         };
+    }
+
+    public static string? XPathHandler(HtmlDocument nav, string path, SelectorType type)
+    {
+        MatchCollection attributes = Regex.Matches(path, "(.+) \\$(.+)");
+        if (attributes.Any())
+        {
+            var cleanpath = attributes[0].Groups[1].Value;
+            var modifier = attributes[0].Groups[2].Value;
+
+            var node = nav.DocumentNode.SelectSingleNode(cleanpath);
+            if (node is null) return null;
+            return node.GetAttributeValue(modifier, null);
+        }
+        if (type == SelectorType.Link && !path.Contains('@'))
+            path += path.EndsWith("/") ? "@href" : "/@href";
+        var value = nav.DocumentNode.SelectSingleNode(path)?.CreateNavigator().Value;
+        if (value is null) return value;
+        if (type == SelectorType.Link)
+            value = Regex.Match(value, "((?:https?:/)?/[-a-zA-Z0-9+&@#/%?=~_|!:, .;]*[-a-zA-Z0-9+&@#/%=~_|])").Value;
+        return value;
     }
 
     /// <summary>
