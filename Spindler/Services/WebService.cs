@@ -181,11 +181,17 @@ public class WebService
     /// <param name="url">The url used to obtain the web data (this is not processed in this function)</param>
     /// <param name="html">The html to search for relevant data</param>
     /// <returns>A loaded data object containing the required data from the website</returns>
-    private async Task<LoadedData> LoadWebData(string url, string html)
+    public async Task<LoadedData> LoadWebData(string url, string html)
     {
 
         HtmlDocument doc = new();
         doc.LoadHtml(html);
+
+        if (client.BaseAddress == null)
+        {
+            if (!Uri.TryCreate(url, UriKind.Absolute, out Uri? uri)) return MakeError(url, "Invalid url");
+            client.BaseAddress = new Uri(uri.GetLeftPart(UriPartial.Authority) + "/", UriKind.Absolute);
+        }
 
         Task<string> text = Task.Run(() => { return configService!.GetContent(doc); });
         LoadedData data = new()
