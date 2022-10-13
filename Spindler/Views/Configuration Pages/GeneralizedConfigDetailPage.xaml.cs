@@ -53,6 +53,7 @@ public partial class GeneralizedConfigDetailPage : ContentPage
         separatorEntry.Text = config.ExtraConfigs.GetOrDefault("separator", "\n")
             .Replace(Environment.NewLine, @"\n")
             .Replace("\t", @"\t");
+        headlessSwitch.On = config.ExtraConfigs.GetOrDefault("headless", false);
     }
     #endregion
 
@@ -99,6 +100,7 @@ public partial class GeneralizedConfigDetailPage : ContentPage
             { "separator", separatorEntry.Text
                             .Replace(@"\n", System.Environment.NewLine)
                             .Replace(@"\t", "     ")},
+            { "headless", headlessSwitch.On },
         };
 
         GeneralizedConfig config = new()

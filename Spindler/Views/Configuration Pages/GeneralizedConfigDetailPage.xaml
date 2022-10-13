@@ -46,6 +46,7 @@
                 <TableSection Title="Reader View">
                     <EntryCell x:Name="separatorEntry" Label="The Separator between p tags"/>
                     <SwitchCell x:Name="animationSwitch" Text="Animated Autoscroll" On="True"/>
+                    <SwitchCell x:Name="headlessSwitch" Text="Enable headless mode (increased compatability, decreased performance)"/>
                 </TableSection>
             </TableRoot>
         </TableView>

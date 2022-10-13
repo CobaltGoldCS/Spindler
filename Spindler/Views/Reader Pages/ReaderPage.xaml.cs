@@ -31,6 +31,12 @@ public partial class ReaderPage : ContentPage
             await Shell.Current.GoToAsync($"../{nameof(WebviewReaderPage)}?id={currentBook.Id}");
             return;
         }
+        var headless = config?.ExtraConfigs.GetOrDefault("headless", false) ?? false;
+        if (headless)
+        {
+            await Shell.Current.GoToAsync($"../{nameof(HeadlessReaderPage)}?id={currentBook.Id}");
+            return;
+        }
         
         ReaderViewModel viewmodel = new()
         {
