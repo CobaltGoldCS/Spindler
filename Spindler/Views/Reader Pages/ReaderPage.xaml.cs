@@ -25,7 +25,7 @@ public partial class ReaderPage : ContentPage
         Book currentBook = await App.Database.GetItemByIdAsync<Book>(id);
         Config? config = await WebService.FindValidConfig(currentBook.Url);
 
-        var webview = (bool?)config?.ExtraConfigs.GetOrDefault("webview", false) ?? false;
+        var webview = config?.ExtraConfigs.GetOrDefault("webview", false) ?? false;
         if (webview)
         {
             await Shell.Current.GoToAsync($"../{nameof(WebviewReaderPage)}?id={currentBook.Id}");

@@ -17,7 +17,7 @@
     <ScrollView x:Name="ReadingLayout" Orientation="Vertical" IsEnabled="True" VerticalScrollBarVisibility="Always" >
         <Grid x:Name="Scroller" VerticalOptions="FillAndExpand" RowDefinitions="auto, auto, *, auto">
             <Label x:Name="TitleView" Text="{Binding Title}" FontSize="Title" Padding="5,0,5,20"/>
-            <Button x:Name="PrevButton" IsVisible="{Binding PrevButtonIsVisible}" Grid.Row="1" Text="{Binding PrevText}" Command="{Binding PrevClickHandler}" FontSize="Large" HorizontalOptions="FillAndExpand"/>
+            <Button x:Name="PrevButton" IsVisible="{Binding PrevButtonIsVisible}" Grid.Row="1" Text="Previous" Command="{Binding PrevClickHandler}" FontSize="Large" HorizontalOptions="FillAndExpand"/>
             <Label  x:Name="ContentView" Grid.Row="2"
                     Padding="5,0,5,0"
                     Text="{Binding Text}"

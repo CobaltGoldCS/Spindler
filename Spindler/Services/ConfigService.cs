@@ -156,7 +156,7 @@ public class ConfigService
 
         // Node contains child nodes, so we must get the text of each
         StringWriter stringWriter = new();
-        string separator = (string)extraconfigs!.GetOrDefault("separator", "\n");
+        string separator = extraconfigs!.GetOrDefault("separator", "\n");
         foreach (HtmlNode child in node.ChildNodes)
         {
             if (child.OriginalName == "br")

@@ -48,9 +48,9 @@ public partial class GeneralizedConfigDetailPage : ContentPage
             Title = $"Modify {config.DomainName}";
         }
         BindingContext = config;
-        switchWebView.On = (bool)config.ExtraConfigs.GetOrDefault("webview", false);
-        animationSwitch.On = (bool)config.ExtraConfigs.GetOrDefault("autoscrollanimation", true);
-        separatorEntry.Text = ((string)config.ExtraConfigs.GetOrDefault("separator", "\n"))
+        switchWebView.On = config.ExtraConfigs.GetOrDefault("webview", false);
+        animationSwitch.On = config.ExtraConfigs.GetOrDefault("autoscrollanimation", true);
+        separatorEntry.Text = config.ExtraConfigs.GetOrDefault("separator", "\n")
             .Replace(Environment.NewLine, @"\n")
             .Replace("\t", @"\t");
     }
