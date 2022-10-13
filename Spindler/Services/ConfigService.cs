@@ -124,7 +124,12 @@ public class ConfigService
             {
                 return node?.InnerText;
             }
-            return node?.GetAttributeValue(modifier, null);
+            var value = node?.GetAttributeValue(modifier, null);
+            if (type == SelectorType.Link && modifier != "href")
+            {
+                value = Regex.Match(value, "((?:https?:/)?/[-a-zA-Z0-9+&@#/%?=~_|!:, .;]*[-a-zA-Z0-9+&@#/%=~_|])").Value;
+            }
+            return value;
         }
         return type switch
         {
