@@ -26,9 +26,6 @@ public class WebService
         this.config = config;
         this.configService = configService;
     }
-    ~WebService() => ClearCookies();
-    
-    public static void ClearCookies() => App.SharedValues.cookies = new System.Net.CookieContainer();
     /// <summary>
     /// Preload the next and previous urls with valid values into LoadedData
     /// </summary>
@@ -136,7 +133,7 @@ public class WebService
         {
             if (_client is null)
             {
-                HttpClientHandler handler = new() { CookieContainer = App.SharedValues.cookies };
+                HttpClientHandler handler = new();
                 _client = new(handler) {};
                 _client.DefaultRequestHeaders.Add("User-Agent", App.SharedValues.userAgent);
             }

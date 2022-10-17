@@ -22,12 +22,6 @@ public partial class ErrorPage : ContentPage
 		InitializeComponent();
 	}
 
-	private async void CookieButton_Clicked(object sender, EventArgs e)
-	{
-		if (!ValidId()) return;
-		await Shell.Current.GoToAsync($"../{nameof(ReaderPage)}/{nameof(GetCookiesPage)}?id={BookId}");
-	}
-
 	private async void WebviewButton_Clicked(object sender, EventArgs e)
 	{
 		if (!ValidId()) return;

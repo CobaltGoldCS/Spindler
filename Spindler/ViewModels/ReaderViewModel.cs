@@ -129,8 +129,6 @@ namespace Spindler.ViewModels
         }
         #endregion
 
-        public void ClearCookies() => WebService.ClearCookies();
-
         #region Helperfunctions
 
         private async void DataChanged()

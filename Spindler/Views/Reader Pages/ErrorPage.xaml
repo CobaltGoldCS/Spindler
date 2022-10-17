@@ -4,15 +4,12 @@
              x:Class="Spindler.Views.ErrorPage"
              Title="An Error Has Occurred">
     <ScrollView Orientation="Vertical" IsEnabled="True">
-        <Grid RowDefinitions="auto, auto, auto, auto, auto, auto">
+        <Grid RowDefinitions="auto, auto, auto, auto">
             <Label FontSize="Caption" Text="Error Message:" Margin="30,0,0,2"/>
             <Label x:Name="ErrorLabel" FontSize="Title" LineBreakMode="WordWrap" Grid.Row="1"
             Text="ERROR HERE" Margin="30,0,0,0" />
-            <Label Text="Does your website check the browser before loading?" Margin="30, 30, 30, 0" Grid.Row="2" 
-                   HorizontalTextAlignment="Center" FontSize="Body" HorizontalOptions="Center"/>
-            <Button x:Name="CookieButton" Text="Get Website Cookies" FontSize="Medium" Grid.Row="3" Clicked="CookieButton_Clicked" Margin="30, 15, 30, 15" />
-            <Label Text="Is your configuration incorrect?" Margin="30, 30, 30, 0" Grid.Row="4" FontSize="Body" HorizontalOptions="Center"/>
-            <Button x:Name="WebviewButton" Text="Open in Webview" FontSize="Medium" Grid.Row="5" Clicked="WebviewButton_Clicked" Margin="30, 15, 30, 15"/>
+            <Label Text="Is your configuration incorrect?" Margin="30, 30, 30, 0" Grid.Row="2" FontSize="Body" HorizontalOptions="Center"/>
+            <Button x:Name="WebviewButton" Text="Open in Webview" FontSize="Medium" Grid.Row="3" Clicked="WebviewButton_Clicked" Margin="30, 15, 30, 15"/>
         </Grid>
     </ScrollView>
 </ContentPage>
