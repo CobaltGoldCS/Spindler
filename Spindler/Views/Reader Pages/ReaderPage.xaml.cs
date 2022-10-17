@@ -73,7 +73,6 @@ public partial class ReaderPage : ContentPage
                 currentbook.Position = ReadingLayout.ScrollY / (ReadingLayout.ContentSize.Height - (prevbuttonheight + nextbuttonheight));
                 await App.Database.SaveItemAsync(currentbook);
             }
-            (BindingContext as ReaderViewModel)?.ClearCookies();
         }
         Shell.Current.Navigating -= OnShellNavigated;
     }

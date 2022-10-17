@@ -2,7 +2,7 @@
 using System.Windows.Input;
 
 namespace Spindler.ViewModels;
-public class ConfigViewModel : ObservableObject
+public partial class ConfigViewModel : ObservableObject
 {
 
     public ICommand AddCommand { get; private set; }
