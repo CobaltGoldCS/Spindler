@@ -88,8 +88,6 @@ public partial class HeadlessReaderPage : ContentPage
         NextButton.IsEnabled = false;
     }
 
-
-    private int retries = 3;
     private async Task LoadContent()
     {
         var html = await HeadlessBrowser.EvaluateJavaScriptAsync("'<html>'+document.getElementsByTagName('html')[0].innerHTML+'</html>';");
@@ -100,19 +98,7 @@ public partial class HeadlessReaderPage : ContentPage
         loadedData = await webservice!.LoadWebData(currentbook!.Url, html);
         if (string.IsNullOrEmpty(loadedData.text))
         {
-            if (retries == 0)
-            {
-                await FailIfNull(null, "Unable to obtain text content");
-                return;
-            }
-            Task.Delay(500).Wait();
-            retries--;
-            // Check for cloudflare and increase retry count if it is found
-            var doc = new HtmlAgilityPack.HtmlDocument();
-            doc.LoadHtml(html);
-            if (ConfigService.CssElementHandler(doc, "h2.challenge-running", ConfigService.SelectorType.Text) is not null) retries = 3;
-            await LoadContent();
-            return;
+            await AttemptRetry(html);
         }
         if (await FailIfNull(loadedData, "Configuration was unable to obtain values; check Configuration and Url")) return;
         if (currentbook.Position > 0)
@@ -123,6 +109,24 @@ public partial class HeadlessReaderPage : ContentPage
         }
         DataChanged();
         retries = 3;
+    }
+
+    private int retries = 3;
+    private async Task AttemptRetry(string html)
+    {
+        if (retries == 0)
+        {
+            await FailIfNull(null, "Unable to obtain text content");
+            return;
+        }
+        Task.Delay(500).Wait();
+        retries--;
+        // Check for cloudflare and increase retry count if it is found
+        var doc = new HtmlAgilityPack.HtmlDocument();
+        doc.LoadHtml(html);
+        if (ConfigService.CssElementHandler(doc, "h2.challenge-running", ConfigService.SelectorType.Text) is not null) retries = 3;
+        await LoadContent();
+        return;
     }
 
     public async void OnShellNavigated(object? sender,
