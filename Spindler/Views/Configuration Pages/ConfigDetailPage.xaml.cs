@@ -54,7 +54,7 @@ public partial class ConfigDetailPage : ContentPage
         switchWebView.On = config.ExtraConfigs.GetOrDefault("webview", false);
         animationSwitch.On = config.ExtraConfigs.GetOrDefault("autoscrollanimation", true);
         separatorEntry.Text = config.ExtraConfigs.GetOrDefault("separator", "\n")
-            .Replace(System.Environment.NewLine, @"\n")
+            .Replace(Environment.NewLine, @"\n")
             .Replace("\t", @"\t");
         headlessSwitch.On = config.ExtraConfigs.GetOrDefault("headless", false);
     }
@@ -101,7 +101,7 @@ public partial class ConfigDetailPage : ContentPage
             { "webview", switchWebView.On },
             { "autoscrollanimation", animationSwitch.On },
             { "separator", separatorEntry.Text
-                            .Replace(@"\n", System.Environment.NewLine)
+                            .Replace(@"\n", Environment.NewLine)
                             .Replace(@"\t", "     ")},
             { "headless", headlessSwitch.On },
         };

@@ -1,7 +1,6 @@
 using Spindler.Models;
 using Spindler.Services;
 using Spindler.Behaviors;
-using System.Text.RegularExpressions;
 using Spindler.Utils;
 
 namespace Spindler;
@@ -98,7 +97,7 @@ public partial class GeneralizedConfigDetailPage : ContentPage
             { "webview", switchWebView.On },
             { "autoscrollanimation", animationSwitch.On },
             { "separator", separatorEntry.Text
-                            .Replace(@"\n", System.Environment.NewLine)
+                            .Replace(@"\n", Environment.NewLine)
                             .Replace(@"\t", "     ")},
             { "headless", headlessSwitch.On },
         };

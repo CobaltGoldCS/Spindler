@@ -43,8 +43,7 @@ public partial class BookPage : ContentPage
     {
         base.OnAppearing();
         BooksList.Unfocus();
-        int id;
-        if (loaded && int.TryParse(BooklistId, out id))
+        if (loaded && int.TryParse(BooklistId, out int id))
         {
             BooksList.ItemsSource = await App.Database.GetBooksByBooklistIdAsync(id);
         }

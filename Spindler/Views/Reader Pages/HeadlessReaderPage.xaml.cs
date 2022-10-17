@@ -57,6 +57,8 @@ public partial class HeadlessReaderPage : ContentPage
             return;
         }
         await LoadContent();
+        if (currentbook!.Position > 0)
+            await DelayScroll(Preferences.Default.Get("autoscrollanimation", true));
     }
 
     private async void Bookmark_Clicked(object sender, EventArgs e)
@@ -74,13 +76,13 @@ public partial class HeadlessReaderPage : ContentPage
         });
     }
 
-	private async void PrevButton_Clicked(object sender, EventArgs e)
+	private void PrevButton_Clicked(object sender, EventArgs e)
 	{
         HeadlessBrowser.Source = loadedData!.prevUrl;
         PrevButton.IsEnabled = false;
     }
 
-	private async void NextButton_Clicked(object sender, EventArgs e)
+	private void NextButton_Clicked(object sender, EventArgs e)
 	{
         HeadlessBrowser.Source = loadedData!.nextUrl;
         NextButton.IsEnabled = false;
@@ -153,7 +155,7 @@ public partial class HeadlessReaderPage : ContentPage
         NextButton.IsEnabled = true;
         PrevButton.IsEnabled = true;
 
-        if (currentbook.Position == 0)
+        if (currentbook!.Position == 0)
             await ReadingLayout.ScrollToAsync(ReadingLayout.ScrollX, 0, false);
 
         // Turn relative urls into absolutes
@@ -161,7 +163,7 @@ public partial class HeadlessReaderPage : ContentPage
         loadedData.prevUrl = new Uri(baseUri, loadedData.prevUrl).ToString();
         loadedData.nextUrl = new Uri(baseUri, loadedData.nextUrl).ToString();
 
-        currentbook!.Url = loadedData.currentUrl!;
+        currentbook.Url = loadedData.currentUrl!;
         currentbook.LastViewed = DateTime.UtcNow;
         currentbook.Position = 0;
         await App.Database.SaveItemAsync(currentbook);

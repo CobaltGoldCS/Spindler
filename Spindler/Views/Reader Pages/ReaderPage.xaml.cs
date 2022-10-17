@@ -37,8 +37,7 @@ public partial class ReaderPage : ContentPage
             await Shell.Current.GoToAsync($"../{nameof(HeadlessReaderPage)}?id={currentBook.Id}");
             return;
         }
-        
-        ReaderViewModel viewmodel = new()
+        var viewmodel = new ReaderViewModel()
         {
             CurrentBook = currentBook,
             Config = config
@@ -48,11 +47,9 @@ public partial class ReaderPage : ContentPage
         await viewmodel.StartLoad();
     }
     #endregion
-
     public ReaderPage()
     {
         InitializeComponent();
-
         ContentView.FontFamily = Preferences.Default.Get("font", "OpenSans (Regular)");
         ContentView.FontSize = Preferences.Default.Get("font_size", 15);
         TitleView.FontFamily = Preferences.Default.Get("font", "OpenSans (Regular)");

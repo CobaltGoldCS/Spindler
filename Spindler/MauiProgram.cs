@@ -1,5 +1,7 @@
 ﻿using CommunityToolkit.Maui;
+using Microsoft.Extensions.DependencyInjection;
 using Spindler.Services;
+using Spindler.ViewModels;
 
 namespace Spindler;
 public static class MauiProgram
@@ -23,7 +25,6 @@ public static class MauiProgram
             });
         builder.Services
             .AddSingleton<AppShell>()
-            .AddSingleton<WebService>()
             ;
         return builder.Build();
     }
