@@ -31,6 +31,7 @@ public partial class HeadlessReaderPage : ContentPage
 
         ContentView.FontFamily = Preferences.Default.Get("font", "OpenSans (Regular)");
         ContentView.FontSize = Preferences.Default.Get("font_size", 15);
+        ContentView.LineHeight = Preferences.Default.Get("line_spacing", 1.5f);
         TitleView.FontFamily = Preferences.Default.Get("font", "OpenSans (Regular)");
         
 

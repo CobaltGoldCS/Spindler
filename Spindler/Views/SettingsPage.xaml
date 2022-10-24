@@ -8,10 +8,11 @@
         <Viewmodels:SettingsViewmodel/>
     </ContentPage.BindingContext>
     <ScrollView x:Name="Scroll" Orientation="Vertical" IsEnabled="True" Margin="10,0">
-        <Grid ColumnDefinitions="*, *, auto" RowDefinitions="75, auto, auto" VerticalOptions="FillAndExpand">
-            <Label Text="The quick brown fox jumps over the lazy dog" FontSize="{Binding FontSize}" FontFamily="{Binding Font}" Grid.ColumnSpan="3"
-                   LineBreakMode="TailTruncation"/>
-            <Picker Title="Select a Font" SelectedItem="{Binding Font}" Grid.Row="1" Grid.ColumnSpan="2">
+        <Grid ColumnDefinitions="*, *, auto" RowDefinitions="100, 50, auto" VerticalOptions="FillAndExpand">
+            <FlexLayout Grid.ColumnSpan="3">
+                <Label Text="The quick brown fox jumps over the lazy dog" FontSize="{Binding FontSize}" FontFamily="{Binding Font}" LineHeight="{Binding FontSpacing}" MaxLines="2"/>
+            </FlexLayout>
+            <Picker Title="Select a Font" SelectedItem="{Binding Font}" Grid.Row="1">
                 <Picker.Items>
                         <x:String>OpenSans (Regular)</x:String>
                         <x:String>OpenSans (Semibold)</x:String>
@@ -23,7 +24,8 @@
                         <x:String>Signika (Bold)</x:String>
                     </Picker.Items>
                 </Picker>
-            <Entry x:Name="FontSizeEntry" Text="{Binding FontSize}" Keyboard="Numeric" Grid.Row="1" Grid.Column="2"/>
+            <Entry x:Name="FontSizeEntry" Text="{Binding FontSize}" Keyboard="Numeric" Grid.Row="1" Grid.Column="1"/>
+            <Stepper x:Name="FontSpacingStepper"  Value="{Binding FontSpacing}"  Maximum="5.0" Minimum="1.0" Increment="0.2" Grid.Row="1" Grid.Column="2"/>
             <Button Text="Apply Settings" Command="{Binding SaveSettingsCommand}" HorizontalOptions="End" Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="2"/>
         </Grid>
     </ScrollView>

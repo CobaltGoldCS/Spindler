@@ -52,6 +52,7 @@ public partial class ReaderPage : ContentPage
         InitializeComponent();
         ContentView.FontFamily = Preferences.Default.Get("font", "OpenSans (Regular)");
         ContentView.FontSize = Preferences.Default.Get("font_size", 15);
+        ContentView.LineHeight = Preferences.Default.Get("line_spacing", 1.5f);
         TitleView.FontFamily = Preferences.Default.Get("font", "OpenSans (Regular)");
         Shell.Current.Navigating += OnShellNavigated;
     }
