@@ -30,35 +30,48 @@
     </Shell.TitleView>
     
     <CollectionView x:Name="BooksList"
-              Margin="5"
-              SelectionChanged="SelectionChanged"
-              SelectionMode="Single">
+              Margin="5">
+        <CollectionView.ItemsLayout>
+            <LinearItemsLayout ItemSpacing="10" Orientation="Vertical"/>
+        </CollectionView.ItemsLayout>
         <CollectionView.ItemTemplate>
             <DataTemplate>
-                <ContentView Margin="0,5,0,5" Padding="5">
-                    <ContentView.BindingContext>
+                <Frame Padding="5" CornerRadius="10" BackgroundColor="{AppThemeBinding Dark={StaticResource White}, Light={StaticResource SpaceCadet}}">
+                    <Frame.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="ItemClicked"/>
+                    </Frame.GestureRecognizers>
+                    <Frame.BindingContext>
                         <models:Book/>
-                    </ContentView.BindingContext>
+                    </Frame.BindingContext>
                     <Grid Padding="10,0,0,0">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="auto"/>
+                            <ColumnDefinition Width="30"/>
                         </Grid.ColumnDefinitions>
                         <Grid.RowDefinitions>
-                            <RowDefinition Height="30"/>
-                            <RowDefinition Height="20"/>
+                            <RowDefinition Height="50"/>
+                            <RowDefinition Height="2"/>
+                            <RowDefinition Height="40"/>
                         </Grid.RowDefinitions>
-                        <Label   HeightRequest="30"
-                        VerticalTextAlignment="Center" FontSize="Medium" x:Name="TitleLabel" Text="{Binding Title}" LineBreakMode="TailTruncation" Padding="0,0,5,0"/>
-                        <Label x:Name="UrlLabel" Text="{Binding Url}" FontSize="Small" Grid.Row="1" LineBreakMode="TailTruncation" Padding="0,0,5,0"/>
-                        <ImageButton HorizontalOptions="EndAndExpand" VerticalOptions="FillAndExpand" Grid.Column="1" Grid.RowSpan="2" Source="kebab.svg"
-                        Padding="0,3,5,3" WidthRequest="20" Aspect="AspectFill" x:Name="ConfigButton" Pressed="ConfigButtonPressed" BindingContext="{Binding Id}">
+                        <FlexLayout>
+                            <Label
+                        VerticalTextAlignment="Center" FontSize="Medium" x:Name="TitleLabel" Text="{Binding Title}" MaxLines="2" Padding="0,0,5,0"/>
+                        </FlexLayout>
+
+                        <BoxView BackgroundColor="{AppThemeBinding Dark={StaticResource White}, Light={StaticResource SpaceCadet}}" HorizontalOptions="Fill" Grid.Row="1"/>
+
+                        <FlexLayout Grid.Row="2" VerticalOptions="Fill" Padding="0,5,0,0">
+                            <Label x:Name="UrlLabel" Text="{Binding Url}" MaxLines="2" FontSize="Small" Grid.Row="2" Padding="0,0,5,0"/>
+                        </FlexLayout>
+
+                        <ImageButton HorizontalOptions="Center" VerticalOptions="Center" Grid.Column="1" Grid.RowSpan="3" Source="kebab.svg" BackgroundColor="{StaticResource LightSpaceCadet}"
+                        Padding="0,3,0,3" HeightRequest="60" WidthRequest="30" Aspect="AspectFit" x:Name="ConfigButton" Pressed="ConfigButtonPressed" BindingContext="{Binding Id}">
                             <ImageButton.Behaviors>
                                 <toolkit:IconTintColorBehavior TintColor="{AppThemeBinding Dark={StaticResource White}, Light={StaticResource SpaceCadet}}"/>
                             </ImageButton.Behaviors>
                         </ImageButton>
                     </Grid>
-                </ContentView>
+                </Frame>
             </DataTemplate>
         </CollectionView.ItemTemplate>
     </CollectionView>

@@ -62,10 +62,14 @@ public partial class BookPage : ContentPage
         await Shell.Current.GoToAsync($"{nameof(BookDetailPage)}?id=-1|04923102-afb|{BooklistId}");
     }
 
-    private async void SelectionChanged(object sender, SelectionChangedEventArgs e)
+    bool executing = false;
+    private async void ItemClicked(object sender, EventArgs e)
     {
-        Book book = (Book)e.CurrentSelection.FirstOrDefault()!;
+        if (executing) return;
+        executing = true;
+        Book book = (Book)((Frame)sender).BindingContext;
         await Shell.Current.GoToAsync($"{nameof(ReaderPage)}?id={book.Id}");
+        executing = false;
     }
 
     #endregion
