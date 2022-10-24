@@ -64,7 +64,7 @@
                             <Label x:Name="UrlLabel" Text="{Binding Url}" MaxLines="2" FontSize="Small" Grid.Row="2" Padding="0,0,5,0"/>
                         </FlexLayout>
 
-                        <ImageButton HorizontalOptions="Center" VerticalOptions="Center" Grid.Column="1" Grid.RowSpan="3" Source="kebab.svg" BackgroundColor="{StaticResource LightSpaceCadet}"
+                        <ImageButton HorizontalOptions="Center" VerticalOptions="Center" Grid.Column="1" Grid.RowSpan="3" Source="kebab.svg"
                         Padding="0,3,0,3" HeightRequest="60" WidthRequest="30" Aspect="AspectFit" x:Name="ConfigButton" Pressed="ConfigButtonPressed" BindingContext="{Binding Id}">
                             <ImageButton.Behaviors>
                                 <toolkit:IconTintColorBehavior TintColor="{AppThemeBinding Dark={StaticResource White}, Light={StaticResource SpaceCadet}}"/>
