@@ -80,10 +80,10 @@
 
 	<ItemGroup>
 		<!-- App Icon -->
-		<MauiIcon Include="Resources\appicon.svg" Color="#512BD4" BaseSize="128,128" />
-
+		<MauiIcon Include="Resources\AppIcon\spindler_icon.png" ForegroundImage="Resources\AppIcon\spindler_icon.png" ForegroundScale="0.65" Color="#3E8EED" BaseSize="64,64" />
+		
 		<!-- Splash Screen -->
-		<MauiSplashScreen Include="Resources\appiconfg.svg" Color="#512BD4" BaseSize="128,128" />
+		<MauiSplashScreen Include="Resources\Splash\spindler_icon.png" Color="#3E8EED" BaseSize="256,256" />
 
 		<!-- Images -->
 		<MauiImage Include="Resources\Images\*" />
@@ -105,6 +105,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <None Remove="Resources\AppIcon\appicon - Copy.png" />
 	  <None Remove="Resources\Fonts\book.svg" />
 	  <None Remove="Resources\Fonts\gear.svg" />
 	  <None Remove="Resources\Fonts\multiple-gears.svg" />
