@@ -91,11 +91,17 @@ public partial class HeadlessReaderPage : ContentPage
 
     private async Task LoadContent()
     {
-        var html = await HeadlessBrowser.EvaluateJavaScriptAsync("'<html>'+document.getElementsByTagName('html')[0].innerHTML+'</html>';");
+        var html = await HeadlessBrowser.EvaluateJavaScriptAsync(
+            "'<html>'+document.getElementsByTagName('html')[0].innerHTML+'</html>';");
+
         // Decode non-ascii characters
-        html = Regex.Replace(html,@"\\u(?<Value>[a-zA-Z0-9]{4})", m => {
+        var builder = new StringBuilder(Regex.Replace(html, @"\\u(?<Value>[a-zA-Z0-9]{4})", m =>
+        {
             return ((char)int.Parse(m.Groups["Value"].Value, NumberStyles.HexNumber)).ToString();
-        }).Replace("\\n", "\n").Replace("\\\"", "\"");
+        }));
+        builder.Replace("\\n", "\n").Replace("\\\"", "\"");
+        html = builder.ToString();
+
         loadedData = await webservice!.LoadWebData(currentbook!.Url, html);
         if (string.IsNullOrEmpty(loadedData.text))
         {

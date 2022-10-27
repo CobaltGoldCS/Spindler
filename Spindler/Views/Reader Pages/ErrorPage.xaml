@@ -4,12 +4,19 @@
              x:Class="Spindler.Views.ErrorPage"
              Title="An Error Has Occurred">
     <ScrollView Orientation="Vertical" IsEnabled="True">
-        <Grid RowDefinitions="auto, auto, auto, auto">
+        <VerticalStackLayout>
             <Label FontSize="Caption" Text="Error Message:" Margin="30,0,0,2"/>
-            <Label x:Name="ErrorLabel" FontSize="Title" LineBreakMode="WordWrap" Grid.Row="1"
+            <Label x:Name="ErrorLabel" FontSize="Title" LineBreakMode="WordWrap"
             Text="ERROR HERE" Margin="30,0,0,0" />
-            <Label Text="Is your configuration incorrect?" Margin="30, 30, 30, 0" Grid.Row="2" FontSize="Body" HorizontalOptions="Center"/>
-            <Button x:Name="WebviewButton" Text="Open in Webview" FontSize="Medium" Grid.Row="3" Clicked="WebviewButton_Clicked" Margin="30, 15, 30, 15"/>
-        </Grid>
+            <Label Text="Is your configuration incorrect or missing?" Margin="30, 30, 30, 0" FontSize="Body" />
+            <Button x:Name="WebviewButton" Text="Open in Webview" FontSize="Medium" Clicked="WebviewButton_Clicked" Margin="30, 15, 30, 15"/>
+            <TableView>
+                <TableRoot>
+                    <TableSection Title="Having Multiple Problems? Use Compatability Mode">
+                        <SwitchCell x:Name="HeadlessMode" OnChanged="HeadlessMode_OnChanged" Text="Open in headless (compatability) mode?"/>
+                    </TableSection>
+                </TableRoot>
+            </TableView>
+        </VerticalStackLayout>
     </ScrollView>
 </ContentPage>
