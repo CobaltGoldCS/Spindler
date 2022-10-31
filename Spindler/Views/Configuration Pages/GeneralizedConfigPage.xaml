@@ -6,9 +6,10 @@
              x:Class="Spindler.Views.GeneralizedConfigPage"
              Title="Configurations">
 
-    <StackLayout Orientation="Vertical">
-        <Button HeightRequest="50" CornerRadius="0" Text="Add A Config +" FontSize="Large"  Clicked="Button_Clicked"/>
+    <Grid RowDefinitions="50, *">
+        <Button CornerRadius="0" Text="Add A Config +" FontSize="Large"  Clicked="Button_Clicked"/>
         <CollectionView x:Name="list"
+              Grid.Row="1"
               Margin="5, 0"
               SelectionMode="Single"
               SelectionChanged="list_SelectionChanged"
@@ -19,13 +20,7 @@
             <CollectionView.ItemTemplate>
                 <DataTemplate>
                     <ContentView Margin="0,5,0,5" Padding="5">
-                        <Grid>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="50"/>
-                            </Grid.RowDefinitions>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*"/>
-                            </Grid.ColumnDefinitions>
+                        <Grid RowDefinitions="50">
                             <Label  HorizontalTextAlignment="Center" VerticalTextAlignment="Center" 
                                     FontSize="Large" x:Name="DomainNameLabel" Text="{Binding DomainName}"/>
                         </Grid>
@@ -33,5 +28,5 @@
                 </DataTemplate>
             </CollectionView.ItemTemplate>
         </CollectionView>
-    </StackLayout>
+    </Grid>
 </ContentPage>

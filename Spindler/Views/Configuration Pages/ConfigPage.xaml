@@ -9,9 +9,9 @@
     <ContentPage.BindingContext>
         <vms:ConfigViewModel/>
     </ContentPage.BindingContext>
-    <StackLayout Orientation="Vertical">
-        <Button HeightRequest="50" CornerRadius="0" Text="Add A Config +" FontSize="Large"  Command="{Binding AddCommand}"/>
-        <CollectionView x:Name="list"
+    <Grid RowDefinitions="50, *">
+        <Button CornerRadius="0" Text="Add A Config +" FontSize="Large"  Command="{Binding AddCommand}"/>
+        <CollectionView x:Name="list" Grid.Row="1"
               Margin="5, 0"
               SelectionChanged="list_SelectionChanged"
               SelectionMode="Single"
@@ -22,13 +22,7 @@
             <CollectionView.ItemTemplate>
                 <DataTemplate>
                     <ContentView Margin="0,5,0,5" Padding="5">
-                        <Grid>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="50"/>
-                            </Grid.RowDefinitions>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*"/>
-                            </Grid.ColumnDefinitions>
+                        <Grid RowDefinitions="50">
                             <Label  HorizontalTextAlignment="Center" VerticalTextAlignment="Center" 
                                     FontSize="Large" x:Name="DomainNameLabel" Text="{Binding DomainName}"/>
                         </Grid>
@@ -36,5 +30,5 @@
                 </DataTemplate>
             </CollectionView.ItemTemplate>
         </CollectionView>
-    </StackLayout>
+    </Grid>
 </ContentPage>
