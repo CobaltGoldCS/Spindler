@@ -39,6 +39,8 @@
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net6.0-android|AnyCPU'">
 	  <AndroidKeyStore>False</AndroidKeyStore>
 	  <DebugType>embedded</DebugType>
+	  <ApplicationVersion>5</ApplicationVersion>
+	  <ApplicationDisplayVersion>2022.8.</ApplicationDisplayVersion>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net6.0-android|AnyCPU'">
@@ -46,36 +48,60 @@
     <AndroidSigningKeyStore>spindler.keystore</AndroidSigningKeyStore>
     <AndroidSigningKeyAlias>key</AndroidSigningKeyAlias>
 	  <DebugType>embedded</DebugType>
+	  <ApplicationVersion>5</ApplicationVersion>
+	  <ApplicationDisplayVersion>2022.8.</ApplicationDisplayVersion>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net6.0-ios|AnyCPU'">
 	  <AndroidKeyStore>False</AndroidKeyStore>
 	  <DebugType>embedded</DebugType>
+	  <ApplicationVersion>5</ApplicationVersion>
+	  <ApplicationDisplayVersion>2022.8.</ApplicationDisplayVersion>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net6.0-ios|AnyCPU'">
 	  <AndroidKeyStore>False</AndroidKeyStore>
 	  <DebugType>embedded</DebugType>
+	  <ApplicationVersion>5</ApplicationVersion>
+	  <ApplicationDisplayVersion>2022.8.</ApplicationDisplayVersion>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net6.0-maccatalyst|AnyCPU'">
 	  <AndroidKeyStore>False</AndroidKeyStore>
 	  <DebugType>embedded</DebugType>
+	  <ApplicationVersion>5</ApplicationVersion>
+	  <ApplicationDisplayVersion>2022.8.</ApplicationDisplayVersion>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net6.0-maccatalyst|AnyCPU'">
 	  <AndroidKeyStore>False</AndroidKeyStore>
 	  <DebugType>embedded</DebugType>
+	  <ApplicationVersion>5</ApplicationVersion>
+	  <ApplicationDisplayVersion>2022.8.</ApplicationDisplayVersion>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net6.0-windows10.0.19041.0|AnyCPU'">
 	  <AndroidKeyStore>False</AndroidKeyStore>
 	  <DebugType>embedded</DebugType>
+	  <ApplicationVersion>5</ApplicationVersion>
+	  <ApplicationDisplayVersion>2022.8.</ApplicationDisplayVersion>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net6.0-windows10.0.19041.0|AnyCPU'">
 	  <AndroidKeyStore>False</AndroidKeyStore>
 	  <DebugType>embedded</DebugType>
+	  <ApplicationVersion>5</ApplicationVersion>
+	  <ApplicationDisplayVersion>2022.8.</ApplicationDisplayVersion>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net6.0-android32.0|AnyCPU'">
+	  <ApplicationVersion>5</ApplicationVersion>
+	  <ApplicationDisplayVersion>2022.8.</ApplicationDisplayVersion>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net6.0-android32.0|AnyCPU'">
+	  <ApplicationVersion>5</ApplicationVersion>
+	  <ApplicationDisplayVersion>2022.8.</ApplicationDisplayVersion>
 	</PropertyGroup>
 
 	<ItemGroup>
