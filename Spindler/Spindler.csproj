@@ -19,8 +19,8 @@
 		<ApplicationIdGuid>4E6F96B5-A757-4769-859A-CC5DAB03CF2D</ApplicationIdGuid>
 
 		<!-- Versions -->
-		<ApplicationDisplayVersion>2022.8.38</ApplicationDisplayVersion>
-		<ApplicationVersion>5</ApplicationVersion>
+		<ApplicationDisplayVersion>1.0</ApplicationDisplayVersion>
+		<ApplicationVersion>1</ApplicationVersion>
 
 		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">14.2</SupportedOSPlatformVersion>
 		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'maccatalyst'">14.0</SupportedOSPlatformVersion>
@@ -39,8 +39,6 @@
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net6.0-android|AnyCPU'">
 	  <AndroidKeyStore>False</AndroidKeyStore>
 	  <DebugType>embedded</DebugType>
-	  <ApplicationVersion>5</ApplicationVersion>
-	  <ApplicationDisplayVersion>2022.8.38</ApplicationDisplayVersion>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net6.0-android|AnyCPU'">
@@ -48,65 +46,41 @@
     <AndroidSigningKeyStore>spindler.keystore</AndroidSigningKeyStore>
     <AndroidSigningKeyAlias>key</AndroidSigningKeyAlias>
 	  <DebugType>embedded</DebugType>
-	  <ApplicationVersion>5</ApplicationVersion>
-	  <ApplicationDisplayVersion>2022.8.38</ApplicationDisplayVersion>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net6.0-ios|AnyCPU'">
 	  <AndroidKeyStore>False</AndroidKeyStore>
 	  <DebugType>embedded</DebugType>
-	  <ApplicationVersion>5</ApplicationVersion>
-	  <ApplicationDisplayVersion>2022.8.38</ApplicationDisplayVersion>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net6.0-ios|AnyCPU'">
 	  <AndroidKeyStore>False</AndroidKeyStore>
 	  <DebugType>embedded</DebugType>
-	  <ApplicationVersion>5</ApplicationVersion>
-	  <ApplicationDisplayVersion>2022.8.38</ApplicationDisplayVersion>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net6.0-maccatalyst|AnyCPU'">
 	  <AndroidKeyStore>False</AndroidKeyStore>
 	  <DebugType>embedded</DebugType>
-	  <ApplicationVersion>5</ApplicationVersion>
-	  <ApplicationDisplayVersion>2022.8.38</ApplicationDisplayVersion>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net6.0-maccatalyst|AnyCPU'">
 	  <AndroidKeyStore>False</AndroidKeyStore>
 	  <DebugType>embedded</DebugType>
-	  <ApplicationVersion>5</ApplicationVersion>
-	  <ApplicationDisplayVersion>2022.8.38</ApplicationDisplayVersion>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net6.0-windows10.0.19041.0|AnyCPU'">
 	  <AndroidKeyStore>False</AndroidKeyStore>
 	  <DebugType>embedded</DebugType>
-	  <ApplicationVersion>5</ApplicationVersion>
-	  <ApplicationDisplayVersion>2022.8.38</ApplicationDisplayVersion>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net6.0-windows10.0.19041.0|AnyCPU'">
 	  <AndroidKeyStore>False</AndroidKeyStore>
 	  <DebugType>embedded</DebugType>
-	  <ApplicationVersion>5</ApplicationVersion>
-	  <ApplicationDisplayVersion>2022.8.38</ApplicationDisplayVersion>
-	</PropertyGroup>
-
-	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net6.0-android32.0|AnyCPU'">
-	  <ApplicationVersion>5</ApplicationVersion>
-	  <ApplicationDisplayVersion>2022.8.38</ApplicationDisplayVersion>
-	</PropertyGroup>
-
-	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net6.0-android32.0|AnyCPU'">
-	  <ApplicationVersion>5</ApplicationVersion>
-	  <ApplicationDisplayVersion>2022.8.38</ApplicationDisplayVersion>
 	</PropertyGroup>
 
 	<ItemGroup>
 		<!-- App Icon -->
-		<MauiIcon Include="Resources\AppIcon\spindler_icon.png" ForegroundImage="Resources\AppIcon\spindler_icon.png" ForegroundScale="0.65" Color="#3E8EED" BaseSize="64,64" />
+		<MauiIcon Include="Resources\AppIcon\appicon.png" ForegroundImage="Resources\AppIcon\appicon.png" ForegroundScale="0.65" Color="#3E8EED" BaseSize="64,64" />
 		
 		<!-- Splash Screen -->
 		<MauiSplashScreen Include="Resources\Splash\spindler_icon.png" Color="#3E8EED" BaseSize="256,256" />
