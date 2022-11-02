@@ -4,6 +4,7 @@
              xmlns:vms="clr-namespace:Spindler.ViewModels"
              xmlns:models="clr-namespace:Spindler.Models"
              x:Class="Spindler.ConfigPage"
+             x:DataType="vms:ConfigViewModel"
              Title="Configurations">
 
     <ContentPage.BindingContext>
@@ -11,24 +12,32 @@
     </ContentPage.BindingContext>
     <Grid RowDefinitions="50, *">
         <Button CornerRadius="0" Text="Add A Config +" FontSize="Large"  Command="{Binding AddCommand}"/>
-        <CollectionView x:Name="list" Grid.Row="1"
-              Margin="5, 0"
-              SelectionChanged="list_SelectionChanged"
+        <RefreshView Margin="5, 0" Grid.Row="1"
+                     Command="{Binding ReloadItemsCommand}"
+                     IsRefreshing="{Binding IsRefreshing}">
+            <CollectionView
+              SelectionChangedCommand="{Binding ItemClickedCommand}"
+              ItemsSource="{Binding ConfigItems}"
               SelectionMode="Single"
+              SelectedItem="{Binding SelectedItem}"
               >
-            <CollectionView.BindingContext>
-                <models:Config/>
-            </CollectionView.BindingContext>
-            <CollectionView.ItemTemplate>
-                <DataTemplate>
-                    <ContentView Margin="0,5,0,5" Padding="5">
+                <CollectionView.ItemsLayout>
+                    <LinearItemsLayout Orientation="Vertical" ItemSpacing="10"/>
+                </CollectionView.ItemsLayout>
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="models:Config">
                         <Grid RowDefinitions="50">
                             <Label  HorizontalTextAlignment="Center" VerticalTextAlignment="Center" 
                                     FontSize="Large" x:Name="DomainNameLabel" Text="{Binding DomainName}"/>
                         </Grid>
-                    </ContentView>
-                </DataTemplate>
-            </CollectionView.ItemTemplate>
-        </CollectionView>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+                <CollectionView.EmptyViewTemplate>
+                    <DataTemplate>
+                        <Label Text="Pull down this frame to see your Configs" FontSize="Large" HorizontalTextAlignment="Center"/>
+                    </DataTemplate>
+                </CollectionView.EmptyViewTemplate>
+            </CollectionView>
+        </RefreshView>
     </Grid>
 </ContentPage>
