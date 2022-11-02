@@ -1,4 +1,3 @@
-using Spindler.Models;
 using Spindler.ViewModels;
 namespace Spindler;
 

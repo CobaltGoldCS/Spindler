@@ -1,5 +1,4 @@
 using Spindler.Models;
-using Spindler.Services;
 
 namespace Spindler.Views;
 
@@ -27,9 +26,9 @@ public partial class WebviewReaderPage : ContentPage
     #endregion
 
     public WebviewReaderPage()
-	{
-		InitializeComponent();
-        
+    {
+        InitializeComponent();
+
         Shell.Current.Navigating += OnShellNavigated;
         ReaderBrowser.Navigated += WebViewOnNavigated;
     }
@@ -69,7 +68,7 @@ public partial class WebviewReaderPage : ContentPage
 
     private void Forward_Clicked(object sender, EventArgs e)
     {
-        if(!ReaderBrowser.CanGoForward) return;
+        if (!ReaderBrowser.CanGoForward) return;
         ReaderBrowser.GoForward();
     }
 }

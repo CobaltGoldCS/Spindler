@@ -1,7 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Spindler.Models;
-using System.Windows.Input;
 
 namespace Spindler.ViewModels
 {

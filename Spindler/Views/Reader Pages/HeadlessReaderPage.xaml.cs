@@ -5,49 +5,48 @@ using Spindler.Utils;
 using System.Globalization;
 using System.Text;
 using System.Text.RegularExpressions;
-using System.Web;
 
 namespace Spindler.Views;
 
 [QueryProperty(nameof(BookId), "id")]
 public partial class HeadlessReaderPage : ContentPage
 {
-	// Both of these are guaranteed not null after initial page loading
-	WebService? webservice;
-	Book? currentbook;
+    // Both of these are guaranteed not null after initial page loading
+    WebService? webservice;
+    Book? currentbook;
     Config? config;
-	LoadedData? loadedData;
+    LoadedData? loadedData;
 
-	public string BookId
-	{
-		set
-		{
-			LoadBook(Convert.ToInt32(value));
-		}
-	}
-	public HeadlessReaderPage()
-	{
-		InitializeComponent();
+    public string BookId
+    {
+        set
+        {
+            LoadBook(Convert.ToInt32(value));
+        }
+    }
+    public HeadlessReaderPage()
+    {
+        InitializeComponent();
 
         ContentView.FontFamily = Preferences.Default.Get("font", "OpenSans (Regular)");
         ContentView.FontSize = Preferences.Default.Get("font_size", 15);
         ContentView.LineHeight = Preferences.Default.Get("line_spacing", 1.5f);
         TitleView.FontFamily = Preferences.Default.Get("font", "OpenSans (Regular)");
-        
 
-		Shell.Current.Navigating += OnShellNavigated;
+
+        Shell.Current.Navigating += OnShellNavigated;
     }
 
-	public async void LoadBook(int id)
-	{
-		currentbook = await App.Database.GetItemByIdAsync<Book>(id);
-	    config = await WebService.FindValidConfig(currentbook.Url);
-		if (await FailIfNull(config, "There is no valid configuration for this book")) return;
-		webservice = new(config!);
-		currentbook.LastViewed = DateTime.UtcNow;
-		HeadlessBrowser.Source = currentbook.Url;
+    public async void LoadBook(int id)
+    {
+        currentbook = await App.Database.GetItemByIdAsync<Book>(id);
+        config = await WebService.FindValidConfig(currentbook.Url);
+        if (await FailIfNull(config, "There is no valid configuration for this book")) return;
+        webservice = new(config!);
+        currentbook.LastViewed = DateTime.UtcNow;
+        HeadlessBrowser.Source = currentbook.Url;
         HeadlessBrowser.Navigated += HeadlessBrowser_Navigated;
-	}
+    }
 
     private async void HeadlessBrowser_Navigated(object? sender, WebNavigatedEventArgs e)
     {
@@ -63,7 +62,7 @@ public partial class HeadlessReaderPage : ContentPage
     }
 
     private async void Bookmark_Clicked(object sender, EventArgs e)
-	{
+    {
         double prevbuttonheight = PrevButton.IsVisible ? PrevButton.Height : 0;
         double nextbuttonheight = NextButton.IsVisible ? NextButton.Height : 0;
         await App.Database.SaveItemAsync<Book>(new()
@@ -77,14 +76,14 @@ public partial class HeadlessReaderPage : ContentPage
         });
     }
 
-	private void PrevButton_Clicked(object sender, EventArgs e)
-	{
+    private void PrevButton_Clicked(object sender, EventArgs e)
+    {
         HeadlessBrowser.Source = loadedData!.prevUrl;
         PrevButton.IsEnabled = false;
     }
 
-	private void NextButton_Clicked(object sender, EventArgs e)
-	{
+    private void NextButton_Clicked(object sender, EventArgs e)
+    {
         HeadlessBrowser.Source = loadedData!.nextUrl;
         NextButton.IsEnabled = false;
     }
@@ -153,15 +152,15 @@ public partial class HeadlessReaderPage : ContentPage
     }
 
     private async void DataChanged()
-	{
+    {
         if (await FailIfNull(loadedData, "Couldn't get data")) return;
 
-		Title = loadedData!.title ?? "";
-		TitleView.Text = loadedData.title ?? "";
-		ContentView.Text = loadedData.text ?? "";
+        Title = loadedData!.title ?? "";
+        TitleView.Text = loadedData.title ?? "";
+        ContentView.Text = loadedData.text ?? "";
 
-		NextButton.IsVisible = WebService.IsUrl(loadedData.nextUrl);
-		PrevButton.IsVisible = WebService.IsUrl(loadedData.prevUrl);
+        NextButton.IsVisible = WebService.IsUrl(loadedData.nextUrl);
+        PrevButton.IsVisible = WebService.IsUrl(loadedData.prevUrl);
 
         NextButton.IsEnabled = true;
         PrevButton.IsEnabled = true;
@@ -178,8 +177,8 @@ public partial class HeadlessReaderPage : ContentPage
         currentbook.LastViewed = DateTime.UtcNow;
         currentbook.Position = 0;
         await App.Database.SaveItemAsync(currentbook);
-        
-	}
+
+    }
 
     /// <summary>
     /// Display <paramref name="message"/> if <paramref name="value"/> is <c>null</c>
@@ -206,9 +205,9 @@ public partial class HeadlessReaderPage : ContentPage
             await Task.Delay(100);
             MainThread.BeginInvokeOnMainThread(async () =>
             {
-                    await ReadingLayout!.ScrollToAsync(ReadingLayout.ScrollX,
-                    Math.Clamp(currentbook!.Position, 0d, 1d) * (ReadingLayout.ContentSize.Height - (prevbuttonheight + nextbuttonheight)),
-                    autoscrollanimation);
+                await ReadingLayout!.ScrollToAsync(ReadingLayout.ScrollX,
+                Math.Clamp(currentbook!.Position, 0d, 1d) * (ReadingLayout.ContentSize.Height - (prevbuttonheight + nextbuttonheight)),
+                autoscrollanimation);
             });
         });
     }

@@ -1,7 +1,7 @@
 using Spindler.Models;
 using Spindler.Services;
-using Spindler.ViewModels;
 using Spindler.Utils;
+using Spindler.ViewModels;
 using Spindler.Views;
 
 namespace Spindler;

@@ -1,9 +1,8 @@
 ﻿using HtmlAgilityPack;
 using Spindler.Models;
 using Spindler.Utils;
-
-using Path = Spindler.Models.Path;
 using HtmlOrError = Spindler.Utils.Result<string, string>;
+using Path = Spindler.Models.Path;
 
 namespace Spindler.Services;
 
@@ -92,7 +91,7 @@ public class WebService
     public static async Task<Config?> FindValidConfig(string url)
     {
         Config c = await App.Database.GetConfigByDomainNameAsync(new UriBuilder(url).Host);
-        
+
         if (c != null) return c;
         try
         {
@@ -102,7 +101,7 @@ public class WebService
             };
             HtmlDocument doc = new();
             doc.LoadHtml(await client.GetStringAsync(url));
-            
+
             // Parallel index through all generalized configs
             Config? selectedConfig = null;
             Parallel.ForEach(await App.Database.GetAllItemsAsync<GeneralizedConfig>(), (GeneralizedConfig config, ParallelLoopState state) =>
@@ -116,7 +115,7 @@ public class WebService
             return selectedConfig;
         }
         catch (Exception e) when (
-        e is IOException           ||
+        e is IOException ||
         e is TaskCanceledException ||
         e is System.Net.WebException)
         {
@@ -134,7 +133,7 @@ public class WebService
             if (_client is null)
             {
                 HttpClientHandler handler = new();
-                _client = new(handler) {};
+                _client = new(handler) { };
                 _client.DefaultRequestHeaders.Add("User-Agent", App.SharedValues.userAgent);
             }
             return _client;

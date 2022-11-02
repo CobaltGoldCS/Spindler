@@ -1,6 +1,6 @@
+using Spindler.Behaviors;
 using Spindler.Models;
 using Spindler.Services;
-using Spindler.Behaviors;
 using Spindler.Utils;
 
 namespace Spindler;
@@ -86,7 +86,7 @@ public partial class GeneralizedConfigDetailPage : ContentPage
         if (
             !ConfigService.IsValidSelector(matchEntry.Text) ||
             !ConfigService.IsValidSelector(contentEntry.Text) ||
-            !ConfigService.IsValidSelector(nextEntry.Text)    ||
+            !ConfigService.IsValidSelector(nextEntry.Text) ||
             !ConfigService.IsValidSelector(prevEntry.Text))
         {
             return;

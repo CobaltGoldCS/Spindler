@@ -1,10 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Spindler.Models;
-using Spindler.Services;
-using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Windows.Input;
 
 namespace Spindler.ViewModels;
 public partial class ConfigViewModel : ObservableObject
@@ -23,12 +19,12 @@ public partial class ConfigViewModel : ObservableObject
             {
                 SetProperty(ref _configItems, value, nameof(ConfigItems));
             }
-        }    
+        }
     }
 
     [ObservableProperty]
     public bool isRefreshing = false;
-    
+
     [RelayCommand]
     public async Task ReloadItems()
     {

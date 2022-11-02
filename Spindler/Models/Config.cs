@@ -57,9 +57,9 @@ public class Config : IIndexedModel
     /// A dictionary containing extra configuration settings
     /// </summary>
     [Ignore]
-    public Dictionary<string, object> ExtraConfigs 
+    public Dictionary<string, object> ExtraConfigs
     {
-        get => JsonConvert.DeserializeObject<Dictionary<string, object>>(ExtraConfigsBlobbed ?? string.Empty); 
+        get => JsonConvert.DeserializeObject<Dictionary<string, object>>(ExtraConfigsBlobbed ?? string.Empty);
         set
         {
             ExtraConfigsBlobbed = JsonConvert.SerializeObject(value);

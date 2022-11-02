@@ -1,5 +1,5 @@
-using Spindler.Models;
 using Spindler.Behaviors;
+using Spindler.Models;
 namespace Spindler;
 
 [QueryProperty(nameof(BookId), "id")]

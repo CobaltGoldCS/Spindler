@@ -1,10 +1,8 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
-using Newtonsoft.Json;
 using Spindler.Models;
 using Spindler.Services;
 using Spindler.Utils;
 using Spindler.Views;
-using System.Net;
 using System.Windows.Input;
 namespace Spindler.ViewModels
 {
@@ -41,7 +39,8 @@ namespace Spindler.ViewModels
 
 
         readonly bool defaultvisible = false;
-        public bool PrevButtonIsVisible {
+        public bool PrevButtonIsVisible
+        {
             get
             {
                 if (loadedData is not null)
@@ -50,7 +49,8 @@ namespace Spindler.ViewModels
                     return defaultvisible;
             }
         }
-        public bool NextButtonIsVisible {
+        public bool NextButtonIsVisible
+        {
             get
             {
                 if (loadedData is not null)
@@ -65,7 +65,7 @@ namespace Spindler.ViewModels
         #region Command Definitions
         public ICommand NextClickHandler { get; private set; }
         public ICommand PrevClickHandler { get; private set; }
-        public ICommand BookmarkCommand  { get; private set; }
+        public ICommand BookmarkCommand { get; private set; }
         #endregion
 
         #region Initialization Functions
@@ -167,7 +167,7 @@ namespace Spindler.ViewModels
                         Math.Clamp(CurrentBook!.Position, 0d, 1d) * (ReadingLayout.ContentSize.Height - (prevbuttonheight + nextbuttonheight)),
                         Config!.ExtraConfigs.GetOrDefault("autoscrollanimation", true));
                 });
-                
+
             });
         }
         #region Error Handlers

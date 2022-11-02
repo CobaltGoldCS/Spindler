@@ -1,6 +1,6 @@
+using Spindler.Behaviors;
 using Spindler.Models;
 using Spindler.Services;
-using Spindler.Behaviors;
 using Spindler.Utils;
 using System.Text.RegularExpressions;
 
@@ -90,7 +90,7 @@ public partial class ConfigDetailPage : ContentPage
     {
         if (!domainValidationRegex.IsMatch(domainEntry.Text) ||
             !ConfigService.IsValidSelector(contentEntry.Text) ||
-            !ConfigService.IsValidSelector(nextEntry.Text)    ||
+            !ConfigService.IsValidSelector(nextEntry.Text) ||
             !ConfigService.IsValidSelector(prevEntry.Text))
         {
             return;
