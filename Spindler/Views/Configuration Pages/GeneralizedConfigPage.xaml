@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:models="clr-namespace:Spindler.Models"
              xmlns:vms="clr-namespace:Spindler.ViewModels"
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
              x:Class="Spindler.Views.GeneralizedConfigPage"
              Title="Configurations">
 
@@ -10,9 +11,21 @@
         <vms:GeneralizedConfigViewModel/>
     </ContentPage.BindingContext>
 
-    <Grid RowDefinitions="50, *">
-        <Button CornerRadius="0" Text="Add A Config +" FontSize="Large"  Command="{Binding AddCommand}"/>
-        <RefreshView Margin="5, 0" Grid.Row="1"
+    <Grid RowDefinitions="65, *">
+        <Border StrokeShape="RoundRectangle 10,10,10,10" Margin="10,5,10,5" Stroke="{StaticResource DarkPrimary}">
+            <Border.GestureRecognizers>
+                <TapGestureRecognizer Command="{Binding AddCommand}"/>
+            </Border.GestureRecognizers>
+            <Grid ColumnDefinitions="*, 100" Margin="0,0,0,0" BackgroundColor="{StaticResource DarkPrimary}">
+                <Label Text="Add a Configuration" Grid.Row="0" VerticalTextAlignment="Center" FontSize="26" Margin="20,0,0,0"/>
+                <Image Source="plus.svg" Grid.Column="1"  WidthRequest="50" Margin="10" HorizontalOptions="End">
+                    <Image.Behaviors>
+                        <toolkit:IconTintColorBehavior TintColor="{AppThemeBinding Dark={StaticResource White}, Light={StaticResource Black}}"/>
+                    </Image.Behaviors>
+                </Image>
+            </Grid>
+        </Border>
+        <RefreshView Margin="5, 0" Grid.Row="1" Grid.ColumnSpan="2"
                      Command="{Binding ReloadItemsCommand}"
                      IsRefreshing="{Binding IsRefreshing}">
             <CollectionView
@@ -22,18 +35,28 @@
               SelectedItem="{Binding SelectedItem}"
               >
                 <CollectionView.ItemsLayout>
-                    <LinearItemsLayout Orientation="Vertical" ItemSpacing="10"/>
+                    <LinearItemsLayout Orientation="Vertical" ItemSpacing="5"/>
                 </CollectionView.ItemsLayout>
                 <CollectionView.ItemTemplate>
                     <DataTemplate x:DataType="models:Config">
-                        <Grid RowDefinitions="50">
-                            <Label  HorizontalTextAlignment="Center" VerticalTextAlignment="Center" 
+                        <Border Margin="8,0">
+                            <Grid RowDefinitions="50">
+                                <Label  Margin="10,0,0,0" VerticalTextAlignment="Center" 
                                     FontSize="Large" x:Name="DomainNameLabel" Text="{Binding DomainName}"/>
-                        </Grid>
+                            </Grid>
+                        </Border>
                     </DataTemplate>
                 </CollectionView.ItemTemplate>
                 <CollectionView.EmptyView>
-                    <Label Text="No items available; maybe you should add a General Config" MaxLines="4" FontSize="Large" HorizontalOptions="Center" VerticalOptions="Center"/>
+                    <Grid RowDefinitions="*, 60, 30">
+                        <Image Source="gear.svg" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand" Aspect="AspectFit">
+                            <Image.Behaviors>
+                                <toolkit:IconTintColorBehavior TintColor="{AppThemeBinding Dark={StaticResource White}, Light={StaticResource Black}}"/>
+                            </Image.Behaviors>
+                        </Image>
+                        <Label Grid.Row="1" Text="No items available" FontSize="44" HorizontalTextAlignment="Center" HorizontalOptions="CenterAndExpand" VerticalOptions="Center"/>
+                        <Label Grid.Row="2" Text="Maybe you should add a Generalized Config" FontSize="Medium" HorizontalTextAlignment="Center" />
+                    </Grid>
                 </CollectionView.EmptyView>
             </CollectionView>
         </RefreshView>
