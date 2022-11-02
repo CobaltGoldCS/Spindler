@@ -13,13 +13,13 @@
     </ContentPage.BindingContext>
     <Grid RowDefinitions="65, *">
         <!-- Top Button Area-->
-        <Border StrokeShape="RoundRectangle 10,10,10,10" Margin="10,5,10,5" Stroke="{StaticResource DarkPrimary}">
+        <Border StrokeShape="RoundRectangle 10,10,10,10" Margin="10,5,10,0" Stroke="{StaticResource DarkPrimary}">
             <Border.GestureRecognizers>
                 <TapGestureRecognizer Command="{Binding AddCommand}"/>
             </Border.GestureRecognizers>
             <Grid ColumnDefinitions="*, 100" Margin="0,0,0,0" BackgroundColor="{StaticResource DarkPrimary}">
                 <Label Text="Add a Configuration" Grid.Row="0" VerticalTextAlignment="Center" FontSize="26" Margin="20,0,0,0"/>
-                <Image Source="plus.svg" Grid.Column="1"  WidthRequest="50" Margin="10" HorizontalOptions="End">
+                <Image Source="plus.svg" Grid.Column="1"  WidthRequest="50" Margin="10,10,3,10" HorizontalOptions="End">
                     <Image.Behaviors>
                         <toolkit:IconTintColorBehavior TintColor="{AppThemeBinding Dark={StaticResource White}, Light={StaticResource Black}}"/>
                     </Image.Behaviors>
@@ -27,7 +27,7 @@
             </Grid>
         </Border>
         <!-- Content Area -->
-        <RefreshView Margin="5, 0" Grid.Row="1"
+        <RefreshView Margin="5, 10" Grid.Row="1"
                      Command="{Binding ReloadItemsCommand}"
                      IsRefreshing="{Binding IsRefreshing}">
             <CollectionView
@@ -37,7 +37,7 @@
               SelectedItem="{Binding SelectedItem}"
               >
                 <CollectionView.ItemsLayout>
-                    <LinearItemsLayout Orientation="Vertical" ItemSpacing="10"/>
+                    <LinearItemsLayout Orientation="Vertical" ItemSpacing="5"/>
                 </CollectionView.ItemsLayout>
                 <CollectionView.ItemTemplate>
                     <DataTemplate x:DataType="models:Config">
