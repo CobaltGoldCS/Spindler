@@ -6,27 +6,36 @@
              x:Class="Spindler.Views.GeneralizedConfigPage"
              Title="Configurations">
 
+    <ContentPage.BindingContext>
+        <vms:GeneralizedConfigViewModel/>
+    </ContentPage.BindingContext>
+
     <Grid RowDefinitions="50, *">
-        <Button CornerRadius="0" Text="Add A Config +" FontSize="Large"  Clicked="Button_Clicked"/>
-        <CollectionView x:Name="list"
-              Grid.Row="1"
-              Margin="5, 0"
+        <Button CornerRadius="0" Text="Add A Config +" FontSize="Large"  Command="{Binding AddCommand}"/>
+        <RefreshView Margin="5, 0" Grid.Row="1"
+                     Command="{Binding ReloadItemsCommand}"
+                     IsRefreshing="{Binding IsRefreshing}">
+            <CollectionView
+              SelectionChangedCommand="{Binding ItemClickedCommand}"
+              ItemsSource="{Binding ConfigItems}"
               SelectionMode="Single"
-              SelectionChanged="list_SelectionChanged"
+              SelectedItem="{Binding SelectedItem}"
               >
-            <CollectionView.BindingContext>
-                <models:GeneralizedConfig/>
-            </CollectionView.BindingContext>
-            <CollectionView.ItemTemplate>
-                <DataTemplate>
-                    <ContentView Margin="0,5,0,5" Padding="5">
+                <CollectionView.ItemsLayout>
+                    <LinearItemsLayout Orientation="Vertical" ItemSpacing="10"/>
+                </CollectionView.ItemsLayout>
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="models:Config">
                         <Grid RowDefinitions="50">
                             <Label  HorizontalTextAlignment="Center" VerticalTextAlignment="Center" 
                                     FontSize="Large" x:Name="DomainNameLabel" Text="{Binding DomainName}"/>
                         </Grid>
-                    </ContentView>
-                </DataTemplate>
-            </CollectionView.ItemTemplate>
-        </CollectionView>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+                <CollectionView.EmptyView>
+                    <Label Text="No items available; maybe you should add a General Config" MaxLines="4" FontSize="Large" HorizontalOptions="Center" VerticalOptions="Center"/>
+                </CollectionView.EmptyView>
+            </CollectionView>
+        </RefreshView>
     </Grid>
 </ContentPage>

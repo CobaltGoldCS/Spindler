@@ -32,11 +32,9 @@
                         </Grid>
                     </DataTemplate>
                 </CollectionView.ItemTemplate>
-                <CollectionView.EmptyViewTemplate>
-                    <DataTemplate>
-                        <Label Text="Pull down this frame to see your Configs" FontSize="Large" HorizontalTextAlignment="Center"/>
-                    </DataTemplate>
-                </CollectionView.EmptyViewTemplate>
+                <CollectionView.EmptyView>
+                    <Label Text="No items available; maybe you should add a Config" MaxLines="4" FontSize="Large" HorizontalOptions="Center" VerticalOptions="Center"/>
+                </CollectionView.EmptyView>
             </CollectionView>
         </RefreshView>
     </Grid>
