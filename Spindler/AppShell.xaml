@@ -7,7 +7,7 @@
     xmlns:views="clr-namespace:Spindler.Views"
     Shell.FlyoutBehavior="Disabled">
     <TabBar>
-        <Tab Title="Books" Icon="book.svg">
+        <Tab Icon="book.svg">
             <ShellContent
                 Title="Book Lists"
                 ContentTemplate="{DataTemplate local:BookListPage}"
@@ -26,7 +26,7 @@
                 Route="GeneralConfig"/>
         </Tab>
        
-        <Tab Title="Settings" Icon="profile_gear.svg">
+        <Tab Icon="profile_gear.svg">
             <ShellContent
                 Title="Settings"
                 ContentTemplate="{DataTemplate local:SettingsPage}"
