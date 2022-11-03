@@ -53,12 +53,12 @@
                                 <RowDefinition Height="50"/>
                             </Grid.RowDefinitions>
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="auto"/>
-                                <ColumnDefinition Width="auto"/>
+                                <ColumnDefinition Width="50"/>
                                 <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="20"/>
                             </Grid.ColumnDefinitions>
-                            <Image x:Name="backgroundImage" Source="{Binding ImageUrl}" MaximumHeightRequest="25" MaximumWidthRequest="25" Aspect="AspectFit" Margin="10,0,0,0"/>
-                            <Label  HorizontalTextAlignment="Center" Grid.Column="1" Margin="10,0,0,0"
+                            <Image x:Name="backgroundImage" Source="{Binding ImageUrl}"  MaximumHeightRequest="25" MaximumWidthRequest="25" Aspect="AspectFit" Margin="10,0,0,0"/>
+                            <Label  HorizontalTextAlignment="Center" Grid.Column="1" 
                             VerticalTextAlignment="Center" FontSize="Large" x:Name="TitleLabel" Text="{Binding Name}"/>
                             <ImageButton  Source="kebab.svg" WidthRequest="20" Aspect="AspectFill" VerticalOptions="FillAndExpand" HorizontalOptions="EndAndExpand" Grid.Column="2"
                                   Padding ="0,3,5,3" x:Name="ConfigButton"

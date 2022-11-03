@@ -36,6 +36,7 @@
                         SelectedItem="{Binding CurrentSelection}"
                         SelectionChangedCommand="{Binding SelectionCommand}"
                         SelectionMode="Single"
+                        ItemSizingStrategy="MeasureFirstItem"
                         Margin="5">
             <CollectionView.ItemsLayout>
                 <LinearItemsLayout ItemSpacing="10" Orientation="Vertical"/>
@@ -53,16 +54,9 @@
                                 <RowDefinition Height="2"/>
                                 <RowDefinition Height="40"/>
                             </Grid.RowDefinitions>
-                            <FlexLayout>
-                                <Label
-                        VerticalTextAlignment="Center" FontSize="Medium" x:Name="TitleLabel" Text="{Binding Title}" MaxLines="2" Padding="0,0,5,0"/>
-                            </FlexLayout>
-
+                            <Label VerticalTextAlignment="Center" FontSize="Medium" x:Name="TitleLabel" Text="{Binding Title}" MaxLines="2" Padding="0,0,5,0"/>
                             <BoxView BackgroundColor="{AppThemeBinding Dark={StaticResource White}, Light={StaticResource SpaceCadet}}" HorizontalOptions="Fill" Grid.Row="1"/>
-
-                            <FlexLayout Grid.Row="2" VerticalOptions="Fill" Padding="0,5,0,0">
-                                <Label x:Name="UrlLabel" Text="{Binding Url}" MaxLines="2" FontSize="Small" Grid.Row="2" Padding="0,0,5,0"/>
-                            </FlexLayout>
+                            <Label x:Name="UrlLabel" Text="{Binding Url}" MaxLines="2" FontSize="Small" Grid.Row="2" VerticalOptions="Fill" Padding="0,5,5,0" />
 
                             <ImageButton HorizontalOptions="Center" VerticalOptions="Center" Grid.Column="1" Grid.RowSpan="3" Source="kebab.svg"
                                          Padding="0,3,0,3" HeightRequest="60" WidthRequest="30" Aspect="AspectFit" x:Name="ConfigButton" 
