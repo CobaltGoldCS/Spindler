@@ -1,6 +1,8 @@
 namespace Spindler;
 
 using Spindler.Models;
+using Spindler.ViewModels;
+
 [QueryProperty(nameof(BooklistId), "id")]
 public partial class BookPage : ContentPage
 {
@@ -24,10 +26,7 @@ public partial class BookPage : ContentPage
         BookList list = await App.Database.GetItemByIdAsync<BookList>(id);
         list.LastAccessed = DateTime.UtcNow;
         await App.Database.SaveItemAsync(list);
-        BindingContext = list;
-        BooksList.ItemsSource = await App.Database.GetBooksByBooklistIdAsync(id);
-
-        loaded = true;
+        BindingContext = new BookViewModel(list.Id, list.Name);
     }
 
     #endregion
@@ -35,18 +34,7 @@ public partial class BookPage : ContentPage
     public BookPage()
     {
         InitializeComponent();
-    }
-
-
-    private bool loaded = false;
-    protected override async void OnAppearing()
-    {
-        base.OnAppearing();
         BooksList.Unfocus();
-        if (loaded && int.TryParse(BooklistId, out int id))
-        {
-            BooksList.ItemsSource = await App.Database.GetBooksByBooklistIdAsync(id);
-        }
     }
 
     #region Click Handlers
