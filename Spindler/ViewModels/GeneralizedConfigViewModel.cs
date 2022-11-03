@@ -29,15 +29,16 @@ namespace Spindler.ViewModels
         [RelayCommand]
         public async Task ReloadItems()
         {
-            IsRefreshing = true;
+            isRefreshing = true;
             ConfigItems = await App.Database.GetAllItemsAsync<GeneralizedConfig>();
-            IsRefreshing = false;
+            isRefreshing = false;
         }
 
         [RelayCommand]
         public async Task ItemClicked()
         {
             await Shell.Current.GoToAsync($"/{nameof(GeneralizedConfigDetailPage)}?id={selectedItem!.Id}");
+            selectedItem = null;
         }
 
         [RelayCommand]

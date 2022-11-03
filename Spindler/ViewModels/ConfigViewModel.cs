@@ -37,6 +37,7 @@ public partial class ConfigViewModel : ObservableObject
     public async Task ItemClicked()
     {
         await Shell.Current.GoToAsync($"/{nameof(ConfigDetailPage)}?id={selectedItem!.Id}");
+        selectedItem = null;
     }
 
     [RelayCommand]
