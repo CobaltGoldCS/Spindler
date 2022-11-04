@@ -1,5 +1,9 @@
 ﻿using CommunityToolkit.Maui;
 
+#if ANDROID
+using Spindler.Platforms.Android;
+#endif
+
 namespace Spindler;
 public static class MauiProgram
 {
@@ -19,10 +23,16 @@ public static class MauiProgram
                 fonts.AddFont("Merriweather-Bold.ttf", "Merriweather (Bold)");
                 fonts.AddFont("SignikaNegative-Bold.ttf", "Signika (Bold)");
                 fonts.AddFont("SignikaNegative-Regular.ttf", "Signika");
-            });
-        builder.Services
-            .AddSingleton<AppShell>()
+            })
+            // Fix CollectionView Lag in Android
+#if ANDROID
+            .ConfigureMauiHandlers(h => {
+                h.AddHandler(typeof(CollectionView), typeof(CollectionViewHandlerEx));
+            })
+#endif
             ;
+        builder.Services
+            .AddSingleton<AppShell>();
         return builder.Build();
     }
 }
