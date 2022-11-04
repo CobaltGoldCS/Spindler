@@ -57,7 +57,11 @@
                                 <ColumnDefinition Width="*"/>
                                 <ColumnDefinition Width="20"/>
                             </Grid.ColumnDefinitions>
-                            <Image x:Name="backgroundImage" Source="{Binding ImageUrl}"  MaximumHeightRequest="25" MaximumWidthRequest="25" Aspect="AspectFit" Margin="10,0,0,0"/>
+                            <Image x:Name="backgroundImage" MaximumHeightRequest="25" MaximumWidthRequest="25" Aspect="AspectFit" Margin="10,0,0,0">
+                                <Image.Source>
+                                    <UriImageSource Uri="{Binding ImageUrl}" CacheValidity="10:00:00:00" />
+                                </Image.Source>
+                            </Image>
                             <Label  HorizontalTextAlignment="Center" Grid.Column="1" 
                             VerticalTextAlignment="Center" FontSize="Large" x:Name="TitleLabel" Text="{Binding Name}"/>
                             <ImageButton  Source="kebab.svg" WidthRequest="20" Aspect="AspectFill" VerticalOptions="FillAndExpand" HorizontalOptions="EndAndExpand" Grid.Column="2"
