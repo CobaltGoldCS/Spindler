@@ -57,8 +57,6 @@ public partial class HeadlessReaderPage : ContentPage
             return;
         }
         await LoadContent();
-        if (currentbook!.Position > 0)
-            await DelayScroll(Preferences.Default.Get("autoscrollanimation", true));
     }
 
     private async void Bookmark_Clicked(object sender, EventArgs e)
@@ -107,12 +105,6 @@ public partial class HeadlessReaderPage : ContentPage
             await AttemptRetry(html);
         }
         if (await FailIfNull(loadedData, "Configuration was unable to obtain values; check Configuration and Url")) return;
-        if (currentbook.Position > 0)
-        {
-            await ReadingLayout.ScrollToAsync(ReadingLayout.ScrollX,
-                Math.Clamp(currentbook!.Position, 0d, 1d) * (ReadingLayout.ContentSize.Height - (PrevButton.Height + NextButton.Height)),
-                config!.ExtraConfigs.GetOrDefault("autoscrollanimation", true));
-        }
         DataChanged();
         retries = 3;
     }
@@ -140,11 +132,9 @@ public partial class HeadlessReaderPage : ContentPage
     {
         if (e.Current.Location.OriginalString == "//BookLists/BookPage/HeadlessReaderPage")
         {
-            double prevbuttonheight = PrevButton.IsVisible ? PrevButton.Height : 0;
-            double nextbuttonheight = NextButton.IsVisible ? PrevButton.Height : 0;
             if (currentbook != null)
             {
-                currentbook.Position = ReadingLayout.ScrollY / (ReadingLayout.ContentSize.Height - (prevbuttonheight + nextbuttonheight));
+                currentbook.Position = ReadingLayout.ScrollY / ReadingLayout.ContentSize.Height;
                 await App.Database.SaveItemAsync(currentbook);
             }
         }
@@ -165,17 +155,29 @@ public partial class HeadlessReaderPage : ContentPage
         NextButton.IsEnabled = true;
         PrevButton.IsEnabled = true;
 
-        if (currentbook!.Position == 0)
-            await ReadingLayout.ScrollToAsync(ReadingLayout.ScrollX, 0, false);
-
         // Turn relative urls into absolutes
         var baseUri = new Uri(loadedData.currentUrl!);
         loadedData.prevUrl = new Uri(baseUri, loadedData.prevUrl).ToString();
         loadedData.nextUrl = new Uri(baseUri, loadedData.nextUrl).ToString();
 
-        currentbook.Url = loadedData.currentUrl!;
+        currentbook!.Url = loadedData.currentUrl!;
         currentbook.LastViewed = DateTime.UtcNow;
-        currentbook.Position = 0;
+        if (currentbook!.Position > 0)
+        {
+            await Task.Run(async () =>
+            {
+                // FIXME: Mess around with this delay (sometimes it works, sometimes it doesn't)
+                while (ReadingLayout.ContentSize.Height < 657)
+                    await Task.Delay(50);
+                MainThread.BeginInvokeOnMainThread(async () =>
+                {
+                    await ReadingLayout.ScrollToAsync(ReadingLayout.ScrollX,
+                     Math.Clamp(currentbook!.Position, 0d, 1d) * ReadingLayout.ContentSize.Height,
+                     config!.ExtraConfigs.GetOrDefault("autoscrollanimation", true));
+                    currentbook.Position = 0;
+                });
+            });
+        }
         await App.Database.SaveItemAsync(currentbook);
 
     }
@@ -194,21 +196,5 @@ public partial class HeadlessReaderPage : ContentPage
             await Shell.Current.GoToAsync($"../{nameof(ErrorPage)}?id={currentbook!.Id}&errormessage={message}");
         }
         return nullobj;
-    }
-
-    private async Task DelayScroll(bool autoscrollanimation)
-    {
-        await Task.Run(async () =>
-        {
-            double prevbuttonheight = PrevButton.IsVisible ? PrevButton.Height : 0;
-            double nextbuttonheight = NextButton.IsVisible ? NextButton.Height : 0;
-            await Task.Delay(100);
-            MainThread.BeginInvokeOnMainThread(async () =>
-            {
-                await ReadingLayout!.ScrollToAsync(ReadingLayout.ScrollX,
-                Math.Clamp(currentbook!.Position, 0d, 1d) * (ReadingLayout.ContentSize.Height - (prevbuttonheight + nextbuttonheight)),
-                autoscrollanimation);
-            });
-        });
     }
 }
