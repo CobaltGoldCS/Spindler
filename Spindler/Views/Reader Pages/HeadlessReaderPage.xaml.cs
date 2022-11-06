@@ -42,6 +42,7 @@ public partial class HeadlessReaderPage : ContentPage
         currentbook = await App.Database.GetItemByIdAsync<Book>(id);
         config = await WebService.FindValidConfig(currentbook.Url);
         if (await FailIfNull(config, "There is no valid configuration for this book")) return;
+
         webservice = new(config!);
         currentbook.LastViewed = DateTime.UtcNow;
         HeadlessBrowser.Source = currentbook.Url;
@@ -74,15 +75,19 @@ public partial class HeadlessReaderPage : ContentPage
         });
     }
 
-    private void PrevButton_Clicked(object sender, EventArgs e)
+    private async void PrevButton_Clicked(object sender, EventArgs e)
     {
         HeadlessBrowser.Source = loadedData!.prevUrl;
+        LoadingIndicator.IsRunning = true;
+        await ReadingLayout.ScrollToAsync(ReadingLayout.ScrollX, 0, false);
         PrevButton.IsEnabled = false;
     }
 
-    private void NextButton_Clicked(object sender, EventArgs e)
+    private async void NextButton_Clicked(object sender, EventArgs e)
     {
         HeadlessBrowser.Source = loadedData!.nextUrl;
+        LoadingIndicator.IsRunning = true;
+        await ReadingLayout.ScrollToAsync(ReadingLayout.ScrollX, 0, false);
         NextButton.IsEnabled = false;
     }
 
@@ -166,7 +171,6 @@ public partial class HeadlessReaderPage : ContentPage
         {
             await Task.Run(async () =>
             {
-                // FIXME: Mess around with this delay (sometimes it works, sometimes it doesn't)
                 while (ReadingLayout.ContentSize.Height < 657)
                     await Task.Delay(50);
                 MainThread.BeginInvokeOnMainThread(async () =>
@@ -178,6 +182,7 @@ public partial class HeadlessReaderPage : ContentPage
                 });
             });
         }
+        LoadingIndicator.IsRunning = false;
         await App.Database.SaveItemAsync(currentbook);
 
     }

@@ -33,9 +33,11 @@ namespace Spindler.ViewModels
         public LoadedData? loadedData;
 
         [ObservableProperty]
-        private string title = "Loading";
+        private string title;
         [ObservableProperty]
-        private string text = "Content is currently loading";
+        private string text;
+        [ObservableProperty]
+        private bool isLoading;
 
 
         readonly bool defaultvisible = false;
@@ -77,9 +79,10 @@ namespace Spindler.ViewModels
                 var prevdata = (await PreloadDataTask!)![0];
                 if (!await FailIfNull(prevdata, "Invalid Url"))
                 {
+                    IsLoading = true;
+                    await ReadingLayout!.ScrollToAsync(ReadingLayout.ScrollX, 0, false);
                     loadedData = prevdata;
                     DataChanged();
-                    await ReadingLayout!.ScrollToAsync(ReadingLayout.ScrollX, 0, false);
                 }
             });
             NextClickHandler = new Command(async () =>
@@ -87,9 +90,10 @@ namespace Spindler.ViewModels
                 var nextdata = (await PreloadDataTask!)![1];
                 if (!await FailIfNull(nextdata, "Invalid Url"))
                 {
+                    IsLoading = true;
+                    await ReadingLayout!.ScrollToAsync(ReadingLayout.ScrollX, 0, false);
                     loadedData = nextdata;
                     DataChanged();
-                    await ReadingLayout!.ScrollToAsync(ReadingLayout.ScrollX, 0, false);
                 }
             });
             BookmarkCommand = new Command(async () =>
@@ -107,6 +111,7 @@ namespace Spindler.ViewModels
                 });
             });
             #endregion
+            IsLoading = true;
         }
 
         public async Task StartLoad()
@@ -151,6 +156,7 @@ namespace Spindler.ViewModels
             OnPropertyChanged(nameof(PrevButtonIsVisible));
 
             PreloadDataTask = webService.LoadData(loadedData.prevUrl, loadedData.nextUrl);
+            IsLoading = false;
         }
 
 
