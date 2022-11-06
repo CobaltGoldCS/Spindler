@@ -9,7 +9,7 @@
     <ScrollView x:Name="ReadingLayout" Orientation="Vertical" IsEnabled="True" VerticalScrollBarVisibility="Always" >
         <Grid x:Name="Scroller" VerticalOptions="FillAndExpand" RowDefinitions="auto, auto, *, auto, 0">
             <!-- The actual setup -->
-            <Label x:Name="TitleView" Text="[Title]" FontSize="Title" Padding="5,0,5,20" IsVisible="true"/>
+            <Label x:Name="TitleView" Text="Loading" FontSize="Title" Padding="5,0,5,20" IsVisible="true"/>
             <Button x:Name="PrevButton" Grid.Row="1" Text="Previous" Clicked="PrevButton_Clicked" FontSize="Large" HorizontalOptions="FillAndExpand" IsVisible="false"/>
             <Label  x:Name="ContentView" Grid.Row="2"
                     Padding="30,0"
