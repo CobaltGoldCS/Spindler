@@ -42,7 +42,7 @@ public partial class ReaderPage : ContentPage
             CurrentBook = currentBook,
             Config = config
         };
-        viewmodel.AttachReferencesToUI(ReadingLayout, PrevButton.Height);
+        viewmodel.AttachReferencesToUI(ReadingLayout);
         BindingContext = viewmodel;
         await viewmodel.StartLoad();
     }
@@ -54,25 +54,5 @@ public partial class ReaderPage : ContentPage
         ContentView.FontSize = Preferences.Default.Get("font_size", 15);
         ContentView.LineHeight = Preferences.Default.Get("line_spacing", 1.5f);
         TitleView.FontFamily = Preferences.Default.Get("font", "OpenSans (Regular)");
-        Shell.Current.Navigating += OnShellNavigated;
     }
-
-    // FIXME: This does not handle android back buttons
-    public async void OnShellNavigated(object? sender,
-                           ShellNavigatingEventArgs e)
-    {
-        if (e.Current.Location.OriginalString == "//BookLists/BookPage/ReaderPage")
-        {
-            double prevbuttonheight = PrevButton.IsVisible ? PrevButton.Height : 0;
-            double nextbuttonheight = NextButton.IsVisible ? PrevButton.Height : 0;
-            var currentbook = ((ReaderViewModel)BindingContext).CurrentBook;
-            if (currentbook != null)
-            {
-                currentbook.Position = ReadingLayout.ScrollY / (ReadingLayout.ContentSize.Height - (prevbuttonheight + nextbuttonheight));
-                await App.Database.SaveItemAsync(currentbook);
-            }
-        }
-        Shell.Current.Navigating -= OnShellNavigated;
-    }
-
 }

@@ -17,13 +17,13 @@
     <ScrollView x:Name="ReadingLayout" Orientation="Vertical" IsEnabled="True" VerticalScrollBarVisibility="Always" >
         <Grid x:Name="Scroller" VerticalOptions="FillAndExpand" RowDefinitions="auto, auto, auto, *, auto">
             <Label x:Name="TitleView" Text="{Binding Title}" FontSize="Title" Padding="5,0,5,20"/>
-            <Button x:Name="PrevButton" IsVisible="{Binding PrevButtonIsVisible}" Grid.Row="1" Text="Previous" Command="{Binding PrevClickHandler}" FontSize="Large" HorizontalOptions="FillAndExpand"/>
+            <Button x:Name="PrevButton" IsVisible="{Binding PrevButtonIsVisible}" Grid.Row="1" Text="Previous" Command="{Binding PrevClickCommand}" FontSize="Large" HorizontalOptions="FillAndExpand"/>
             <ActivityIndicator IsRunning="{Binding IsLoading}" IsVisible="{Binding IsLoading}" Color="{StaticResource Primary}" Grid.Row="2"/>
             <Label  x:Name="ContentView" Grid.Row="3"
                     Padding="30,0"
                     Text="{Binding Text}"
             />
-            <Button x:Name="NextButton" IsVisible="{Binding NextButtonIsVisible}" Grid.Row="4" Text="Next" FontSize="Large" HorizontalOptions="FillAndExpand" Command="{Binding NextClickHandler}"/>
+            <Button x:Name="NextButton" IsVisible="{Binding NextButtonIsVisible}" Grid.Row="4" Text="Next" FontSize="Large" HorizontalOptions="FillAndExpand" Command="{Binding NextClickCommand}"/>
         </Grid>
     </ScrollView>
 </ContentPage>
