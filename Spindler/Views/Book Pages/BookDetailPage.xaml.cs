@@ -2,38 +2,29 @@ using Spindler.Behaviors;
 using Spindler.Models;
 namespace Spindler;
 
-[QueryProperty(nameof(BookId), "id")]
+[QueryProperty(nameof(Book), "book")]
 public partial class BookDetailPage : ContentPage
 {
     #region QueryProperty Handler
-    private int _bookId;
-    private int BookListId;
-    public string BookId
+    private Book _book = new Book();
+    public Book Book
     {
         set
         {
-            // The value of "id" in gotoasync allows us to set two variables for the price of one using |04923102-afb|
-            // the first index is the book id, and the second index is the list id
-            var ids = value.Split("|04923102-afb|");
-            LoadBook(ids[0]);
-            _bookId = Convert.ToInt32(ids[0]);
-            BookListId = Convert.ToInt32(ids[1]);
+            _book = value;
+            LoadBook(value);
         }
+        get => _book;
     }
 
-    public async void LoadBook(string id)
+    public void LoadBook(Book book)
     {
-        int bookId = Convert.ToInt32(id);
-        // Handle if a new book needs to be created
-        if (bookId < 0)
+        if (book.Id < 0)
         {
-            // This book is never referenced again, so the values technically do not matter.
-            BindingContext = new Book { Id = -1, Url = "", LastViewed = DateTime.UtcNow, Title = "", BookListId = this.BookListId };
             okButton.Text = "Add";
             Title = "Add a new Book";
             return;
         }
-        Book book = await App.Database.GetItemByIdAsync<Book>(bookId);
         okButton.Text = $"Modify";
         Title = $"Modify {book.Title}";
         BindingContext = book;
@@ -63,17 +54,18 @@ public partial class BookDetailPage : ContentPage
 
         if (valid)
         {
-            Book book = new Book { Id = _bookId, Url = urlEntry.Text, Title = nameEntry.Text, LastViewed = DateTime.UtcNow, BookListId = this.BookListId };
-            await App.Database.SaveItemAsync(book);
+            Book.Url = urlEntry.Text;
+            Book.Title = nameEntry.Text;
+            await App.Database.SaveItemAsync(Book);
         }
         await Close();
     }
 
     private async void DeleteButton_clicked(object sender, EventArgs e)
     {
-        if (_bookId > 0)
+        if (Book.Id > 0)
         {
-            await App.Database.DeleteItemAsync(await App.Database.GetItemByIdAsync<Book>(_bookId));
+            await App.Database.DeleteItemAsync(Book);
         }
         await Close();
     }

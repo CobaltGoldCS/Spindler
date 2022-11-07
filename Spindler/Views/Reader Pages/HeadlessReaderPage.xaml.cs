@@ -8,22 +8,25 @@ using System.Text.RegularExpressions;
 
 namespace Spindler.Views;
 
-[QueryProperty(nameof(BookId), "id")]
+[QueryProperty(nameof(Book), "book")]
 public partial class HeadlessReaderPage : ContentPage
 {
     // Both of these are guaranteed not null after initial page loading
     WebService? webservice;
-    Book? currentbook;
     Config? config;
     LoadedData? loadedData;
 
-    public string BookId
+    Book book = new Book();
+    public Book Book
     {
         set
         {
-            LoadBook(Convert.ToInt32(value));
+            book = value;
+            LoadBook(value);
         }
+        get => book;
     }
+
     public HeadlessReaderPage()
     {
         InitializeComponent();
@@ -37,15 +40,14 @@ public partial class HeadlessReaderPage : ContentPage
         Shell.Current.Navigating += OnShellNavigated;
     }
 
-    public async void LoadBook(int id)
+    public async void LoadBook(Book Book)
     {
-        currentbook = await App.Database.GetItemByIdAsync<Book>(id);
-        config = await WebService.FindValidConfig(currentbook.Url);
+        config = await WebService.FindValidConfig(Book.Url);
         if (await FailIfNull(config, "There is no valid configuration for this book")) return;
 
         webservice = new(config!);
-        currentbook.LastViewed = DateTime.UtcNow;
-        HeadlessBrowser.Source = currentbook.Url;
+        Book.LastViewed = DateTime.UtcNow;
+        HeadlessBrowser.Source = Book.Url;
         HeadlessBrowser.Navigated += HeadlessBrowser_Navigated;
     }
 
@@ -66,7 +68,7 @@ public partial class HeadlessReaderPage : ContentPage
         double nextbuttonheight = NextButton.IsVisible ? NextButton.Height : 0;
         await App.Database.SaveItemAsync<Book>(new()
         {
-            BookListId = currentbook!.BookListId,
+            BookListId = Book!.BookListId,
             Id = -1,
             Title = "Bookmark: " + loadedData!.title,
             Url = loadedData.currentUrl!,
@@ -104,7 +106,7 @@ public partial class HeadlessReaderPage : ContentPage
         builder.Replace("\\n", "\n").Replace("\\\"", "\"");
         html = builder.ToString();
 
-        loadedData = await webservice!.LoadWebData(currentbook!.Url, html);
+        loadedData = await webservice!.LoadWebData(Book!.Url, html);
         if (string.IsNullOrEmpty(loadedData.text))
         {
             await AttemptRetry(html);
@@ -137,10 +139,10 @@ public partial class HeadlessReaderPage : ContentPage
     {
         if (e.Current.Location.OriginalString == "//BookLists/BookPage/HeadlessReaderPage")
         {
-            if (currentbook != null)
+            if (Book != null)
             {
-                currentbook.Position = ReadingLayout.ScrollY / ReadingLayout.ContentSize.Height;
-                await App.Database.SaveItemAsync(currentbook);
+                Book.Position = ReadingLayout.ScrollY / ReadingLayout.ContentSize.Height;
+                await App.Database.SaveItemAsync(Book);
             }
         }
         Shell.Current.Navigating -= OnShellNavigated;
@@ -165,9 +167,9 @@ public partial class HeadlessReaderPage : ContentPage
         loadedData.prevUrl = new Uri(baseUri, loadedData.prevUrl).ToString();
         loadedData.nextUrl = new Uri(baseUri, loadedData.nextUrl).ToString();
 
-        currentbook!.Url = loadedData.currentUrl!;
-        currentbook.LastViewed = DateTime.UtcNow;
-        if (currentbook!.Position > 0)
+        Book!.Url = loadedData.currentUrl!;
+        Book.LastViewed = DateTime.UtcNow;
+        if (Book!.Position > 0)
         {
             await Task.Run(async () =>
             {
@@ -176,14 +178,14 @@ public partial class HeadlessReaderPage : ContentPage
                 MainThread.BeginInvokeOnMainThread(async () =>
                 {
                     await ReadingLayout.ScrollToAsync(ReadingLayout.ScrollX,
-                     Math.Clamp(currentbook!.Position, 0d, 1d) * ReadingLayout.ContentSize.Height,
+                     Math.Clamp(Book!.Position, 0d, 1d) * ReadingLayout.ContentSize.Height,
                      config!.ExtraConfigs.GetOrDefault("autoscrollanimation", true));
-                    currentbook.Position = 0;
+                    Book.Position = 0;
                 });
             });
         }
         LoadingIndicator.IsRunning = false;
-        await App.Database.SaveItemAsync(currentbook);
+        await App.Database.SaveItemAsync(Book);
 
     }
 
@@ -198,7 +200,7 @@ public partial class HeadlessReaderPage : ContentPage
         bool nullobj = value == null;
         if (nullobj)
         {
-            await Shell.Current.GoToAsync($"../{nameof(ErrorPage)}?id={currentbook!.Id}&errormessage={message}");
+            await Shell.Current.GoToAsync($"../{nameof(ErrorPage)}?id={Book!.Id}&errormessage={message}");
         }
         return nullobj;
     }

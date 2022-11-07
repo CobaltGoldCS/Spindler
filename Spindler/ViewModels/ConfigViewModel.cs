@@ -36,13 +36,24 @@ public partial class ConfigViewModel : ObservableObject
     [RelayCommand]
     public async Task ItemClicked()
     {
-        await Shell.Current.GoToAsync($"/{nameof(ConfigDetailPage)}?id={selectedItem!.Id}");
+        Dictionary<string, object> parameters = new()
+        {
+            { "config", selectedItem! }
+        };
+        await Shell.Current.GoToAsync($"/{nameof(ConfigDetailPage)}", parameters);
         selectedItem = null;
     }
 
     [RelayCommand]
     public async Task Add()
     {
-        await Shell.Current.GoToAsync($"/{nameof(ConfigDetailPage)}?id=-1");
+        Dictionary<string, object> parameters = new()
+        {
+            { 
+                "config",
+                new Config() { Id = -1 }
+            }
+        };
+        await Shell.Current.GoToAsync($"/{nameof(ConfigDetailPage)}", parameters);
     }
 }

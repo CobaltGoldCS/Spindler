@@ -3,36 +3,33 @@ using Spindler.Models;
 
 namespace Spindler;
 
-[QueryProperty(nameof(BooklistId), "id")]
+[QueryProperty(nameof(Booklist), "booklist")]
 public partial class BookListDetailPage : ContentPage
 {
     #region QueryProperty handler
-    private int _booklistId;
-    public string BooklistId
+    private BookList _booklist = new BookList();
+    public BookList Booklist
     {
         set
         {
+            _booklist = value;
             LoadBookList(value);
-            _booklistId = Convert.ToInt32(value);
         }
+        get { return _booklist; }
     }
 
-    public async void LoadBookList(string id)
+    public void LoadBookList(BookList booklist)
     {
-        int booklistId = Convert.ToInt32(id);
         // Handle if a new book needs to be created
-        if (booklistId < 0)
+        if (booklist.Id < 0)
         {
-
-            BindingContext = new BookList { Id = -1, ImageUrl = "", LastAccessed = DateTime.UtcNow, Name = "" };
             okButton.Text = "Add";
             Title = "Add a new Book List";
             return;
         }
-        BookList list = await App.Database.GetItemByIdAsync<BookList>(booklistId);
-        okButton.Text = $"Modify {list.Name}";
-        Title = $"Modify {list.Name}";
-        BindingContext = list;
+        okButton.Text = $"Modify {booklist.Name}";
+        Title = $"Modify {booklist.Name}";
+        BindingContext = booklist;
     }
     #endregion
 
@@ -59,27 +56,23 @@ public partial class BookListDetailPage : ContentPage
     {
         if (!string.IsNullOrWhiteSpace(nameEntry.Text))
         {
-            BookList list = new BookList
+            Booklist.ImageUrl = imageUrlEntry.Text;
+            Booklist.Name = nameEntry.Text;
+            Booklist.LastAccessed = DateTime.UtcNow;
+            if (Booklist.ImageUrl.Length == 0)
             {
-                Id = _booklistId,
-                ImageUrl = imageUrlEntry.Text,
-                Name = nameEntry.Text,
-                LastAccessed = DateTime.UtcNow
-            };
-            if (list.ImageUrl.Length == 0)
-            {
-                list.ImageUrl = BookList.GetRandomPlaceholderImageUrl();
+                Booklist.ImageUrl = BookList.GetRandomPlaceholderImageUrl();
             }
-            await App.Database.SaveItemAsync(list);
+            await App.Database.SaveItemAsync(Booklist);
         }
         await Close();
     }
 
     private async void DeleteButton_clicked(object sender, EventArgs e)
     {
-        if (_booklistId > 0)
+        if (Booklist.Id > 0)
         {
-            await App.Database.DeleteBookListAsync(await App.Database.GetItemByIdAsync<BookList>(_booklistId));
+            await App.Database.DeleteBookListAsync(await App.Database.GetItemByIdAsync<BookList>(Booklist.Id));
         }
         await Close();
     }

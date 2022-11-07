@@ -44,13 +44,26 @@ public partial class BookListViewModel : ObservableObject
     private async void ConfigButton(int id)
     {
         // Add A Dialog to change the values of BookList
-        await Shell.Current.GoToAsync($"{nameof(BookListDetailPage)}?id={id}");
+        BookList bookList = await App.Database.GetItemByIdAsync<BookList>(id);
+        Dictionary<string, object> parameters = new()
+        {
+            {
+                "booklist", bookList
+            }
+        };
+        await Shell.Current.GoToAsync($"{nameof(BookListDetailPage)}", parameters);
     }
 
     [RelayCommand]
     private async void AddToolBarItem()
     {
-        await Shell.Current.GoToAsync($"{nameof(BookListDetailPage)}?id=-1");
+        Dictionary<string, object> parameters = new()
+        {
+            {
+                "booklist", new BookList() {Id = -1}
+            }
+        };
+        await Shell.Current.GoToAsync($"{nameof(BookListDetailPage)}", parameters);
     }
 
     [RelayCommand]
@@ -60,7 +73,11 @@ public partial class BookListViewModel : ObservableObject
         currentSelection = null;
         selectedItem!.LastAccessed = DateTime.UtcNow;
         await App.Database.SaveItemAsync(selectedItem);
-        await Shell.Current.GoToAsync($"/{nameof(BookPage)}?id={selectedItem.Id}");
+        Dictionary<string, object> parameters = new()
+        {
+            { "booklist", selectedItem! }
+        };
+        await Shell.Current.GoToAsync($"/{nameof(BookPage)}", parameters);
     }
 
     [RelayCommand]

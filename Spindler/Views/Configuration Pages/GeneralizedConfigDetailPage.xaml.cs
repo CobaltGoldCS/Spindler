@@ -5,44 +5,31 @@ using Spindler.Utils;
 
 namespace Spindler;
 
-[QueryProperty(nameof(ConfigId), "id")]
+[QueryProperty(nameof(config), "config")]
 public partial class GeneralizedConfigDetailPage : ContentPage
 {
-    private int ConfigurationId = -1;
+    private GeneralizedConfig Configuration = new() { Id = -1 };
 
     #region QueryProperty handler
-    public string ConfigId
+    public GeneralizedConfig config
     {
-        get => ConfigurationId.ToString();
+        get => Configuration;
         set
         {
-            int id = Convert.ToInt32(value);
-            ConfigurationId = id;
-            InitializePage(id);
+            Configuration = value;
+            InitializePage(value);
         }
     }
 
-    private async void InitializePage(int id)
+    private async void InitializePage(GeneralizedConfig config)
     {
-        GeneralizedConfig config;
-        if (ConfigurationId < 0)
+        if (config.Id < 0)
         {
-            config = new GeneralizedConfig
-            {
-                Id = -1,
-                DomainName = "",
-                MatchPath = "",
-                ContentPath = "",
-                NextUrlPath = "",
-                PrevUrlPath = "",
-                TitlePath = "",
-            };
             okButton.Text = "Add";
             Title = "Add a new Config";
         }
         else
         {
-            config = await App.Database.GetItemByIdAsync<GeneralizedConfig>(id);
             okButton.Text = "Modify";
             Title = $"Modify {config.DomainName}";
         }
@@ -75,9 +62,9 @@ public partial class GeneralizedConfigDetailPage : ContentPage
     #region Click Handlers
     private async void DeleteButton_Clicked(object sender, EventArgs e)
     {
-        if (ConfigurationId < 0)
+        if (config.Id < 0)
             return;
-        await App.Database.DeleteItemAsync(await App.Database.GetItemByIdAsync<GeneralizedConfig>(ConfigurationId));
+        await App.Database.DeleteItemAsync(config);
         await Shell.Current.GoToAsync("..");
     }
 
@@ -92,7 +79,7 @@ public partial class GeneralizedConfigDetailPage : ContentPage
             return;
         }
 
-        Dictionary<string, object> extras = new()
+        config.ExtraConfigs = new()
         {
             { "webview", switchWebView.On },
             { "autoscrollanimation", animationSwitch.On },
@@ -102,17 +89,12 @@ public partial class GeneralizedConfigDetailPage : ContentPage
             { "headless", headlessSwitch.On },
         };
 
-        GeneralizedConfig config = new()
-        {
-            Id = ConfigurationId,
-            MatchPath = matchEntry.Text,
-            DomainName = domainEntry.Text,
-            ContentPath = contentEntry.Text,
-            NextUrlPath = nextEntry.Text,
-            PrevUrlPath = prevEntry.Text,
-            TitlePath = titleEntry.Text,
-            ExtraConfigs = extras
-        };
+        config.DomainName = domainEntry.Text;
+        config.ContentPath = contentEntry.Text;
+        config.NextUrlPath = nextEntry.Text;
+        config.PrevUrlPath = prevEntry.Text;
+        config.TitlePath = titleEntry.Text;
+
         await App.Database.SaveItemAsync(config);
         await Shell.Current.GoToAsync("..");
     }

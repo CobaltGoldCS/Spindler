@@ -3,15 +3,16 @@ using Spindler.Services;
 using Spindler.Utils;
 using Spindler.ViewModels;
 using Spindler.Views;
+using System.Security;
 
 namespace Spindler;
 
-[QueryProperty(nameof(BookId), "id")]
+[QueryProperty(nameof(Book), "book")]
 public partial class ReaderPage : ContentPage
 {
 
     #region QueryProperty Handler
-    public string BookId
+    public Book Book
     {
         set
         {
@@ -19,27 +20,33 @@ public partial class ReaderPage : ContentPage
         }
     }
 
-    private async void LoadBook(string str_id)
+    private async void LoadBook(Book book)
     {
-        int id = Convert.ToInt32(str_id);
-        Book currentBook = await App.Database.GetItemByIdAsync<Book>(id);
-        Config? config = await WebService.FindValidConfig(currentBook.Url);
+        Config? config = await WebService.FindValidConfig(book.Url);
 
         var webview = config?.ExtraConfigs.GetOrDefault("webview", false) ?? false;
         if (webview)
         {
-            await Shell.Current.GoToAsync($"../{nameof(WebviewReaderPage)}?id={currentBook.Id}");
+            Dictionary<string, object> parameters = new()
+            {
+                { "book", book }
+            };
+            await Shell.Current.GoToAsync($"../{nameof(WebviewReaderPage)}", parameters);
             return;
         }
         var headless = config?.ExtraConfigs.GetOrDefault("headless", false) ?? false;
         if (headless)
         {
-            await Shell.Current.GoToAsync($"../{nameof(HeadlessReaderPage)}?id={currentBook.Id}");
+            Dictionary<string, object> parameters = new()
+            {
+                { "book", book }
+            };
+            await Shell.Current.GoToAsync($"../{nameof(HeadlessReaderPage)}", parameters);
             return;
         }
         var viewmodel = new ReaderViewModel()
         {
-            CurrentBook = currentBook,
+            CurrentBook = book,
             Config = config
         };
         viewmodel.AttachReferencesToUI(ReadingLayout);
