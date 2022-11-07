@@ -74,8 +74,8 @@ namespace Spindler.ViewModels
             var nextdata = (await PreloadDataTask!)![1];
             if (!await FailIfNull(nextdata, "Invalid Url"))
             {
-                IsLoading = true;
                 await ReadingLayout!.ScrollToAsync(ReadingLayout.ScrollX, 0, false);
+                IsLoading = true;
                 loadedData = nextdata;
                 DataChanged();
             }
@@ -87,8 +87,8 @@ namespace Spindler.ViewModels
             var prevdata = (await PreloadDataTask!)![0];
             if (!await FailIfNull(prevdata, "Invalid Url"))
             {
-                IsLoading = true;
                 await ReadingLayout!.ScrollToAsync(ReadingLayout.ScrollX, 0, false);
+                IsLoading = true;
                 loadedData = prevdata;
                 DataChanged();
             }
