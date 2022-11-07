@@ -16,9 +16,15 @@ public partial class WebviewReaderPage : ContentPage
             book = value;
             LoadBook();
         }
+<<<<<<< HEAD
         get => book!;
     }
     public void LoadBook()
+=======
+        get => book;
+    }
+    public async void LoadBook()
+>>>>>>> master
     {
         BindingContext = Book;
         ReaderBrowser.Source = Book.Url;
