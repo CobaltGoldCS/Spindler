@@ -21,7 +21,7 @@ public partial class GeneralizedConfigDetailPage : ContentPage
         }
     }
 
-    private async void InitializePage(GeneralizedConfig config)
+    private void InitializePage(GeneralizedConfig config)
     {
         if (config.Id < 0)
         {

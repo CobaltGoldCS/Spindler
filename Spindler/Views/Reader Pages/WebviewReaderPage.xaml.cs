@@ -19,7 +19,7 @@ public partial class WebviewReaderPage : ContentPage
         get => book!;
     }
 
-    public async void LoadBook()
+    public void LoadBook()
     {
         BindingContext = Book;
         ReaderBrowser.Source = Book.Url;

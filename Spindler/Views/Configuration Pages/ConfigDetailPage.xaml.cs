@@ -26,7 +26,7 @@ public partial class ConfigDetailPage : ContentPage
         }
     }
 
-    private async void InitializePage(Config config)
+    private void InitializePage(Config config)
     {
         if (config.Id < 0)
         {
