@@ -60,7 +60,7 @@
 
                             <ImageButton HorizontalOptions="Center" VerticalOptions="Center" Grid.Column="1" Grid.RowSpan="3" Source="kebab.svg"
                                          Padding="0,3,0,3" HeightRequest="60" WidthRequest="30" Aspect="AspectFit" x:Name="ConfigButton" 
-                                         Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:BookViewModel}}, Path=ConfigButtonCommand}" CommandParameter="{Binding Id}">
+                                         Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:BookViewModel}}, Path=ConfigButtonCommand}" CommandParameter="{Binding}">
                                 <ImageButton.Behaviors>
                                     <toolkit:IconTintColorBehavior TintColor="{AppThemeBinding Dark={StaticResource White}, Light={StaticResource SpaceCadet}}"/>
                                 </ImageButton.Behaviors>

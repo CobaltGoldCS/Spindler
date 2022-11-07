@@ -48,15 +48,30 @@ namespace Spindler.ViewModels
         }
 
         [RelayCommand]
-        private async void ConfigButton(int bookid)
+        private async void ConfigButton(Book book)
         {
-            await Shell.Current.GoToAsync($"{nameof(BookDetailPage)}?id={bookid}|04923102-afb|{id}");
+            Dictionary<string, object> parameters = new()
+            {
+                { "book", book }
+            };
+            await Shell.Current.GoToAsync($"{nameof(BookDetailPage)}", parameters);
         }
 
         [RelayCommand]
         private async void AddToolBarItem()
         {
-            await Shell.Current.GoToAsync($"{nameof(BookDetailPage)}?id=-1|04923102-afb|{id}");
+            Dictionary<string, object> parameters = new()
+            {
+                { 
+                    "book", new Book()
+                    {
+                        Id = -1,
+                        BookListId = id,
+                        LastViewed = DateTime.UtcNow,
+                    }
+                }
+            };
+            await Shell.Current.GoToAsync($"{nameof(BookDetailPage)}", parameters);
         }
 
 
@@ -66,7 +81,11 @@ namespace Spindler.ViewModels
         {
             if (loading || currentSelection == null)
                 return;
-            await Shell.Current.GoToAsync($"{nameof(ReaderPage)}?id={currentSelection.Id}");
+            var parameters = new Dictionary<string, object>()
+            {
+                { "book", currentSelection}
+            };
+            await Shell.Current.GoToAsync($"{nameof(ReaderPage)}", parameters);
             loading = false;
             currentSelection = null;
         }

@@ -37,14 +37,25 @@ namespace Spindler.ViewModels
         [RelayCommand]
         public async Task ItemClicked()
         {
-            await Shell.Current.GoToAsync($"/{nameof(GeneralizedConfigDetailPage)}?id={selectedItem!.Id}");
+            Dictionary<string, object> parameters = new()
+            {
+                { "config", selectedItem! }
+            };
+            await Shell.Current.GoToAsync($"/{nameof(GeneralizedConfigDetailPage)}", parameters);
             selectedItem = null;
         }
 
         [RelayCommand]
         public async Task Add()
         {
-            await Shell.Current.GoToAsync($"/{nameof(GeneralizedConfigDetailPage)}?id=-1");
+            Dictionary<string, object> parameters = new()
+            {
+                {
+                    "config",
+                    new GeneralizedConfig() { Id = -1 }
+                }
+            };
+            await Shell.Current.GoToAsync($"/{nameof(GeneralizedConfigDetailPage)}", parameters);
         }
     }
 }
