@@ -33,7 +33,7 @@ public partial class BookListDetailPage : ContentPage
             okButton.Text = $"Modify {booklist.Name}";
             Title = $"Modify {booklist.Name}";
         }
-        BindingContext = new BookListDetailViewModel(booklist);
+        BindingContext = new BookListDetailViewModel(booklist, () => DisplayAlert("Warning!", "Are you sure you want to delete this booklist", "Yes", "No"));
     }
     #endregion
 

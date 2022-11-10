@@ -47,10 +47,12 @@ namespace Spindler.ViewModels
             }
         }
 
-        public BookListDetailViewModel(BookList Booklist)
+        public Func<Task<bool>> CancellationWarning;
+        public BookListDetailViewModel(BookList Booklist, Func<Task<bool>> cancellationWarning)
         {
             this.Booklist = Booklist;
             booklist = Booklist;
+            this.CancellationWarning = cancellationWarning;
 
             chosenColor1 = new ChooseColor { color = Booklist.Color1 };
             chosenColor2 = new ChooseColor { color = Booklist.Color2 };
@@ -81,7 +83,7 @@ namespace Spindler.ViewModels
         [RelayCommand]
         private async void Delete()
         {
-            if (Booklist.Id > 0)
+            if (Booklist.Id > 0 && !await CancellationWarning())
             {
                 await App.Database.DeleteBookListAsync(Booklist);
             }
