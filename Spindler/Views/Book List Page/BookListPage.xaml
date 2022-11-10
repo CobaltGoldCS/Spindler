@@ -10,6 +10,10 @@
         <viewmodels:BookListViewModel/>
     </ContentPage.BindingContext>
 
+    <ContentPage.Behaviors>
+        <toolkit:StatusBarBehavior StatusBarColor="{StaticResource Primary}"/>
+    </ContentPage.Behaviors>
+
     <Shell.TitleView>
         <Grid ColumnDefinitions="*, auto">
 
