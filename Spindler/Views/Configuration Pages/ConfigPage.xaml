@@ -18,10 +18,10 @@
                 <TapGestureRecognizer Command="{Binding AddCommand}"/>
             </Border.GestureRecognizers>
             <Grid ColumnDefinitions="*, 100" Margin="0,0,0,0" BackgroundColor="{StaticResource DarkPrimary}">
-                <Label Text="Add a Configuration" Grid.Row="0" VerticalTextAlignment="Center" FontSize="26" Margin="20,0,0,0"/>
+                <Label Text="Add a Configuration" Grid.Row="0" VerticalTextAlignment="Center" FontSize="26" Margin="20,0,0,0" TextColor="{StaticResource White}"/>
                 <Image Source="plus.svg" Grid.Column="1"  WidthRequest="50" Margin="10,10,3,10" HorizontalOptions="End">
                     <Image.Behaviors>
-                        <toolkit:IconTintColorBehavior TintColor="{AppThemeBinding Dark={StaticResource White}, Light={StaticResource Black}}"/>
+                        <toolkit:IconTintColorBehavior TintColor="{StaticResource White}"/>
                     </Image.Behaviors>
                 </Image>
             </Grid>
