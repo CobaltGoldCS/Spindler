@@ -51,7 +51,9 @@ namespace Spindler.ViewModels
         {
             this.Booklist = Booklist;
             booklist = Booklist;
-            
+
+            chosenColor1 = new ChooseColor { color = Booklist.Color1 };
+            chosenColor2 = new ChooseColor { color = Booklist.Color2 };
         }
 
         private async Task Close()
