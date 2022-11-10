@@ -33,10 +33,6 @@ public partial class BookListDetailPage : ContentPage
             okButton.Text = $"Modify {booklist.Name}";
             Title = $"Modify {booklist.Name}";
         }
-        if (!BookListDetailViewModel.colorList.Contains(new ChooseColor { color = booklist.Color1 }))
-            Booklist.Color1 = Colors.Black;
-        if (!BookListDetailViewModel.colorList.Contains(new ChooseColor { color = booklist.Color2 }))
-            Booklist.Color2 = Colors.Black;
         BindingContext = new BookListDetailViewModel(booklist);
     }
     #endregion
