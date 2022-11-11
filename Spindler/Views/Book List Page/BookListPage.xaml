@@ -14,6 +14,31 @@
         <toolkit:StatusBarBehavior StatusBarColor="{StaticResource Primary}"/>
     </ContentPage.Behaviors>
 
+    <ContentPage.Resources>
+        <Style TargetType="Border">
+            <Setter Property="VisualStateManager.VisualStateGroups">
+                <VisualStateGroupList>
+                    <!-- Set Selected Item Appearance-->
+                    <VisualStateGroup x:Name="CommonStates">
+                        <VisualState x:Name="Normal" >
+                            <VisualState.Setters>
+                                <Setter Property="StrokeThickness"
+                                        Value="0"/>
+                            </VisualState.Setters>
+                        </VisualState>
+                        <VisualState x:Name="Selected">
+                            <VisualState.Setters>
+                                <Setter Property="StrokeThickness"
+                                        Value="2" />
+                                <Setter Property="BackgroundColor" Value="Transparent"/>
+                            </VisualState.Setters>
+                        </VisualState>
+                    </VisualStateGroup>
+                </VisualStateGroupList>
+            </Setter>
+        </Style>
+    </ContentPage.Resources>
+
     <Shell.TitleView>
         <Grid ColumnDefinitions="*, auto">
 
@@ -39,6 +64,7 @@
             </StackLayout>
         </Grid>
     </Shell.TitleView>
+    
     <RefreshView
         IsRefreshing="{Binding IsReloading}"
         Command="{Binding ReloadCommand}"
@@ -60,11 +86,11 @@
             <CollectionView.ItemTemplate>
                 <DataTemplate>
                     <Border 
-                        StrokeThickness="0"
+                        Stroke="{AppThemeBinding Dark={StaticResource White}, Light={StaticResource Black}}"
                         Background="{Binding Background}"
                         Padding="10"
                         StrokeShape="RoundRectangle 16,16,16,16">
-                        
+
                         <Border.BindingContext>
                             <models:BookList/>
                         </Border.BindingContext>
