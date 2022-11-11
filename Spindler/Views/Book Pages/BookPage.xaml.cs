@@ -26,6 +26,7 @@ public partial class BookPage : ContentPage
         list.LastAccessed = DateTime.UtcNow;
         await App.Database.SaveItemAsync(list);
         BindingContext = new BookViewModel(list.Id, list.Name);
+        ((BookViewModel)BindingContext).Reload();
     }
 
     #endregion

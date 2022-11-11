@@ -2,8 +2,6 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Spindler.Models;
-using System.Collections.Generic;
-using System.Reflection;
 
 namespace Spindler.ViewModels
 {
@@ -36,7 +34,6 @@ namespace Spindler.ViewModels
             new ChooseColor { color = Colors.Purple },
             new ChooseColor { color = Colors.Pink },
          };
-        // COLORS ARE NOT UPDATING AGAIN
         BookList booklist;
         public BookList Booklist
         {
