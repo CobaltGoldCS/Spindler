@@ -7,6 +7,8 @@
              x:DataType="viewmodels:BookViewModel"
              x:Class="Spindler.BookPage">
 
+
+
     <Shell.TitleView>
         <Grid Margin="0,0,0,4">
             <Grid.ColumnDefinitions>
@@ -27,6 +29,7 @@
             </StackLayout>
         </Grid>
     </Shell.TitleView>
+    
     <RefreshView
         IsRefreshing="{Binding IsReloading}"
         Command="{Binding ReloadCommand}"
@@ -69,6 +72,12 @@
                     </Border>
                 </DataTemplate>
             </CollectionView.ItemTemplate>
+            <CollectionView.EmptyView>
+                <VerticalStackLayout Padding="10">
+                    <Label FontSize="50" Text="No Books loaded"/>
+                    <Label Padding="0,50,0,0" FontSize="20" Text="Please Reload the list or add some items."/>
+                </VerticalStackLayout>
+            </CollectionView.EmptyView>
         </CollectionView>
     </RefreshView>
 </ContentPage>
