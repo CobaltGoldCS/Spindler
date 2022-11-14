@@ -5,6 +5,7 @@
              xmlns:models="clr-namespace:Spindler.Models"
              x:Class="Spindler.BookListDetailPage"
              Title="Add or Modify Book List"
+             Shell.PresentationMode="ModalAnimated"
              x:DataType="vms:BookListDetailViewModel">
     <Grid ColumnDefinitions="*, *, *" RowDefinitions="*, auto" VerticalOptions="FillAndExpand">
         <Grid RowDefinitions="50, 50, 30, 60, 60" ColumnDefinitions="50, *" VerticalOptions="FillAndExpand" Grid.ColumnSpan="3">

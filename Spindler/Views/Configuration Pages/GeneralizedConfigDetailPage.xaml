@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:models="clr-namespace:Spindler.Models"
              x:Class="Spindler.GeneralizedConfigDetailPage"
+             Shell.PresentationMode="ModalAnimated"
              Title="Generalized Config Detail Page">
     <ContentPage.BindingContext>
         <models:GeneralizedConfig/>

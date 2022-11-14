@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="Spindler.BookDetailPage"
              xmlns:models="clr-namespace:Spindler.Models"
+             Shell.PresentationMode="ModalAnimated"
              Title="BookDetailPage">
     <ContentPage.BindingContext>
         <models:Book/>
