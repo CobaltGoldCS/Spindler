@@ -4,6 +4,7 @@
              x:Class="Spindler.ReaderPage"
              xmlns:Model="clr-namespace:Spindler.Models"
              xmlns:ViewModel="clr-namespace:Spindler.ViewModels"
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
              Title="{Binding Title}"
              Shell.TabBarIsVisible="False">
 
@@ -11,9 +12,33 @@
         <ViewModel:ReaderViewModel/>
     </ContentPage.BindingContext>
 
-    <ContentPage.ToolbarItems>
-        <ToolbarItem Command="{Binding BookmarkCommand}" x:Name="BookmarkItem" IconImageSource="bookmark.svg"/>
-    </ContentPage.ToolbarItems>
+    <Shell.TitleView>
+        <Grid ColumnDefinitions="*, auto">
+
+            <Label Text="{Binding Title}"
+                   Grid.Column="0"
+                   FontSize="Large"
+                   VerticalOptions="Center"
+                   HorizontalOptions="FillAndExpand"
+                   MaxLines="2"
+                   TextColor="{StaticResource Primary}"/>
+            <StackLayout Grid.Column="1"
+                         HorizontalOptions="EndAndExpand"
+                         Orientation="Horizontal"
+                         VerticalOptions="Center"
+                         Margin="0,0,10,0">
+                <ImageButton x:Name="BookmarkItem"
+                             HeightRequest="25"
+                             WidthRequest="25"
+                             Source="plus.svg"
+                             Command="{Binding BookmarkCommand}">
+                    <ImageButton.Behaviors>
+                        <toolkit:IconTintColorBehavior TintColor="{AppThemeBinding Dark={StaticResource White}, Light={StaticResource Black}}"/>
+                    </ImageButton.Behaviors>
+                </ImageButton>
+            </StackLayout>
+        </Grid>
+    </Shell.TitleView>
     <ScrollView x:Name="ReadingLayout" Orientation="Vertical" IsEnabled="True" VerticalScrollBarVisibility="Always" >
         <Grid x:Name="Scroller" VerticalOptions="FillAndExpand" RowDefinitions="auto, auto, auto, *, auto">
             <Label x:Name="TitleView" Text="{Binding Title}" FontSize="Title" Padding="5,0,5,20"/>

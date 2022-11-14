@@ -97,6 +97,7 @@ namespace Spindler.ViewModels
         [RelayCommand]
         public async void Bookmark()
         {
+            await BookmarkButton.RelRotateTo(360, 250, Easing.CubicIn);
             await App.Database.SaveItemAsync<Book>(new()
             {
                 BookListId = CurrentBook!.BookListId,
@@ -129,10 +130,12 @@ namespace Spindler.ViewModels
         }
 
         private ScrollView? ReadingLayout;
+        private ImageButton? BookmarkButton;
 
-        public void AttachReferencesToUI(ScrollView readingLayout)
+        public void AttachReferencesToUI(ScrollView readingLayout, ImageButton bookmarkButton)
         {
             ReadingLayout = readingLayout;
+            BookmarkButton = bookmarkButton;
         }
 
         public async void OnShellNavigated(object? sender,
