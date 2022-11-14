@@ -8,33 +8,29 @@
     <ContentPage.BindingContext>
         <models:Config/>
     </ContentPage.BindingContext>
-    <Grid ColumnDefinitions="*, *, *" RowDefinitions="auto, auto, auto, auto, auto, *, auto" VerticalOptions="FillAndExpand">
-        <StackLayout Orientation="Horizontal" Grid.ColumnSpan="3">
-            <Label Text="Domain:" Padding="0,17,5,0" Margin="5,0,36,5"/>
-            <Entry x:Name="domainEntry" HorizontalOptions="FillAndExpand" Margin="0,5,0,0"
+    <Grid ColumnDefinitions="*, *, *" RowDefinitions="auto, *, auto" VerticalOptions="FillAndExpand" Padding="9,0,9,0">
+        <Grid RowDefinitions="40, 40, 40, 40, 40" ColumnDefinitions="auto, *" Grid.ColumnSpan="3">
+            <Label Text="Domain:" VerticalOptions="Center"/>
+            <Entry x:Name="domainEntry" HorizontalOptions="FillAndExpand" Grid.Column="1"
                                Placeholder="Domain name of the website ex: google.com" Text="{Binding DomainName}"/>
-        </StackLayout>
-        <StackLayout Orientation="Horizontal" Grid.ColumnSpan="3" Grid.Row="1">
-            <Label Text="Title Path:" Padding="0,17,5,0" Margin="5,0,28,5"/>
-            <Entry x:Name="titleEntry" HorizontalOptions="FillAndExpand" Margin="0,5,0,0"
+
+            <Label Text="Title Path:" VerticalOptions="Center" Grid.Row="1"/>
+            <Entry x:Name="titleEntry" HorizontalOptions="FillAndExpand" Grid.Row="1" Grid.Column="1"
                                Placeholder="[Optional] Path pointing to the title element" Text="{Binding TitlePath}"/>
-        </StackLayout>
-        <StackLayout Orientation="Horizontal" Grid.ColumnSpan="3" Grid.Row="2">
-            <Label Text="Content Path:" Padding="0,17,5,0" Margin="5,0,5,5"/>
-            <Entry x:Name="contentEntry" HorizontalOptions="FillAndExpand" Margin="0,5,0,0"
+
+            <Label Text="Content Path:" VerticalOptions="Center" Grid.Row="2"/>
+            <Entry x:Name="contentEntry" HorizontalOptions="FillAndExpand" Grid.Row="2" Grid.Column="1"
                                Placeholder="Path pointing to the content of the page" Text="{Binding ContentPath}"/>
-        </StackLayout>
-        <StackLayout Orientation="Horizontal" Grid.ColumnSpan="3" Grid.Row="3">
-            <Label Text="Previous Path:" Padding="0,17,5,0" Margin="5,0,0,0"/>
-            <Entry x:Name="prevEntry" HorizontalOptions="FillAndExpand" Margin="0,5,0,0"
-                               Placeholder="Path pointing to the previous url" Text="{Binding PrevUrlPath}"/>
-        </StackLayout>
-        <StackLayout Orientation="Horizontal" Grid.ColumnSpan="3" Grid.Row="4">
-            <Label Text="Next Path:" Padding="0,17,5,0" Margin="5,0,23,5"/>
-            <Entry x:Name="nextEntry" HorizontalOptions="FillAndExpand" Margin="0,5,0,0"
-                               Placeholder="Path pointing to the next url" Text="{Binding NextUrlPath}"/>
-        </StackLayout>
-        <TableView Grid.Row="5" Grid.ColumnSpan="3" VerticalOptions="StartAndExpand">
+
+            <Label Text="Previous Path:" VerticalOptions="Center" Grid.Row="3"/>
+            <Entry x:Name="prevEntry" HorizontalOptions="FillAndExpand" Grid.Row="3" Grid.Column="1"
+                            Placeholder="Path pointing to the previous url" Text="{Binding PrevUrlPath}"/>
+
+            <Label Text="Next Path:" VerticalOptions="Center" Grid.Row="4"/>
+            <Entry x:Name="nextEntry" HorizontalOptions="FillAndExpand" Grid.Row="4" Grid.Column="1"
+                            Placeholder="Path pointing to the next url" Text="{Binding NextUrlPath}"/>
+        </Grid>
+        <TableView Grid.Row="1" Grid.ColumnSpan="3" VerticalOptions="StartAndExpand">
             <TableRoot>
                 <TableSection Title="Web View">
                     <SwitchCell x:Name="switchWebView" Text="Use Web View for Viewing this website" On="False" />
@@ -47,14 +43,15 @@
             </TableRoot>
         </TableView>
 
-        <Button Text="Delete" Grid.Row="6" Grid.Column="0" Margin="5,0,5,0"
+        <Button Text="Delete" Grid.Row="2" Grid.Column="0" Margin="5,0,5,0"
                     FontSize="Large"
                     Clicked="DeleteButton_Clicked" BackgroundColor="OrangeRed"/>
-        <Button x:Name="Cancel" Grid.Row="6" Grid.Column="1" Margin="5,0,5,0"
+        <Button x:Name="Cancel" Grid.Row="2" Grid.Column="1" Margin="5,0,5,0"
                 FontSize="Large"
                 Text="Cancel" 
                 Clicked="Cancel_Clicked"/>
-        <Button x:Name="okButton" Grid.Row="6" Grid.Column="2" Margin="5,0,5,0"
+        <Button x:Name="okButton" Grid.Row="2" Grid.Column="2" Margin="5,0,5,0"
+                Text="Add"
                 FontSize="Large"
                 Clicked="okButton_Clicked"/>
     </Grid>
