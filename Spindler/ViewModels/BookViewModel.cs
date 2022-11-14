@@ -6,16 +6,11 @@ namespace Spindler.ViewModels
 {
     partial class BookViewModel : ObservableObject
     {
+        #region Bindings
         [ObservableProperty]
         public string title;
         [ObservableProperty]
         public int id;
-        
-        public BookViewModel(int id, string title)
-        {
-            this.id = id;
-            this.title = title;
-        }
 
         [ObservableProperty]
         Book? currentSelection;
@@ -47,6 +42,20 @@ namespace Spindler.ViewModels
             }
         }
 
+        #endregion
+
+        public BookViewModel(int id, string title)
+        {
+            this.id = id;
+            this.title = title;
+        }
+
+        ImageButton? AddButton;
+        public void AddUiReferences(ImageButton addToolBarItem)
+        {
+            AddButton = addToolBarItem;
+        }
+
         [RelayCommand]
         private async void ConfigButton(Book book)
         {
@@ -60,6 +69,7 @@ namespace Spindler.ViewModels
         [RelayCommand]
         private async void AddToolBarItem()
         {
+            await AddButton!.RelRotateTo(360, 250, Easing.CubicIn);
             Dictionary<string, object> parameters = new()
             {
                 { 

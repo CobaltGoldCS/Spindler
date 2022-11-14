@@ -25,7 +25,9 @@ public partial class BookPage : ContentPage
     {
         list.LastAccessed = DateTime.UtcNow;
         await App.Database.SaveItemAsync(list);
-        BindingContext = new BookViewModel(list.Id, list.Name);
+        var binding = new BookViewModel(list.Id, list.Name);
+        binding.AddUiReferences(AddToolBarItem);
+        BindingContext = binding;
     }
 
     #endregion
