@@ -25,13 +25,13 @@ public partial class GeneralizedConfigDetailPage : ContentPage
     {
         if (config.Id < 0)
         {
-            okButton.Text = "Add";
             Title = "Add a new Config";
+            Buttons.OkText = "Add";
         }
         else
         {
-            okButton.Text = "Modify";
             Title = $"Modify {config.DomainName}";
+            Buttons.OkText = "Modify";
         }
         BindingContext = config;
         switchWebView.On = config.ExtraConfigs.GetOrDefault("webview", false);

@@ -2,6 +2,7 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:models="clr-namespace:Spindler.Models"
+             xmlns:controls="clr-namespace:Spindler.CustomControls"
              x:Class="Spindler.GeneralizedConfigDetailPage"
              Shell.PresentationMode="ModalAnimated"
              Title="Generalized Config Detail Page">
@@ -36,28 +37,23 @@
                                 Placeholder="Path pointing to the next url" Text="{Binding NextUrlPath}"/>
         </Grid>
         <TableView Grid.Row="1" Grid.ColumnSpan="3" VerticalOptions="StartAndExpand">
-                <TableRoot>
-                    <TableSection Title="Web View">
-                        <SwitchCell x:Name="switchWebView" Text="Use Web View for Viewing this website" On="False" />
-                    </TableSection>
-                    <TableSection Title="Reader View">
-                        <EntryCell x:Name="separatorEntry" Label="The Separator between p tags"/>
-                        <SwitchCell x:Name="animationSwitch" Text="Animated Autoscroll" On="True"/>
-                        <SwitchCell x:Name="headlessSwitch" Text="Enable headless mode (increased compatability, decreased performance)"/>
-                    </TableSection>
-                </TableRoot>
-            </TableView>
+            <TableRoot>
+                <TableSection Title="Web View">
+                    <SwitchCell x:Name="switchWebView" Text="Use Web View for Viewing this website" On="False" />
+                </TableSection>
+                <TableSection Title="Reader View">
+                    <EntryCell x:Name="separatorEntry" Label="The Separator between p tags"/>
+                    <SwitchCell x:Name="animationSwitch" Text="Animated Autoscroll" On="True"/>
+                    <SwitchCell x:Name="headlessSwitch" Text="Enable headless mode (increased compatability, decreased performance)"/>
+                </TableSection>
+            </TableRoot>
+        </TableView>
 
-            <Button Text="Delete" Grid.Row="2" Grid.Column="0" Margin="5,0,5,0"
-                        FontSize="Large"
-                        Clicked="DeleteButton_Clicked" BackgroundColor="OrangeRed"/>
-            <Button x:Name="Cancel" Grid.Row="2" Grid.Column="1" Margin="5,0,5,0"
-                    FontSize="Large"
-                    Text="Cancel" 
-                    Clicked="Cancel_Clicked"/>
-            <Button x:Name="okButton" Grid.Row="2" Grid.Column="2" Margin="5,0,5,0"
-                    Text="Add"
-                    FontSize="Large"
-                    Clicked="okButton_Clicked"/>
+        <controls:AddButtonGroup x:Name="Buttons"
+                                 Grid.Row="2"
+                                 Grid.ColumnSpan="3"
+                                 DeleteClicked="DeleteButton_Clicked"
+                                 OkClicked="okButton_Clicked"
+                                 CancelClicked="Cancel_Clicked"/>
     </Grid>
 </ContentPage>
