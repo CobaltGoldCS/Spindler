@@ -97,7 +97,7 @@ namespace Spindler.ViewModels
         [RelayCommand]
         public async void Bookmark()
         {
-            await BookmarkButton.RelRotateTo(360, 250, Easing.CubicIn);
+            await BookmarkButton!.RelRotateTo(360, 250, Easing.CubicIn);
             await App.Database.SaveItemAsync<Book>(new()
             {
                 BookListId = CurrentBook!.BookListId,
