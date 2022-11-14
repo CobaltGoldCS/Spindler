@@ -87,4 +87,10 @@ public partial class BookListViewModel : ObservableObject
         BookLists = await App.Database.GetBookListsAsync();
         IsReloading = false;
     }
+
+    [RelayCommand]
+    public void OnAppearing()
+    {
+        currentSelection = null;
+    }
 }
