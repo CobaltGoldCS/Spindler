@@ -30,11 +30,8 @@
                 <ImageButton x:Name="BookmarkItem"
                              HeightRequest="25"
                              WidthRequest="25"
-                             Source="plus.svg"
+                             Source="bookmark.svg"
                              Command="{Binding BookmarkCommand}">
-                    <ImageButton.Behaviors>
-                        <toolkit:IconTintColorBehavior TintColor="{AppThemeBinding Dark={StaticResource White}, Light={StaticResource Black}}"/>
-                    </ImageButton.Behaviors>
                 </ImageButton>
             </StackLayout>
         </Grid>
