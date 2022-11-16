@@ -2,43 +2,41 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:models="clr-namespace:Spindler.Models"
+             xmlns:controls="clr-namespace:Spindler.CustomControls"
              x:Class="Spindler.GeneralizedConfigDetailPage"
+             Shell.PresentationMode="ModalAnimated"
              Title="Generalized Config Detail Page">
     <ContentPage.BindingContext>
         <models:GeneralizedConfig/>
     </ContentPage.BindingContext>
-    <Grid ColumnDefinitions="*, *, *" RowDefinitions="auto, auto, auto, auto, auto, auto, *, auto" VerticalOptions="FillAndExpand">
-        <StackLayout Orientation="Horizontal" Grid.ColumnSpan="3">
-            <Label Text="Title:" Padding="0,17,5,0" Margin="5,0,65,5"/>
-            <Entry x:Name="domainEntry" HorizontalOptions="FillAndExpand" Margin="0,5,0,0"
-                               Placeholder="Name to give the configuration" Text="{Binding DomainName}"/>
-        </StackLayout>
-        <StackLayout Orientation="Horizontal" Grid.ColumnSpan="3" Grid.Row="1">
-            <Label Text="Match Path:" Padding="0,17,5,0" Margin="5,0,18,5"/>
-            <Entry x:Name="matchEntry" HorizontalOptions="FillAndExpand" Margin="0,5,0,0"
-                              Placeholder="Path to check for compatibility" Text="{Binding MatchPath}"/>
-        </StackLayout>
-        <StackLayout Orientation="Horizontal" Grid.ColumnSpan="3" Grid.Row="2">
-            <Label Text="Title Path:" Padding="0,17,5,0" Margin="5,0,29,5"/>
-            <Entry x:Name="titleEntry" HorizontalOptions="FillAndExpand" Margin="0,5,0,0"
-                               Placeholder="[Optional] Path pointing to the title" Text="{Binding TitlePath}"/>
-        </StackLayout>
-        <StackLayout Orientation="Horizontal" Grid.ColumnSpan="3" Grid.Row="3">
-            <Label Text="Content Path:" Padding="0,17,5,0" Margin="5,0,5,5"/>
-            <Entry x:Name="contentEntry" HorizontalOptions="FillAndExpand" Margin="0,5,0,0"
-                               Placeholder="Path pointing to the content of the page" Text="{Binding ContentPath}"/>
-        </StackLayout>
-        <StackLayout Orientation="Horizontal" Grid.ColumnSpan="3" Grid.Row="4">
-            <Label Text="Previous Path:" Padding="0,17,5,0" Margin="5,0,0,0"/>
-            <Entry x:Name="prevEntry" HorizontalOptions="FillAndExpand" Margin="0,5,0,0"
-                               Placeholder="Path pointing to the previous url" Text="{Binding PrevUrlPath}"/>
-        </StackLayout>
-        <StackLayout Orientation="Horizontal" Grid.ColumnSpan="3" Grid.Row="5">
-            <Label Text="Next Path:" Padding="0,17,5,0" Margin="5,0,24,5"/>
-            <Entry x:Name="nextEntry" HorizontalOptions="FillAndExpand" Margin="0,5,0,0"
-                               Placeholder="Path pointing to the next url" Text="{Binding NextUrlPath}"/>
-        </StackLayout>
-        <TableView Grid.Row="6" Grid.ColumnSpan="3" VerticalOptions="StartAndExpand">
+    <Grid ColumnDefinitions="*, *, *" RowDefinitions="auto, *, auto" VerticalOptions="FillAndExpand" Padding="9,0,9,0">
+        <Grid RowDefinitions="40, 40, 40, 40, 40, 40" ColumnDefinitions="auto, *" Grid.ColumnSpan="3">
+
+            <Label Text="Config Name:" VerticalOptions="Center"/>
+            <Entry x:Name="domainEntry" HorizontalOptions="FillAndExpand" Grid.Column="1"
+                                   Placeholder="Name of the config" Text="{Binding DomainName}"/>
+
+            <Label Text="Match Path:" VerticalOptions="Center" Grid.Row="1"/>
+            <Entry x:Name="matchEntry" HorizontalOptions="FillAndExpand" Grid.Column="1" Grid.Row="1"
+                                   Placeholder="Match path of the configuration" Text="{Binding DomainName}"/>
+
+            <Label Text="Title Path:" VerticalOptions="Center" Grid.Row="2"/>
+            <Entry x:Name="titleEntry" HorizontalOptions="FillAndExpand" Grid.Row="2" Grid.Column="2"
+                                   Placeholder="[Optional] Path pointing to the title element" Text="{Binding TitlePath}"/>
+
+            <Label Text="Content Path:" VerticalOptions="Center" Grid.Row="3"/>
+            <Entry x:Name="contentEntry" HorizontalOptions="FillAndExpand" Grid.Row="3" Grid.Column="1"
+                                   Placeholder="Path pointing to the content of the page" Text="{Binding ContentPath}"/>
+
+            <Label Text="Previous Path:" VerticalOptions="Center" Grid.Row="4"/>
+            <Entry x:Name="prevEntry" HorizontalOptions="FillAndExpand" Grid.Row="4" Grid.Column="1"
+                                Placeholder="Path pointing to the previous url" Text="{Binding PrevUrlPath}"/>
+
+            <Label Text="Next Path:" VerticalOptions="Center" Grid.Row="5"/>
+            <Entry x:Name="nextEntry" HorizontalOptions="FillAndExpand" Grid.Row="5" Grid.Column="1"
+                                Placeholder="Path pointing to the next url" Text="{Binding NextUrlPath}"/>
+        </Grid>
+        <TableView Grid.Row="1" Grid.ColumnSpan="3" VerticalOptions="StartAndExpand">
             <TableRoot>
                 <TableSection Title="Web View">
                     <SwitchCell x:Name="switchWebView" Text="Use Web View for Viewing this website" On="False" />
@@ -51,15 +49,11 @@
             </TableRoot>
         </TableView>
 
-        <Button Text="Delete" Grid.Row="7" Grid.Column="0" Margin="5,0,5,0"
-                    FontSize="Large"
-                    Clicked="DeleteButton_Clicked" BackgroundColor="OrangeRed"/>
-        <Button x:Name="Cancel" Grid.Row="7" Grid.Column="1" Margin="5,0,5,0"
-                FontSize="Large"
-                Text="Cancel" 
-                Clicked="Cancel_Clicked"/>
-        <Button x:Name="okButton" Grid.Row="7" Grid.Column="2" Margin="5,0,5,0"
-                FontSize="Large"
-                Clicked="okButton_Clicked"/>
+        <controls:AddButtonGroup x:Name="Buttons"
+                                 Grid.Row="2"
+                                 Grid.ColumnSpan="3"
+                                 DeleteClicked="DeleteButton_Clicked"
+                                 OkClicked="okButton_Clicked"
+                                 CancelClicked="Cancel_Clicked"/>
     </Grid>
 </ContentPage>

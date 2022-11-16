@@ -1,49 +1,50 @@
-using Spindler.Models;
 using Spindler.Behaviors;
+using Spindler.Models;
+using Spindler.ViewModels;
+using System.Linq;
 
 namespace Spindler;
 
-[QueryProperty(nameof(BooklistId), "id")]
+[QueryProperty(nameof(Booklist), "booklist")]
 public partial class BookListDetailPage : ContentPage
 {
     #region QueryProperty handler
-    private int _booklistId;
-    public string BooklistId
+    private BookList _booklist = new();
+    public BookList Booklist
     {
         set
         {
+            _booklist = value;
             LoadBookList(value);
-            _booklistId = Convert.ToInt32(value);
         }
+        get { return _booklist; }
     }
 
-    public async void LoadBookList(string id)
+    public void LoadBookList(BookList booklist)
     {
-        int booklistId = Convert.ToInt32(id);
         // Handle if a new book needs to be created
-        if (booklistId < 0)
+        if (booklist.Id < 0)
         {
-
-            BindingContext = new BookList { Id = -1, ImageUrl = "", LastAccessed = DateTime.UtcNow, Name = "" };
             okButton.Text = "Add";
             Title = "Add a new Book List";
-            return;
         }
-        BookList list = await App.Database.GetItemByIdAsync<BookList>(booklistId);
-        okButton.Text = $"Modify {list.Name}";
-        Title = $"Modify {list.Name}";
-        BindingContext = list;
+        else
+        {
+            okButton.Text = $"Modify {booklist.Name}";
+            Title = $"Modify {booklist.Name}";
+        }
+        BindingContext = new BookListDetailViewModel(booklist, () => DisplayAlert("Warning!", "Are you sure you want to delete this booklist", "Yes", "No"));
     }
     #endregion
 
     public BookListDetailPage()
     {
         InitializeComponent();
-        imageUrlEntry.Behaviors.Add(new TextValidationBehavior((string text) =>
+        /*UrlEntry.Behaviors.Add(new TextValidationBehavior((string text) =>
         {
             bool validUrl = Uri.TryCreate(text, UriKind.Absolute, out Uri? uriresult) && (uriresult.Scheme == Uri.UriSchemeHttp || uriresult.Scheme == Uri.UriSchemeHttps);
-                        return validUrl || text.Length == 0;
-        }));
+            return validUrl || text.Length == 0;
+        }));*/
     }
 
     private async Task Close()
@@ -52,42 +53,4 @@ public partial class BookListDetailPage : ContentPage
         Unfocus();
         await Shell.Current.GoToAsync("..");
     }
-
-    #region Click Handlers
-
-    private async void okButton_Clicked(object sender, EventArgs e)
-    {
-        if (!string.IsNullOrWhiteSpace(nameEntry.Text))
-        {
-            BookList list = new BookList
-            {
-                Id = _booklistId,
-                ImageUrl = imageUrlEntry.Text,
-                Name = nameEntry.Text,
-                LastAccessed = DateTime.UtcNow
-            };
-            if (list.ImageUrl.Length == 0)
-            {
-                list.ImageUrl = BookList.GetRandomPlaceholderImageUrl();
-            }
-            await App.Database.SaveItemAsync(list);
-        }
-        await Close();
-    }
-
-    private async void DeleteButton_clicked(object sender, EventArgs e)
-    {
-        if (_booklistId > 0)
-        {
-            await App.Database.DeleteBookListAsync(await App.Database.GetItemByIdAsync<BookList>(_booklistId));
-        }
-        await Close();
-    }
-
-    private async void Cancel_Clicked(object sender, EventArgs e)
-    {
-        await Close();
-    }
-
-    #endregion
 }

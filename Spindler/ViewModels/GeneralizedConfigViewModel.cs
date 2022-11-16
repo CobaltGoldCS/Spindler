@@ -1,18 +1,61 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
-using System.Windows.Input;
+using CommunityToolkit.Mvvm.Input;
+using Spindler.Models;
 
 namespace Spindler.ViewModels
 {
-    public class GeneralizedConfigViewModel : ObservableObject
+    public partial class GeneralizedConfigViewModel : ObservableObject
     {
-        public ICommand AddCommand { get; private set; }
+        [ObservableProperty]
+        public GeneralizedConfig? selectedItem;
 
-        public GeneralizedConfigViewModel()
+        private List<GeneralizedConfig>? _configItems;
+        // I don't know what's happening here, but for some reason I have to do this in order to refresh the UI
+        public List<GeneralizedConfig>? ConfigItems
         {
-            AddCommand = new Command(async () =>
+            get => _configItems;
+            set
             {
-                await Shell.Current.GoToAsync($"/{nameof(GeneralizedConfigDetailPage)}?id=-1");
-            });
+                if (_configItems != value)
+                {
+                    SetProperty(ref _configItems, value, nameof(ConfigItems));
+                }
+            }
+        }
+
+        [ObservableProperty]
+        public bool isRefreshing = false;
+
+        [RelayCommand]
+        public async Task ReloadItems()
+        {
+            IsRefreshing = true;
+            ConfigItems = await App.Database.GetAllItemsAsync<GeneralizedConfig>();
+            IsRefreshing = false;
+        }
+
+        [RelayCommand]
+        public async Task ItemClicked()
+        {
+            Dictionary<string, object> parameters = new()
+            {
+                { "config", selectedItem! }
+            };
+            await Shell.Current.GoToAsync($"/{nameof(GeneralizedConfigDetailPage)}", parameters);
+            selectedItem = null;
+        }
+
+        [RelayCommand]
+        public async Task Add()
+        {
+            Dictionary<string, object> parameters = new()
+            {
+                {
+                    "config",
+                    new GeneralizedConfig() { Id = -1 }
+                }
+            };
+            await Shell.Current.GoToAsync($"/{nameof(GeneralizedConfigDetailPage)}", parameters);
         }
     }
 }

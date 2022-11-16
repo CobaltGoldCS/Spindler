@@ -1,35 +1,36 @@
 using Spindler.Models;
-using Spindler.Services;
 
 namespace Spindler.Views;
 
-[QueryProperty(nameof(BookId), "id")]
+[QueryProperty(nameof(Book), "book")]
 public partial class WebviewReaderPage : ContentPage
 {
     #region Class Attributes
-    Book? currentBook;
+    Book? book;
     #endregion
     #region QueryProperty Handler
-    public string BookId
+    public Book Book
     {
         set
         {
-            LoadBook(Convert.ToInt32(value));
+            book = value;
+            LoadBook();
         }
+        get => book!;
     }
-    public async void LoadBook(int id)
+
+    public void LoadBook()
     {
-        currentBook = await App.Database.GetItemByIdAsync<Book>(id);
-        BindingContext = currentBook;
-        ReaderBrowser.Source = currentBook.Url;
-        currentBook.LastViewed = DateTime.UtcNow;
+        BindingContext = Book;
+        ReaderBrowser.Source = Book.Url;
+        Book.LastViewed = DateTime.UtcNow;
     }
     #endregion
 
     public WebviewReaderPage()
-	{
-		InitializeComponent();
-        
+    {
+        InitializeComponent();
+
         Shell.Current.Navigating += OnShellNavigated;
         ReaderBrowser.Navigated += WebViewOnNavigated;
     }
@@ -37,8 +38,8 @@ public partial class WebviewReaderPage : ContentPage
     private void WebViewOnNavigated(object? sender, WebNavigatedEventArgs @event)
     {
         if (@event.Result != WebNavigationResult.Success) return;
-        currentBook!.Url = @event.Url;
-        currentBook.Position = 0;
+        Book!.Url = @event.Url;
+        Book.Position = 0;
 
         backButton.IsEnabled = ReaderBrowser.CanGoBack;
         forwardButton.IsEnabled = ReaderBrowser.CanGoForward;
@@ -50,7 +51,7 @@ public partial class WebviewReaderPage : ContentPage
     {
         if (e.Current.Location.OriginalString == "//BookLists/BookPage/WebviewReaderPage")
         {
-            await App.Database.SaveItemAsync(currentBook!);
+            await App.Database.SaveItemAsync(Book!);
         }
         Shell.Current.Navigating -= OnShellNavigated;
         ReaderBrowser.Navigated -= WebViewOnNavigated;
@@ -69,7 +70,7 @@ public partial class WebviewReaderPage : ContentPage
 
     private void Forward_Clicked(object sender, EventArgs e)
     {
-        if(!ReaderBrowser.CanGoForward) return;
+        if (!ReaderBrowser.CanGoForward) return;
         ReaderBrowser.GoForward();
     }
 }

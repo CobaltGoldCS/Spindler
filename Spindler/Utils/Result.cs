@@ -53,7 +53,7 @@ public static class Result
     /// <typeparam name="U">The Error Type</typeparam>
     /// <param name="obj">The object to test</param>
     /// <returns>If the obj is OK or not</returns>
-    public static bool IsOk<T, U>(Result<T,U> obj) => obj is Result<T,U>.Ok;
+    public static bool IsOk<T, U>(Result<T, U> obj) => obj is Result<T, U>.Ok;
     /// <summary>
     /// Checks if the Result is a <code>Result.Error</code>
     /// </summary>

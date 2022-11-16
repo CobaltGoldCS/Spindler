@@ -1,10 +1,10 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
-using Newtonsoft.Json;
+using CommunityToolkit.Mvvm.Input;
+using Microsoft.Maui;
 using Spindler.Models;
 using Spindler.Services;
 using Spindler.Utils;
 using Spindler.Views;
-using System.Net;
 using System.Windows.Input;
 namespace Spindler.ViewModels
 {
@@ -35,13 +35,16 @@ namespace Spindler.ViewModels
         public LoadedData? loadedData;
 
         [ObservableProperty]
-        private string title = "Loading";
+        private string title;
         [ObservableProperty]
-        private string text = "Content is currently loading";
+        private string text;
+        [ObservableProperty]
+        private bool isLoading;
 
 
         readonly bool defaultvisible = false;
-        public bool PrevButtonIsVisible {
+        public bool PrevButtonIsVisible
+        {
             get
             {
                 if (loadedData is not null)
@@ -50,7 +53,8 @@ namespace Spindler.ViewModels
                     return defaultvisible;
             }
         }
-        public bool NextButtonIsVisible {
+        public bool NextButtonIsVisible
+        {
             get
             {
                 if (loadedData is not null)
@@ -63,50 +67,56 @@ namespace Spindler.ViewModels
         #endregion
 
         #region Command Definitions
-        public ICommand NextClickHandler { get; private set; }
-        public ICommand PrevClickHandler { get; private set; }
-        public ICommand BookmarkCommand  { get; private set; }
+
+        [RelayCommand]
+        public async void NextClick()
+        {
+            var nextdata = (await PreloadDataTask!)![1];
+            if (!await FailIfNull(nextdata, "Invalid Url"))
+            {
+                await ReadingLayout!.ScrollToAsync(ReadingLayout.ScrollX, 0, false);
+                IsLoading = true;
+                loadedData = nextdata;
+                DataChanged();
+            }
+        }
+
+        [RelayCommand]
+        public async void PrevClick()
+        {
+            var prevdata = (await PreloadDataTask!)![0];
+            if (!await FailIfNull(prevdata, "Invalid Url"))
+            {
+                await ReadingLayout!.ScrollToAsync(ReadingLayout.ScrollX, 0, false);
+                IsLoading = true;
+                loadedData = prevdata;
+                DataChanged();
+            }
+        }
+
+        [RelayCommand]
+        public async void Bookmark()
+        {
+            await BookmarkButton!.RelRotateTo(360, 250, Easing.CubicIn);
+            await App.Database.SaveItemAsync<Book>(new()
+            {
+                BookListId = CurrentBook!.BookListId,
+                Id = -1,
+                Title = "Bookmark: " + loadedData!.title,
+                Url = loadedData.currentUrl!,
+                Position = ReadingLayout!.ScrollY / ReadingLayout.ContentSize.Height,
+                LastViewed = DateTime.UtcNow,
+            });
+        }
         #endregion
 
         #region Initialization Functions
         public ReaderViewModel()
-        {
-            #region Command Implementations
-            PrevClickHandler = new Command(async () =>
-            {
-                var prevdata = (await PreloadDataTask!)![0];
-                if (!await FailIfNull(prevdata, "Invalid Url"))
-                {
-                    loadedData = prevdata;
-                    DataChanged();
-                    await ReadingLayout!.ScrollToAsync(ReadingLayout.ScrollX, 0, false);
-                }
-            });
-            NextClickHandler = new Command(async () =>
-            {
-                var nextdata = (await PreloadDataTask!)![1];
-                if (!await FailIfNull(nextdata, "Invalid Url"))
-                {
-                    loadedData = nextdata;
-                    DataChanged();
-                    await ReadingLayout!.ScrollToAsync(ReadingLayout.ScrollX, 0, false);
-                }
-            });
-            BookmarkCommand = new Command(async () =>
-            {
-                double prevbuttonheight = PrevButtonIsVisible ? ButtonHeight : 0;
-                double nextbuttonheight = NextButtonIsVisible ? ButtonHeight : 0;
-                await App.Database.SaveItemAsync<Book>(new()
-                {
-                    BookListId = CurrentBook!.BookListId,
-                    Id = -1,
-                    Title = "Bookmark: " + loadedData!.title,
-                    Url = loadedData.currentUrl!,
-                    Position = ReadingLayout!.ScrollY / (ReadingLayout.ContentSize.Height - (prevbuttonheight + nextbuttonheight)),
-                    LastViewed = DateTime.UtcNow,
-                });
-            });
-            #endregion
+        { 
+            IsLoading = true;
+            title = "";
+            text = "";
+            Shell.Current.Navigating += OnShellNavigated;
         }
 
         public async Task StartLoad()
@@ -120,12 +130,26 @@ namespace Spindler.ViewModels
         }
 
         private ScrollView? ReadingLayout;
-        public double ButtonHeight { get; set; }
+        private ImageButton? BookmarkButton;
 
-        public void AttachReferencesToUI(ScrollView readingLayout, double buttonheight)
+        public void AttachReferencesToUI(ScrollView readingLayout, ImageButton bookmarkButton)
         {
-            ButtonHeight = buttonheight;
             ReadingLayout = readingLayout;
+            BookmarkButton = bookmarkButton;
+        }
+
+        public async void OnShellNavigated(object? sender,
+                           ShellNavigatingEventArgs e)
+        {
+            if (e.Current.Location.OriginalString == "//BookLists/BookPage/ReaderPage")
+            {
+                if (CurrentBook != null)
+                {
+                    CurrentBook.Position = ReadingLayout!.ScrollY / ReadingLayout.ContentSize.Height;
+                    await App.Database.SaveItemAsync(CurrentBook);
+                }
+            }
+            Shell.Current.Navigating -= OnShellNavigated;
         }
         #endregion
 
@@ -151,6 +175,7 @@ namespace Spindler.ViewModels
             OnPropertyChanged(nameof(PrevButtonIsVisible));
 
             PreloadDataTask = webService.LoadData(loadedData.prevUrl, loadedData.nextUrl);
+            IsLoading = false;
         }
 
 
@@ -158,16 +183,14 @@ namespace Spindler.ViewModels
         {
             await Task.Run(async () =>
             {
-                double prevbuttonheight = PrevButtonIsVisible ? ButtonHeight : 0;
-                double nextbuttonheight = NextButtonIsVisible ? ButtonHeight : 0;
                 await Task.Delay(100);
                 MainThread.BeginInvokeOnMainThread(async () =>
                 {
                     await ReadingLayout!.ScrollToAsync(ReadingLayout.ScrollX,
-                        Math.Clamp(CurrentBook!.Position, 0d, 1d) * (ReadingLayout.ContentSize.Height - (prevbuttonheight + nextbuttonheight)),
+                        Math.Clamp(CurrentBook!.Position, 0d, 1d) * ReadingLayout.ContentSize.Height,
                         Config!.ExtraConfigs.GetOrDefault("autoscrollanimation", true));
                 });
-                
+
             });
         }
         #region Error Handlers

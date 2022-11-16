@@ -3,38 +3,64 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:vms="clr-namespace:Spindler.ViewModels"
              xmlns:models="clr-namespace:Spindler.Models"
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
              x:Class="Spindler.ConfigPage"
+             x:DataType="vms:ConfigViewModel"
              Title="Configurations">
 
     <ContentPage.BindingContext>
         <vms:ConfigViewModel/>
     </ContentPage.BindingContext>
-    <StackLayout Orientation="Vertical">
-        <Button HeightRequest="50" CornerRadius="0" Text="Add A Config +" FontSize="Large"  Command="{Binding AddCommand}"/>
-        <CollectionView x:Name="list"
-              Margin="5, 0"
-              SelectionChanged="list_SelectionChanged"
+    <Grid RowDefinitions="65, *">
+        <!-- Top Button Area-->
+        <Border StrokeShape="RoundRectangle 10,10,10,10" Margin="10,5,10,0" Stroke="{StaticResource DarkPrimary}">
+            <Border.GestureRecognizers>
+                <TapGestureRecognizer Command="{Binding AddCommand}"/>
+            </Border.GestureRecognizers>
+            <Grid ColumnDefinitions="*, 100" Margin="0,0,0,0" BackgroundColor="{StaticResource DarkPrimary}">
+                <Label Text="Add a Configuration" Grid.Row="0" VerticalTextAlignment="Center" FontSize="26" Margin="20,0,0,0" TextColor="{StaticResource White}"/>
+                <Image Source="plus.svg" Grid.Column="1"  WidthRequest="50" Margin="10,10,3,10" HorizontalOptions="End">
+                    <Image.Behaviors>
+                        <toolkit:IconTintColorBehavior TintColor="{StaticResource White}"/>
+                    </Image.Behaviors>
+                </Image>
+            </Grid>
+        </Border>
+        <!-- Content Area -->
+        <RefreshView Margin="5, 10" Grid.Row="1"
+                     Command="{Binding ReloadItemsCommand}"
+                     IsRefreshing="{Binding IsRefreshing}">
+            <CollectionView
+              SelectionChangedCommand="{Binding ItemClickedCommand}"
+              ItemsSource="{Binding ConfigItems}"
               SelectionMode="Single"
+              SelectedItem="{Binding SelectedItem}"
               >
-            <CollectionView.BindingContext>
-                <models:Config/>
-            </CollectionView.BindingContext>
-            <CollectionView.ItemTemplate>
-                <DataTemplate>
-                    <ContentView Margin="0,5,0,5" Padding="5">
-                        <Grid>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="50"/>
-                            </Grid.RowDefinitions>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*"/>
-                            </Grid.ColumnDefinitions>
-                            <Label  HorizontalTextAlignment="Center" VerticalTextAlignment="Center" 
+                <CollectionView.ItemsLayout>
+                    <LinearItemsLayout Orientation="Vertical" ItemSpacing="5"/>
+                </CollectionView.ItemsLayout>
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="models:Config">
+                        <Border Margin="8,0">
+                            <Grid RowDefinitions="50">
+                                <Label  Margin="10,0,0,0" VerticalTextAlignment="Center" 
                                     FontSize="Large" x:Name="DomainNameLabel" Text="{Binding DomainName}"/>
-                        </Grid>
-                    </ContentView>
-                </DataTemplate>
-            </CollectionView.ItemTemplate>
-        </CollectionView>
-    </StackLayout>
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+                <CollectionView.EmptyView>
+                    <Grid RowDefinitions="*, 60, 35">
+                        <Image Source="gear.svg" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand" Aspect="AspectFit">
+                            <Image.Behaviors>
+                                <toolkit:IconTintColorBehavior TintColor="{AppThemeBinding Dark={StaticResource White}, Light={StaticResource Black}}"/>
+                            </Image.Behaviors>
+                        </Image>
+                        <Label Grid.Row="1" Text="No items available" FontSize="44" HorizontalTextAlignment="Center" HorizontalOptions="CenterAndExpand" VerticalOptions="Center"/>
+                        <Label Grid.Row="2" Text="Maybe you should add a config" FontSize="26" HorizontalTextAlignment="Center" />
+                    </Grid>
+                </CollectionView.EmptyView>
+            </CollectionView>
+        </RefreshView>
+    </Grid>
 </ContentPage>

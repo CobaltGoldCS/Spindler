@@ -11,7 +11,7 @@ namespace Spindler.Services;
 using Path = Models.Path;
 public class ConfigService
 {
-    
+
     public Path? titlepath = null;
     public Path? contentpath = null;
     public Path? nextpath = null;

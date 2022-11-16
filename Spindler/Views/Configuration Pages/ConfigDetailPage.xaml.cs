@@ -1,38 +1,36 @@
+using Spindler.Behaviors;
 using Spindler.Models;
 using Spindler.Services;
-using Spindler.Behaviors;
 using Spindler.Utils;
 using System.Text.RegularExpressions;
 
 namespace Spindler;
 
-[QueryProperty(nameof(ConfigId), "id")]
+[QueryProperty(nameof(config), "config")]
 public partial class ConfigDetailPage : ContentPage
 {
-    private int ConfigurationId = -1;
+    private Config Configuration = new() { Id = -1 };
 
     #region Constants
     private readonly Regex domainValidationRegex = new(@"^(?!www\.)(((?!\-))(xn\-\-)?[a-z0-9\-_]{0,61}[a-z0-9]{1,1}\.)*(xn\-\-)?([a-z0-9\-]{1,61}|[a-z0-9\-]{1,30})\.[a-z]{2,}$");
     #endregion
 
     #region QueryProperty handler
-    public string ConfigId
+    public Config config
     {
-        get => ConfigurationId.ToString();
+        get => Configuration;
         set
         {
-            int id = Convert.ToInt32(value);
-            ConfigurationId = id;
-            InitializePage(id);
+            Configuration = value;
+            InitializePage(value);
         }
     }
 
-    private async void InitializePage(int id)
+    private void InitializePage(Config config)
     {
-        Config config;
-        if (ConfigurationId < 0)
+        if (config.Id < 0)
         {
-            config = new Config
+            /*config = new Config
             {
                 Id = -1,
                 DomainName = "",
@@ -40,13 +38,12 @@ public partial class ConfigDetailPage : ContentPage
                 NextUrlPath = "",
                 PrevUrlPath = "",
                 TitlePath = "",
-            };
+            };*/
             okButton.Text = "Add";
             Title = "Add a new Config";
         }
         else
         {
-            config = await App.Database.GetItemByIdAsync<Config>(id);
             okButton.Text = "Modify";
             Title = $"Modify {config.DomainName}";
         }
@@ -80,9 +77,9 @@ public partial class ConfigDetailPage : ContentPage
     #region Click Handlers
     private async void DeleteButton_Clicked(object sender, EventArgs e)
     {
-        if (ConfigurationId < 0)
+        if (config.Id < 0)
             return;
-        await App.Database.DeleteItemAsync(await App.Database.GetItemByIdAsync<Config>(ConfigurationId));
+        await App.Database.DeleteItemAsync(config);
         await Shell.Current.GoToAsync("..");
     }
 
@@ -90,13 +87,13 @@ public partial class ConfigDetailPage : ContentPage
     {
         if (!domainValidationRegex.IsMatch(domainEntry.Text) ||
             !ConfigService.IsValidSelector(contentEntry.Text) ||
-            !ConfigService.IsValidSelector(nextEntry.Text)    ||
+            !ConfigService.IsValidSelector(nextEntry.Text) ||
             !ConfigService.IsValidSelector(prevEntry.Text))
         {
             return;
         }
 
-        Dictionary<string, object> extras = new()
+        config.ExtraConfigs = new()
         {
             { "webview", switchWebView.On },
             { "autoscrollanimation", animationSwitch.On },
@@ -106,16 +103,12 @@ public partial class ConfigDetailPage : ContentPage
             { "headless", headlessSwitch.On },
         };
 
-        Config config = new()
-        {
-            Id = ConfigurationId,
-            DomainName = domainEntry.Text,
-            ContentPath = contentEntry.Text,
-            NextUrlPath = nextEntry.Text,
-            PrevUrlPath = prevEntry.Text,
-            TitlePath = titleEntry.Text,
-            ExtraConfigs = extras
-        };
+        config.DomainName = domainEntry.Text;
+        config.ContentPath = contentEntry.Text;
+        config.NextUrlPath = nextEntry.Text;
+        config.PrevUrlPath = prevEntry.Text;
+        config.TitlePath = titleEntry.Text;
+
         await App.Database.SaveItemAsync(config);
         await Shell.Current.GoToAsync("..");
     }

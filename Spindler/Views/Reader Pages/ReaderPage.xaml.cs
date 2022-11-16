@@ -1,17 +1,18 @@
 using Spindler.Models;
 using Spindler.Services;
-using Spindler.ViewModels;
 using Spindler.Utils;
+using Spindler.ViewModels;
 using Spindler.Views;
+using System.Security;
 
 namespace Spindler;
 
-[QueryProperty(nameof(BookId), "id")]
+[QueryProperty(nameof(Book), "book")]
 public partial class ReaderPage : ContentPage
 {
 
     #region QueryProperty Handler
-    public string BookId
+    public Book Book
     {
         set
         {
@@ -19,30 +20,38 @@ public partial class ReaderPage : ContentPage
         }
     }
 
-    private async void LoadBook(string str_id)
+    private async void LoadBook(Book book)
     {
-        int id = Convert.ToInt32(str_id);
-        Book currentBook = await App.Database.GetItemByIdAsync<Book>(id);
-        Config? config = await WebService.FindValidConfig(currentBook.Url);
+        Config? config = await WebService.FindValidConfig(book.Url);
 
         var webview = config?.ExtraConfigs.GetOrDefault("webview", false) ?? false;
         if (webview)
         {
-            await Shell.Current.GoToAsync($"../{nameof(WebviewReaderPage)}?id={currentBook.Id}");
+            Dictionary<string, object> parameters = new()
+            {
+                { "book", book }
+            };
+            await Shell.Current.GoToAsync($"../{nameof(WebviewReaderPage)}", parameters);
             return;
         }
+
         var headless = config?.ExtraConfigs.GetOrDefault("headless", false) ?? false;
         if (headless)
         {
-            await Shell.Current.GoToAsync($"../{nameof(HeadlessReaderPage)}?id={currentBook.Id}");
+            Dictionary<string, object> parameters = new()
+            {
+                { "book", book }
+            };
+            await Shell.Current.GoToAsync($"../{nameof(HeadlessReaderPage)}", parameters);
             return;
         }
+
         var viewmodel = new ReaderViewModel()
         {
-            CurrentBook = currentBook,
+            CurrentBook = book,
             Config = config
         };
-        viewmodel.AttachReferencesToUI(ReadingLayout, PrevButton.Height);
+        viewmodel.AttachReferencesToUI(ReadingLayout, BookmarkItem);
         BindingContext = viewmodel;
         await viewmodel.StartLoad();
     }
@@ -52,26 +61,7 @@ public partial class ReaderPage : ContentPage
         InitializeComponent();
         ContentView.FontFamily = Preferences.Default.Get("font", "OpenSans (Regular)");
         ContentView.FontSize = Preferences.Default.Get("font_size", 15);
+        ContentView.LineHeight = Preferences.Default.Get("line_spacing", 1.5f);
         TitleView.FontFamily = Preferences.Default.Get("font", "OpenSans (Regular)");
-        Shell.Current.Navigating += OnShellNavigated;
     }
-
-    // FIXME: This does not handle android back buttons
-    public async void OnShellNavigated(object? sender,
-                           ShellNavigatingEventArgs e)
-    {
-        if (e.Current.Location.OriginalString == "//BookLists/BookPage/ReaderPage")
-        {
-            double prevbuttonheight = PrevButton.IsVisible ? PrevButton.Height : 0;
-            double nextbuttonheight = NextButton.IsVisible ? PrevButton.Height : 0;
-            var currentbook = ((ReaderViewModel)BindingContext).CurrentBook;
-            if (currentbook != null)
-            {
-                currentbook.Position = ReadingLayout.ScrollY / (ReadingLayout.ContentSize.Height - (prevbuttonheight + nextbuttonheight));
-                await App.Database.SaveItemAsync(currentbook);
-            }
-        }
-        Shell.Current.Navigating -= OnShellNavigated;
-    }
-
 }

@@ -4,6 +4,7 @@
              x:Class="Spindler.ReaderPage"
              xmlns:Model="clr-namespace:Spindler.Models"
              xmlns:ViewModel="clr-namespace:Spindler.ViewModels"
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
              Title="{Binding Title}"
              Shell.TabBarIsVisible="False">
 
@@ -11,18 +12,40 @@
         <ViewModel:ReaderViewModel/>
     </ContentPage.BindingContext>
 
-    <ContentPage.ToolbarItems>
-        <ToolbarItem Command="{Binding BookmarkCommand}" x:Name="BookmarkItem" IconImageSource="bookmark.svg"/>
-    </ContentPage.ToolbarItems>
+    <Shell.TitleView>
+        <Grid ColumnDefinitions="*, auto">
+
+            <Label Text="{Binding Title}"
+                   Grid.Column="0"
+                   FontSize="Large"
+                   VerticalOptions="Center"
+                   HorizontalOptions="FillAndExpand"
+                   MaxLines="2"
+                   TextColor="{StaticResource Primary}"/>
+            <StackLayout Grid.Column="1"
+                         HorizontalOptions="EndAndExpand"
+                         Orientation="Horizontal"
+                         VerticalOptions="Center"
+                         Margin="0,0,10,0">
+                <ImageButton x:Name="BookmarkItem"
+                             HeightRequest="25"
+                             WidthRequest="25"
+                             Source="bookmark.svg"
+                             Command="{Binding BookmarkCommand}">
+                </ImageButton>
+            </StackLayout>
+        </Grid>
+    </Shell.TitleView>
     <ScrollView x:Name="ReadingLayout" Orientation="Vertical" IsEnabled="True" VerticalScrollBarVisibility="Always" >
-        <Grid x:Name="Scroller" VerticalOptions="FillAndExpand" RowDefinitions="auto, auto, *, auto">
+        <Grid x:Name="Scroller" VerticalOptions="FillAndExpand" RowDefinitions="auto, auto, auto, *, auto">
             <Label x:Name="TitleView" Text="{Binding Title}" FontSize="Title" Padding="5,0,5,20"/>
-            <Button x:Name="PrevButton" IsVisible="{Binding PrevButtonIsVisible}" Grid.Row="1" Text="Previous" Command="{Binding PrevClickHandler}" FontSize="Large" HorizontalOptions="FillAndExpand"/>
-            <Label  x:Name="ContentView" Grid.Row="2"
-                    Padding="5,0,5,0"
+            <Button x:Name="PrevButton" IsVisible="{Binding PrevButtonIsVisible}" Grid.Row="1" Text="Previous" Command="{Binding PrevClickCommand}" FontSize="Large" HorizontalOptions="FillAndExpand"/>
+            <ActivityIndicator IsRunning="{Binding IsLoading}" IsVisible="{Binding IsLoading}" Color="{StaticResource Primary}" Grid.Row="2"/>
+            <Label  x:Name="ContentView" Grid.Row="3"
+                    Padding="30,0"
                     Text="{Binding Text}"
             />
-            <Button x:Name="NextButton" IsVisible="{Binding NextButtonIsVisible}" Grid.Row="3" Text="Next" FontSize="Large" HorizontalOptions="FillAndExpand" Command="{Binding NextClickHandler}"/>
+            <Button x:Name="NextButton" IsVisible="{Binding NextButtonIsVisible}" Grid.Row="4" Text="Next" FontSize="Large" HorizontalOptions="FillAndExpand" Command="{Binding NextClickCommand}"/>
         </Grid>
     </ScrollView>
 </ContentPage>

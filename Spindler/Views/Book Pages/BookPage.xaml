@@ -1,26 +1,24 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewmodels="clr-namespace:Spindler.ViewModels"
              xmlns:models="clr-namespace:Spindler.Models"
              xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             x:DataType="viewmodels:BookViewModel"
              x:Class="Spindler.BookPage">
-    <ContentPage.BindingContext>
-        <models:BookList/>
-    </ContentPage.BindingContext>
+
+
 
     <Shell.TitleView>
-        <Grid Margin="0,0,0,4">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="Auto"/>
-            </Grid.ColumnDefinitions>
+        <Grid ColumnDefinitions="*, auto">
 
-            <Label Text="{Binding Name}" Grid.Column="0" FontSize="Large" VerticalOptions="Center" HorizontalOptions="FillAndExpand" TextColor="{StaticResource Primary}"/>
+            <Label Text="{Binding Title}" Grid.Column="0" FontSize="Large" VerticalOptions="Center" HorizontalOptions="FillAndExpand" TextColor="{StaticResource Primary}"/>
             <StackLayout Grid.Column="1" HorizontalOptions="EndAndExpand" Orientation="Horizontal" VerticalOptions="Center" Margin="0,0,10,0">
-                <ImageButton HeightRequest="25"
+                <ImageButton x:Name="AddToolBarItem"
+                             HeightRequest="25"
                              WidthRequest="25"
                              Source="plus.svg"
-                             Clicked="addToolbarItem_Clicked">
+                             Command="{Binding AddToolBarItemCommand}">
                     <ImageButton.Behaviors>
                         <toolkit:IconTintColorBehavior TintColor="{AppThemeBinding Dark={StaticResource White}, Light={StaticResource Black}}"/>
                     </ImageButton.Behaviors>
@@ -29,37 +27,54 @@
         </Grid>
     </Shell.TitleView>
     
-    <CollectionView x:Name="BooksList"
-              Margin="5"
-              SelectionChanged="SelectionChanged"
-              SelectionMode="Single">
-        <CollectionView.ItemTemplate>
-            <DataTemplate>
-                <ContentView Margin="0,5,0,5" Padding="5">
-                    <ContentView.BindingContext>
-                        <models:Book/>
-                    </ContentView.BindingContext>
-                    <Grid Padding="10,0,0,0">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="auto"/>
-                        </Grid.ColumnDefinitions>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="30"/>
-                            <RowDefinition Height="20"/>
-                        </Grid.RowDefinitions>
-                        <Label   HeightRequest="30"
-                        VerticalTextAlignment="Center" FontSize="Medium" x:Name="TitleLabel" Text="{Binding Title}" LineBreakMode="TailTruncation" Padding="0,0,5,0"/>
-                        <Label x:Name="UrlLabel" Text="{Binding Url}" FontSize="Small" Grid.Row="1" LineBreakMode="TailTruncation" Padding="0,0,5,0"/>
-                        <ImageButton HorizontalOptions="EndAndExpand" VerticalOptions="FillAndExpand" Grid.Column="1" Grid.RowSpan="2" Source="kebab.svg"
-                        Padding="0,3,5,3" WidthRequest="20" Aspect="AspectFill" x:Name="ConfigButton" Pressed="ConfigButtonPressed" BindingContext="{Binding Id}">
-                            <ImageButton.Behaviors>
-                                <toolkit:IconTintColorBehavior TintColor="{AppThemeBinding Dark={StaticResource White}, Light={StaticResource SpaceCadet}}"/>
-                            </ImageButton.Behaviors>
-                        </ImageButton>
-                    </Grid>
-                </ContentView>
-            </DataTemplate>
-        </CollectionView.ItemTemplate>
-    </CollectionView>
+    <RefreshView
+        IsRefreshing="{Binding IsReloading}"
+        Command="{Binding ReloadCommand}"
+        >
+        <CollectionView x:Name="BooksList"
+                        ItemsSource="{Binding BookList}"
+                        SelectedItem="{Binding CurrentSelection}"
+                        SelectionChangedCommand="{Binding SelectionCommand}"
+                        SelectionMode="Single"
+                        ItemSizingStrategy="MeasureFirstItem"
+                        Margin="5">
+            <CollectionView.ItemsLayout>
+                <LinearItemsLayout ItemSpacing="10" Orientation="Vertical"/>
+            </CollectionView.ItemsLayout>
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <Border Padding="5" StrokeShape="RoundRectangle 10,10,10,10" BackgroundColor="{AppThemeBinding Dark={StaticResource White}, Light={StaticResource SpaceCadet}}">
+                        <Grid Padding="10,0,0,0" x:DataType="models:Book">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="30"/>
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="50"/>
+                                <RowDefinition Height="2"/>
+                                <RowDefinition Height="40"/>
+                            </Grid.RowDefinitions>
+                            <Label VerticalTextAlignment="Center" FontSize="Medium" x:Name="TitleLabel" Text="{Binding Title}" MaxLines="2" Padding="0,0,5,0"/>
+                            <BoxView BackgroundColor="{AppThemeBinding Dark={StaticResource White}, Light={StaticResource SpaceCadet}}" HorizontalOptions="Fill" Grid.Row="1"/>
+                            <Label x:Name="UrlLabel" Text="{Binding Url}" MaxLines="2" FontSize="Small" Grid.Row="2" VerticalOptions="Fill" Padding="0,5,5,0" />
+
+                            <ImageButton HorizontalOptions="Center" VerticalOptions="Center" Grid.Column="1" Grid.RowSpan="3" Source="kebab.svg"
+                                         Padding="0,3,0,3" HeightRequest="60" WidthRequest="30" Aspect="AspectFit" x:Name="ConfigButton" 
+                                         Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:BookViewModel}}, Path=ConfigButtonCommand}" CommandParameter="{Binding}">
+                                <ImageButton.Behaviors>
+                                    <toolkit:IconTintColorBehavior TintColor="{AppThemeBinding Dark={StaticResource White}, Light={StaticResource SpaceCadet}}"/>
+                                </ImageButton.Behaviors>
+                            </ImageButton>
+                        </Grid>
+                    </Border>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+            <CollectionView.EmptyView>
+                <VerticalStackLayout Padding="10">
+                    <Label FontSize="50" Text="No Books loaded"/>
+                    <Label Padding="0,50,0,0" FontSize="20" Text="Please Reload the list or add some items."/>
+                </VerticalStackLayout>
+            </CollectionView.EmptyView>
+        </CollectionView>
+    </RefreshView>
 </ContentPage>

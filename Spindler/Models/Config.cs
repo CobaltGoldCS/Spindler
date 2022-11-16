@@ -19,27 +19,27 @@ public class Config : IIndexedModel
     /// <summary>
     /// The domain name associated with the config (IE: example.com)
     /// </summary>
-    public string DomainName { get; set; }
+    public string DomainName { get; set; } = "";
 
     /// <summary>
     /// The path pointing to the title element (if specified) otherwise null
     /// </summary>
-    public string TitlePath { get; set; }
+    public string TitlePath { get; set; } = "";
 
     /// <summary>
     /// The path pointing to the main content of the website
     /// </summary>
-    public string ContentPath { get; set; }
+    public string ContentPath { get; set; } = "";
 
     /// <summary>
     /// The path pointing to the url denoting the "next chapter"
     /// </summary>
-    public string NextUrlPath { get; set; }
+    public string NextUrlPath { get; set; } = "";
 
     /// <summary>
     /// The path pointing to the url denoting the "previous chapter"
     /// </summary>
-    public string PrevUrlPath { get; set; }
+    public string PrevUrlPath { get; set; } = "";
 
 
     private string _pathType = "";
@@ -57,9 +57,9 @@ public class Config : IIndexedModel
     /// A dictionary containing extra configuration settings
     /// </summary>
     [Ignore]
-    public Dictionary<string, object> ExtraConfigs 
+    public Dictionary<string, object> ExtraConfigs
     {
-        get => JsonConvert.DeserializeObject<Dictionary<string, object>>(ExtraConfigsBlobbed ?? string.Empty); 
+        get => JsonConvert.DeserializeObject<Dictionary<string, object>>(ExtraConfigsBlobbed ?? string.Empty);
         set
         {
             ExtraConfigsBlobbed = JsonConvert.SerializeObject(value);

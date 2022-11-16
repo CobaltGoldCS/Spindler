@@ -2,21 +2,21 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="Spindler.Views.HeadlessReaderPage"
-             Title="[Title]">
+             Title="Loading">
     <ContentPage.ToolbarItems>
         <ToolbarItem Clicked="Bookmark_Clicked" x:Name="BookmarkItem" IconImageSource="bookmark.svg"/>
     </ContentPage.ToolbarItems>
     <ScrollView x:Name="ReadingLayout" Orientation="Vertical" IsEnabled="True" VerticalScrollBarVisibility="Always" >
-        <Grid x:Name="Scroller" VerticalOptions="FillAndExpand" RowDefinitions="auto, auto, *, auto, 0">
+        <Grid x:Name="Scroller" VerticalOptions="FillAndExpand" RowDefinitions="auto, auto, auto, *, auto, 0">
             <!-- The actual setup -->
-            <Label x:Name="TitleView" Text="[Title]" FontSize="Title" Padding="5,0,5,20" IsVisible="true"/>
+            <Label x:Name="TitleView" FontSize="Title" Padding="5,0,5,20" IsVisible="true"/>
             <Button x:Name="PrevButton" Grid.Row="1" Text="Previous" Clicked="PrevButton_Clicked" FontSize="Large" HorizontalOptions="FillAndExpand" IsVisible="false"/>
-            <Label  x:Name="ContentView" Grid.Row="2"
-                    Padding="5,0,5,0"
-                    Text="Loading your data..."
+            <ActivityIndicator x:Name="LoadingIndicator" IsRunning="True" Color="{StaticResource Primary}" Grid.Row="2"/>
+            <Label  x:Name="ContentView" Grid.Row="3"
+                    Padding="30,0"
                     IsVisible="true"
             />
-            <Button x:Name="NextButton" Grid.Row="3" Text="Next" FontSize="Large" HorizontalOptions="FillAndExpand" Clicked="NextButton_Clicked"
+            <Button x:Name="NextButton" Grid.Row="4" Text="Next" FontSize="Large" HorizontalOptions="FillAndExpand" Clicked="NextButton_Clicked"
                     IsVisible="false"/>
             <!-- Initial Setup-->
             <WebView x:Name="HeadlessBrowser"  HorizontalOptions="FillAndExpand" IsVisible="false"/>

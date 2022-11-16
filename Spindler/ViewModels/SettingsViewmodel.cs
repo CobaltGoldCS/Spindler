@@ -1,7 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
-using System.Windows.Input;
+using CommunityToolkit.Mvvm.Input;
 
 namespace Spindler.ViewModels
 {
@@ -12,15 +10,16 @@ namespace Spindler.ViewModels
         [ObservableProperty]
         private int fontSize = Preferences.Default.Get("font_size", 12);
 
-        public ICommand SaveSettingsCommand { get; private set; }
+        [ObservableProperty]
+        private float fontSpacing = Preferences.Default.Get("line_spacing", 1.5f);
 
-        public SettingsViewmodel()
+        public SettingsViewmodel() { }
+        [RelayCommand]
+        public void SaveSettings()
         {
-            SaveSettingsCommand = new Command(() =>
-            {
-                Preferences.Set("font", font);
-                Preferences.Set("font_size", fontSize);
-            });
+            Preferences.Set("font", font);
+            Preferences.Set("font_size", fontSize);
+            Preferences.Set("line_spacing", fontSpacing);
         }
     }
 }

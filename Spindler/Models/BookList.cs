@@ -15,6 +15,38 @@ public class BookList : IIndexedModel
 
     public int GetId() => Id;
 
+    public string ColorString1 { get; set; } = "#00000000";
+    public string ColorString2 { get; set; } = "#00000000";
+
+    [Ignore]
+    public Color Color1
+    {
+        get
+        {
+            return Color.FromArgb(ColorString1);
+        }
+
+        set
+        {
+            var hex = value.ToArgbHex(true);
+            ColorString1 = hex;
+        }
+    }
+
+    [Ignore]
+    public Color Color2
+    {
+        get
+        {
+            return Color.FromArgb(ColorString2);
+        }
+
+        set
+        {
+            ColorString2 = value.ToArgbHex(true);
+        }
+    }
+
     /// <summary>
     /// Name of the book list
     /// </summary>
@@ -64,5 +96,26 @@ public class BookList : IIndexedModel
         images.Add("https://images.unsplash.com/photo-1555679427-1f6dfcce943b?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=735&q=80");
         int index = rand.Next(images.Count - 1);
         return images[index];
+    }
+
+    /// <summary>
+    /// Gets the background as a linear gradient brush
+    /// </summary>
+    /// <returns>A linear gradient based on color1 and color2</returns>
+    public Brush Background
+    {
+        get
+        {
+            var gradientStops = new GradientStopCollection();
+            gradientStops.Add(new GradientStop(Color1, 0.0f));
+            gradientStops.Add(new GradientStop(Color2, 1.0f));
+
+            var bgBrush = new LinearGradientBrush(
+                gradientStops,
+                new Point(0.0, 0.0),
+                new Point(1.0, 1.0));
+
+            return bgBrush;
+        }
     }
 }
