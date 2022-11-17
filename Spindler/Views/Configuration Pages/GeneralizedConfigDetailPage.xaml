@@ -18,7 +18,7 @@
 
             <Label Text="Match Path:" VerticalOptions="Center" Grid.Row="1"/>
             <Entry x:Name="matchEntry" HorizontalOptions="FillAndExpand" Grid.Column="1" Grid.Row="1"
-                                   Placeholder="Match path of the configuration" Text="{Binding DomainName}"/>
+                                   Placeholder="Match path of the configuration" Text="{Binding MatchPath}"/>
 
             <Label Text="Title Path:" VerticalOptions="Center" Grid.Row="2"/>
             <Entry x:Name="titleEntry" HorizontalOptions="FillAndExpand" Grid.Row="2" Grid.Column="2"
