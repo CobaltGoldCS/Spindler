@@ -79,6 +79,7 @@ public partial class HeadlessReaderPage : ContentPage
 
     private async void PrevButton_Clicked(object sender, EventArgs e)
     {
+        Book!.Url = loadedData!.prevUrl!;
         HeadlessBrowser.Source = loadedData!.prevUrl;
         LoadingIndicator.IsRunning = true;
         await ReadingLayout.ScrollToAsync(ReadingLayout.ScrollX, 0, false);
@@ -87,6 +88,7 @@ public partial class HeadlessReaderPage : ContentPage
 
     private async void NextButton_Clicked(object sender, EventArgs e)
     {
+        Book!.Url = loadedData!.nextUrl!;
         HeadlessBrowser.Source = loadedData!.nextUrl;
         LoadingIndicator.IsRunning = true;
         await ReadingLayout.ScrollToAsync(ReadingLayout.ScrollX, 0, false);
@@ -167,7 +169,6 @@ public partial class HeadlessReaderPage : ContentPage
         loadedData.prevUrl = new Uri(baseUri, loadedData.prevUrl).ToString();
         loadedData.nextUrl = new Uri(baseUri, loadedData.nextUrl).ToString();
 
-        Book!.Url = loadedData.currentUrl!;
         Book.LastViewed = DateTime.UtcNow;
         if (Book!.Position > 0)
         {

@@ -206,7 +206,7 @@ public class WebService
             prevUrl = ConfigService.PrettyWrapSelector(doc, configService.previouspath!, type: ConfigService.SelectorType.Link),
             title = configService.GetTitle(doc),
             config = config,
-            currentUrl = new Uri(client.BaseAddress!, url).ToString()
+            currentUrl = url
         };
 
         return data;
