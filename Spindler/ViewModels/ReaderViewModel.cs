@@ -160,7 +160,12 @@ namespace Spindler.ViewModels
             if (await FailIfNull(loadedData, "This is an invalid url")) return;
             if (loadedData!.title == "afb-4893") // This means an error has occured while getting data from the WebService
             {
-                await Shell.Current.GoToAsync($"../{nameof(ErrorPage)}?id={CurrentBook!.Id}&errormessage={loadedData.text}");
+                Dictionary<string, object> parameters = new()
+                {
+                    { "errormessage", loadedData.text! },
+                    { "config", await App.Database.GetConfigByDomainNameAsync(new Uri(CurrentBook!.Url).Host) }
+                };
+                await Shell.Current.GoToAsync($"../{nameof(ErrorPage)}", parameters);
                 return;
             }
             // Database updates
@@ -205,6 +210,11 @@ namespace Spindler.ViewModels
             bool nullobj = value == null;
             if (nullobj)
             {
+                Dictionary<string, object> parameters = new()
+                {
+                    { "errormessage", message },
+                    { "config", await App.Database.GetConfigByDomainNameAsync(new Uri(CurrentBook!.Url).Host) }
+                };
                 await Shell.Current.GoToAsync($"../{nameof(ErrorPage)}?id={CurrentBook!.Id}&errormessage={message}");
             }
             return nullobj;

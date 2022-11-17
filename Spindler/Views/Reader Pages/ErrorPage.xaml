@@ -9,7 +9,6 @@
             <Label x:Name="ErrorLabel" FontSize="Title" LineBreakMode="WordWrap"
             Text="ERROR HERE" Margin="30,0,0,0" />
             <Label Text="Is your configuration incorrect or missing?" Margin="30, 30, 30, 0" FontSize="Body" />
-            <Button x:Name="WebviewButton" Text="Open in Webview" FontSize="Medium" Clicked="WebviewButton_Clicked" Margin="30, 15, 30, 15"/>
             <TableView>
                 <TableRoot>
                     <TableSection Title="Having Multiple Problems? Use Compatability Mode">

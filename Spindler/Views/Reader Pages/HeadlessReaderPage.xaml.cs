@@ -201,7 +201,12 @@ public partial class HeadlessReaderPage : ContentPage
         bool nullobj = value == null;
         if (nullobj)
         {
-            await Shell.Current.GoToAsync($"../{nameof(ErrorPage)}?id={Book!.Id}&errormessage={message}");
+            Dictionary<string, object> parameters = new()
+            {
+                { "errormessage", message },
+                { "config", await App.Database.GetConfigByDomainNameAsync(new Uri(Book.Url).Host) }
+            };
+            await Shell.Current.GoToAsync($"../{nameof(ErrorPage)}", parameters);
         }
         return nullobj;
     }
