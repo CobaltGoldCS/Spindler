@@ -174,9 +174,9 @@ public partial class HeadlessReaderPage : ContentPage
         {
             await Task.Run(async () =>
             {
-                while (ReadingLayout.ContentSize.Height < 657)
+                while (ReadingLayout.ContentSize.Height < 1000)
                     await Task.Delay(50);
-                MainThread.BeginInvokeOnMainThread(async () =>
+                await MainThread.InvokeOnMainThreadAsync(async () =>
                 {
                     await ReadingLayout.ScrollToAsync(ReadingLayout.ScrollX,
                      Math.Clamp(Book!.Position, 0d, 1d) * ReadingLayout.ContentSize.Height,
