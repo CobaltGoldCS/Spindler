@@ -69,8 +69,8 @@ public partial class BookListViewModel : ObservableObject
     [RelayCommand]
     private async void Selection()
     {
+        if (CurrentSelection == null) return;
         var selectedItem = currentSelection;
-        currentSelection = null;
         selectedItem!.LastAccessed = DateTime.UtcNow;
         await App.Database.SaveItemAsync(selectedItem);
         Dictionary<string, object> parameters = new()
@@ -78,6 +78,7 @@ public partial class BookListViewModel : ObservableObject
             { "booklist", selectedItem! }
         };
         await Shell.Current.GoToAsync($"/{nameof(BookPage)}", parameters);
+        CurrentSelection = null;
     }
 
     [RelayCommand]
@@ -88,9 +89,4 @@ public partial class BookListViewModel : ObservableObject
         IsReloading = false;
     }
 
-    [RelayCommand]
-    public void OnAppearing()
-    {
-        currentSelection = null;
-    }
 }

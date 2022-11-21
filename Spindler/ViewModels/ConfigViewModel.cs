@@ -38,10 +38,10 @@ public partial class ConfigViewModel : ObservableObject
     {
         Dictionary<string, object> parameters = new()
         {
-            { "config", selectedItem! }
+            { "config", SelectedItem! }
         };
         await Shell.Current.GoToAsync($"/{nameof(ConfigDetailPage)}", parameters);
-        selectedItem = null;
+        SelectedItem = null;
     }
 
     [RelayCommand]

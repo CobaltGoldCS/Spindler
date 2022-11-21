@@ -39,10 +39,10 @@ namespace Spindler.ViewModels
         {
             Dictionary<string, object> parameters = new()
             {
-                { "config", selectedItem! }
+                { "config", SelectedItem! }
             };
             await Shell.Current.GoToAsync($"/{nameof(GeneralizedConfigDetailPage)}", parameters);
-            selectedItem = null;
+            SelectedItem = null;
         }
 
         [RelayCommand]
