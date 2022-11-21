@@ -80,7 +80,7 @@ namespace Spindler.ViewModels
         [RelayCommand]
         private async void Delete()
         {
-            if (Booklist.Id > 0 && !await CancellationWarning())
+            if (Booklist.Id > 0 && await CancellationWarning())
             {
                 await App.Database.DeleteBookListAsync(Booklist);
             }
