@@ -28,6 +28,7 @@ public partial class BookPage : ContentPage
         var binding = new BookViewModel(list.Id, list.Name);
         binding.AddUiReferences(AddToolBarItem);
         BindingContext = binding;
+        await Task.Run(() => binding.Reload());
     }
 
     #endregion
