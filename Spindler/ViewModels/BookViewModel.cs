@@ -1,6 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Spindler.Models;
+using System.Collections.ObjectModel;
 
 namespace Spindler.ViewModels
 {
@@ -15,7 +16,7 @@ namespace Spindler.ViewModels
         [ObservableProperty]
         Book? currentSelection;
 
-        private List<Book>? _bookList;
+        private List<Book>? _bookList = null;
         // I don't know what's happening here, but for some reason I have to do this in order to refresh the UI
         public List<Book>? BookList
         {
@@ -29,18 +30,14 @@ namespace Spindler.ViewModels
             }
         }
 
-        private bool isReloading = false;
-        public bool IsReloading
-        {
-            get => isReloading;
-            set
-            {
-                if (isReloading != value)
-                {
-                    SetProperty(ref isReloading, value, nameof(IsReloading));
-                }
-            }
-        }
+        [ObservableProperty]
+        ObservableCollection<Book> displayedBooks = new();
+
+        [ObservableProperty]
+        bool isLoading = false;
+
+        [ObservableProperty]
+        int loaderHeightRequest = 0;
 
         #endregion
 
@@ -100,12 +97,21 @@ namespace Spindler.ViewModels
             currentSelection = null;
         }
 
-        [RelayCommand]
-        public async void Reload()
+        public async Task Load()
         {
-            IsReloading = true;
             BookList = await App.Database.GetBooksByBooklistIdAsync(id);
-            IsReloading = false;
+        }
+
+        const int NUM_ITEMS_ADDED_TO_LIST = 9;
+        [RelayCommand]
+        public async void EndOfListReached()
+        {
+            LoaderHeightRequest = 20;
+            IsLoading = true;
+            foreach (Book book in BookList!.Skip(DisplayedBooks.Count).Take(NUM_ITEMS_ADDED_TO_LIST))
+                DisplayedBooks!.Add(book);
+            IsLoading = false;
+            LoaderHeightRequest = 0;
         }
     }
 }

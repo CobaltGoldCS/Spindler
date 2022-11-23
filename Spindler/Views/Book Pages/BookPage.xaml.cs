@@ -9,14 +9,10 @@ public partial class BookPage : ContentPage
 
     #region QueryProperty Handler
 
-    private BookList _booklist;
     public BookList Booklist
     {
-        get => _booklist;
         set
         {
-            if (value == null) throw new ArgumentNullException("BookListId cannot be set to null");
-            _booklist = value;
             LoadBookList(value);
         }
     }
@@ -28,7 +24,7 @@ public partial class BookPage : ContentPage
         var binding = new BookViewModel(list.Id, list.Name);
         binding.AddUiReferences(AddToolBarItem);
         BindingContext = binding;
-        await Task.Run(() => binding.Reload());
+        await binding.Load();
     }
 
     #endregion
@@ -37,6 +33,5 @@ public partial class BookPage : ContentPage
     {
         InitializeComponent();
         BooksList.Unfocus();
-        _booklist = new BookList();
     }
 }

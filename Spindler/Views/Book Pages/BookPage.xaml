@@ -26,55 +26,54 @@
             </StackLayout>
         </Grid>
     </Shell.TitleView>
-    
-    <RefreshView
-        IsRefreshing="{Binding IsReloading}"
-        Command="{Binding ReloadCommand}"
-        >
-        <CollectionView x:Name="BooksList"
+    <CollectionView x:Name="BooksList"
                         ItemsSource="{Binding BookList}"
                         SelectedItem="{Binding CurrentSelection}"
                         SelectionChangedCommand="{Binding SelectionCommand}"
+                        RemainingItemsThreshold="3"
+                        RemainingItemsThresholdReachedCommand="{Binding EndOfListReachedCommand}"
                         SelectionMode="Single"
                         ItemSizingStrategy="MeasureFirstItem"
                         Margin="5">
-            <CollectionView.ItemsLayout>
-                <LinearItemsLayout ItemSpacing="10" Orientation="Vertical"/>
-            </CollectionView.ItemsLayout>
-            <CollectionView.ItemTemplate>
-                <DataTemplate>
-                    <Border Padding="5" StrokeShape="RoundRectangle 10,10,10,10" BackgroundColor="{AppThemeBinding Dark={StaticResource White}, Light={StaticResource SpaceCadet}}">
-                        <Grid Padding="10,0,0,0" x:DataType="models:Book">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="30"/>
-                            </Grid.ColumnDefinitions>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="50"/>
-                                <RowDefinition Height="2"/>
-                                <RowDefinition Height="40"/>
-                            </Grid.RowDefinitions>
-                            <Label VerticalTextAlignment="Center" FontSize="Medium" x:Name="TitleLabel" Text="{Binding Title}" MaxLines="2" Padding="0,0,5,0"/>
-                            <BoxView BackgroundColor="{AppThemeBinding Dark={StaticResource White}, Light={StaticResource SpaceCadet}}" HorizontalOptions="Fill" Grid.Row="1"/>
-                            <Label x:Name="UrlLabel" Text="{Binding Url}" MaxLines="2" FontSize="Small" Grid.Row="2" VerticalOptions="Fill" Padding="0,5,5,0" />
+        <CollectionView.ItemsLayout>
+            <LinearItemsLayout ItemSpacing="10" Orientation="Vertical"/>
+        </CollectionView.ItemsLayout>
+        <CollectionView.ItemTemplate>
+            <DataTemplate>
+                <Border Padding="5" StrokeShape="RoundRectangle 10,10,10,10" BackgroundColor="{AppThemeBinding Dark={StaticResource White}, Light={StaticResource SpaceCadet}}">
+                    <Grid Padding="10,0,0,0" x:DataType="models:Book">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="30"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="50"/>
+                            <RowDefinition Height="2"/>
+                            <RowDefinition Height="40"/>
+                        </Grid.RowDefinitions>
+                        <Label VerticalTextAlignment="Center" FontSize="Medium" x:Name="TitleLabel" Text="{Binding Title}" MaxLines="2" Padding="0,0,5,0"/>
+                        <BoxView BackgroundColor="{AppThemeBinding Dark={StaticResource White}, Light={StaticResource SpaceCadet}}" HorizontalOptions="Fill" Grid.Row="1"/>
+                        <Label x:Name="UrlLabel" Text="{Binding Url}" MaxLines="2" FontSize="Small" Grid.Row="2" VerticalOptions="Fill" Padding="0,5,5,0" />
 
-                            <ImageButton HorizontalOptions="Center" VerticalOptions="Center" Grid.Column="1" Grid.RowSpan="3" Source="kebab.svg"
+                        <ImageButton HorizontalOptions="Center" VerticalOptions="Center" Grid.Column="1" Grid.RowSpan="3" Source="kebab.svg"
                                          Padding="0,3,0,3" HeightRequest="60" WidthRequest="30" Aspect="AspectFit" x:Name="ConfigButton" 
                                          Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:BookViewModel}}, Path=ConfigButtonCommand}" CommandParameter="{Binding}">
-                                <ImageButton.Behaviors>
-                                    <toolkit:IconTintColorBehavior TintColor="{AppThemeBinding Dark={StaticResource White}, Light={StaticResource SpaceCadet}}"/>
-                                </ImageButton.Behaviors>
-                            </ImageButton>
-                        </Grid>
-                    </Border>
-                </DataTemplate>
-            </CollectionView.ItemTemplate>
-            <CollectionView.EmptyView>
-                <VerticalStackLayout Padding="10">
-                    <Label FontSize="50" Text="No Books loaded"/>
-                    <Label Padding="0,50,0,0" FontSize="20" Text="Please Reload the list or add some items."/>
-                </VerticalStackLayout>
-            </CollectionView.EmptyView>
-        </CollectionView>
-    </RefreshView>
+                            <ImageButton.Behaviors>
+                                <toolkit:IconTintColorBehavior TintColor="{AppThemeBinding Dark={StaticResource White}, Light={StaticResource SpaceCadet}}"/>
+                            </ImageButton.Behaviors>
+                        </ImageButton>
+                    </Grid>
+                </Border>
+            </DataTemplate>
+        </CollectionView.ItemTemplate>
+        <CollectionView.EmptyView>
+            <VerticalStackLayout Padding="10">
+                <Label FontSize="50" Text="No Books loaded"/>
+                <Label Padding="0,50,0,0" FontSize="20" Text="Please Reload the list or add some items."/>
+            </VerticalStackLayout>
+        </CollectionView.EmptyView>
+        <CollectionView.Footer>
+            <ActivityIndicator IsRunning="{Binding IsLoading}" HeightRequest="{Binding LoaderHeightRequest}" Color="{StaticResource Primary}"/>
+        </CollectionView.Footer>
+    </CollectionView>
 </ContentPage>
