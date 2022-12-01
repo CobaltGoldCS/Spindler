@@ -40,8 +40,13 @@
         </CollectionView.ItemsLayout>
         <CollectionView.ItemTemplate>
             <DataTemplate>
+<<<<<<< HEAD
                 <Border StrokeShape="RoundRectangle 16,10,16,10" Stroke="{StaticResource LightSpaceCadet}">
                     <Grid x:DataType="models:Book">
+=======
+                <Border StrokeShape="RoundRectangle 16,10,16,10" Stroke="{AppThemeBinding Dark={StaticResource White}, Light={StaticResource SpaceCadet}}">
+                    <Grid Padding="10,0,0,0" x:DataType="models:Book" BackgroundColor="{AppThemeBinding Dark={StaticResource DarkCardBackground}, Light={StaticResource White}}">
+>>>>>>> master
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="30"/>
@@ -55,9 +60,14 @@
                         <Line BackgroundColor="{StaticResource LightSpaceCadet}" HorizontalOptions="Fill" Grid.Row="1"/>
                         <Label x:Name="UrlLabel" Text="{Binding Url}" MaxLines="2" FontSize="Small" Grid.Row="2" VerticalOptions="Fill" Padding="10,5,10,0" />
 
+<<<<<<< HEAD
                         <ContentView Grid.Column="1" Grid.RowSpan="3" BackgroundColor="{StaticResource LightSpaceCadet}">
                             <ImageButton HorizontalOptions="Center" VerticalOptions="Center" Source="kebab.svg"
                                          Aspect="AspectFit" x:Name="ConfigButton" Padding="4"
+=======
+                        <ImageButton HorizontalOptions="Center" VerticalOptions="Center" Grid.Column="1" Grid.Row="2" Source="kebab.svg"
+                                         Margin="0,0,0,5" Aspect="AspectFit" x:Name="ConfigButton" 
+>>>>>>> master
                                          Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:BookViewModel}}, Path=ConfigButtonCommand}" CommandParameter="{Binding}">
                                 <ImageButton.Behaviors>
                                     <toolkit:IconTintColorBehavior TintColor="{AppThemeBinding Dark={StaticResource White}, Light={StaticResource LightSpaceCadet}}"/>
