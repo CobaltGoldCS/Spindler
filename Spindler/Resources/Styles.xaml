@@ -16,12 +16,7 @@
     <Color x:Key="LightGray">#E5E5E1</Color>
     <Color x:Key="MidGray">#969696</Color>
     <Color x:Key="DarkGray">#505050</Color>
-<<<<<<< HEAD
-
-=======
     <Color x:Key="DarkCardBackground">#141929</Color>
-    
->>>>>>> master
     <SolidColorBrush x:Key="PrimaryBrush" Color="{StaticResource Primary}"/>
     <SolidColorBrush x:Key="LightBrush" Color="{StaticResource Light}"/>
     <SolidColorBrush x:Key="DarkBrush" Color="{StaticResource Dark}"/>

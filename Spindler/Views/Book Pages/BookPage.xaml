@@ -40,35 +40,18 @@
         </CollectionView.ItemsLayout>
         <CollectionView.ItemTemplate>
             <DataTemplate>
-<<<<<<< HEAD
                 <Border StrokeShape="RoundRectangle 16,10,16,10" Stroke="{StaticResource LightSpaceCadet}">
-                    <Grid x:DataType="models:Book">
-=======
-                <Border StrokeShape="RoundRectangle 16,10,16,10" Stroke="{AppThemeBinding Dark={StaticResource White}, Light={StaticResource SpaceCadet}}">
-                    <Grid Padding="10,0,0,0" x:DataType="models:Book" BackgroundColor="{AppThemeBinding Dark={StaticResource DarkCardBackground}, Light={StaticResource White}}">
->>>>>>> master
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="30"/>
-                        </Grid.ColumnDefinitions>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="50"/>
-                            <RowDefinition Height="2"/>
-                            <RowDefinition Height="40"/>
-                        </Grid.RowDefinitions>
+                    <Grid
+                          x:DataType="models:Book"
+                          BackgroundColor="{AppThemeBinding Dark={StaticResource DarkCardBackground}, Light={StaticResource White}}"
+                          ColumnDefinitions="*, 30"
+                          RowDefinitions="50, 2, 40">
                         <Label VerticalTextAlignment="Center" HorizontalTextAlignment="Center" FontSize="Medium" x:Name="TitleLabel" Text="{Binding Title}" MaxLines="2" Padding="10,0,5,0"/>
                         <Line BackgroundColor="{StaticResource LightSpaceCadet}" HorizontalOptions="Fill" Grid.Row="1"/>
-                        <Label x:Name="UrlLabel" Text="{Binding Url}" MaxLines="2" FontSize="Small" Grid.Row="2" VerticalOptions="Fill" Padding="10,5,10,0" />
-
-<<<<<<< HEAD
+                        <Label x:Name="UrlLabel" Text="{Binding Url}" MaxLines="2" FontSize="Small" Grid.Row="2" VerticalOptions="Fill" Padding="10,5,10,0" TextColor="LightGray" />
                         <ContentView Grid.Column="1" Grid.RowSpan="3" BackgroundColor="{StaticResource LightSpaceCadet}">
-                            <ImageButton HorizontalOptions="Center" VerticalOptions="Center" Source="kebab.svg"
-                                         Aspect="AspectFit" x:Name="ConfigButton" Padding="4"
-=======
-                        <ImageButton HorizontalOptions="Center" VerticalOptions="Center" Grid.Column="1" Grid.Row="2" Source="kebab.svg"
-                                         Margin="0,0,0,5" Aspect="AspectFit" x:Name="ConfigButton" 
->>>>>>> master
-                                         Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:BookViewModel}}, Path=ConfigButtonCommand}" CommandParameter="{Binding}">
+                            <ImageButton HorizontalOptions="Center" VerticalOptions="Center" Grid.Column="1" Grid.Row="2" Source="kebab.svg"
+                                            Padding="4" Aspect="AspectFit" x:Name="ConfigButton" Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:BookViewModel}}, Path=ConfigButtonCommand}" CommandParameter="{Binding}">
                                 <ImageButton.Behaviors>
                                     <toolkit:IconTintColorBehavior TintColor="{AppThemeBinding Dark={StaticResource White}, Light={StaticResource LightSpaceCadet}}"/>
                                 </ImageButton.Behaviors>
