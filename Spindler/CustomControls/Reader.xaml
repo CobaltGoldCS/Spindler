@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Grid xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+      xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+      x:Class="Spindler.CustomControls.Reader"
+      RowDefinitions="auto, auto, auto, *, auto"
+      x:Name="this">
+    <Label x:Name="TitleView"
+           Text="{Binding Source = {x:Reference this}, Path = Title}"
+           FontSize="Title"
+           Padding="5,0,5,20"/>
+    <Button x:Name="PrevButton"
+            IsVisible="{Binding Source = {x:Reference this}, Path = PrevVisible}"
+            Grid.Row="1"
+            Text="Previous"
+            Clicked="Prev_Clicked"
+            Command="{Binding Source = {x:Reference this}, Path = PreviousCommand}"
+            FontSize="Large"
+            HorizontalOptions="FillAndExpand"/>
+    <ActivityIndicator
+        IsRunning="{Binding Source = {x:Reference this}, Path = Loading}"
+        IsVisible="{Binding Source = {x:Reference this}, Path = Loading}"
+        Color="{StaticResource Primary}"
+        Grid.Row="2"/>
+    <Label  x:Name="ContentView" Grid.Row="3"
+                    Padding="30,0"
+                    Text="{Binding Source = {x:Reference this}, Path = Text}"
+            />
+    <Button x:Name="NextButton"
+            IsVisible="{Binding Source = {x:Reference this}, Path = NextVisible}"
+            Grid.Row="4"
+            Text="Next"
+            FontSize="Large"
+            HorizontalOptions="FillAndExpand"
+            Clicked="Next_Clicked"
+            Command="{Binding Source = {x:Reference this}, Path = NextCommand}"/>
+</Grid>
