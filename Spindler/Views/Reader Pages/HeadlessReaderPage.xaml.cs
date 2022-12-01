@@ -2,6 +2,7 @@
 using Spindler.Models;
 using Spindler.Services;
 using Spindler.Utils;
+using System.ComponentModel;
 using System.Globalization;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -9,7 +10,7 @@ using System.Text.RegularExpressions;
 namespace Spindler.Views;
 
 [QueryProperty(nameof(Book), "book")]
-public partial class HeadlessReaderPage : ContentPage
+public partial class HeadlessReaderPage : ContentPage, INotifyPropertyChanged
 {
     // Both of these are guaranteed not null after initial page loading
     WebService? webservice;
@@ -27,16 +28,68 @@ public partial class HeadlessReaderPage : ContentPage
         get => book;
     }
 
+    #region Binding Definitions
+
+    string? text;
+    public string? Text
+    {
+        get => text;
+        set
+        {
+            text = value;
+            OnPropertyChanged();
+        }
+    }
+
+    string? readerTitle;
+    public string? ReaderTitle
+    {
+        get => readerTitle;
+        set
+        {
+            readerTitle = value;
+            OnPropertyChanged();
+        }
+    }
+
+    bool prevVisible = false;
+    public bool PrevVisible
+    {
+        get => prevVisible;
+        set
+        {
+            prevVisible = value;
+            OnPropertyChanged();
+        }
+    }
+
+    bool nextVisible = false;
+    public bool NextVisible
+    {
+        get => nextVisible;
+        set
+        {
+            nextVisible = value;
+            OnPropertyChanged();
+        }
+    }
+
+    bool isLoading = true;
+    public bool IsLoading
+    {
+        get => isLoading;
+        set
+        {
+            isLoading = value;
+            OnPropertyChanged();
+        }
+    }
+
+    #endregion
+
     public HeadlessReaderPage()
     {
         InitializeComponent();
-
-        ContentView.FontFamily = Preferences.Default.Get("font", "OpenSans (Regular)");
-        ContentView.FontSize = Preferences.Default.Get("font_size", 15);
-        ContentView.LineHeight = Preferences.Default.Get("line_spacing", 1.5f);
-        TitleView.FontFamily = Preferences.Default.Get("font", "OpenSans (Regular)");
-
-
         Shell.Current.Navigating += OnShellNavigated;
     }
 
@@ -46,7 +99,6 @@ public partial class HeadlessReaderPage : ContentPage
         if (await FailIfNull(config, "There is no valid configuration for this book")) return;
 
         webservice = new(config!);
-        Book.LastViewed = DateTime.UtcNow;
         HeadlessBrowser.Source = Book.Url;
         HeadlessBrowser.Navigated += HeadlessBrowser_Navigated;
     }
@@ -56,7 +108,7 @@ public partial class HeadlessReaderPage : ContentPage
         var result = e.Result;
         if (result != WebNavigationResult.Success)
         {
-            await FailIfNull(null, "Browser was unable to navigate");
+            await FailIfNull(null, $"Browser was unable to navigate.");
             return;
         }
         await LoadContent();
@@ -64,35 +116,33 @@ public partial class HeadlessReaderPage : ContentPage
 
     private async void Bookmark_Clicked(object sender, EventArgs e)
     {
-        double prevbuttonheight = PrevButton.IsVisible ? PrevButton.Height : 0;
-        double nextbuttonheight = NextButton.IsVisible ? NextButton.Height : 0;
         await App.Database.SaveItemAsync<Book>(new()
         {
             BookListId = Book!.BookListId,
             Id = -1,
             Title = "Bookmark: " + loadedData!.title,
             Url = loadedData.currentUrl!,
-            Position = ReadingLayout!.ScrollY / (ReadingLayout.ContentSize.Height - (prevbuttonheight + nextbuttonheight)),
+            Position = ReadingLayout!.ScrollY / ReadingLayout.ContentSize.Height,
             LastViewed = DateTime.UtcNow,
         });
     }
 
     private async void PrevButton_Clicked(object sender, EventArgs e)
     {
+        IsLoading = true;
         Book!.Url = loadedData!.prevUrl!;
         HeadlessBrowser.Source = loadedData!.prevUrl;
-        LoadingIndicator.IsRunning = true;
         await ReadingLayout.ScrollToAsync(ReadingLayout.ScrollX, 0, false);
-        PrevButton.IsEnabled = false;
+        PrevVisible = false;
     }
 
     private async void NextButton_Clicked(object sender, EventArgs e)
     {
+        IsLoading = true;
         Book!.Url = loadedData!.nextUrl!;
         HeadlessBrowser.Source = loadedData!.nextUrl;
-        LoadingIndicator.IsRunning = true;
         await ReadingLayout.ScrollToAsync(ReadingLayout.ScrollX, 0, false);
-        NextButton.IsEnabled = false;
+        NextVisible = false;
     }
 
     private async Task LoadContent()
@@ -136,40 +186,24 @@ public partial class HeadlessReaderPage : ContentPage
         return;
     }
 
-    public async void OnShellNavigated(object? sender,
-                           ShellNavigatingEventArgs e)
-    {
-        if (e.Current.Location.OriginalString == "//BookLists/BookPage/HeadlessReaderPage")
-        {
-            if (Book != null)
-            {
-                Book.Position = ReadingLayout.ScrollY / ReadingLayout.ContentSize.Height;
-                await App.Database.SaveItemAsync(Book);
-            }
-        }
-        Shell.Current.Navigating -= OnShellNavigated;
-    }
-
     private async void DataChanged()
     {
         if (await FailIfNull(loadedData, "Couldn't get data")) return;
 
         Title = loadedData!.title ?? "";
-        TitleView.Text = loadedData.title ?? "";
-        ContentView.Text = loadedData.text ?? "";
+        ReaderTitle = loadedData!.title ?? "";
 
-        NextButton.IsVisible = WebService.IsUrl(loadedData.nextUrl);
-        PrevButton.IsVisible = WebService.IsUrl(loadedData.prevUrl);
+        Text = loadedData.text ?? "";
 
-        NextButton.IsEnabled = true;
-        PrevButton.IsEnabled = true;
+        NextVisible = WebService.IsUrl(loadedData.nextUrl);
+        PrevVisible = WebService.IsUrl(loadedData.prevUrl);
 
         // Turn relative urls into absolutes
         var baseUri = new Uri(loadedData.currentUrl!);
         loadedData.prevUrl = new Uri(baseUri, loadedData.prevUrl).ToString();
         loadedData.nextUrl = new Uri(baseUri, loadedData.nextUrl).ToString();
 
-        Book.LastViewed = DateTime.UtcNow;
+        // Scroll if necessary to last read position
         if (Book!.Position > 0)
         {
             await Task.Run(async () =>
@@ -185,7 +219,7 @@ public partial class HeadlessReaderPage : ContentPage
                 });
             });
         }
-        LoadingIndicator.IsRunning = false;
+        IsLoading = false;
         await App.Database.SaveItemAsync(Book);
 
     }
@@ -204,10 +238,25 @@ public partial class HeadlessReaderPage : ContentPage
             Dictionary<string, object> parameters = new()
             {
                 { "errormessage", message },
-                { "config", await App.Database.GetConfigByDomainNameAsync(new Uri(Book.Url).Host) }
+                { "config", config! }
             };
             await Shell.Current.GoToAsync($"../{nameof(ErrorPage)}", parameters);
         }
         return nullobj;
+    }
+
+    public async void OnShellNavigated(object? sender,
+                           ShellNavigatingEventArgs e)
+    {
+        if (e.Current.Location.OriginalString == "//BookLists/BookPage/HeadlessReaderPage")
+        {
+            if (Book != null)
+            {
+                Book.Position = ReadingLayout.ScrollY / ReadingLayout.ContentSize.Height;
+                Book.LastViewed = DateTime.UtcNow;
+                await App.Database.SaveItemAsync(Book);
+            }
+        }
+        Shell.Current.Navigating -= OnShellNavigated;
     }
 }
