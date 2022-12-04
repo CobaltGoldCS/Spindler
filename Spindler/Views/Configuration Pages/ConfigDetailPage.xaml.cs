@@ -77,8 +77,8 @@ public partial class ConfigDetailPage : ContentPage
     #region Click Handlers
     private async void DeleteButton_Clicked(object sender, EventArgs e)
     {
-        if (config.Id < 0)
-            return;
+        if (config.Id < 0) return;
+        if (!await DisplayAlert("Warning!", "Are you sure you want to delete this config?", "Yes", "No")) return;
         await App.Database.DeleteItemAsync(config);
         await Shell.Current.GoToAsync("..");
     }
@@ -86,8 +86,8 @@ public partial class ConfigDetailPage : ContentPage
     private async void okButton_Clicked(object sender, EventArgs e)
     {
         if (!domainValidationRegex.IsMatch(domainEntry.Text) ||
-            !ConfigService.IsValidSelector(contentEntry.Text) ||
-            !ConfigService.IsValidSelector(nextEntry.Text) ||
+            !ConfigService.IsValidSelector(contentEntry.Text)||
+            !ConfigService.IsValidSelector(nextEntry.Text)   ||
             !ConfigService.IsValidSelector(prevEntry.Text))
         {
             return;

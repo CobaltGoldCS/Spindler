@@ -33,7 +33,7 @@ public partial class BookListDetailPage : ContentPage
             okButton.Text = $"Modify {booklist.Name}";
             Title = $"Modify {booklist.Name}";
         }
-        BindingContext = new BookListDetailViewModel(booklist, () => DisplayAlert("Warning!", "Are you sure you want to delete this booklist", "Yes", "No"));
+        BindingContext = new BookListDetailViewModel(booklist, () => DisplayAlert("Warning!", "Are you sure you want to delete this booklist?", "Yes", "No"));
     }
     #endregion
 
@@ -45,12 +45,5 @@ public partial class BookListDetailPage : ContentPage
             bool validUrl = Uri.TryCreate(text, UriKind.Absolute, out Uri? uriresult) && (uriresult.Scheme == Uri.UriSchemeHttp || uriresult.Scheme == Uri.UriSchemeHttps);
             return validUrl || text.Length == 0;
         }));*/
-    }
-
-    private async Task Close()
-    {
-        // Dismiss keyboard if it is in use in android
-        Unfocus();
-        await Shell.Current.GoToAsync("..");
     }
 }

@@ -63,6 +63,10 @@ public partial class BookDetailPage : ContentPage
 
     private async void DeleteButton_clicked(object sender, EventArgs e)
     {
+        if (!await DisplayAlert("Warning!", "Are you sure you want to delete this book?", "Yes", "No"))
+        {
+            return;
+        }
         if (Book.Id > 0)
         {
             await App.Database.DeleteItemAsync(Book);
