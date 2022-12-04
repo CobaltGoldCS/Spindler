@@ -22,12 +22,12 @@ public class Book : IIndexedModel
     /// <summary>
     /// The name given to this book
     /// </summary>
-    public string Title { get; set; }
+    public string Title { get; set; } = "";
 
     /// <summary>
     /// A url where data should be fetched in order to read this book
     /// </summary>
-    public string Url { get; set; }
+    public string Url { get; set; } = "";
 
     /// <summary>
     /// A date time representing when this book was last opened

@@ -14,25 +14,25 @@ namespace Spindler.ViewModels
         [ObservableProperty]
         public static IList<ChooseColor> colorList = new List<ChooseColor>()
         {
-            new ChooseColor { color = Colors.Black },
-            new ChooseColor { color = Colors.White },
-            new ChooseColor { color = Colors.Wheat },
-            new ChooseColor { color = Colors.Thistle },
-            new ChooseColor { color = Colors.AliceBlue },
-            new ChooseColor { color = Colors.Aqua },
-            new ChooseColor { color = Colors.Aquamarine },
-            new ChooseColor { color = Colors.Blue },
-            new ChooseColor { color = Colors.Green },
-            new ChooseColor { color = Colors.ForestGreen },
-            new ChooseColor { color = Colors.LawnGreen },
-            new ChooseColor { color = Colors.LightSeaGreen },
-            new ChooseColor { color = Colors.Orange },
-            new ChooseColor { color = Colors.Yellow },
-            new ChooseColor { color = Colors.Turquoise },
-            new ChooseColor { color = Colors.Tomato },
-            new ChooseColor { color = Colors.Red },
-            new ChooseColor { color = Colors.Purple },
-            new ChooseColor { color = Colors.Pink },
+            new ChooseColor(Colors.Black),
+            new ChooseColor(Colors.White),
+            new ChooseColor(Colors.Wheat ),
+            new ChooseColor(Colors.Thistle ),
+            new ChooseColor(Colors.AliceBlue ),
+            new ChooseColor(Colors.Aqua ),
+            new ChooseColor(Colors.Aquamarine ),
+            new ChooseColor(Colors.Blue ),
+            new ChooseColor(Colors.Green ),
+            new ChooseColor(Colors.ForestGreen ),
+            new ChooseColor(Colors.LawnGreen ),
+            new ChooseColor(Colors.LightSeaGreen ),
+            new ChooseColor(Colors.Orange ),
+            new ChooseColor(Colors.Yellow ),
+            new ChooseColor(Colors.Turquoise ),
+            new ChooseColor(Colors.Tomato ),
+            new ChooseColor(Colors.Red ),
+            new ChooseColor(Colors.Purple ),
+            new ChooseColor(Colors.Pink ),
          };
         BookList booklist;
         public BookList Booklist
@@ -51,8 +51,8 @@ namespace Spindler.ViewModels
             booklist = Booklist;
             this.CancellationWarning = cancellationWarning;
 
-            chosenColor1 = new ChooseColor { color = Booklist.Color1 };
-            chosenColor2 = new ChooseColor { color = Booklist.Color2 };
+            chosenColor1 = new ChooseColor(Booklist.Color1);
+            chosenColor2 = new ChooseColor(Booklist.Color2);
         }
 
         private async Task Close()

@@ -3,11 +3,11 @@
 public class TextValidationBehavior : Behavior<Entry>
 {
     public Func<string, bool> validationFunction;
-    private Color textColor;
+    private Color textColor = Colors.Black;
     public TextValidationBehavior(Func<string, bool> validationFunction)
     {
         this.validationFunction = validationFunction;
-        ICollection<ResourceDictionary> mergedDictionaries = Application.Current.Resources.MergedDictionaries;
+        ICollection<ResourceDictionary> mergedDictionaries = Application.Current!.Resources.MergedDictionaries;
     }
     protected override void OnAttachedTo(Entry entry)
     {
@@ -22,9 +22,9 @@ public class TextValidationBehavior : Behavior<Entry>
         base.OnDetachingFrom(entry);
     }
 
-    void OnEntryTextChanged(object sender, TextChangedEventArgs args)
+    void OnEntryTextChanged(object? sender, TextChangedEventArgs args)
     {
         bool isValid = validationFunction.Invoke(args.NewTextValue);
-        ((Entry)sender).TextColor = isValid ? textColor : Colors.Red;
+        ((Entry)sender!).TextColor = isValid ? textColor : Colors.Red;
     }
 }

@@ -104,7 +104,7 @@ namespace Spindler.ViewModels
 
         const int NUM_ITEMS_ADDED_TO_LIST = 9;
         [RelayCommand]
-        public async void EndOfListReached()
+        public void EndOfListReached()
         {
             LoaderHeightRequest = 20;
             IsLoading = true;

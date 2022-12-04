@@ -76,7 +76,7 @@ public class BookList : IIndexedModel
     public BookList()
     {
         Id = -1;
-        Name = null;
+        Name = string.Empty;
         LastAccessed = DateTime.MinValue;
         ImageUrl = GetRandomPlaceholderImageUrl();
     }
