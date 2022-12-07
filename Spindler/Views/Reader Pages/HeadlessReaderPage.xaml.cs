@@ -100,10 +100,10 @@ public partial class HeadlessReaderPage : ContentPage, INotifyPropertyChanged
 
         webservice = new(config!);
         HeadlessBrowser.Source = Book.Url;
-        HeadlessBrowser.Navigated += HeadlessBrowser_Navigated;
+        HeadlessBrowser.Navigated += PageLoaded;
     }
 
-    private async void HeadlessBrowser_Navigated(object? sender, WebNavigatedEventArgs e)
+    private async void PageLoaded(object? sender, WebNavigatedEventArgs e)
     {
         var result = e.Result;
         if (result != WebNavigationResult.Success)
@@ -111,7 +111,7 @@ public partial class HeadlessReaderPage : ContentPage, INotifyPropertyChanged
             await FailIfNull(null, $"Browser was unable to navigate.");
             return;
         }
-        await LoadContent();
+        await GetContentAsLoadedData();
     }
 
     private async void Bookmark_Clicked(object sender, EventArgs e)
@@ -145,31 +145,40 @@ public partial class HeadlessReaderPage : ContentPage, INotifyPropertyChanged
         NextVisible = false;
     }
 
-    private async Task LoadContent()
+    private async Task GetContentAsLoadedData()
     {
         var html = await HeadlessBrowser.EvaluateJavaScriptAsync(
             "'<html>'+document.getElementsByTagName('html')[0].innerHTML+'</html>';");
+        html = DecodeRawHtml(html);
 
-        // Decode non-ascii characters
+        loadedData = await webservice!.LoadWebData(Book!.Url, html);
+        if (string.IsNullOrEmpty(loadedData.text))
+        {
+            await RetryLoadingTextContent(html);
+        }
+        if (await FailIfNull(loadedData, "Configuration was unable to obtain values; check Configuration and Url")) return;
+        UpdateUiUsingLoadedData();
+        retries = 3;
+    }
+    
+    /// <summary>
+    /// Decode raw html from webview
+    /// </summary>
+    /// <param name="html">Raw output html</param>
+    /// <returns></returns>
+    private static string DecodeRawHtml(string html)
+    {
         var builder = new StringBuilder(Regex.Replace(html, @"\\u(?<Value>[a-zA-Z0-9]{4})", m =>
         {
             return ((char)int.Parse(m.Groups["Value"].Value, NumberStyles.HexNumber)).ToString();
         }));
         builder.Replace("\\n", "\n").Replace("\\\"", "\"");
         html = builder.ToString();
-
-        loadedData = await webservice!.LoadWebData(Book!.Url, html);
-        if (string.IsNullOrEmpty(loadedData.text))
-        {
-            await AttemptRetry(html);
-        }
-        if (await FailIfNull(loadedData, "Configuration was unable to obtain values; check Configuration and Url")) return;
-        DataChanged();
-        retries = 3;
+        return html;
     }
 
     private int retries = 3;
-    private async Task AttemptRetry(string html)
+    private async Task RetryLoadingTextContent(string html)
     {
         if (retries == 0)
         {
@@ -182,11 +191,11 @@ public partial class HeadlessReaderPage : ContentPage, INotifyPropertyChanged
         var doc = new HtmlAgilityPack.HtmlDocument();
         doc.LoadHtml(html);
         if (ConfigService.CssElementHandler(doc, "h2.challenge-running", ConfigService.SelectorType.Text) is not null) retries = 3;
-        await LoadContent();
+        await GetContentAsLoadedData();
         return;
     }
 
-    private async void DataChanged()
+    private async void UpdateUiUsingLoadedData()
     {
         if (await FailIfNull(loadedData, "Couldn't get data")) return;
 
@@ -203,25 +212,31 @@ public partial class HeadlessReaderPage : ContentPage, INotifyPropertyChanged
         loadedData.prevUrl = new Uri(baseUri, loadedData.prevUrl).ToString();
         loadedData.nextUrl = new Uri(baseUri, loadedData.nextUrl).ToString();
 
-        // Scroll if necessary to last read position
-        if (Book!.Position > 0)
-        {
-            await Task.Run(async () =>
-            {
-                while (ReadingLayout.ContentSize.Height < 1000)
-                    await Task.Delay(50);
-                await MainThread.InvokeOnMainThreadAsync(async () =>
-                {
-                    await ReadingLayout.ScrollToAsync(ReadingLayout.ScrollX,
-                     Math.Clamp(Book!.Position, 0d, 1d) * ReadingLayout.ContentSize.Height,
-                     config!.ExtraConfigs.GetOrDefault("autoscrollanimation", true));
-                    Book.Position = 0;
-                });
-            });
-        }
+        await ScrollToLastReadPositionIfApplicable();
         IsLoading = false;
         await App.Database.SaveItemAsync(Book);
 
+    }
+
+    private async Task ScrollToLastReadPositionIfApplicable()
+    {
+        if (Book!.Position <= 0)
+        {
+            return;
+        }
+
+        await Task.Run(async () =>
+        {
+            while (ReadingLayout.ContentSize.Height < 1000)
+                await Task.Delay(50);
+            await MainThread.InvokeOnMainThreadAsync(async () =>
+            {
+                await ReadingLayout.ScrollToAsync(ReadingLayout.ScrollX,
+                 Math.Clamp(Book!.Position, 0d, 1d) * ReadingLayout.ContentSize.Height,
+                 config!.ExtraConfigs.GetOrDefault("autoscrollanimation", true));
+                Book.Position = 0;
+            });
+        });
     }
 
     /// <summary>
