@@ -16,6 +16,9 @@ namespace Spindler.ViewModels
         [ObservableProperty]
         Book? currentSelection;
 
+        [ObservableProperty]
+        Book? currentPinnedBookSelection;
+
         private List<Book>? _bookList = null;
         // I don't know what's happening here, but for some reason I have to do this in order to refresh the UI
         public List<Book>? BookList
@@ -34,7 +37,13 @@ namespace Spindler.ViewModels
         ObservableCollection<Book> displayedBooks = new();
 
         [ObservableProperty]
+        ObservableCollection<Book> pinnedBooks = new();
+
+        [ObservableProperty]
         bool isLoading = false;
+
+        [ObservableProperty]
+        bool expanded = false;
 
         [ObservableProperty]
         int loaderHeightRequest = 0;
@@ -97,9 +106,24 @@ namespace Spindler.ViewModels
             currentSelection = null;
         }
 
+        [RelayCommand]
+        private async void PinnedBookSelection()
+        {
+            if (loading || CurrentPinnedBookSelection == null)
+                return;
+            var parameters = new Dictionary<string, object>()
+            {
+                { "book", CurrentPinnedBookSelection}
+            };
+            await Shell.Current.GoToAsync($"{nameof(ReaderPage)}", parameters);
+            loading = false;
+            CurrentPinnedBookSelection = null;
+        }
+
         public async Task Load()
         {
             BookList = await App.Database.GetBooksByBooklistIdAsync(id);
+            PinnedBooks = new ObservableCollection<Book>(BookList.FindAll((book) => book.Pinned));
         }
 
         const int NUM_ITEMS_ADDED_TO_LIST = 9;

@@ -7,7 +7,9 @@
              x:DataType="viewmodels:BookViewModel"
              x:Class="Spindler.BookPage">
 
-
+    <ContentPage.Resources>
+        <toolkit:BoolToObjectConverter x:Key="ExpanderIconConverter" FalseObject="∧" TrueObject="∨"/>
+    </ContentPage.Resources>
 
     <Shell.TitleView>
         <Grid ColumnDefinitions="*, auto">
@@ -26,7 +28,90 @@
             </StackLayout>
         </Grid>
     </Shell.TitleView>
-    <CollectionView x:Name="BooksList"
+    <Grid RowDefinitions="auto, *">
+        <toolkit:Expander x:Name="PinView"
+                          BackgroundColor="{AppThemeBinding Dark={StaticResource LightGray}, Light={StaticResource DarkGray}}">
+            <toolkit:Expander.Header>
+                <Grid ColumnDefinitions="20, *, 25">
+                    <Image Source="pin.svg" Margin="8,3,0,12">
+                        <Image.Behaviors>
+                            <toolkit:IconTintColorBehavior 
+                                            TintColor="{AppThemeBinding Dark={StaticResource White}, Light={StaticResource LightSpaceCadet}}"/>
+                        </Image.Behaviors>
+                    </Image>
+                    <Label Text="Pinned Books" Grid.Column="1" Padding="10, 0, 0, 0" FontSize="Large" FontFamily="OpenSans (Semibold)"/>
+                    <Label Text="{Binding Source={x:Reference PinView}, Path=IsExpanded, Converter={StaticResource ExpanderIconConverter}}"
+                           Grid.Column="2"
+                           FontSize="Large"
+                           Padding="2,0,0,10"
+                           FontFamily="OpenSans (Semibold)"/>
+                </Grid>
+            </toolkit:Expander.Header>
+            <CollectionView x:Name="PinnedBooksList"
+                            ItemsSource="{Binding PinnedBooks}"
+                            SelectedItem="{Binding CurrentPinnedBookSelection}"
+                            SelectionChangedCommand="{Binding PinnedBookSelectionCommand}"
+                            SelectionMode="Single"
+                            ItemSizingStrategy="MeasureFirstItem"
+                            Margin="5">
+                <CollectionView.ItemsLayout>
+                    <LinearItemsLayout ItemSpacing="5" Orientation="Horizontal"/>
+                </CollectionView.ItemsLayout>
+                <CollectionView.EmptyView>
+                    <Grid RowDefinitions="40, 30">
+                        <Label Text="No pinned books" FontSize="Title"/>
+                        <Label Text="Pinned books will appear here" Grid.Row="1" FontSize="Subtitle"/>
+                    </Grid>
+                </CollectionView.EmptyView>
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Border StrokeShape="RoundRectangle 16,10,16,10" Stroke="{StaticResource LightSpaceCadet}" >
+                            <Grid
+                          x:DataType="models:Book"
+                          BackgroundColor="{AppThemeBinding Dark={StaticResource DarkCardBackground}, Light={StaticResource White}}"
+                          ColumnDefinitions="200, 30"
+                          RowDefinitions="70, 30">
+                                <Label
+                                       FontSize="Body"
+                                       x:Name="TitleLabel"
+                                       Text="{Binding Title}"
+                                       MaxLines="4"
+                                       Padding="15,10,15,0"/>
+                                <Image Grid.Row="1"
+                                       Source="pin.svg"
+                                       Aspect="AspectFit"
+                                       Margin="10,5,0,10"
+                                       HorizontalOptions="Start">
+                                    <Image.Behaviors>
+                                        <toolkit:IconTintColorBehavior 
+                                            TintColor="{AppThemeBinding Dark={StaticResource White}, Light={StaticResource LightSpaceCadet}}"/>
+                                    </Image.Behaviors>
+                                </Image>
+                                <ImageButton Grid.Column="1"
+                                             Grid.Row="1"
+                                             Padding="0,0,0,5"
+                                             HorizontalOptions="Center"
+                                             VerticalOptions="Center"
+                                             Source="kebab.svg"
+                                             Aspect="AspectFit"
+                                             x:Name="ConfigButton"
+                                             Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:BookViewModel}}, Path=ConfigButtonCommand}"
+                                             CommandParameter="{Binding}">
+                                    <ImageButton.Behaviors>
+                                        <toolkit:IconTintColorBehavior 
+                                            TintColor="{AppThemeBinding Dark={StaticResource White}, Light={StaticResource LightSpaceCadet}}"/>
+                                    </ImageButton.Behaviors>
+                                </ImageButton>
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </toolkit:Expander>
+        
+        <!--Standard book list-->
+        <CollectionView x:Name="BooksList"
+                        Grid.Row="1"
                         ItemsSource="{Binding BookList}"
                         SelectedItem="{Binding CurrentSelection}"
                         SelectionChangedCommand="{Binding SelectionCommand}"
@@ -35,40 +120,70 @@
                         SelectionMode="Single"
                         ItemSizingStrategy="MeasureFirstItem"
                         Margin="5">
-        <CollectionView.ItemsLayout>
-            <LinearItemsLayout ItemSpacing="10" Orientation="Vertical"/>
-        </CollectionView.ItemsLayout>
-        <CollectionView.ItemTemplate>
-            <DataTemplate>
-                <Border StrokeShape="RoundRectangle 16,10,16,10" Stroke="{StaticResource LightSpaceCadet}">
-                    <Grid
+            <CollectionView.ItemsLayout>
+                <LinearItemsLayout ItemSpacing="10" Orientation="Vertical"/>
+            </CollectionView.ItemsLayout>
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <Border StrokeShape="RoundRectangle 16,10,16,10" Stroke="{StaticResource LightSpaceCadet}">
+                        <Grid
                           x:DataType="models:Book"
                           BackgroundColor="{AppThemeBinding Dark={StaticResource DarkCardBackground}, Light={StaticResource White}}"
                           ColumnDefinitions="*, 30"
                           RowDefinitions="50, 2, 40">
-                        <Label VerticalTextAlignment="Center" HorizontalTextAlignment="Center" FontSize="Medium" x:Name="TitleLabel" Text="{Binding Title}" MaxLines="2" Padding="10,0,5,0"/>
-                        <Line BackgroundColor="{StaticResource LightSpaceCadet}" HorizontalOptions="Fill" Grid.Row="1"/>
-                        <Label x:Name="UrlLabel" Text="{Binding Url}" MaxLines="2" FontSize="Small" Grid.Row="2" VerticalOptions="Fill" Padding="10,5,10,0" TextColor="LightGray" />
-                        <ContentView Grid.Column="1" Grid.RowSpan="3" BackgroundColor="{StaticResource LightSpaceCadet}">
-                            <ImageButton HorizontalOptions="Center" VerticalOptions="Center" Grid.Column="1" Grid.Row="2" Source="kebab.svg"
-                                            Padding="4" Aspect="AspectFit" x:Name="ConfigButton" Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:BookViewModel}}, Path=ConfigButtonCommand}" CommandParameter="{Binding}">
-                                <ImageButton.Behaviors>
-                                    <toolkit:IconTintColorBehavior TintColor="{AppThemeBinding Dark={StaticResource White}, Light={StaticResource LightSpaceCadet}}"/>
-                                </ImageButton.Behaviors>
-                            </ImageButton>
-                        </ContentView>
-                    </Grid>
-                </Border>
-            </DataTemplate>
-        </CollectionView.ItemTemplate>
-        <CollectionView.EmptyView>
-            <VerticalStackLayout Padding="10">
-                <Label FontSize="50" Text="No Books loaded"/>
-                <Label Padding="0,50,0,0" FontSize="20" Text="Please Reload the list or add some items."/>
-            </VerticalStackLayout>
-        </CollectionView.EmptyView>
-        <CollectionView.Footer>
-            <ActivityIndicator IsRunning="{Binding IsLoading}" HeightRequest="{Binding LoaderHeightRequest}" Color="{StaticResource Primary}"/>
-        </CollectionView.Footer>
-    </CollectionView>
+                            <Label 
+                                VerticalTextAlignment="Center"
+                                HorizontalTextAlignment="Center"
+                                FontSize="Medium"
+                                x:Name="TitleLabel"
+                                Text="{Binding Title}"
+                                MaxLines="2"
+                                Padding="10,0,5,0"/>
+                            <Line BackgroundColor="{StaticResource LightSpaceCadet}"
+                                  HorizontalOptions="Fill"
+                                  Grid.Row="1"/>
+                            <Label x:Name="UrlLabel"
+                                   Text="{Binding Url}"
+                                   MaxLines="2"
+                                   FontSize="Small"
+                                   Grid.Row="2"
+                                   VerticalOptions="Fill"
+                                   Padding="10,5,10,0"
+                                   TextColor="LightGray" />
+                            <ContentView Grid.Column="1"
+                                         Grid.RowSpan="3"
+                                         BackgroundColor="{StaticResource LightSpaceCadet}">
+                                <ImageButton HorizontalOptions="Center"
+                                             VerticalOptions="Center"
+                                             Grid.Column="1"
+                                             Grid.Row="2"
+                                             Source="kebab.svg"
+                                            Padding="4"
+                                             Aspect="AspectFit"
+                                             x:Name="ConfigButton"
+                                             Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:BookViewModel}}, Path=ConfigButtonCommand}"
+                                             CommandParameter="{Binding}">
+                                    <ImageButton.Behaviors>
+                                        <toolkit:IconTintColorBehavior TintColor="{AppThemeBinding Dark={StaticResource White}, Light={StaticResource LightSpaceCadet}}"/>
+                                    </ImageButton.Behaviors>
+                                </ImageButton>
+                            </ContentView>
+                        </Grid>
+                    </Border>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+            <CollectionView.EmptyView>
+                <VerticalStackLayout Padding="10">
+                    <Label FontSize="50" Text="No Books loaded"/>
+                    <Label Padding="0,50,0,0" FontSize="20" Text="Please Reload the list or add some items."/>
+                </VerticalStackLayout>
+            </CollectionView.EmptyView>
+            <CollectionView.Footer>
+                <ActivityIndicator 
+                    IsRunning="{Binding IsLoading}"
+                    HeightRequest="{Binding LoaderHeightRequest}"
+                    Color="{StaticResource Primary}"/>
+            </CollectionView.Footer>
+        </CollectionView>
+    </Grid>
 </ContentPage>
