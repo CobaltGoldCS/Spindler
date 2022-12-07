@@ -57,7 +57,7 @@ public class WebService
         }
         try
         {
-            url = TrimRelativeUrl(url!);
+            url = new Uri(client.BaseAddress, url!).ToString();
 
             HtmlOrError html = await HtmlOrError(url);
             if (Result.IsError(html))
