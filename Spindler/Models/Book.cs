@@ -29,6 +29,8 @@ public class Book : IIndexedModel
     /// </summary>
     public string Url { get; set; } = "";
 
+    public bool Pinned { get; set; } = false;
+
     /// <summary>
     /// A date time representing when this book was last opened
     /// </summary>
