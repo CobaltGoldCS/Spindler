@@ -61,6 +61,10 @@
                     <Grid RowDefinitions="40, 30">
                         <Label Text="No pinned books" FontSize="Title"/>
                         <Label Text="Pinned books will appear here" Grid.Row="1" FontSize="Subtitle"/>
+                        <VerticalStackLayout>
+                            <Label Text="No pinned books" FontSize="Title"/>
+                            <Label Text="Pinned books will appear here" FontSize="Subtitle"/>
+                        </VerticalStackLayout>
                     </Grid>
                 </CollectionView.EmptyView>
                 <CollectionView.ItemTemplate>
