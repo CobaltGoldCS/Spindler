@@ -62,7 +62,7 @@ public class WebService
             HtmlOrError html = await HtmlOrError(url);
             if (html is HtmlOrError.Error error)
             {
-                return MakeError(url, error.value);
+                return MakeError(error.value);
             }
             return await LoadWebData(url, html.AsOk().value);
         }
@@ -202,13 +202,10 @@ public class WebService
     /// <param name="currenturl">The url where the error happened</param>
     /// <param name="message">An optional error message</param>
     /// <returns>LoadedData in error form</returns>
-    private LoadedData MakeError(string currenturl, string message = "") => new()
+    private LoadedData MakeError(string message = "") => new()
     {
         title = "afb-4893",
         text = message,
-        prevUrl = null,
-        nextUrl = null,
-        currentUrl = currenturl,
         config = config,
     };
     #endregion

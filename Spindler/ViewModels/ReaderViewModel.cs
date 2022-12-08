@@ -163,7 +163,7 @@ namespace Spindler.ViewModels
                 Dictionary<string, object> parameters = new()
                 {
                     { "errormessage", loadedData.text! },
-                    { "config", await App.Database.GetConfigByDomainNameAsync(new Uri(CurrentBook!.Url).Host) }
+                    { "config", loadedData.config! }
                 };
                 await Shell.Current.GoToAsync($"../{nameof(ErrorPage)}", parameters);
                 return;
@@ -213,9 +213,9 @@ namespace Spindler.ViewModels
                 Dictionary<string, object> parameters = new()
                 {
                     { "errormessage", message },
-                    { "config", await App.Database.GetConfigByDomainNameAsync(new Uri(CurrentBook!.Url).Host) }
+                    { "config", Config! }
                 };
-                await Shell.Current.GoToAsync($"../{nameof(ErrorPage)}?id={CurrentBook!.Id}&errormessage={message}");
+                await Shell.Current.GoToAsync($"../{nameof(ErrorPage)}", parameters);
             }
             return nullobj;
         }
