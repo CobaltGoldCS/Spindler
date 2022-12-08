@@ -1,5 +1,7 @@
+using Newtonsoft.Json;
 using Spindler.Models;
 using Spindler.Utils;
+using System.Text.Json.Nodes;
 
 namespace Spindler.Views;
 
@@ -38,18 +40,17 @@ public partial class ErrorPage : ContentPage
     public ErrorPage()
     {
         InitializeComponent();
-        Shell.Current.Navigating += OnNavigate;
     }
 
-    private async void OnNavigate(object? sender, ShellNavigatingEventArgs e)
-    {
-        if (Config is not null)
-            await App.Database.SaveItemAsync(Config!);
-    }
 
-    private void HeadlessMode_OnChanged(object sender, ToggledEventArgs e)
+    private async void HeadlessMode_OnChanged(object sender, ToggledEventArgs e)
     {
-        if (Config is not null)
-            Config.ExtraConfigs["headless"] = HeadlessMode.On;
+        if (Config is null)
+        {
+            return;
+        }
+        Config.ExtraConfigs["headless"] = HeadlessMode.On;
+        Config.ExtraConfigsBlobbed = JsonConvert.SerializeObject(Config.ExtraConfigs);
+        await App.Database.SaveItemAsync(Config!);
     }
 }
