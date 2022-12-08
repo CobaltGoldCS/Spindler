@@ -152,6 +152,8 @@ public partial class HeadlessReaderPage : ContentPage, INotifyPropertyChanged
         html = DecodeRawHtml(html);
 
         loadedData = await webservice!.LoadWebData(Book!.Url, html);
+        if (loadedData.title == "afb-4893")
+            await FailIfNull(null, "Invalid Url");
         if (string.IsNullOrEmpty(loadedData.text))
         {
             await RetryLoadingTextContent(html);

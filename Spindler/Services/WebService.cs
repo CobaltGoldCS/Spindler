@@ -60,9 +60,9 @@ public class WebService
             url = new Uri(client.BaseAddress, url!).ToString();
 
             HtmlOrError html = await HtmlOrError(url);
-            if (Result.IsError(html))
+            if (html is HtmlOrError.Error error)
             {
-                return MakeError(url, html.AsError().value);
+                return MakeError(url, error.value);
             }
             return await LoadWebData(url, html.AsOk().value);
         }
@@ -163,23 +163,7 @@ public class WebService
             return new HtmlOrError.Error($"Request Exception {e.StatusCode}: {e.Message}");
         }
     }
-    /// <summary>
-    /// Trims the leading '/' of a relative url if present for HttpClient
-    /// </summary>
-    /// <param name="url">The url to trim</param>
-    /// <returns>A trimmed url, or normal absolute url</returns>
-    private static string TrimRelativeUrl(string url)
-    {
-        // Ridiculous workaround because HttpClient class doesn't know how to deal with 'improperly' formatted relative urls
-        if (Uri.TryCreate(url, UriKind.RelativeOrAbsolute, out Uri? uri) &&
-            !uri.IsAbsoluteUri &&
-            uri.ToString().StartsWith("/"))
-        {
-            url = uri.ToString()[1..];
-        }
 
-        return url;
-    }
     /// <summary>
     /// Loads all necessary web data into a LoadedData object
     /// </summary>
@@ -194,7 +178,7 @@ public class WebService
 
         if (client.BaseAddress == null)
         {
-            if (!Uri.TryCreate(url, UriKind.Absolute, out Uri? uri)) return MakeError(url, "Invalid url");
+            if (!Uri.TryCreate(url, UriKind.Absolute, out Uri? uri)) return MakeError(url);
             client.BaseAddress = new Uri(uri.GetLeftPart(UriPartial.Authority) + "/", UriKind.Absolute);
         }
 
@@ -212,10 +196,16 @@ public class WebService
         return data;
     }
 
-    private LoadedData MakeError(string currenturl, string message) => new()
+    /// <summary>
+    /// Make an error output with an optional message
+    /// </summary>
+    /// <param name="currenturl">The url where the error happened</param>
+    /// <param name="message">An optional error message</param>
+    /// <returns>LoadedData in error form</returns>
+    private LoadedData MakeError(string currenturl, string message = "") => new()
     {
-        text = message,
         title = "afb-4893",
+        text = message,
         prevUrl = null,
         nextUrl = null,
         currentUrl = currenturl,
