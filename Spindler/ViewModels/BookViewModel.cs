@@ -19,19 +19,8 @@ namespace Spindler.ViewModels
         [ObservableProperty]
         Book? currentPinnedBookSelection;
 
-        private List<Book>? _bookList = null;
-        // I don't know what's happening here, but for some reason I have to do this in order to refresh the UI
-        public List<Book>? BookList
-        {
-            get => _bookList;
-            set
-            {
-                if (_bookList != value)
-                {
-                    SetProperty(ref _bookList, value, nameof(BookList));
-                }
-            }
-        }
+        [ObservableProperty]
+        List<Book>? bookList = null;
 
         [ObservableProperty]
         ObservableCollection<Book> displayedBooks = new();
@@ -91,32 +80,32 @@ namespace Spindler.ViewModels
         }
 
 
-        bool loading = false;
+        bool executing = false;
         [RelayCommand]
         private async void Selection()
         {
-            if (loading || currentSelection == null)
+            if (executing || currentSelection == null)
                 return;
             var parameters = new Dictionary<string, object>()
             {
                 { "book", currentSelection}
             };
             await Shell.Current.GoToAsync($"{nameof(ReaderPage)}", parameters);
-            loading = false;
+            executing = false;
             currentSelection = null;
         }
 
         [RelayCommand]
         private async void PinnedBookSelection()
         {
-            if (loading || CurrentPinnedBookSelection == null)
+            if (executing || CurrentPinnedBookSelection == null)
                 return;
             var parameters = new Dictionary<string, object>()
             {
                 { "book", CurrentPinnedBookSelection}
             };
             await Shell.Current.GoToAsync($"{nameof(ReaderPage)}", parameters);
-            loading = false;
+            executing = false;
             CurrentPinnedBookSelection = null;
         }
 
