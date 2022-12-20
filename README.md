@@ -43,3 +43,5 @@ For paths, the href attribute is prioritized, so if you want to get the text con
 #### Xpaths
 -------------------------------------------------------------
 Xpaths also have the ability to use _$ syntax_. This is generally not needed, however, because they allow you to target individual attributes by default.
+
+__Note__ that books require a booklist to be created first in order to function.
