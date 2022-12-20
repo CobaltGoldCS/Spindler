@@ -9,6 +9,33 @@
 
     <ContentPage.Resources>
         <toolkit:BoolToObjectConverter x:Key="ExpanderIconConverter" FalseObject="∧" TrueObject="∨"/>
+        <Style TargetType="Border">
+            <Setter Property="VisualStateManager.VisualStateGroups">
+                <VisualStateGroupList>
+                    <!-- Set Selected Item Appearance-->
+                    <VisualStateGroup x:Name="CommonStates">
+                        <VisualState x:Name="Normal" >
+                            <VisualState.Setters>
+                                <Setter Property="StrokeThickness"
+                                        Value="0"/>
+                                <Setter Property="Stroke"
+                                        Value="{StaticResource LightSpaceCadet}"/>
+                            </VisualState.Setters>
+                        </VisualState>
+                        <VisualState x:Name="Selected">
+                            <VisualState.Setters>
+                                <Setter Property="StrokeThickness"
+                                        Value="2" />
+                                <Setter Property="Stroke"
+                                        Value="{AppThemeBinding Dark={StaticResource White}, Light={StaticResource LightSpaceCadet}}"/>
+                                <Setter Property="BackgroundColor"
+                                        Value="Transparent"/>
+                            </VisualState.Setters>
+                        </VisualState>
+                    </VisualStateGroup>
+                </VisualStateGroupList>
+            </Setter>
+        </Style>
     </ContentPage.Resources>
 
     <Shell.TitleView>
@@ -69,7 +96,7 @@
                 </CollectionView.EmptyView>
                 <CollectionView.ItemTemplate>
                     <DataTemplate>
-                        <Border StrokeShape="RoundRectangle 16,10,16,10" Stroke="{StaticResource LightSpaceCadet}" >
+                        <Border StrokeShape="RoundRectangle 16,10,16,10" >
                             <Grid
                           x:DataType="models:Book"
                           BackgroundColor="{AppThemeBinding Dark={StaticResource DarkCardBackground}, Light={StaticResource White}}"
@@ -129,7 +156,7 @@
             </CollectionView.ItemsLayout>
             <CollectionView.ItemTemplate>
                 <DataTemplate>
-                    <Border StrokeShape="RoundRectangle 16,10,16,10" Stroke="{StaticResource LightSpaceCadet}">
+                    <Border StrokeShape="RoundRectangle 16,10,16,10">
                         <Grid
                           x:DataType="models:Book"
                           BackgroundColor="{AppThemeBinding Dark={StaticResource DarkCardBackground}, Light={StaticResource White}}"
