@@ -75,6 +75,7 @@
               SelectionChangedCommand="{Binding SelectionCommand}"
               SelectionMode="Single"
               SelectedItem="{Binding CurrentSelection}"
+              VerticalScrollBarVisibility="Always"
               >
             <CollectionView.ItemsLayout>
                 <GridItemsLayout 

@@ -150,6 +150,7 @@
                         RemainingItemsThresholdReachedCommand="{Binding EndOfListReachedCommand}"
                         SelectionMode="Single"
                         ItemSizingStrategy="MeasureFirstItem"
+                        VerticalScrollBarVisibility="Always"
                         Margin="5">
             <CollectionView.ItemsLayout>
                 <LinearItemsLayout ItemSpacing="10" Orientation="Vertical"/>

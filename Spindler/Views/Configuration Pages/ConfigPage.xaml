@@ -35,6 +35,7 @@
               ItemsSource="{Binding ConfigItems}"
               SelectionMode="Single"
               SelectedItem="{Binding SelectedItem}"
+              VerticalScrollBarVisibility="Always"
               >
                 <CollectionView.ItemsLayout>
                     <LinearItemsLayout Orientation="Vertical" ItemSpacing="5"/>
