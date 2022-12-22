@@ -55,8 +55,10 @@
             </StackLayout>
         </Grid>
     </Shell.TitleView>
+    <!---Pinned Books-->
     <Grid RowDefinitions="auto, *">
         <toolkit:Expander x:Name="PinView"
+                          IsVisible="{Binding PinnedBooksAreVisible}"
                           BackgroundColor="{AppThemeBinding Dark={StaticResource LightGray}, Light={StaticResource DarkGray}}">
             <toolkit:Expander.Header>
                 <Grid ColumnDefinitions="20, *, 25">

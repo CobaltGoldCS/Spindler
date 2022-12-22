@@ -35,6 +35,9 @@ namespace Spindler.ViewModels
         bool expanded = false;
 
         [ObservableProperty]
+        bool pinnedBooksAreVisible = false;
+
+        [ObservableProperty]
         int loaderHeightRequest = 0;
 
         #endregion
@@ -113,6 +116,7 @@ namespace Spindler.ViewModels
         {
             BookList = await App.Database.GetBooksByBooklistIdAsync(id);
             PinnedBooks = new ObservableCollection<Book>(BookList.FindAll((book) => book.Pinned));
+            PinnedBooksAreVisible = PinnedBooks.Count > 0;
         }
 
         const int NUM_ITEMS_ADDED_TO_LIST = 9;
