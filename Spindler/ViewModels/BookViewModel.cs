@@ -49,11 +49,19 @@ namespace Spindler.ViewModels
         }
 
         ImageButton? AddButton;
+        /// <summary>
+        /// Add references to BookPage Elements 
+        /// </summary>
+        /// <param name="addToolBarItem">The ImageButton Plus in the toolbar </param>
         public void AddUiReferences(ImageButton addToolBarItem)
         {
             AddButton = addToolBarItem;
         }
 
+        /// <summary>
+        /// Method called when one of the config buttons in the book list is selected
+        /// </summary>
+        /// <param name="book">The book that the config button is attached to</param>
         [RelayCommand]
         private async void ConfigButton(Book book)
         {
@@ -64,6 +72,9 @@ namespace Spindler.ViewModels
             await Shell.Current.GoToAsync($"{nameof(BookDetailPage)}", parameters);
         }
 
+        /// <summary>
+        /// Method called when the plus icon in the tool bar is selected
+        /// </summary>
         [RelayCommand]
         private async void AddToolBarItem()
         {
@@ -83,6 +94,9 @@ namespace Spindler.ViewModels
         }
 
 
+        /// <summary>
+        /// Method Called when a standard book is selected from the booklist
+        /// </summary>
         bool executing = false;
         [RelayCommand]
         private async void Selection()
@@ -98,6 +112,9 @@ namespace Spindler.ViewModels
             currentSelection = null;
         }
 
+        /// <summary>
+        /// Method called when a Pinned Book is selected
+        /// </summary>
         [RelayCommand]
         private async void PinnedBookSelection()
         {
@@ -112,6 +129,10 @@ namespace Spindler.ViewModels
             CurrentPinnedBookSelection = null;
         }
 
+        /// <summary>
+        /// Populate the BookPage with relevant Data
+        /// </summary>
+        /// <returns>A Task to await</returns>
         public async Task Load()
         {
             BookList = await App.Database.GetBooksByBooklistIdAsync(id);
@@ -120,6 +141,9 @@ namespace Spindler.ViewModels
         }
 
         const int NUM_ITEMS_ADDED_TO_LIST = 9;
+        /// <summary>
+        /// Method called when the user reaches the end of the displayed books
+        /// </summary>
         [RelayCommand]
         public void EndOfListReached()
         {
