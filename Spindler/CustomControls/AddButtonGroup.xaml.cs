@@ -2,7 +2,7 @@ using System.Windows.Input;
 
 namespace Spindler.CustomControls;
 
-public partial class AddButtonGroup : HorizontalStackLayout
+public partial class AddButtonGroup : Grid
 {
     public event EventHandler? DeleteClicked;
     public event EventHandler? OkClicked;
