@@ -5,21 +5,42 @@ namespace Spindler.ViewModels
 {
     public partial class SettingsViewmodel : ObservableObject
     {
-        [ObservableProperty]
         private string font = Preferences.Default.Get("font", "OpenSansRegular");
-        [ObservableProperty]
+
+        public string Font
+        {
+            get => font;
+            set
+            {
+                SetProperty(ref font, value);
+                Preferences.Set("font", value);
+            }
+        }
+
         private int fontSize = Preferences.Default.Get("font_size", 12);
 
-        [ObservableProperty]
+        public int FontSize
+        {
+            get => fontSize;
+            set
+            {
+                SetProperty(ref fontSize, value);
+                Preferences.Set("font_size", value);
+            }
+        }
+
         private float fontSpacing = Preferences.Default.Get("line_spacing", 1.5f);
 
-        public SettingsViewmodel() { }
-        [RelayCommand]
-        public void SaveSettings()
+        public float FontSpacing
         {
-            Preferences.Set("font", font);
-            Preferences.Set("font_size", fontSize);
-            Preferences.Set("line_spacing", fontSpacing);
+            get => fontSpacing;
+            set 
+            { 
+                SetProperty(ref fontSpacing, value);
+                Preferences.Set("line_spacing", value);
+            }
         }
+
+        public SettingsViewmodel() { }
     }
 }
