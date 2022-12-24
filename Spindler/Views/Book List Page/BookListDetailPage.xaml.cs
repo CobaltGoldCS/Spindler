@@ -25,12 +25,12 @@ public partial class BookListDetailPage : ContentPage
         // Handle if a new book needs to be created
         if (booklist.Id < 0)
         {
-            okButton.Text = "Add";
+            AddButtonGroup.OkText = "Add";
             Title = "Add a new Book List";
         }
         else
         {
-            okButton.Text = $"Modify {booklist.Name}";
+            AddButtonGroup.OkText = $"Modify {booklist.Name}";
             Title = $"Modify {booklist.Name}";
         }
         BindingContext = new BookListDetailViewModel(booklist, () => DisplayAlert("Warning!", "Are you sure you want to delete this booklist?", "Yes", "No"));

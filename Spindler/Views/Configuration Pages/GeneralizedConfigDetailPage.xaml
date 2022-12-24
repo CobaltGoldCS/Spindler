@@ -54,6 +54,7 @@
                                  Grid.ColumnSpan="3"
                                  DeleteClicked="DeleteButton_Clicked"
                                  OkClicked="okButton_Clicked"
-                                 CancelClicked="Cancel_Clicked"/>
+                                 CancelClicked="Cancel_Clicked"
+                                 HorizontalOptions="FillAndExpand"/>
     </Grid>
 </ContentPage>

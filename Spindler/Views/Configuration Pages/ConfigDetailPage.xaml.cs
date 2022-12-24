@@ -39,12 +39,12 @@ public partial class ConfigDetailPage : ContentPage
                 PrevUrlPath = "",
                 TitlePath = "",
             };*/
-            okButton.Text = "Add";
+            AddButtonGroup.OkText = "Add";
             Title = "Add a new Config";
         }
         else
         {
-            okButton.Text = "Modify";
+            AddButtonGroup.OkText = "Modify";
             Title = $"Modify {config.DomainName}";
         }
         BindingContext = config;

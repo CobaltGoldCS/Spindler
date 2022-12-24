@@ -3,40 +3,38 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="Spindler.BookDetailPage"
              xmlns:models="clr-namespace:Spindler.Models"
+             xmlns:controls="clr-namespace:Spindler.CustomControls"
              Shell.PresentationMode="ModalAnimated"
              Title="BookDetailPage">
     <ContentPage.BindingContext>
         <models:Book/>
     </ContentPage.BindingContext>
-    <Grid ColumnDefinitions="*, *, *" RowDefinitions="auto, auto, auto, *, auto" VerticalOptions="FillAndExpand">
-        <StackLayout Orientation="Horizontal" Grid.ColumnSpan="3">
+    <Grid RowDefinitions="auto, auto, auto, *, auto" VerticalOptions="FillAndExpand">
+        <StackLayout Orientation="Horizontal">
             <Label Text="Name:" Padding="0,17,5,0" Margin="0,0,24,5"/>
             <Entry x:Name="nameEntry" HorizontalOptions="FillAndExpand" Margin="0,5,0,0"
                                Placeholder="The name of the book" Text="{Binding Title}"/>
         </StackLayout>
-        <StackLayout Orientation="Horizontal" Grid.Row="1" Grid.ColumnSpan="3">
+        <StackLayout Orientation="Horizontal" Grid.Row="1">
             <Label Text="Url:" Padding="0,17,5,0" Margin="0,0,40,5"/>
             <Entry x:Name="urlEntry" HorizontalOptions="FillAndExpand" Margin="0,5,0,0"
                                Placeholder="Url where book content is found" Text="{Binding Url}"/>
         </StackLayout>
 
-        <TableView Grid.Row="2" Grid.ColumnSpan="3">
+        <TableView Grid.Row="2">
             <TableSection>
                 <SwitchCell Text="Pin this Book" On="{Binding Pinned}" />
             </TableSection>
         </TableView>
 
-        <Label Text="{Binding LastViewed}" Grid.Row="3" Grid.ColumnSpan="3" HeightRequest="200" HorizontalTextAlignment="Center" VerticalOptions="StartAndExpand"/>
+        <Label Text="{Binding LastViewed}" Grid.Row="3" HeightRequest="200" HorizontalTextAlignment="Center" VerticalOptions="StartAndExpand"/>
 
-        <Button Text="Delete" Grid.Row="4" Grid.Column="0" Margin="5,0,5,0"
-                    FontSize="Large"
-                    Clicked="DeleteButton_clicked" BackgroundColor="OrangeRed"/>
-        <Button x:Name="Cancel" Grid.Row="4" Grid.Column="1" Margin="5,0,5,0"
-                FontSize="Large"
-                Text="Cancel" 
-                Clicked="Cancel_Clicked"/>
-        <Button x:Name="okButton" Grid.Row="4" Grid.Column="2" Margin="5,0,5,0"
-                FontSize="Large"
-                Clicked="okButton_Clicked"/>
+        <controls:AddButtonGroup x:Name="AddButtonGroup"
+                                 Grid.Row="4"
+                                 DeleteClicked="DeleteButton_clicked"
+                                 CancelClicked="Cancel_Clicked"
+                                 OkClicked="okButton_Clicked"
+                                 HorizontalOptions="FillAndExpand"/>
+
     </Grid>
 </ContentPage>

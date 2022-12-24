@@ -6,7 +6,7 @@ namespace Spindler;
 public partial class BookDetailPage : ContentPage
 {
     #region QueryProperty Handler
-    private Book _book = new Book();
+    private Book _book = new();
     public Book Book
     {
         set
@@ -21,11 +21,11 @@ public partial class BookDetailPage : ContentPage
     {
         if (book.Id < 0)
         {
-            okButton.Text = "Add";
+            AddButtonGroup.OkText = "Add";
             Title = "Add a new Book";
             return;
         }
-        okButton.Text = $"Modify";
+        AddButtonGroup.OkText = "Modify";
         Title = $"Modify {book.Title}";
         BindingContext = book;
 

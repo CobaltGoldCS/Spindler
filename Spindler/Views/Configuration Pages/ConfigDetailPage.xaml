@@ -2,14 +2,15 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:models="clr-namespace:Spindler.Models"
+             xmlns:controls="clr-namespace:Spindler.CustomControls"
              x:Class="Spindler.ConfigDetailPage"
              Shell.PresentationMode="ModalAnimated"
              Title="ConfigDetailPage">
     <ContentPage.BindingContext>
         <models:Config/>
     </ContentPage.BindingContext>
-    <Grid ColumnDefinitions="*, *, *" RowDefinitions="auto, *, auto" VerticalOptions="FillAndExpand" Padding="9,0,9,0">
-        <Grid RowDefinitions="40, 40, 40, 40, 40" ColumnDefinitions="auto, *" Grid.ColumnSpan="3">
+    <Grid RowDefinitions="auto, *, auto" VerticalOptions="FillAndExpand" Padding="9,0,9,0">
+        <Grid RowDefinitions="40, 40, 40, 40, 40" ColumnDefinitions="auto, *">
             <Label Text="Domain:" VerticalOptions="Center"/>
             <Entry x:Name="domainEntry" HorizontalOptions="FillAndExpand" Grid.Column="1"
                                Placeholder="Domain name of the website ex: google.com" Text="{Binding DomainName}"/>
@@ -30,7 +31,7 @@
             <Entry x:Name="nextEntry" HorizontalOptions="FillAndExpand" Grid.Row="4" Grid.Column="1"
                             Placeholder="Path pointing to the next url" Text="{Binding NextUrlPath}"/>
         </Grid>
-        <TableView Grid.Row="1" Grid.ColumnSpan="3" VerticalOptions="StartAndExpand">
+        <TableView Grid.Row="1" VerticalOptions="StartAndExpand">
             <TableRoot>
                 <TableSection Title="Web View">
                     <SwitchCell x:Name="switchWebView" Text="Use Web View for Viewing this website" On="False" />
@@ -43,16 +44,12 @@
             </TableRoot>
         </TableView>
 
-        <Button Text="Delete" Grid.Row="2" Grid.Column="0" Margin="5,0,5,0"
-                    FontSize="Large"
-                    Clicked="DeleteButton_Clicked" BackgroundColor="OrangeRed"/>
-        <Button x:Name="Cancel" Grid.Row="2" Grid.Column="1" Margin="5,0,5,0"
-                FontSize="Large"
-                Text="Cancel" 
-                Clicked="Cancel_Clicked"/>
-        <Button x:Name="okButton" Grid.Row="2" Grid.Column="2" Margin="5,0,5,0"
-                Text="Add"
-                FontSize="Large"
-                Clicked="okButton_Clicked"/>
+        <controls:AddButtonGroup x:Name="AddButtonGroup"
+                                 Grid.Row="2"
+                                 DeleteClicked="DeleteButton_Clicked"
+                                 CancelClicked="Cancel_Clicked"
+                                 OkClicked="okButton_Clicked"
+                                 HorizontalOptions="FillAndExpand"/>
+
     </Grid>
 </ContentPage>
