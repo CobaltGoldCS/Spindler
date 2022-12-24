@@ -11,6 +11,9 @@ namespace Spindler.ViewModels
         public ChooseColor chosenColor1;
         [ObservableProperty]
         public ChooseColor chosenColor2;
+        /// <summary>
+        /// A list of valid colors to pick from in the color picker 
+        /// </summary>
         [ObservableProperty]
         public static IList<ChooseColor> colorList = new List<ChooseColor>()
         {
@@ -44,6 +47,9 @@ namespace Spindler.ViewModels
             }
         }
 
+        /// <summary>
+        /// A function that creates a popup warning about a booklist being deleted
+        /// </summary>
         public Func<Task<bool>> CancellationWarning;
         public BookListDetailViewModel(BookList Booklist, Func<Task<bool>> cancellationWarning)
         {
@@ -55,13 +61,16 @@ namespace Spindler.ViewModels
             chosenColor2 = new ChooseColor(Booklist.Color2);
         }
 
-        private async Task Close()
+        private static async Task Close()
         {
             await Shell.Current.GoToAsync("..");
         }
 
         #region Click Handlers
 
+        /// <summary>
+        /// A handler for when the Ok button is clicked
+        /// </summary>
         [RelayCommand]
         private async void Ok()
         {
@@ -77,6 +86,9 @@ namespace Spindler.ViewModels
             await Close();
         }
 
+        /// <summary>
+        /// A handler for when the Delete button is clicked
+        /// </summary>
         [RelayCommand]
         private async void Delete()
         {
@@ -87,6 +99,9 @@ namespace Spindler.ViewModels
             await Close();
         }
 
+        /// <summary>
+        /// A handler for when the Cancel button is clicked
+        /// </summary>
         [RelayCommand]
         private async void Cancel()
         {
