@@ -59,25 +59,26 @@
     <Grid RowDefinitions="auto, *">
         <Border
             StrokeShape="RoundRectangle 10,10,10,10"
+            StrokeThickness="0"
             Background="{StaticResource LightSpaceCadet}"
-            Margin="5,0,5,0"
-            Padding="0,0,0,5"
+            Margin="5,0"
             IsVisible="{Binding PinnedBooksAreVisible}">
             <toolkit:Expander x:Name="PinView"
-                              Padding="7,6,8,0">
+                              Padding="7,-1,8,5">
                 <toolkit:Expander.Header>
                     <Grid ColumnDefinitions="20, *, 25" Padding="0,7,0,0" BackgroundColor="{StaticResource LightSpaceCadet}">
-                        <Image Source="pin.svg" Margin="8,3,0,12">
+                        <Image Source="pin.svg" Margin="8,3,0,5">
                             <Image.Behaviors>
                                 <toolkit:IconTintColorBehavior 
                                             TintColor="{AppThemeBinding Dark={StaticResource White}, Light={StaticResource LightSpaceCadet}}"/>
                             </Image.Behaviors>
                         </Image>
-                        <Label Text="Pinned Books" Grid.Column="1" Padding="10, 0, 0, 0" FontSize="Large" FontFamily="OpenSans (Semibold)"/>
+                        <Label Text="Pinned Books" Grid.Column="1" Padding="10, -2, 0, 0" FontSize="Large" FontFamily="OpenSans (Semibold)" VerticalOptions="Center"/>
                         <Label Text="{Binding Source={x:Reference PinView}, Path=IsExpanded, Converter={StaticResource ExpanderIconConverter}}"
                            Grid.Column="2"
                            FontSize="Large"
-                           Padding="2,0,0,10"
+                           Padding="2,-2,0,0"
+                           VerticalOptions="Center"
                            FontFamily="OpenSans (Semibold)"/>
                     </Grid>
                 </toolkit:Expander.Header>
@@ -88,19 +89,18 @@
                                 SelectionMode="Single"
                                 ItemSizingStrategy="MeasureFirstItem"
                                 BackgroundColor="{StaticResource LightSpaceCadet}"
-                            
                             >
                     <CollectionView.ItemsLayout>
                         <LinearItemsLayout ItemSpacing="5" Orientation="Horizontal"/>
                     </CollectionView.ItemsLayout>
                     <CollectionView.ItemTemplate>
                         <DataTemplate>
-                            <Border StrokeShape="RoundRectangle 16,10,16,10" >
+                            <Border StrokeShape="RoundRectangle 16,10,16,10">
                                 <Grid
                                     x:DataType="models:Book"
                                     BackgroundColor="{AppThemeBinding Dark={StaticResource DarkCardBackground}, Light={StaticResource LightGray}}"
                                     ColumnDefinitions="200, 30"
-                                    RowDefinitions="70, 30">
+                                    RowDefinitions="65, 30">
                                     <Label
                                        FontSize="Body"
                                        x:Name="TitleLabel"
