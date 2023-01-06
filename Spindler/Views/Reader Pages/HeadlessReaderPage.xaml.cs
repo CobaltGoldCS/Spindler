@@ -3,8 +3,6 @@ using Spindler.Models;
 using Spindler.Services;
 using Spindler.Utils;
 using System.ComponentModel;
-using System.Globalization;
-using System.Text;
 using System.Text.RegularExpressions;
 
 namespace Spindler.Views;
@@ -90,6 +88,7 @@ public partial class HeadlessReaderPage : ContentPage, INotifyPropertyChanged
     public HeadlessReaderPage()
     {
         InitializeComponent();
+        
         Shell.Current.Navigating += OnShellNavigated;
     }
 
@@ -170,12 +169,7 @@ public partial class HeadlessReaderPage : ContentPage, INotifyPropertyChanged
     /// <returns></returns>
     private static string DecodeRawHtml(string html)
     {
-        var builder = new StringBuilder(Regex.Replace(html, @"\\u(?<Value>[a-zA-Z0-9]{4})", m =>
-        {
-            return ((char)int.Parse(m.Groups["Value"].Value, NumberStyles.HexNumber)).ToString();
-        }));
-        builder.Replace("\\n", "\n").Replace("\\\"", "\"");
-        html = builder.ToString();
+        html = Regex.Unescape(html);
         return html;
     }
 
