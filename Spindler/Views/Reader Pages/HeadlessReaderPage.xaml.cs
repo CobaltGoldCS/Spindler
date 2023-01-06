@@ -14,7 +14,6 @@ public partial class HeadlessReaderPage : ContentPage, INotifyPropertyChanged
     WebService? webservice;
     Config? config;
     LoadedData? loadedData;
-
     Book book = new Book();
     public Book Book
     {
@@ -155,7 +154,7 @@ public partial class HeadlessReaderPage : ContentPage, INotifyPropertyChanged
             await FailIfNull(null, "Invalid Url");
         if (string.IsNullOrEmpty(loadedData.text))
         {
-            await RetryLoadingTextContent(html);
+            await RetryLoadingTextContent();
         }
         if (await FailIfNull(loadedData, "Configuration was unable to obtain values; check Configuration and Url")) return;
         UpdateUiUsingLoadedData();
@@ -174,8 +173,10 @@ public partial class HeadlessReaderPage : ContentPage, INotifyPropertyChanged
     }
 
     private int retries = 3;
-    private async Task RetryLoadingTextContent(string html)
+    private async Task RetryLoadingTextContent()
     {
+        var html = await HeadlessBrowser.EvaluateJavaScriptAsync(
+            "'<html>'+document.getElementsByTagName('html')[0].innerHTML+'</html>';") ?? "";
         if (retries == 0)
         {
             await FailIfNull(null, "Unable to obtain text content");
