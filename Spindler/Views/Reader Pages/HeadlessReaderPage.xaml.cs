@@ -91,18 +91,26 @@ public partial class HeadlessReaderPage : ContentPage, INotifyPropertyChanged
         Shell.Current.Navigating += OnShellNavigated;
     }
 
-    public async void LoadBook(Book Book)
+    public void LoadBook(Book Book)
     {
-        config = await WebService.FindValidConfig(Book.Url);
-        if (await FailIfNull(config, "There is no valid configuration for this book")) return;
-
-        webservice = new(config!);
-        HeadlessBrowser.Source = Book.Url;
         HeadlessBrowser.Navigated += PageLoaded;
+        HeadlessBrowser.Source = Book.Url;
     }
 
     private async void PageLoaded(object? sender, WebNavigatedEventArgs e)
     {
+        // Define Config before accidentally breaking something
+        if (config is null)
+        {
+            var html = await HeadlessBrowser.EvaluateJavaScriptAsync(
+            "'<html>'+document.getElementsByTagName('html')[0].innerHTML+'</html>';");
+            html = DecodeRawHtml(html);
+
+            config = await WebService.FindValidConfig(Book.Url, html);
+            if (await FailIfNull(config, "There is no valid configuration for this book")) return;
+            webservice = new(config!);
+        }
+
         var result = e.Result;
         if (result != WebNavigationResult.Success)
         {
@@ -260,7 +268,7 @@ public partial class HeadlessReaderPage : ContentPage, INotifyPropertyChanged
     public async void OnShellNavigated(object? sender,
                            ShellNavigatingEventArgs e)
     {
-        if (e.Current.Location.OriginalString == "//BookLists/BookPage/HeadlessReaderPage")
+        if (e.Current.Location.OriginalString == "//BookLists/BookPage/HeadlessReaderPage" && e.Target.Location.OriginalString != "../ErrorPage")
         {
             if (Book != null)
             {
