@@ -1,6 +1,7 @@
 ﻿using HtmlAgilityPack;
 using Spindler.Models;
 using Spindler.Utils;
+using SQLite;
 using HtmlOrError = Spindler.Utils.Result<string, string>;
 using Path = Spindler.Models.Path;
 
@@ -88,7 +89,7 @@ public class WebService
     /// </summary>
     /// <param name="url">The url of the targeted website (handles http/https)</param>
     /// <returns>A valid configuration, or null if no valid configuration was found</returns>
-    public static async Task<Config?> FindValidConfig(string url)
+    public static async Task<Config?> FindValidConfig(string url, string? html = null)
     {
         Config c = await App.Database.GetConfigByDomainNameAsync(new UriBuilder(url).Host);
 
@@ -100,7 +101,7 @@ public class WebService
                 Timeout = new TimeSpan(0, 0, 10)
             };
             HtmlDocument doc = new();
-            doc.LoadHtml(await client.GetStringAsync(url));
+            doc.LoadHtml(html is not null ? html : await client.GetStringAsync(url));
 
             // Parallel index through all generalized configs
             Config? selectedConfig = null;
