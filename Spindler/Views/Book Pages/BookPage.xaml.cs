@@ -21,10 +21,11 @@ public partial class BookPage : ContentPage
     {
         list.LastAccessed = DateTime.UtcNow;
         await App.Database.SaveItemAsync(list);
+
         var binding = new BookViewModel(list.Id, list.Name);
         binding.AddUiReferences(AddToolBarItem);
         BindingContext = binding;
-        await binding.Load();
+        binding.Load();
     }
 
     #endregion

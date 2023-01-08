@@ -205,10 +205,7 @@
                 </DataTemplate>
             </CollectionView.ItemTemplate>
             <CollectionView.EmptyView>
-                <VerticalStackLayout Padding="10">
-                    <Label FontSize="50" Text="No Books loaded"/>
-                    <Label Padding="0,50,0,0" FontSize="20" Text="Please Reload the list or add some items."/>
-                </VerticalStackLayout>
+                <ActivityIndicator IsRunning="True"/>
             </CollectionView.EmptyView>
             <CollectionView.Footer>
                 <ActivityIndicator 
