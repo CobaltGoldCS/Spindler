@@ -153,19 +153,24 @@
                         VerticalScrollBarVisibility="Always"
                         Margin="5">
             <CollectionView.ItemsLayout>
-                <LinearItemsLayout ItemSpacing="10" Orientation="Vertical"/>
+                <LinearItemsLayout ItemSpacing="5" Orientation="Vertical"/>
             </CollectionView.ItemsLayout>
             <CollectionView.ItemTemplate>
                 <DataTemplate>
-                    <Border StrokeShape="RoundRectangle 16,10,16,10">
+                    <Border>
+                        <Border.Shadow>
+                            <Shadow Offset="10,10" Brush="Black" Radius="30" Opacity="1"/>
+                        </Border.Shadow>
                         <Grid
                           x:DataType="models:Book"
                           BackgroundColor="{AppThemeBinding Dark={StaticResource DarkCardBackground}, Light={StaticResource White}}"
-                          ColumnDefinitions="*, 30"
-                          RowDefinitions="50, 2, 40">
+                          ColumnDefinitions="*, 35"
+                          RowDefinitions="55, 2, 45"
+                          >
                             <Label 
                                 VerticalTextAlignment="Center"
                                 HorizontalTextAlignment="Center"
+                                Grid.ColumnSpan="2"
                                 FontSize="Medium"
                                 x:Name="TitleLabel"
                                 Text="{Binding Title}"
@@ -173,6 +178,7 @@
                                 Padding="10,0,5,0"/>
                             <Line BackgroundColor="{StaticResource LightSpaceCadet}"
                                   HorizontalOptions="Fill"
+                                  Grid.ColumnSpan="2"
                                   Grid.Row="1"/>
                             <Label x:Name="UrlLabel"
                                    Text="{Binding Url}"
@@ -182,24 +188,20 @@
                                    VerticalOptions="Fill"
                                    Padding="10,5,10,0"
                                    TextColor="LightGray" />
-                            <ContentView Grid.Column="1"
-                                         Grid.RowSpan="3"
-                                         BackgroundColor="{StaticResource LightSpaceCadet}">
-                                <ImageButton HorizontalOptions="Center"
+                            <ImageButton HorizontalOptions="Center"
                                              VerticalOptions="Center"
                                              Grid.Column="1"
                                              Grid.Row="2"
                                              Source="kebab.svg"
-                                            Padding="4"
+                                             Padding="4"
                                              Aspect="AspectFit"
                                              x:Name="ConfigButton"
                                              Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:BookViewModel}}, Path=ConfigButtonCommand}"
                                              CommandParameter="{Binding}">
-                                    <ImageButton.Behaviors>
-                                        <toolkit:IconTintColorBehavior TintColor="{AppThemeBinding Dark={StaticResource White}, Light={StaticResource LightSpaceCadet}}"/>
-                                    </ImageButton.Behaviors>
-                                </ImageButton>
-                            </ContentView>
+                                <ImageButton.Behaviors>
+                                    <toolkit:IconTintColorBehavior TintColor="{AppThemeBinding Dark={StaticResource White}, Light={StaticResource LightSpaceCadet}}"/>
+                                </ImageButton.Behaviors>
+                            </ImageButton>
                         </Grid>
                     </Border>
                 </DataTemplate>

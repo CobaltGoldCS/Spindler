@@ -10,13 +10,13 @@
     <Color x:Key="Light">#DFD8F7</Color>
     <Color x:Key="Dark">#0E4B95</Color>
     <Color x:Key="White">White</Color>
-    <Color x:Key="SpaceCadet">#121516</Color>
+    <Color x:Key="SpaceCadet">#25272D</Color>
     <Color x:Key="LightSpaceCadet">#2E3638</Color>
     <Color x:Key="Black">Black</Color>
     <Color x:Key="LightGray">#E5E5E1</Color>
     <Color x:Key="MidGray">#969696</Color>
     <Color x:Key="DarkGray">#505050</Color>
-    <Color x:Key="DarkCardBackground">#141929</Color>
+    <Color x:Key="DarkCardBackground">#1B2137</Color>
     <SolidColorBrush x:Key="PrimaryBrush" Color="{StaticResource Primary}"/>
     <SolidColorBrush x:Key="LightBrush" Color="{StaticResource Light}"/>
     <SolidColorBrush x:Key="DarkBrush" Color="{StaticResource Dark}"/>
