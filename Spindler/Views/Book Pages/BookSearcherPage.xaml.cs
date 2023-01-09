@@ -21,6 +21,7 @@ public partial class BookSearcherPage : ContentPage
 
     public int BooklistId { get; set; } = new();
     public Config? Config { get; set; } = null;
+    public bool IsBusy = false;
 
     private string source = "example.com";
     public string Source
@@ -55,6 +56,7 @@ public partial class BookSearcherPage : ContentPage
         string? content = ConfigService.PrettyWrapSelector(doc, new Models.Path(Config.ContentPath), ConfigService.SelectorType.Text);
         SwitchUiBasedOnState(!string.IsNullOrEmpty(content) ? State.BookFound : State.BookNotFound);
         await SearchProgress.ProgressTo(1, 500, Easing.BounceOut);
+        IsBusy = false;
     }
 
     private void SwitchUiBasedOnState(State state)
@@ -92,6 +94,12 @@ public partial class BookSearcherPage : ContentPage
     }
     private async void PageLoading(object? sender, WebNavigatingEventArgs e)
     {
+        // If this comes from the webview itself and its already loading, cancel the load
+        if (source != GetUrlOfBrowser() && IsBusy)
+        {
+            e.Cancel = true;
+            return;
+        }
         Source = e.Url;
         SwitchUiBasedOnState(State.BookNotFound);
         await SearchProgress.ProgressTo(0, 0, Easing.BounceOut);
@@ -127,21 +135,25 @@ public partial class BookSearcherPage : ContentPage
 
     private async void UseConfig_Clicked(object sender, EventArgs e)
     {
+        if (IsBusy) return;
         PickerPopup popup = new("Choose a config to search", await App.Database.GetAllItemsAsync<Config>());
         var result = await this.ShowPopupAsync(popup);
 
 
         if (result is not Config config || !Uri.TryCreate("https://" + config.DomainName, new UriCreationOptions(), out Uri? url)) return;
-        SearchBrowser.Source = url;
         source = url?.OriginalString ?? "";
+        SearchBrowser.Source = url;
+        IsBusy = true;
     }
 
     [RelayCommand]
     public void Return()
     {
+        if (IsBusy) return;
         if (!Source.StartsWith("http"))
             Source = "https://" + Source;
         SearchBrowser.Source = source;
+        IsBusy = true;
     }
 
 }

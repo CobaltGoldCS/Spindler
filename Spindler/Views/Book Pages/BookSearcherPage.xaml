@@ -6,7 +6,7 @@
              Title="BookSearcherPage"
              x:Name="BookSearcher">
     <Grid 
-        RowDefinitions="20, 40, 5, *, 40"
+        RowDefinitions="40, 5, *, 40"
         ColumnDefinitions="*, 40"
         >
         <Entry x:Name="urlEntry"

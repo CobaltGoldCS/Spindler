@@ -10,28 +10,28 @@
         <models:Book/>
     </ContentPage.BindingContext>
     <Grid RowDefinitions="auto, auto, auto, auto, *, auto" VerticalOptions="FillAndExpand">
-        <Button Text="Add a book using the browser" Clicked="Button_Clicked" CornerRadius="0"/>
-        <StackLayout Orientation="Horizontal">
+        <Button Text="Add a book using the browser" Clicked="Search_clicked" CornerRadius="0"/>
+        <StackLayout Orientation="Horizontal" Grid.Row="1">
             <Label Text="Name:" Padding="0,17,5,0" Margin="0,0,24,5"/>
             <Entry x:Name="nameEntry" HorizontalOptions="FillAndExpand" Margin="0,5,0,0"
                                Placeholder="The name of the book" Text="{Binding Title}"/>
         </StackLayout>
-        <StackLayout Orientation="Horizontal" Grid.Row="1">
+        <StackLayout Orientation="Horizontal" Grid.Row="2">
             <Label Text="Url:" Padding="0,17,5,0" Margin="0,0,40,5"/>
             <Entry x:Name="urlEntry" HorizontalOptions="FillAndExpand" Margin="0,5,0,0"
                                Placeholder="Url where book content is found" Text="{Binding Url}"/>
         </StackLayout>
 
-        <TableView Grid.Row="2">
+        <TableView Grid.Row="3">
             <TableSection>
                 <SwitchCell Text="Pin this Book" On="{Binding Pinned}" />
             </TableSection>
         </TableView>
 
-        <Label Text="{Binding LastViewed}" Grid.Row="3" HeightRequest="200" HorizontalTextAlignment="Center" VerticalOptions="StartAndExpand"/>
+        <Label Text="{Binding LastViewed}" Grid.Row="4" HeightRequest="200" HorizontalTextAlignment="Center" VerticalOptions="StartAndExpand"/>
 
         <controls:AddButtonGroup x:Name="AddButtonGroup"
-                                 Grid.Row="4"
+                                 Grid.Row="5"
                                  DeleteClicked="DeleteButton_clicked"
                                  CancelClicked="Cancel_Clicked"
                                  OkClicked="okButton_Clicked"
