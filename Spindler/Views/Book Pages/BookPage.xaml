@@ -60,13 +60,13 @@
         <Border
             StrokeShape="RoundRectangle 10,10,10,10"
             StrokeThickness="0"
-            Background="{StaticResource LightSpaceCadet}"
+            Background="{AppThemeBinding Dark={StaticResource LightSpaceCadet}, Light={StaticResource LightGray}}"
             Margin="5,0"
             IsVisible="{Binding PinnedBooksAreVisible}">
             <toolkit:Expander x:Name="PinView"
                               Padding="7,-1,8,5">
                 <toolkit:Expander.Header>
-                    <Grid ColumnDefinitions="20, *, 25" Padding="0,7,0,0" BackgroundColor="{StaticResource LightSpaceCadet}">
+                    <Grid ColumnDefinitions="20, *, 25" Padding="0,7,0,0" BackgroundColor="{AppThemeBinding Dark={StaticResource LightSpaceCadet}, Light={StaticResource LightGray}}">
                         <Image Source="pin.svg" Margin="8,3,0,5">
                             <Image.Behaviors>
                                 <toolkit:IconTintColorBehavior 
@@ -88,14 +88,17 @@
                                 SelectionChangedCommand="{Binding PinnedBookSelectionCommand}"
                                 SelectionMode="Single"
                                 ItemSizingStrategy="MeasureFirstItem"
-                                BackgroundColor="{StaticResource LightSpaceCadet}"
+                                BackgroundColor="{AppThemeBinding Dark={StaticResource LightSpaceCadet}, Light={StaticResource LightGray}}"
                             >
                     <CollectionView.ItemsLayout>
                         <LinearItemsLayout ItemSpacing="5" Orientation="Horizontal"/>
                     </CollectionView.ItemsLayout>
                     <CollectionView.ItemTemplate>
                         <DataTemplate>
-                            <Border StrokeShape="RoundRectangle 16,10,16,10">
+                            <!-- TODO: Move this into a custom control -->
+                            <Border StrokeShape="RoundRectangle 16,10,16,10"
+                                    Stroke="{AppThemeBinding Dark=Transparent, Light={StaticResource Black}}"
+                                    StrokeThickness="{AppThemeBinding Dark=0, Light=2}">
                                 <Grid
                                     x:DataType="models:Book"
                                     BackgroundColor="{AppThemeBinding Dark={StaticResource DarkCardBackground}, Light={StaticResource LightGray}}"
@@ -157,13 +160,14 @@
             </CollectionView.ItemsLayout>
             <CollectionView.ItemTemplate>
                 <DataTemplate>
+                    <!-- TODO: Move this into a custom control -->
                     <Border>
                         <Border.Shadow>
                             <Shadow Offset="10,10" Brush="Black" Radius="30" Opacity="1"/>
                         </Border.Shadow>
                         <Grid
                           x:DataType="models:Book"
-                          BackgroundColor="{AppThemeBinding Dark={StaticResource DarkCardBackground}, Light={StaticResource White}}"
+                          BackgroundColor="{AppThemeBinding Dark={StaticResource DarkCardBackground}, Light={StaticResource LightBackground}}"
                           ColumnDefinitions="*, 35"
                           RowDefinitions="55, 2, 45"
                           >
@@ -187,7 +191,7 @@
                                    Grid.Row="2"
                                    VerticalOptions="Fill"
                                    Padding="10,5,10,0"
-                                   TextColor="LightGray" />
+                                   TextColor="{AppThemeBinding Dark={StaticResource LightGray}, Light={StaticResource DarkGray}}" />
                             <ImageButton HorizontalOptions="Center"
                                              VerticalOptions="Center"
                                              Grid.Column="1"

@@ -4,7 +4,7 @@
              xmlns:models="clr-namespace:Spindler.Models"
              xmlns:viewmodels="clr-namespace:Spindler.ViewModels"
              xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
-             x:Class="Spindler.BookListPage" BackgroundColor="{AppThemeBinding Dark={StaticResource SpaceCadet}, Light={StaticResource White}}">
+             x:Class="Spindler.BookListPage">
 
     <ContentPage.BindingContext>
         <viewmodels:BookListViewModel/>
