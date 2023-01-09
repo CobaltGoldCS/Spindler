@@ -10,22 +10,19 @@
     <ContentPage.Resources>
         <toolkit:BoolToObjectConverter x:Key="ExpanderIconConverter" FalseObject="∨" TrueObject="∧"/>
         <Style TargetType="Border">
+            <Setter Property="StrokeThickness" Value="2"/>
             <Setter Property="VisualStateManager.VisualStateGroups">
                 <VisualStateGroupList>
                     <!-- Set Selected Item Appearance-->
                     <VisualStateGroup x:Name="CommonStates">
                         <VisualState x:Name="Normal" >
                             <VisualState.Setters>
-                                <Setter Property="StrokeThickness"
-                                        Value="0"/>
                                 <Setter Property="Stroke"
-                                        Value="{StaticResource LightSpaceCadet}"/>
+                                        Value="Transparent"/>
                             </VisualState.Setters>
                         </VisualState>
                         <VisualState x:Name="Selected">
                             <VisualState.Setters>
-                                <Setter Property="StrokeThickness"
-                                        Value="2" />
                                 <Setter Property="Stroke"
                                         Value="{AppThemeBinding Dark={StaticResource White}, Light={StaticResource LightSpaceCadet}}"/>
                                 <Setter Property="BackgroundColor"
@@ -98,7 +95,8 @@
                             <!-- TODO: Move this into a custom control -->
                             <Border StrokeShape="RoundRectangle 16,10,16,10"
                                     Stroke="{AppThemeBinding Dark=Transparent, Light={StaticResource Black}}"
-                                    StrokeThickness="{AppThemeBinding Dark=0, Light=2}">
+                                    StrokeThickness="{AppThemeBinding Dark=0, Light=2}"
+                                    BackgroundColor="Transparent">
                                 <Grid
                                     x:DataType="models:Book"
                                     BackgroundColor="{AppThemeBinding Dark={StaticResource DarkCardBackground}, Light={StaticResource LightGray}}"
