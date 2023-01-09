@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             x:Class="Spindler.Views.Book_Pages.BookSearcherPage"
+             Title="BookSearcherPage"
+             x:Name="BookSearcher">
+    <Grid 
+        RowDefinitions="20, 40, 5, *, 40"
+        ColumnDefinitions="*, 40"
+        >
+        <Entry x:Name="urlEntry"
+               Placeholder="Search for a webpage"
+               ReturnType="Search"
+               Margin="2,0,0,0"
+               ReturnCommand="{Binding Source={x:Reference BookSearcher}, Path=ReturnCommand}"
+               Text="{Binding Source={x:Reference BookSearcher}, Path=Source}"/>
+        <ImageButton Source="multiple_gears.svg"
+                     Clicked="UseConfig_Clicked"
+                     CornerRadius="0"
+                     Margin="0,0,2,0"
+                     Grid.Column="1">
+            <ImageButton.Behaviors>
+                <toolkit:IconTintColorBehavior TintColor="{AppThemeBinding Dark={StaticResource White}, Light={StaticResource Black}}"/>
+            </ImageButton.Behaviors>
+        </ImageButton>
+        <ProgressBar x:Name="SearchProgress" Grid.Row="1" Grid.ColumnSpan="2" ProgressColor="{StaticResource Primary}"/>
+        <WebView x:Name="SearchBrowser"
+                 Source="https://example.com"
+                 Navigated="PageLoaded"
+                 Navigating="PageLoading"
+                 Grid.Row="2"
+                 Grid.ColumnSpan="2"
+                 />
+        <Button x:Name="CheckButton"
+                Grid.Row="3"
+                Text="Check if this url is a valid book"
+                IsVisible="false"
+                Clicked="CheckIfBookIsPossible"
+                CornerRadius="0"
+                Grid.ColumnSpan="2"/>
+        <Button x:Name="FoundButton"
+                Grid.Row="3" 
+                Text="Save this URL as a book" 
+                IsVisible="false"
+                Clicked="FoundButton_Clicked"
+                CornerRadius="0"
+                Grid.ColumnSpan="2"/>
+    </Grid>
+</ContentPage>

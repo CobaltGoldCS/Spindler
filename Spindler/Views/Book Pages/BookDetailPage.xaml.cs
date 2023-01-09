@@ -1,5 +1,7 @@
 using Spindler.Behaviors;
 using Spindler.Models;
+using Spindler.Views.Book_Pages;
+
 namespace Spindler;
 
 [QueryProperty(nameof(Book), "book")]
@@ -79,4 +81,14 @@ public partial class BookDetailPage : ContentPage
         await Close();
     }
     #endregion
+
+    private async void Search_clicked(object sender, EventArgs e)
+    {
+        Dictionary<string, object> parameters = new()
+        {
+            { "bookListid", Book.BookListId }
+
+        };
+        await Shell.Current.GoToAsync(nameof(BookSearcherPage), parameters: parameters);
+    }
 }

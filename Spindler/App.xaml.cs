@@ -1,6 +1,7 @@
 ﻿using Spindler.Services;
 using Spindler.Utils;
 using Spindler.Views;
+using Spindler.Views.Book_Pages;
 using SQLitePCL;
 
 namespace Spindler;
@@ -32,6 +33,7 @@ public partial class App : Application
         MainPage = shell;
         Routing.RegisterRoute(nameof(BookPage), typeof(BookPage));
         Routing.RegisterRoute($"{nameof(BookPage)}/{nameof(BookDetailPage)}", typeof(BookDetailPage));
+        Routing.RegisterRoute($"{nameof(BookPage)}/{nameof(BookDetailPage)}/{nameof(BookSearcherPage)}", typeof(BookSearcherPage));
 
         Routing.RegisterRoute($"{nameof(BookPage)}/{nameof(ReaderPage)}", typeof(ReaderPage));
         Routing.RegisterRoute($"{nameof(BookPage)}/{nameof(WebviewReaderPage)}", typeof(WebviewReaderPage));
