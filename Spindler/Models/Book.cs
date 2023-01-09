@@ -13,6 +13,7 @@ public class Book : IIndexedModel
     [PrimaryKey, AutoIncrement]
     public int Id { get; set; }
     public int GetId() => Id;
+    public string Name { get => Title; }
 
     /// <summary>
     /// UID of the <see cref="BookList"/> that contains this book

@@ -15,6 +15,7 @@ public class Config : IIndexedModel
     public int Id { get; set; }
 
     public int GetId() => Id;
+    public string Name { get => DomainName; }
 
     /// <summary>
     /// The domain name associated with the config (IE: example.com)
