@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<toolkit:Popup  xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             x:Class="Spindler.CustomControls.PickerPopup"
+             xmlns:Models="clr-namespace:Spindler.Models"
+             x:Name="_this">
+    <Grid RowDefinitions="40, *" HorizontalOptions="Fill" VerticalOptions="Fill">
+        <Label Text="{Binding Source={x:Reference _this}, Path=Title}" HorizontalTextAlignment="Center" Padding="0,10,0,0"/>
+        <CollectionView
+            x:Name="PickerView"
+            Margin="5, 0"
+            SelectionMode="Single"
+            SelectedItem="{Binding Source={x:Reference _this}, Path=SelectedItem}"
+            SelectionChangedCommand="{Binding Source={x:Reference _this}, Path=SelectionChangedCommand}"
+            ItemsSource="{Binding Source={x:Reference _this}, Path=RenderedItems}"
+            RemainingItemsThresholdReachedCommand="{Binding Source={x:Reference _this}, Path=EndOfListReachedCommand}"
+            Grid.Row="1">
+            <CollectionView.ItemsLayout>
+                <LinearItemsLayout 
+                Orientation="Vertical"
+                ItemSpacing="5"/>
+            </CollectionView.ItemsLayout>
+            <CollectionView.ItemTemplate>
+                <DataTemplate x:DataType="Models:IIndexedModel">
+                    <Grid RowDefinitions="50" ColumnDefinitions="335" HorizontalOptions="FillAndExpand">
+                        <Border Margin="8,0" HorizontalOptions="Fill" BackgroundColor="{AppThemeBinding Dark={StaticResource SpaceCadet}, Light={StaticResource LightBackground}}">
+                            <Label VerticalTextAlignment="Center" HorizontalTextAlignment="Center"
+                                       FontSize="Large" Text="{Binding Name}"/>
+                        </Border>
+                    </Grid>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+    </Grid>
+</toolkit:Popup>
