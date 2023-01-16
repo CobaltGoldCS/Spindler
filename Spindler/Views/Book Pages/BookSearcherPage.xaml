@@ -5,8 +5,11 @@
              x:Class="Spindler.Views.Book_Pages.BookSearcherPage"
              Title="BookSearcherPage"
              x:Name="BookSearcher">
+    <ContentPage.Resources>
+        <toolkit:EnumToBoolConverter x:Key="Enum To Bool"/>
+    </ContentPage.Resources>
     <Grid 
-        RowDefinitions="40, 5, *, 40"
+        RowDefinitions="40, 5, *, 40, 40"
         ColumnDefinitions="*, 40"
         >
         <Entry x:Name="urlEntry"
@@ -32,15 +35,31 @@
                  Grid.Row="2"
                  Grid.ColumnSpan="2"
                  />
-        <Button x:Name="CheckButton"
+        <Border Stroke="{StaticResource White}" 
+                Grid.Row="3">
+            <Button Text="←" 
+                Padding="0,0,0,5"
+                CornerRadius="0"
+                Command="{Binding Source={x:Reference BookSearcher}, Path=NavigateBackwardCommand}"/>
+        </Border>
+
+        <Border Stroke="{StaticResource White}" 
                 Grid.Row="3"
+                Grid.Column="1">
+            <Button Text="→" 
+                Padding="0,0,0,5"
+                CornerRadius="0"
+                Command="{Binding Source={x:Reference BookSearcher}, Path=NavigateForwardCommand}"/>
+        </Border>
+        <Button x:Name="CheckButton"
+                Grid.Row="4"
                 Text="Check if this url is a valid book"
                 IsVisible="false"
                 Clicked="CheckIfBookIsPossible"
                 CornerRadius="0"
                 Grid.ColumnSpan="2"/>
         <Button x:Name="FoundButton"
-                Grid.Row="3" 
+                Grid.Row="4" 
                 Text="Save this URL as a book" 
                 IsVisible="false"
                 Clicked="FoundButton_Clicked"

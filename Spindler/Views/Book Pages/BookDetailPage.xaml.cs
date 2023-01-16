@@ -96,7 +96,7 @@ public partial class BookDetailPage : ContentPage
     private async void SwitchBookList_Clicked(object sender, EventArgs e)
     {
         var popup = new PickerPopup("Switch Book Lists", await App.Database.GetBookListsAsync());
-        object result = await this.ShowPopupAsync(popup);
+        object? result = await this.ShowPopupAsync(popup);
         if (result is not BookList list) return;
         Book.BookListId = list.Id;
     }    

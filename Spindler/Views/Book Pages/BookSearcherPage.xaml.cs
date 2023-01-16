@@ -1,10 +1,11 @@
 using CommunityToolkit.Maui.Views;
-using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using HtmlAgilityPack;
 using Spindler.CustomControls;
 using Spindler.Models;
 using Spindler.Services;
+using Spindler.Utils;
+using System.Collections.Generic;
 using System.Text.RegularExpressions;
 
 namespace Spindler.Views.Book_Pages;
@@ -21,7 +22,7 @@ public partial class BookSearcherPage : ContentPage
 
     public int BooklistId { get; set; } = new();
     public Config? Config { get; set; } = null;
-    public bool IsBusy = false;
+    public bool IsLoading = false;
 
     private string source = "example.com";
     public string Source
@@ -36,8 +37,8 @@ public partial class BookSearcherPage : ContentPage
 
 
     public BookSearcherPage()
-	{
-		InitializeComponent();
+    {
+        InitializeComponent();
         SwitchUiBasedOnState(State.BookNotFound);
     }
 
@@ -56,7 +57,7 @@ public partial class BookSearcherPage : ContentPage
         string? content = ConfigService.PrettyWrapSelector(doc, new Models.Path(Config.ContentPath), ConfigService.SelectorType.Text);
         SwitchUiBasedOnState(!string.IsNullOrEmpty(content) ? State.BookFound : State.BookNotFound);
         await SearchProgress.ProgressTo(1, 500, Easing.BounceOut);
-        IsBusy = false;
+        IsLoading = false;
     }
 
     private void SwitchUiBasedOnState(State state)
@@ -95,7 +96,7 @@ public partial class BookSearcherPage : ContentPage
     private async void PageLoading(object? sender, WebNavigatingEventArgs e)
     {
         // If this comes from the webview itself and its already loading, cancel the load
-        if (source != GetUrlOfBrowser() && IsBusy)
+        if (source != GetUrlOfBrowser() && IsLoading)
         {
             e.Cancel = true;
             return;
@@ -135,7 +136,7 @@ public partial class BookSearcherPage : ContentPage
 
     private async void UseConfig_Clicked(object sender, EventArgs e)
     {
-        if (IsBusy) return;
+        if (IsLoading) return;
         PickerPopup popup = new("Choose a config to search", await App.Database.GetAllItemsAsync<Config>());
         var result = await this.ShowPopupAsync(popup);
 
@@ -143,17 +144,31 @@ public partial class BookSearcherPage : ContentPage
         if (result is not Config config || !Uri.TryCreate("https://" + config.DomainName, new UriCreationOptions(), out Uri? url)) return;
         source = url?.OriginalString ?? "";
         SearchBrowser.Source = url;
-        IsBusy = true;
+        IsLoading = true;
+    }
+
+    [RelayCommand]
+    public void NavigateForward()
+    {
+        if (SearchBrowser.CanGoForward && !IsLoading) return;
+        SearchBrowser.GoBack();
+    }
+
+    [RelayCommand]
+    public void NavigateBackward()
+    {
+        if (SearchBrowser.CanGoBack && !IsLoading) return;
+        SearchBrowser.GoBack();
     }
 
     [RelayCommand]
     public void Return()
     {
-        if (IsBusy) return;
+        if (IsLoading) return;
         if (!Source.StartsWith("http"))
             Source = "https://" + Source;
         SearchBrowser.Source = source;
-        IsBusy = true;
+        IsLoading = true;
     }
 
 }
