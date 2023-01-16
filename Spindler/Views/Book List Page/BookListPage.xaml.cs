@@ -20,5 +20,6 @@ public partial class BookListPage : ContentPage
         {
             await Permissions.RequestAsync<Permissions.NetworkState>();
         }
+        await Task.Run(((BookListViewModel)BindingContext).Load);
     }
 }

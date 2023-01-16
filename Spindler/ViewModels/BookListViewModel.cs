@@ -25,20 +25,7 @@ public partial class BookListViewModel : ObservableObject
                 SetProperty(ref _bookLists, value, nameof(BookLists));
             }
         }
-    }
-
-    private bool isReloading = false;
-    public bool IsReloading
-    {
-        get => isReloading;
-        set
-        {
-            if (isReloading != value)
-            {
-                SetProperty(ref isReloading, value, nameof(IsReloading));
-            }
-        }
-    }    
+    }  
 
     [RelayCommand]
     private async void ConfigButton(int id)
@@ -81,12 +68,9 @@ public partial class BookListViewModel : ObservableObject
         CurrentSelection = null;
     }
 
-    [RelayCommand]
-    public async void Reload()
+    public async void Load()
     {
-        IsReloading = true;
         BookLists = await App.Database.GetBookListsAsync();
-        IsReloading = false;
     }
 
 }

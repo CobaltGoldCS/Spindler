@@ -64,12 +64,7 @@
             </StackLayout>
         </Grid>
     </Shell.TitleView>
-    
-    <RefreshView
-        IsRefreshing="{Binding IsReloading}"
-        Command="{Binding ReloadCommand}"
-        >
-        <CollectionView x:Name="list"
+    <CollectionView x:Name="list"
               Margin="5, 0"
               ItemsSource="{Binding BookLists}"
               SelectionChangedCommand="{Binding SelectionCommand}"
@@ -77,34 +72,34 @@
               SelectedItem="{Binding CurrentSelection}"
               VerticalScrollBarVisibility="Always"
               >
-            <CollectionView.ItemsLayout>
-                <GridItemsLayout 
+        <CollectionView.ItemsLayout>
+            <GridItemsLayout 
                     VerticalItemSpacing="10"
                     HorizontalItemSpacing="10"
                     Span="2" 
                     Orientation="Vertical" />
-            </CollectionView.ItemsLayout>
-            <CollectionView.ItemTemplate>
-                <DataTemplate>
-                    <Border 
+        </CollectionView.ItemsLayout>
+        <CollectionView.ItemTemplate>
+            <DataTemplate>
+                <Border 
                         Stroke="{AppThemeBinding Dark={StaticResource White}, Light={StaticResource Black}}"
                         Background="{Binding Background}"
                         Padding="10"
                         StrokeShape="RoundRectangle 16,16,16,16">
 
-                        <Border.BindingContext>
-                            <models:BookList/>
-                        </Border.BindingContext>
-                        <Grid RowDefinitions="*, auto, 40" BackgroundColor="Transparent">
-                            <Image 
+                    <Border.BindingContext>
+                        <models:BookList/>
+                    </Border.BindingContext>
+                    <Grid RowDefinitions="*, auto, 40" BackgroundColor="Transparent">
+                        <Image 
                                 x:Name="backgroundImage" 
                                 Aspect="AspectFit" 
                                 Margin="10">
-                                <Image.Source>
-                                    <UriImageSource Uri="{Binding ImageUrl}" CacheValidity="365:00:00:00" />
-                                </Image.Source>
-                            </Image>
-                            <Label  
+                            <Image.Source>
+                                <UriImageSource Uri="{Binding ImageUrl}" CacheValidity="365:00:00:00" />
+                            </Image.Source>
+                        </Image>
+                        <Label  
                                 HorizontalTextAlignment="Center"
                                 Grid.Row="1" 
                                 VerticalTextAlignment="Center" 
@@ -112,7 +107,7 @@
                                 x:Name="TitleLabel" 
                                 Text="{Binding Name}"
                                 TextColor="{StaticResource White}"/>
-                            <ImageButton  Source="kebab.svg" 
+                        <ImageButton  Source="kebab.svg" 
                                           WidthRequest="20"
                                           Aspect="AspectFill"
                                           VerticalOptions="FillAndExpand"
@@ -121,20 +116,19 @@
                                           Padding ="0,3,5,3" x:Name="ConfigButton"
                                           CommandParameter="{Binding Id}"
                                           Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:BookListViewModel}}, Path=ConfigButtonCommand}">
-                                <ImageButton.Behaviors>
-                                    <toolkit:IconTintColorBehavior TintColor="{StaticResource White}"/>
-                                </ImageButton.Behaviors>
-                            </ImageButton>
-                        </Grid>
-                    </Border>
-                </DataTemplate>
-            </CollectionView.ItemTemplate>
-            <CollectionView.EmptyView>
-                <VerticalStackLayout Padding="10">
-                    <Label FontSize="50" Text="No Book Lists loaded"/>
-                    <Label Padding="0,50,0,0" FontSize="20" Text="Please Reload the list or add some items."/>
-                </VerticalStackLayout>
-            </CollectionView.EmptyView>
-        </CollectionView>
-    </RefreshView>
+                            <ImageButton.Behaviors>
+                                <toolkit:IconTintColorBehavior TintColor="{StaticResource White}"/>
+                            </ImageButton.Behaviors>
+                        </ImageButton>
+                    </Grid>
+                </Border>
+            </DataTemplate>
+        </CollectionView.ItemTemplate>
+        <CollectionView.EmptyView>
+            <VerticalStackLayout Padding="10">
+                <Label FontSize="50" Text="No Book Lists loaded"/>
+                <Button CornerRadius="0" Text="Add a List" Command="{Binding AddToolBarItemCommand}"/>
+            </VerticalStackLayout>
+        </CollectionView.EmptyView>
+    </CollectionView>
 </ContentPage>
