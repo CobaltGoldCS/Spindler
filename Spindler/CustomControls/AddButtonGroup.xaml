@@ -6,16 +6,16 @@
              HorizontalOptions="CenterAndExpand"
              ColumnDefinitions="auto, auto, *"
              >
-    <Button Text="Delete" Margin="5,0,5,0"
-            FontSize="Large"
-            Clicked="Button_Clicked" BackgroundColor="OrangeRed"
-            Command="{Binding Source = {x:Reference this}, Path = DeleteCommand}"/>
     <Button x:Name="Cancel" Margin="5,0,5,0"
             FontSize="Large"
             Text="Cancel" 
             Clicked="Cancel_Clicked"
-            Command="{Binding Source = {x:Reference this}, Path = CancelCommand}"
-            Grid.Column="1"/>
+            Command="{Binding Source = {x:Reference this}, Path = CancelCommand}"/>
+    <Button Text="Delete" Margin="5,0,5,0"
+            Grid.Column="1"
+            FontSize="Large"
+            Clicked="Button_Clicked" BackgroundColor="OrangeRed"
+            Command="{Binding Source = {x:Reference this}, Path = DeleteCommand}"/>
     <Button x:Name="okButton" Margin="5,0,5,0"
             Text="{Binding Source = {x:Reference this}, Path = OkText}"
             FontSize="Large"
