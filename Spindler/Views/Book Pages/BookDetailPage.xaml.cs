@@ -1,4 +1,6 @@
+using CommunityToolkit.Maui.Views;
 using Spindler.Behaviors;
+using Spindler.CustomControls;
 using Spindler.Models;
 using Spindler.Views.Book_Pages;
 
@@ -80,7 +82,6 @@ public partial class BookDetailPage : ContentPage
     {
         await Close();
     }
-    #endregion
 
     private async void Search_clicked(object sender, EventArgs e)
     {
@@ -91,4 +92,13 @@ public partial class BookDetailPage : ContentPage
         };
         await Shell.Current.GoToAsync(nameof(BookSearcherPage), parameters: parameters);
     }
+
+    private async void SwitchBookList_Clicked(object sender, EventArgs e)
+    {
+        var popup = new PickerPopup("Switch Book Lists", await App.Database.GetBookListsAsync());
+        object result = await this.ShowPopupAsync(popup);
+        if (result is not BookList list) return;
+        Book.BookListId = list.Id;
+    }    
+    #endregion
 }
