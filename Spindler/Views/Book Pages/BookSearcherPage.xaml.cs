@@ -24,7 +24,7 @@ public partial class BookSearcherPage : ContentPage
     public Config? Config { get; set; } = null;
     public bool IsLoading = false;
 
-    private string source = "example.com";
+    private string source = "https://example.com";
     public string Source
     {
         get => source;
@@ -40,6 +40,14 @@ public partial class BookSearcherPage : ContentPage
     {
         InitializeComponent();
         SwitchUiBasedOnState(State.BookNotFound);
+    }
+
+    public static string CleanUrl(string url)
+    {
+        url = url.Replace("www.", "");
+        if (url.EndsWith("/"))
+            url = url.Remove(url.Length - 1);
+        return url;
     }
 
     private async Task CheckCompatible(string url = "")
@@ -85,18 +93,13 @@ public partial class BookSearcherPage : ContentPage
     private async void PageLoaded(object? sender, WebNavigatedEventArgs e)
     {
         if (e.Result != WebNavigationResult.Success) return;
-        // Redirect
-        if (GetUrlOfBrowser() != e.Url)
-        {
-            SearchBrowser.Source = e.Url;
-        }
         await SearchProgress.ProgressTo(.5, 500, Easing.BounceOut);
         await CheckCompatible(e.Url != "about:blank" ? e.Url : "");
     }
     private async void PageLoading(object? sender, WebNavigatingEventArgs e)
     {
-        // If this comes from the webview itself and its already loading, cancel the load
-        if (source != GetUrlOfBrowser() && IsLoading)
+        bool urlComesFromWebview = source != GetUrlOfBrowser();
+        if (urlComesFromWebview && IsLoading)
         {
             e.Cancel = true;
             return;
@@ -142,7 +145,7 @@ public partial class BookSearcherPage : ContentPage
 
 
         if (result is not Config config || !Uri.TryCreate("https://" + config.DomainName, new UriCreationOptions(), out Uri? url)) return;
-        source = url?.OriginalString ?? "";
+        Source = url?.OriginalString ?? "";
         SearchBrowser.Source = url;
         IsLoading = true;
     }
@@ -150,14 +153,14 @@ public partial class BookSearcherPage : ContentPage
     [RelayCommand]
     public void NavigateForward()
     {
-        if (SearchBrowser.CanGoForward && !IsLoading) return;
+        if (IsLoading || !SearchBrowser.CanGoForward) return;
         SearchBrowser.GoForward();
     }
 
     [RelayCommand]
     public void NavigateBackward()
     {
-        if (SearchBrowser.CanGoBack && !IsLoading) return;
+        if (IsLoading || !SearchBrowser.CanGoBack) return;
         SearchBrowser.GoBack();
     }
 
