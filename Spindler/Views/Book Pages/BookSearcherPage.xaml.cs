@@ -120,7 +120,7 @@ public partial class BookSearcherPage : ContentPage
         HtmlDocument doc = new();
         doc.LoadHtml(html);
 
-        string? title = ConfigService.PrettyWrapSelector(doc, new Models.Path(Config!.ContentPath), ConfigService.SelectorType.Text);
+        string? title = ConfigService.PrettyWrapSelector(doc, new Models.Path(Config!.TitlePath), ConfigService.SelectorType.Text);
         await App.Database.SaveItemAsync(
             new Book
             {
