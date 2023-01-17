@@ -151,7 +151,7 @@ public partial class BookSearcherPage : ContentPage
     public void NavigateForward()
     {
         if (SearchBrowser.CanGoForward && !IsLoading) return;
-        SearchBrowser.GoBack();
+        SearchBrowser.GoForward();
     }
 
     [RelayCommand]
