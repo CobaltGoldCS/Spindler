@@ -131,7 +131,7 @@ public partial class BookSearcherPage : ContentPage
                 BookListId = BooklistId,
                 LastViewed = DateTime.UtcNow,
                 Title = title ?? "Could not find title for book",
-                Url = GetUrlOfBrowser()
+                Url = Source
             }
         );
         SwitchUiBasedOnState(State.BookSaved);
