@@ -3,7 +3,7 @@ using CommunityToolkit.Mvvm.Input;
 using Microsoft.Maui;
 using Spindler.Models;
 using Spindler.Services;
-using Spindler.Utils;
+using Spindler.Utilities;
 using Spindler.Views;
 using System.Windows.Input;
 namespace Spindler.ViewModels

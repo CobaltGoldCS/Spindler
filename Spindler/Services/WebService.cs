@@ -1,8 +1,6 @@
 ﻿using HtmlAgilityPack;
 using Spindler.Models;
-using Spindler.Utils;
-using SQLite;
-using HtmlOrError = Spindler.Utils.Result<string, string>;
+using HtmlOrError = Spindler.Utilities.Result<string, string>;
 using Path = Spindler.Models.Path;
 
 namespace Spindler.Services;
@@ -63,9 +61,9 @@ public class WebService
             HtmlOrError html = await HtmlOrError(url);
             if (html is HtmlOrError.Error error)
             {
-                return MakeError(error.value);
+                return MakeError(error.Value);
             }
-            return await LoadWebData(url, html.AsOk().value);
+            return await LoadWebData(url, html.AsOk().Value);
         }
         catch (HttpRequestException e)
         {

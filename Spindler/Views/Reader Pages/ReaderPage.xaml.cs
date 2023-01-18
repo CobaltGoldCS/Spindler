@@ -1,9 +1,8 @@
 using Spindler.Models;
 using Spindler.Services;
-using Spindler.Utils;
+using Spindler.Utilities;
 using Spindler.ViewModels;
 using Spindler.Views;
-using System.Security;
 
 namespace Spindler;
 

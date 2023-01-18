@@ -1,6 +1,6 @@
 using Newtonsoft.Json;
 using Spindler.Models;
-using Spindler.Utils;
+using Spindler.Utilities;
 using System.Text.Json.Nodes;
 
 namespace Spindler.Views;

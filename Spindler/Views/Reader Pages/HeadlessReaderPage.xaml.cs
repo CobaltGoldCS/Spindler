@@ -1,7 +1,7 @@
 
 using Spindler.Models;
 using Spindler.Services;
-using Spindler.Utils;
+using Spindler.Utilities;
 using System.ComponentModel;
 using System.Text.RegularExpressions;
 

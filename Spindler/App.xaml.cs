@@ -1,5 +1,5 @@
 ﻿using Spindler.Services;
-using Spindler.Utils;
+using Spindler.Utilities;
 using Spindler.Views;
 using Spindler.Views.Book_Pages;
 using SQLitePCL;
