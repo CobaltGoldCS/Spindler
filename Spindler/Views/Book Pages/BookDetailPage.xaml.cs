@@ -2,9 +2,8 @@ using CommunityToolkit.Maui.Views;
 using Spindler.Behaviors;
 using Spindler.CustomControls;
 using Spindler.Models;
-using Spindler.Views.Book_Pages;
 
-namespace Spindler;
+namespace Spindler.Views.Book_Pages;
 
 [QueryProperty(nameof(Book), "book")]
 public partial class BookDetailPage : ContentPage
