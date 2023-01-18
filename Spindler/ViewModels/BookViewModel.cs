@@ -84,7 +84,6 @@ namespace Spindler.ViewModels
                 { 
                     "book", new Book()
                     {
-                        Id = -1,
                         BookListId = id,
                         LastViewed = DateTime.UtcNow,
                     }

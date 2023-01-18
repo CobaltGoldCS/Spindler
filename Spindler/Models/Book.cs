@@ -11,7 +11,7 @@ public class Book : IIndexedModel
     /// UID of this Book
     /// </summary>
     [PrimaryKey, AutoIncrement]
-    public int Id { get; set; }
+    public int Id { get; set; } = -1;
     public int GetId() => Id;
     public string Name { get => Title; }
 
@@ -35,7 +35,7 @@ public class Book : IIndexedModel
     /// <summary>
     /// A date time representing when this book was last opened
     /// </summary>
-    public DateTime LastViewed { get; set; }
+    public DateTime LastViewed { get; set; } = DateTime.UtcNow;
 
     public double Position { get; set; }
 }

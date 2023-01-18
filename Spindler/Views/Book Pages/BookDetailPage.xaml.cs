@@ -87,7 +87,7 @@ public partial class BookDetailPage : ContentPage
     {
         Dictionary<string, object> parameters = new()
         {
-            { "bookListid", Book.BookListId }
+            { "bookListId", Book.BookListId }
 
         };
         await Shell.Current.GoToAsync(nameof(BookSearcherPage), parameters: parameters);

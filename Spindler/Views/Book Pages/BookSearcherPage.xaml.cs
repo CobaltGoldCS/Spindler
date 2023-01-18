@@ -4,27 +4,44 @@ using HtmlAgilityPack;
 using Spindler.CustomControls;
 using Spindler.Models;
 using Spindler.Services;
-using Spindler.Utils;
-using System.Collections.Generic;
 using System.Text.RegularExpressions;
 
 namespace Spindler.Views.Book_Pages;
 
-[QueryProperty(nameof(BooklistId), "bookListid")]
+[QueryProperty(nameof(BooklistId), "bookListId")]
 public partial class BookSearcherPage : ContentPage
 {
-    public enum State
+    /// <summary>
+    /// The current state of the Book Searcher Page. 
+    /// Whether a book is found, saved, or not detected.
+    /// </summary>
+    private enum State
     {
         BookFound,
         BookNotFound,
         BookSaved
     }
 
+    /// <summary>
+    /// The book list id to attach to any books created in Book Searcher Page
+    /// </summary>
     public int BooklistId { get; set; } = new();
+
+    /// <summary>
+    /// The currently used configuration for detecting books
+    /// </summary>
     public Config? Config { get; set; } = null;
+
+    /// <summary>
+    /// Whether <see cref="SearchBrowser"/> is busy loading and checking a page or not
+    /// </summary>
     public bool IsLoading = false;
 
+
     private string source = "https://example.com";
+    /// <summary>
+    /// The Source value as shown in the <see cref="addressBar"/>
+    /// </summary>
     public string Source
     {
         get => source;
@@ -42,16 +59,80 @@ public partial class BookSearcherPage : ContentPage
         SwitchUiBasedOnState(State.BookNotFound);
     }
 
-    public static string CleanUrl(string url)
+    /// <summary>
+    /// Programmatically change which buttons are shown in the ui given a <see cref="State"/>
+    /// </summary>
+    /// <param name="state">The state context for the ui to update</param>
+    /// <seealso cref="CheckButton"/>
+    /// <seealso cref="SaveButton"/>
+    private void SwitchUiBasedOnState(State state)
     {
-        url = url.Replace("www.", "");
-        if (url.EndsWith("/"))
-            url = url.Remove(url.Length - 1);
-        return url;
+        CheckButton.IsVisible = false;
+        SaveButton.IsVisible = false;
+        switch (state)
+        {
+            case State.BookNotFound:
+                CheckButton.IsVisible = true;
+                break;
+            case State.BookFound:
+                SaveButton.IsVisible = true;
+                SaveButton.IsEnabled = true;
+                break;
+            case State.BookSaved:
+                SaveButton.IsVisible = true;
+                SaveButton.IsEnabled = false;
+                break;
+        }
     }
 
+    /// <summary>
+    /// Gets the Url that the <see cref="SearchBrowser"/> believes is the source
+    /// </summary>
+    /// <returns>Returns the last known url according to SearchBrowser</returns>
+    /// <seealso cref="UrlWebViewSource"/>
+    private string GetUrlOfBrowser() => ((UrlWebViewSource)SearchBrowser.Source).Url;
+
+    /// <summary>
+    /// An event handler that triggers when a page is fully loaded by <see cref="SearchBrowser"/>
+    /// </summary>
+    /// <param name="_">(UNUSED) This should always be search browser</param>
+    /// <param name="e">The event arguments associated with the WebNavigatedEvent</param>
+    /// 
+    private async void PageLoaded(object? _, WebNavigatedEventArgs e)
+    {
+        if (e.Result != WebNavigationResult.Success) return;
+        await SearchProgress.ProgressTo(.5, 500, Easing.BounceOut);
+        await CheckCompatible(e.Url != "about:blank" ? e.Url : "");
+    }
+
+    /// <summary>
+    /// An event handler that triggers when a page begins to load in <see cref="SearchBrowser"/>
+    /// </summary>
+    /// <param name="_">(UNUSED) This should always be search browser</param>
+    /// <param name="e">The event arguments associated with the WebNavigatingEvent</param>
+    private async void PageLoading(object? _, WebNavigatingEventArgs e)
+    {
+        bool urlComesFromWebView = source != GetUrlOfBrowser();
+        // Cancel load in web view because we don't want to get caught loading multiple URLs at the same time
+        if (urlComesFromWebView && IsLoading)
+        {
+            e.Cancel = true;
+            return;
+        }
+        Source = e.Url;
+        SwitchUiBasedOnState(State.BookNotFound);
+        await SearchProgress.ProgressTo(0, 0, Easing.BounceOut);
+    }
+
+    /// <summary>
+    /// Check if this website matches any of the user defined configurations for a book, and update the user interface if it does
+    /// </summary>
+    /// <param name="url">An optional parameter to pass in the url of the website</param>
+    /// <returns>A task object for awaiting purposes</returns>
+    [RelayCommand]
     private async Task CheckCompatible(string url = "")
     {
+        // Get and clean html 
         var html = await SearchBrowser.EvaluateJavaScriptAsync(
             "'<html>'+document.getElementsByTagName('html')[0].innerHTML+'</html>';");
         html = Regex.Unescape(html ?? "");
@@ -63,58 +144,28 @@ public partial class BookSearcherPage : ContentPage
         doc.LoadHtml(html);
 
         string? content = ConfigService.PrettyWrapSelector(doc, new Models.Path(Config.ContentPath), ConfigService.SelectorType.Text);
+
         SwitchUiBasedOnState(!string.IsNullOrEmpty(content) ? State.BookFound : State.BookNotFound);
+
         await SearchProgress.ProgressTo(1, 500, Easing.BounceOut);
         IsLoading = false;
     }
 
-    private void SwitchUiBasedOnState(State state)
-    {
-        CheckButton.IsVisible = false;
-        FoundButton.IsVisible = false;
-        switch (state)
-        {
-            case State.BookNotFound:
-                CheckButton.IsVisible = true;
-                break;
-            case State.BookFound:
-                FoundButton.IsVisible = true;
-                FoundButton.IsEnabled = true;
-                break;
-            case State.BookSaved:
-                FoundButton.IsVisible = true;
-                FoundButton.IsEnabled = false;
-                break;
-        }
-    }
-
-    private string GetUrlOfBrowser() => ((UrlWebViewSource)SearchBrowser.Source).Url;
-
-    private async void PageLoaded(object? sender, WebNavigatedEventArgs e)
-    {
-        if (e.Result != WebNavigationResult.Success) return;
-        await SearchProgress.ProgressTo(.5, 500, Easing.BounceOut);
-        await CheckCompatible(e.Url != "about:blank" ? e.Url : "");
-    }
-    private async void PageLoading(object? sender, WebNavigatingEventArgs e)
-    {
-        bool urlComesFromWebview = source != GetUrlOfBrowser();
-        if (urlComesFromWebview && IsLoading)
-        {
-            e.Cancel = true;
-            return;
-        }
-        Source = e.Url;
-        SwitchUiBasedOnState(State.BookNotFound);
-        await SearchProgress.ProgressTo(0, 0, Easing.BounceOut);
-    }
-
-    private async void CheckIfBookIsPossible(object sender, EventArgs e)
-    {
-        await CheckCompatible();
-    }
-
-    private async void FoundButton_Clicked(object sender, EventArgs e)
+    /// <summary>
+    /// Create a new book based on information obtained from <see cref="SearchBrowser"/>
+    /// <code>
+    /// // A Typical book generates as 
+    /// new Book  
+    /// {  
+    ///     Id: -1, // Denotes a new book 
+    ///     BookListId: <see cref="BooklistId"/>,  
+    ///     Title: <see cref="Config.TitlePath"/> or ""  
+    ///     Url: <see cref="Source"/>   
+    /// }  
+    /// </code>
+    /// </summary>
+    [RelayCommand]
+    private async void CreateBookFromConfigInformation()
     {
         var html = await SearchBrowser.EvaluateJavaScriptAsync(
             "'<html>'+document.getElementsByTagName('html')[0].innerHTML+'</html>';");
@@ -127,9 +178,7 @@ public partial class BookSearcherPage : ContentPage
         await App.Database.SaveItemAsync(
             new Book
             {
-                Id = -1,
                 BookListId = BooklistId,
-                LastViewed = DateTime.UtcNow,
                 Title = title ?? "Could not find title for book",
                 Url = Source
             }
@@ -137,19 +186,27 @@ public partial class BookSearcherPage : ContentPage
         SwitchUiBasedOnState(State.BookSaved);
     }
 
-    private async void UseConfig_Clicked(object sender, EventArgs e)
+    /// <summary>
+    /// Creates a popup that allows you to choose a configuration to load the url of
+    /// </summary>
+    [RelayCommand]
+    private async void UseConfigAsDomainUrl()
     {
         if (IsLoading) return;
         PickerPopup popup = new("Choose a config to search", await App.Database.GetAllItemsAsync<Config>());
         var result = await this.ShowPopupAsync(popup);
 
-
-        if (result is not Config config || !Uri.TryCreate("https://" + config.DomainName, new UriCreationOptions(), out Uri? url)) return;
-        Source = url?.OriginalString ?? "";
+        if (result is not Config config || 
+            !Uri.TryCreate("https://" + config.DomainName, new UriCreationOptions(), out Uri? url)) 
+            return;
+        Source = url.OriginalString ?? "";
         SearchBrowser.Source = url;
         IsLoading = true;
     }
 
+    /// <summary>
+    /// Navigate to the next page in <see cref="SearchBrowser"/> history
+    /// </summary>
     [RelayCommand]
     public void NavigateForward()
     {
@@ -157,6 +214,9 @@ public partial class BookSearcherPage : ContentPage
         SearchBrowser.GoForward();
     }
 
+    /// <summary>
+    /// Navigate to the previous page in <see cref="SearchBrowser"/> history
+    /// </summary>
     [RelayCommand]
     public void NavigateBackward()
     {
@@ -164,6 +224,10 @@ public partial class BookSearcherPage : ContentPage
         SearchBrowser.GoBack();
     }
 
+    /// <summary>
+    /// Navigate using <see cref="addressBar"/> text. Used in <see cref="addressBar"/> exclusively
+    /// </summary>
+    /// <seealso cref="SearchBrowser"/>
     [RelayCommand]
     public void Return()
     {

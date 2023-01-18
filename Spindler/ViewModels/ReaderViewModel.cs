@@ -101,11 +101,9 @@ namespace Spindler.ViewModels
             await App.Database.SaveItemAsync<Book>(new()
             {
                 BookListId = CurrentBook!.BookListId,
-                Id = -1,
                 Title = "Bookmark: " + loadedData!.title,
                 Url = loadedData.currentUrl!,
                 Position = ReadingLayout!.ScrollY / ReadingLayout.ContentSize.Height,
-                LastViewed = DateTime.UtcNow,
             });
         }
         #endregion

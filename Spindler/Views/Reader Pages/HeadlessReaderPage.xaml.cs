@@ -125,11 +125,9 @@ public partial class HeadlessReaderPage : ContentPage, INotifyPropertyChanged
         await App.Database.SaveItemAsync<Book>(new()
         {
             BookListId = Book!.BookListId,
-            Id = -1,
             Title = "Bookmark: " + loadedData!.title,
             Url = loadedData.currentUrl!,
             Position = ReadingLayout!.ScrollY / ReadingLayout.ContentSize.Height,
-            LastViewed = DateTime.UtcNow,
         });
     }
 
