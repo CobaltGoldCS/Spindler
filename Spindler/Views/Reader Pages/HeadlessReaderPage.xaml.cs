@@ -91,10 +91,11 @@ public partial class HeadlessReaderPage : ContentPage, INotifyPropertyChanged
         Shell.Current.Navigating += OnShellNavigated;
     }
 
-    public void LoadBook(Book Book)
+    public async void LoadBook(Book Book)
     {
         HeadlessBrowser.Navigated += PageLoaded;
         HeadlessBrowser.Source = Book.Url;
+        await Book.UpdateLastViewedToNow();
     }
 
     private async void PageLoaded(object? sender, WebNavigatedEventArgs e)
@@ -271,8 +272,7 @@ public partial class HeadlessReaderPage : ContentPage, INotifyPropertyChanged
             if (Book != null)
             {
                 Book.Position = ReadingLayout.ScrollY / ReadingLayout.ContentSize.Height;
-                Book.LastViewed = DateTime.UtcNow;
-                await App.Database.SaveItemAsync(Book);
+                await Book.UpdateLastViewedToNow();
             }
         }
         Shell.Current.Navigating -= OnShellNavigated;

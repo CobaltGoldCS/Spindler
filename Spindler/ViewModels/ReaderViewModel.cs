@@ -168,8 +168,7 @@ namespace Spindler.ViewModels
             }
             // Database updates
             CurrentBook!.Url = loadedData.currentUrl!;
-            CurrentBook.LastViewed = DateTime.UtcNow;
-            await App.Database.SaveItemAsync(CurrentBook);
+            await CurrentBook.UpdateLastViewedToNow();
 
             Title = loadedData.title ?? "";
             Text = loadedData.text ?? "";

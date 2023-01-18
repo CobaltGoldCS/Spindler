@@ -38,4 +38,14 @@ public class Book : IIndexedModel
     public DateTime LastViewed { get; set; } = DateTime.UtcNow;
 
     public double Position { get; set; }
+
+    /// <summary>
+    /// Updates <see cref="LastViewed"/> to the current time, and saves booklist in the database.
+    /// </summary>
+    /// <returns>An awaitable <see cref="Task"/></returns>
+    public async Task UpdateLastViewedToNow()
+    {
+        LastViewed = DateTime.UtcNow;
+        await App.Database.SaveItemAsync(this);
+    }
 }

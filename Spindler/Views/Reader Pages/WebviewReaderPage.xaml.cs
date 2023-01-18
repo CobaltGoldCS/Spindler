@@ -19,11 +19,11 @@ public partial class WebviewReaderPage : ContentPage
         get => book!;
     }
 
-    public void LoadBook()
+    public async void LoadBook()
     {
         BindingContext = Book;
         ReaderBrowser.Source = Book.Url;
-        Book.LastViewed = DateTime.UtcNow;
+        await Book.UpdateLastViewedToNow();
     }
     #endregion
 
