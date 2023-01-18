@@ -76,12 +76,7 @@ namespace Spindler.ViewModels
         {
             if (!string.IsNullOrWhiteSpace(Booklist.Name))
             {
-                Booklist.LastAccessed = DateTime.UtcNow;
-                if (Booklist.ImageUrl.Length == 0)
-                {
-                    Booklist.ImageUrl = BookList.GetRandomPlaceholderImageUrl();
-                }
-                await App.Database.SaveItemAsync(Booklist);
+                await Booklist.UpdateAccessTimeToNow();
             }
             await Close();
         }

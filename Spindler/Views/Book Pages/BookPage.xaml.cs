@@ -19,8 +19,7 @@ public partial class BookPage : ContentPage
 
     public async void LoadBookList(BookList list)
     {
-        list.LastAccessed = DateTime.UtcNow;
-        await App.Database.SaveItemAsync(list);
+        await list.UpdateAccessTimeToNow();
 
         var binding = new BookViewModel(list.Id, list.Name);
         binding.AddUiReferences(AddToolBarItem);

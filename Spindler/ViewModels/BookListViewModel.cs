@@ -48,7 +48,7 @@ public partial class BookListViewModel : ObservableObject
         Dictionary<string, object> parameters = new()
         {
             {
-                "booklist", new BookList() {Id = -1}
+                "booklist", new BookList()
             }
         };
         await Shell.Current.GoToAsync($"{nameof(BookListDetailPage)}", parameters);
@@ -59,8 +59,7 @@ public partial class BookListViewModel : ObservableObject
     {
         if (CurrentSelection == null) return;
         var selectedItem = currentSelection;
-        selectedItem!.LastAccessed = DateTime.UtcNow;
-        await App.Database.SaveItemAsync(selectedItem);
+        await selectedItem!.UpdateAccessTimeToNow();
         Dictionary<string, object> parameters = new()
         {
             { "booklist", selectedItem! }
