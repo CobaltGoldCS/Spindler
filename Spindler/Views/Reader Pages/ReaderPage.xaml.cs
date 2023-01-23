@@ -1,8 +1,5 @@
 using Spindler.Models;
-using Spindler.Services;
-using Spindler.Utilities;
 using Spindler.ViewModels;
-using Spindler.Views;
 
 namespace Spindler;
 
@@ -21,12 +18,10 @@ public partial class ReaderPage : ContentPage
 
     private async void LoadBook(Book book)
     {
-        Config? config = await WebService.FindValidConfig(book.Url);
-
         var viewmodel = new ReaderViewModel()
         {
             CurrentBook = book,
-            Config = config
+            Config = book.Config
         };
         viewmodel.AttachReferencesToUI(ReadingLayout, BookmarkItem);
         BindingContext = viewmodel;

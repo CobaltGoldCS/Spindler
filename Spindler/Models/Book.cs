@@ -1,4 +1,7 @@
-﻿using SQLite;
+﻿using HtmlAgilityPack;
+using Java.Net;
+using Spindler.Services;
+using SQLite;
 
 namespace Spindler.Models;
 
@@ -44,6 +47,59 @@ public class Book : IIndexedModel
 
     public double Position { get; set; }
 
+    [Ignore]
+    private Config? config { get; set; }
+
+    [Ignore]
+    public Config? Config
+    {
+        get
+        {
+            if (config is null)
+                FindConfig();
+            return config;
+        }
+    }
+    /// <summary>
+    /// Find a matching config for the given book and store it in <see cref="Book.Config"/>
+    /// </summary>
+    /// <param name="html">An optional string parameter for searching for generalized configs</param>
+    public async void FindConfig(string? html = null)
+    {
+        if (config is not null) return;
+
+        Config c = await App.Database.GetConfigByDomainNameAsync(new UriBuilder(Url).Host);
+
+        if (c != null) config = c;
+        try
+        {
+            HttpClient client = new()
+            {
+                Timeout = new TimeSpan(0, 0, 10)
+            };
+            HtmlDocument doc = new();
+            doc.LoadHtml(html is not null ? html : await client.GetStringAsync(Url));
+
+            // Parallel index through all generalized configs
+            Config? selectedConfig = null;
+            Parallel.ForEach(await App.Database.GetAllItemsAsync<GeneralizedConfig>(), (GeneralizedConfig config, ParallelLoopState state) =>
+            {
+                if (ConfigService.PrettyWrapSelector(doc, new Path(config.MatchPath), ConfigService.SelectorType.Text) != null)
+                {
+                    selectedConfig = config;
+                    state.Stop();
+                }
+            });
+            config =  selectedConfig;
+        }
+        catch (Exception e) when (
+        e is IOException ||
+        e is TaskCanceledException ||
+        e is System.Net.WebException)
+        {
+            config = null;
+        }
+    }
     /// <summary>
     /// Updates <see cref="LastViewed"/> to the current time, and saves booklist in the database.
     /// </summary>

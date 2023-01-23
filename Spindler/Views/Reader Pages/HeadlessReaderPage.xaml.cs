@@ -13,9 +13,8 @@ public partial class HeadlessReaderPage : ContentPage, INotifyPropertyChanged
 {
     // Both of these are guaranteed not null after initial page loading
     WebService? webservice;
-    Config? config;
     LoadedData? loadedData;
-    Book book = new Book();
+    Book book = new();
     public Book Book
     {
         set
@@ -102,17 +101,18 @@ public partial class HeadlessReaderPage : ContentPage, INotifyPropertyChanged
     private async void PageLoaded(object? sender, WebNavigatedEventArgs e)
     {
         // Define Config before accidentally breaking something
-        if (config is null)
+        if (Book.Config is null)
         {
             string html = await GetAndDecodeHtml();
             HtmlDocument doc = new();
             doc.LoadHtml(html);
 
-            config = await WebService.FindValidConfig(Book.Url, html);
-            if (await FailIfNull(config, "There is no valid configuration for this book")) return;
-            webservice = new(config!);
+            Book.FindConfig(html);
+            if (await FailIfNull(Book.Config, "There is no valid configuration for this book")) return;
+            webservice = new(Book.Config!);
 
-            book.ImageUrl = ConfigService.PrettyWrapSelector(doc, new Models.Path(config!.ImageUrlPath), ConfigService.SelectorType.Link) ?? "";
+            if (string.IsNullOrEmpty(Book.ImageUrl))
+                Book.ImageUrl = ConfigService.PrettyWrapSelector(doc, new Models.Path(Book.Config!.ImageUrlPath), ConfigService.SelectorType.Link) ?? "";
         }
 
         var result = e.Result;
@@ -240,7 +240,7 @@ public partial class HeadlessReaderPage : ContentPage, INotifyPropertyChanged
             {
                 await ReadingLayout.ScrollToAsync(ReadingLayout.ScrollX,
                  Math.Clamp(Book!.Position, 0d, 1d) * ReadingLayout.ContentSize.Height,
-                 config!.ExtraConfigs.GetOrDefault("autoscrollanimation", true));
+                 Book.Config!.ExtraConfigs.GetOrDefault("autoscrollanimation", true));
                 Book.Position = 0;
             });
         });
@@ -260,7 +260,7 @@ public partial class HeadlessReaderPage : ContentPage, INotifyPropertyChanged
             Dictionary<string, object> parameters = new()
             {
                 { "errormessage", message },
-                { "config", config! }
+                { "config", Book.Config! }
             };
             await Shell.Current.GoToAsync($"../{nameof(ErrorPage)}", parameters);
         }
