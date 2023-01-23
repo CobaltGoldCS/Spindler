@@ -30,6 +30,11 @@ public class Book : IIndexedModel
     /// </summary>
     public string Url { get; set; } = "";
 
+    /// <summary>
+    /// Image Url of the book image
+    /// </summary>
+    public string ImageUrl { get; set; } = "no_image.jpg";
+
     public bool Pinned { get; set; } = false;
 
     /// <summary>

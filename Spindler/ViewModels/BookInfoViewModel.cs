@@ -15,6 +15,8 @@ namespace Spindler.ViewModels
         Book? book;
 
         [ObservableProperty]
+        string imageUrl = "no_image.jpg";
+
         [ObservableProperty]
         string title = "Loading...";
 
@@ -57,6 +59,8 @@ namespace Spindler.ViewModels
             if (webview) Method = "Web View Reader";
 
             Title = book.Title;
+            ImageUrl = book.ImageUrl;
+
             Domain = config!.DomainName;
             TitleSelectorType = GetPathAsString(config.TitlePath);
             ContentSelectorType = GetPathAsString(config.ContentPath);

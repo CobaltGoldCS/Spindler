@@ -26,7 +26,7 @@
     <ScrollView>
     <Grid RowDefinitions="auto, auto, auto, *"
           BackgroundColor="{AppThemeBinding Dark={StaticResource DarkCardBackground}, Light={StaticResource White}}">
-        <Image  Source="no_image.jpg"
+        <Image  Source="{Binding ImageUrl}"
                 WidthRequest="212"
                 HeightRequest="275"
                 HorizontalOptions="Center"/>

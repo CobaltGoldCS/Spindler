@@ -59,7 +59,8 @@ public partial class BookDetailPage : ContentPage
         {
             Book.Url = urlEntry.Text;
             Book.Title = nameEntry.Text;
-            await App.Database.SaveItemAsync(Book);
+            Book.ImageUrl = imageUrlEntry.Text;
+            await Book.UpdateLastViewedToNow();
         }
         await Close();
     }
