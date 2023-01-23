@@ -45,7 +45,7 @@ namespace Spindler.ViewModels
         bool headless = false;
 
 
-        public void Load(Book book)
+        public async void Load(Book book)
         {
             this.book = book;
             Config? config = await WebService.FindValidConfig(book.Url);
@@ -66,7 +66,7 @@ namespace Spindler.ViewModels
             ContentSelectorType = GetPathAsString(config.ContentPath);
             PreviousSelectorType = GetPathAsString(config.PrevUrlPath);
             NextSelectorType = GetPathAsString(config.NextUrlPath);
-        });
+        }
 
         [RelayCommand]
         public async void ReadClicked()

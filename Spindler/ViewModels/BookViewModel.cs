@@ -141,7 +141,7 @@ namespace Spindler.ViewModels
             PinnedBooksAreVisible = PinnedBooks.Count > 0;
         });
 
-        const int NUM_ITEMS_ADDED_TO_LIST = 9;
+        const int NUM_ITEMS_ADDED_TO_LIST = 100;
         /// <summary>
         /// Method called when the user reaches the end of the displayed books
         /// </summary>
