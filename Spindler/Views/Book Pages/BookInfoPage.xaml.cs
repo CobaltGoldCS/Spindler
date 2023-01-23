@@ -9,6 +9,7 @@ public partial class BookInfoPage : ContentPage
 	public Book Book { set => LoadBook(value); }
 	public BookInfoPage()
 	{
+		// TODO: Implement gaussian blur on image background
 		InitializeComponent();
 		BindingContext = new BookInfoViewModel();
     }

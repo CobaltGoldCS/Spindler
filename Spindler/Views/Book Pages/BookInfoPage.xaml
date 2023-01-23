@@ -25,10 +25,11 @@
     
     <ScrollView>
     <Grid RowDefinitions="auto, auto, auto, *"
-          BackgroundColor="{AppThemeBinding Dark={StaticResource DarkCardBackground}, Light={StaticResource White}}">
+          BackgroundColor="{AppThemeBinding Dark={StaticResource DarkCardBackground}, Light={StaticResource White}}" Padding="0,10,0,0">
         <Image  Source="{Binding ImageUrl}"
-                WidthRequest="212"
-                HeightRequest="275"
+                Aspect="AspectFill"
+                WidthRequest="106"
+                HeightRequest="138"
                 HorizontalOptions="Center"/>
         <Label  x:Name="TitleView"
                 Text="{Binding Title}"
@@ -38,7 +39,7 @@
                 HorizontalTextAlignment="Center"
                 FontAttributes="Bold"
                 FontSize="Title"
-                Padding="5,20,5,25"/>
+                Padding="5,15,5,25"/>
         <Button x:Name="ReadButton"
                 ZIndex="1"
                 WidthRequest="150"

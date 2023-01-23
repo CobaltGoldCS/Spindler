@@ -1,5 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.DependencyInjection;
 using CommunityToolkit.Mvvm.Input;
+using HtmlAgilityPack;
 using Microsoft.Maui;
 using Spindler.Models;
 using Spindler.Services;
@@ -123,6 +125,17 @@ namespace Spindler.ViewModels
             LoadedData? data = await webService.LoadUrl(CurrentBook!.Url);
             if (await FailIfNull(data, "Invalid Url")) return;
             loadedData = data!;
+            // Get image url from load
+            if (string.IsNullOrEmpty(CurrentBook!.ImageUrl))
+            {
+                var html = await webService.HtmlOrError(CurrentBook.Url);
+                
+                if (Result.IsError(html)) return;
+                var doc = new HtmlDocument();
+                doc.LoadHtml(html.AsOk().Value);
+
+                CurrentBook.ImageUrl = ConfigService.PrettyWrapSelector(doc, new Models.Path(Config!.ImageUrlPath), ConfigService.SelectorType.Link) ?? "";
+            }
             DataChanged();
             await DelayScroll();
         }

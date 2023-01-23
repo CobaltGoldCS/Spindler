@@ -108,6 +108,7 @@ public partial class ConfigDetailPage : ContentPage
         config.NextUrlPath = nextEntry.Text;
         config.PrevUrlPath = prevEntry.Text;
         config.TitlePath = titleEntry.Text;
+        config.ImageUrlPath = ConfigService.IsValidSelector(imageEntry.Text) ? imageEntry.Text : "";
 
         await App.Database.SaveItemAsync(config);
         await Shell.Current.GoToAsync("..");

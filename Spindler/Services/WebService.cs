@@ -148,7 +148,7 @@ public class WebService
     /// </summary>
     /// <param name="url">The url to attempt to scrape</param>
     /// <returns>Returns an ErrorOr object either containing the html or an error value string</returns>
-    private async Task<HtmlOrError> HtmlOrError(string url)
+    public async Task<HtmlOrError> HtmlOrError(string url)
     {
         try
         {

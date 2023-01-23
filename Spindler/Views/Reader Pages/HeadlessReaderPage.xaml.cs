@@ -1,4 +1,5 @@
 
+using HtmlAgilityPack;
 using Spindler.Models;
 using Spindler.Services;
 using Spindler.Utilities;
@@ -106,10 +107,14 @@ public partial class HeadlessReaderPage : ContentPage, INotifyPropertyChanged
             var html = await HeadlessBrowser.EvaluateJavaScriptAsync(
             "'<html>'+document.getElementsByTagName('html')[0].innerHTML+'</html>';");
             html = DecodeRawHtml(html);
+            HtmlDocument doc = new();
+            doc.LoadHtml(html);
 
             config = await WebService.FindValidConfig(Book.Url, html);
             if (await FailIfNull(config, "There is no valid configuration for this book")) return;
             webservice = new(config!);
+
+            book.ImageUrl = ConfigService.PrettyWrapSelector(doc, new Models.Path(config!.ImageUrlPath), ConfigService.SelectorType.Link) ?? "";
         }
 
         var result = e.Result;

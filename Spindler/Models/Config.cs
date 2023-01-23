@@ -42,6 +42,11 @@ public class Config : IIndexedModel
     /// </summary>
     public string PrevUrlPath { get; set; } = "";
 
+    /// <summary>
+    /// The path pointing to an image url for any potential book
+    /// </summary>
+    public string ImageUrlPath { get; set; } = "";
+
 
     private string _pathType = "";
     /// <summary>
