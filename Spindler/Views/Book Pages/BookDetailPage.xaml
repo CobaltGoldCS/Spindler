@@ -4,7 +4,6 @@
              x:Class="Spindler.Views.Book_Pages.BookDetailPage"
              xmlns:models="clr-namespace:Spindler.Models"
              xmlns:controls="clr-namespace:Spindler.CustomControls"
-             Shell.PresentationMode="ModalAnimated"
              Title="BookDetailPage">
     <ContentPage.BindingContext>
         <models:Book/>

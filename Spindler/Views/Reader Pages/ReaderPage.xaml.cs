@@ -23,28 +23,6 @@ public partial class ReaderPage : ContentPage
     {
         Config? config = await WebService.FindValidConfig(book.Url);
 
-        var webview = config?.ExtraConfigs.GetOrDefault("webview", false) ?? false;
-        if (webview)
-        {
-            Dictionary<string, object> parameters = new()
-            {
-                { "book", book }
-            };
-            await Shell.Current.GoToAsync($"../{nameof(WebviewReaderPage)}", parameters);
-            return;
-        }
-
-        var headless = config?.ExtraConfigs.GetOrDefault("headless", false) ?? false;
-        if (headless)
-        {
-            Dictionary<string, object> parameters = new()
-            {
-                { "book", book }
-            };
-            await Shell.Current.GoToAsync($"../{nameof(HeadlessReaderPage)}", parameters);
-            return;
-        }
-
         var viewmodel = new ReaderViewModel()
         {
             CurrentBook = book,

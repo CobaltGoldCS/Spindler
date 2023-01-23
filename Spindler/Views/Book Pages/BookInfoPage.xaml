@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Spindler.Views.Book_Pages.BookInfoPage"
+             xmlns:vms="clr-namespace:Spindler.ViewModels"
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             x:DataType="vms:BookInfoViewModel">
+    
+    <Shell.TitleView>
+        <Grid ColumnDefinitions="*, auto">
+            <Label Text="{Binding Title}" Grid.Column="0" FontSize="Large" VerticalOptions="Center" HorizontalOptions="FillAndExpand" TextColor="{StaticResource Primary}"/>
+            <StackLayout Grid.Column="1" HorizontalOptions="EndAndExpand" Orientation="Horizontal" VerticalOptions="Center" Margin="0,0,10,0">
+                <ImageButton x:Name="AddToolBarItem"
+                             HeightRequest="25"
+                             WidthRequest="25"
+                             Source="kebab.svg"
+                             Command="{Binding ModifyClickedCommand}">
+                    <ImageButton.Behaviors>
+                        <toolkit:IconTintColorBehavior TintColor="{AppThemeBinding Dark={StaticResource White}, Light={StaticResource Black}}"/>
+                    </ImageButton.Behaviors>
+                </ImageButton>
+            </StackLayout>
+        </Grid>
+    </Shell.TitleView>
+    
+    <ScrollView>
+    <Grid RowDefinitions="auto, auto, auto, *"
+          BackgroundColor="{AppThemeBinding Dark={StaticResource DarkCardBackground}, Light={StaticResource White}}">
+        <Image  Source="no_image.jpg"
+                WidthRequest="212"
+                HeightRequest="275"
+                HorizontalOptions="Center"/>
+        <Label  x:Name="TitleView"
+                Text="{Binding Title}"
+                Grid.Row="1"
+                BackgroundColor="Transparent"
+                VerticalTextAlignment="Center"
+                HorizontalTextAlignment="Center"
+                FontAttributes="Bold"
+                FontSize="Title"
+                Padding="5,20,5,25"/>
+        <Button x:Name="ReadButton"
+                ZIndex="1"
+                WidthRequest="150"
+                Margin="0,0,0,-20"
+                CornerRadius="10"
+                Grid.Row="2"
+                Text="{Binding Path=Method, StringFormat='Read with \n{}'}"
+                Command="{Binding ReadClickedCommand}"
+        />
+        <Border Padding="0,20,0,0"
+                Grid.Row="3"
+            BackgroundColor="{AppThemeBinding Dark={StaticResource SpaceCadet}, Light={StaticResource LightBackground}}"
+            StrokeThickness="0">
+                <VerticalStackLayout>
+                    <Border 
+                        BackgroundColor="{StaticResource Warning}"
+                        IsVisible="{Binding ConfigIsValid}"
+                        >
+                        <Label Text="Could not find a valid config"/>
+                    </Border>
+                    <TableView>
+                        <TableRoot>
+                            <TableSection Title="Selector Information">
+                                <TextCell Text="Domain Name" Detail="{Binding Domain}"/>
+                                <TextCell Text="Title Selector" Detail="{Binding TitleSelectorType}"/>
+                                <TextCell Text="Content Selector" Detail="{Binding ContentSelectorType}"/>
+                                <TextCell Text="Previous Selector" Detail="{Binding PreviousSelectorType}"/>
+                                <TextCell Text="Next Selector" Detail="{Binding NextSelectorType}"/>
+                            </TableSection>
+                        </TableRoot>
+                    </TableView>
+                </VerticalStackLayout>
+        </Border>
+    </Grid>
+    </ScrollView>
+</ContentPage>

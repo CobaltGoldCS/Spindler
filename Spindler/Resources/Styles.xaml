@@ -46,6 +46,11 @@
         <Setter Property="InputTransparent" Value="True"/>
     </Style>
 
+    <Style TargetType="TextCell">
+        <Setter Property="TextColor" Value="{StaticResource Primary}"/>
+        <Setter Property="DetailColor" Value="{StaticResource Primary}"/>
+    </Style>
+
     <Style TargetType="IndicatorView">
         <Setter Property="IndicatorColor" Value="{AppThemeBinding Light={StaticResource LightGray}, Dark={StaticResource DarkGray}}"/>
         <Setter Property="SelectedIndicatorColor" Value="{AppThemeBinding Light={StaticResource DarkGray}, Dark={StaticResource LightGray}}"/>

@@ -35,6 +35,7 @@ public partial class App : Application
         Routing.RegisterRoute($"{nameof(BookPage)}/{nameof(BookDetailPage)}", typeof(BookDetailPage));
         Routing.RegisterRoute($"{nameof(BookPage)}/{nameof(BookDetailPage)}/{nameof(BookSearcherPage)}", typeof(BookSearcherPage));
 
+        Routing.RegisterRoute($"{nameof(BookPage)}/{nameof(BookInfoPage)}", typeof(BookInfoPage));
         Routing.RegisterRoute($"{nameof(BookPage)}/{nameof(ReaderPage)}", typeof(ReaderPage));
         Routing.RegisterRoute($"{nameof(BookPage)}/{nameof(WebviewReaderPage)}", typeof(WebviewReaderPage));
         Routing.RegisterRoute($"{nameof(BookPage)}/{nameof(HeadlessReaderPage)}", typeof(HeadlessReaderPage));
