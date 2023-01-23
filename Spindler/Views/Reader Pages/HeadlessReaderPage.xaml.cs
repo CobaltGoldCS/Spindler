@@ -104,9 +104,7 @@ public partial class HeadlessReaderPage : ContentPage, INotifyPropertyChanged
         // Define Config before accidentally breaking something
         if (config is null)
         {
-            var html = await HeadlessBrowser.EvaluateJavaScriptAsync(
-            "'<html>'+document.getElementsByTagName('html')[0].innerHTML+'</html>';");
-            html = DecodeRawHtml(html);
+            string html = await GetAndDecodeHtml();
             HtmlDocument doc = new();
             doc.LoadHtml(html);
 
@@ -144,6 +142,7 @@ public partial class HeadlessReaderPage : ContentPage, INotifyPropertyChanged
         HeadlessBrowser.Source = loadedData!.prevUrl;
         await ReadingLayout.ScrollToAsync(ReadingLayout.ScrollX, 0, false);
         PrevVisible = false;
+        NextVisible = false;
     }
 
     private async void NextButton_Clicked(object sender, EventArgs e)
@@ -152,14 +151,13 @@ public partial class HeadlessReaderPage : ContentPage, INotifyPropertyChanged
         Book!.Url = loadedData!.nextUrl!;
         HeadlessBrowser.Source = loadedData!.nextUrl;
         await ReadingLayout.ScrollToAsync(ReadingLayout.ScrollX, 0, false);
+        PrevVisible = false;
         NextVisible = false;
     }
 
     private async Task GetContentAsLoadedData()
     {
-        var html = await HeadlessBrowser.EvaluateJavaScriptAsync(
-            "'<html>'+document.getElementsByTagName('html')[0].innerHTML+'</html>';");
-        html = DecodeRawHtml(html);
+        string html = await GetAndDecodeHtml();
 
         loadedData = await webservice!.LoadWebData(Book!.Url, html);
         if (loadedData.title == "afb-4893")
@@ -174,12 +172,13 @@ public partial class HeadlessReaderPage : ContentPage, INotifyPropertyChanged
     }
     
     /// <summary>
-    /// Decode raw html from webview
+    /// Obtain and decode raw html from <see cref="HeadlessBrowser"/>
     /// </summary>
-    /// <param name="html">Raw output html</param>
-    /// <returns></returns>
-    private static string DecodeRawHtml(string html)
+    /// <returns>Valid html without escape sequences</returns>
+    private async Task<string> GetAndDecodeHtml()
     {
+        string html = await HeadlessBrowser.EvaluateJavaScriptAsync(
+            "'<html>'+document.getElementsByTagName('html')[0].innerHTML+'</html>';") ?? "";
         html = Regex.Unescape(html);
         return html;
     }
@@ -187,8 +186,7 @@ public partial class HeadlessReaderPage : ContentPage, INotifyPropertyChanged
     private int retries = 3;
     private async Task RetryLoadingTextContent()
     {
-        var html = await HeadlessBrowser.EvaluateJavaScriptAsync(
-            "'<html>'+document.getElementsByTagName('html')[0].innerHTML+'</html>';") ?? "";
+        string html = await GetAndDecodeHtml();
         if (retries == 0)
         {
             await FailIfNull(null, "Unable to obtain text content");
