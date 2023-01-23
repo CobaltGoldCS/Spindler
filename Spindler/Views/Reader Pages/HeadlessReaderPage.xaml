@@ -4,13 +4,14 @@
              x:Class="Spindler.Views.HeadlessReaderPage"
              xmlns:controls="clr-namespace:Spindler.CustomControls"
              Shell.TabBarIsVisible="False"
+             Shell.BackgroundColor="{AppThemeBinding Dark={StaticResource DarkCardBackground}, Light={StaticResource White}}"
              x:Name="Headless"
              Title="Loading">
     <ContentPage.ToolbarItems>
         <ToolbarItem Clicked="Bookmark_Clicked" x:Name="BookmarkItem" IconImageSource="bookmark.svg"/>
     </ContentPage.ToolbarItems>
     <ScrollView x:Name="ReadingLayout" Orientation="Vertical" IsEnabled="True" VerticalScrollBarVisibility="Always" >
-        <Grid x:Name="Scroller" VerticalOptions="FillAndExpand" RowDefinitions="auto, auto, auto, *, auto, 0">
+        <Grid x:Name="Scroller" VerticalOptions="FillAndExpand" RowDefinitions="auto,0">
             <!-- The actual setup -->
             <controls:Reader Text="{Binding Source={x:Reference Headless}, Path = Text}"
                          Title="{Binding Source={x:Reference Headless}, Path = ReaderTitle}"

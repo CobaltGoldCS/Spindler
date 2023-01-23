@@ -3,34 +3,59 @@
       xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
       x:Class="Spindler.CustomControls.Reader"
       RowDefinitions="auto, auto, auto, *, auto"
-      x:Name="this">
+      x:Name="this"
+      BackgroundColor="{AppThemeBinding Dark={StaticResource DarkCardBackground}, Light={StaticResource White}}"
+      >
     <Label x:Name="TitleView"
            Text="{Binding Source = {x:Reference this}, Path = Title}"
+           BackgroundColor="{AppThemeBinding Dark={StaticResource DarkCardBackground}, Light={StaticResource White}}"
+           VerticalTextAlignment="Center"
+           HorizontalTextAlignment="Center"
+           FontAttributes="Bold"
            FontSize="Title"
-           Padding="5,0,5,20"/>
+           Padding="5,20,5,25"/>
     <Button x:Name="PrevButton"
             IsVisible="{Binding Source = {x:Reference this}, Path = PrevVisible}"
+            ZIndex="1"
+            WidthRequest="150"
+            Margin="0,0,0,-20"
+            CornerRadius="10"
             Grid.Row="1"
             Text="Previous"
             Clicked="Prev_Clicked"
             Command="{Binding Source = {x:Reference this}, Path = PreviousCommand}"
-            FontSize="Large"
-            HorizontalOptions="FillAndExpand"/>
+            />
     <ActivityIndicator
         IsRunning="{Binding Source = {x:Reference this}, Path = Loading}"
         IsVisible="{Binding Source = {x:Reference this}, Path = Loading}"
         Color="{StaticResource Primary}"
         Grid.Row="2"/>
-    <Label  x:Name="ContentView" Grid.Row="3"
-                    Padding="30,0"
+    
+    <Border 
+        x:Name="TextContainer"
+        StrokeShape="RoundRectangle 40,40,40,40"
+        Padding="0,20,0,0"
+        Grid.Row="3"
+        BackgroundColor="{AppThemeBinding Dark={StaticResource SpaceCadet}, Light={StaticResource LightBackground}}"
+        StrokeThickness="0">
+        <Label  x:Name="TextView" Grid.Row="3"
+                    Padding="30,10"
                     Text="{Binding Source = {x:Reference this}, Path = Text}"
             />
-    <Button x:Name="NextButton"
+    </Border>
+    
+    <ContentView 
+        Grid.Row="4"
+        Padding="0,0,0,10"
+        BackgroundColor="{AppThemeBinding Dark={StaticResource DarkCardBackground}, Light={StaticResource White}}">
+        <Button x:Name="NextButton"
             IsVisible="{Binding Source = {x:Reference this}, Path = NextVisible}"
+            CornerRadius="10"
+            Margin="0,-20,0,0"
+            WidthRequest="150"
             Grid.Row="4"
             Text="Next"
-            FontSize="Large"
-            HorizontalOptions="FillAndExpand"
             Clicked="Next_Clicked"
             Command="{Binding Source = {x:Reference this}, Path = NextCommand}"/>
+    </ContentView>
 </Grid>
