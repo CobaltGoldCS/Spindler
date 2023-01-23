@@ -166,44 +166,30 @@
                         <Grid
                           x:DataType="models:Book"
                           BackgroundColor="{AppThemeBinding Dark={StaticResource DarkCardBackground}, Light={StaticResource LightBackground}}"
-                          ColumnDefinitions="*, 35"
-                          RowDefinitions="55, 2, 45"
+                          ColumnDefinitions="85, *"
+                          RowDefinitions="65, 45"
                           >
+                            <Image Source="{Binding ImageUrl}"
+                                   Aspect="AspectFill"
+                                   Grid.RowSpan="2"/>
                             <Label 
                                 VerticalTextAlignment="Center"
                                 HorizontalTextAlignment="Center"
-                                Grid.ColumnSpan="2"
-                                FontSize="Medium"
+                                Grid.Column="1"
+                                Padding="5,0"
+                                FontSize="18"
                                 x:Name="TitleLabel"
                                 Text="{Binding Title}"
-                                MaxLines="2"
-                                Padding="10,0,5,0"/>
-                            <Line BackgroundColor="{StaticResource LightSpaceCadet}"
-                                  HorizontalOptions="Fill"
-                                  Grid.ColumnSpan="2"
-                                  Grid.Row="1"/>
+                                MaxLines="2"/>
                             <Label x:Name="UrlLabel"
                                    Text="{Binding Url}"
                                    MaxLines="2"
                                    FontSize="Small"
-                                   Grid.Row="2"
+                                   Grid.Column="1"
+                                   Grid.Row="1"
                                    VerticalOptions="Fill"
                                    Padding="10,5,10,0"
                                    TextColor="{AppThemeBinding Dark={StaticResource LightGray}, Light={StaticResource DarkGray}}" />
-                            <ImageButton HorizontalOptions="Center"
-                                             VerticalOptions="Center"
-                                             Grid.Column="1"
-                                             Grid.Row="2"
-                                             Source="kebab.svg"
-                                             Padding="4"
-                                             Aspect="AspectFit"
-                                             x:Name="ConfigButton"
-                                             Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:BookViewModel}}, Path=ConfigButtonCommand}"
-                                             CommandParameter="{Binding}">
-                                <ImageButton.Behaviors>
-                                    <toolkit:IconTintColorBehavior TintColor="{AppThemeBinding Dark={StaticResource White}, Light={StaticResource LightSpaceCadet}}"/>
-                                </ImageButton.Behaviors>
-                            </ImageButton>
                         </Grid>
                     </Border>
                 </DataTemplate>
