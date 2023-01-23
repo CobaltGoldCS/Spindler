@@ -137,9 +137,7 @@ public partial class BookSearcherPage : ContentPage
             "'<html>'+document.getElementsByTagName('html')[0].innerHTML+'</html>';");
         html = Regex.Unescape(html ?? "");
 
-        var book = new Book { Url = !string.IsNullOrEmpty(url) ? url : GetUrlOfBrowser() };
-        book.FindConfig();
-        Config = book.Config;
+        Config = await WebService.FindValidConfig(!string.IsNullOrEmpty(url) ? url : GetUrlOfBrowser(), html);
         if (Config is null) return;
 
         HtmlDocument doc = new();

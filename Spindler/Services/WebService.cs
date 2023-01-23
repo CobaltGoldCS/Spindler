@@ -27,7 +27,6 @@ public class WebService
     /// <summary>
     /// Preload the next and previous urls with valid values into LoadedData
     /// </summary>
-    /// </summary>
     /// <param name="prevUrl">The previous url (will be loaded into index 0)</param>
     /// <param name="nextUrl">The next url (will be loaded into index 1)</param>
     /// <returns>A Task containing a LoadedData array of length 2 [prevdata, nextdata]</returns>
@@ -82,6 +81,45 @@ public class WebService
     {
         bool created = Uri.TryCreate(url, UriKind.RelativeOrAbsolute, out Uri _);
         return created && (url!.StartsWith("http") || url.StartsWith('/'));
+    }
+    /// <summary>
+    /// Find a valid website configuration based on <paramref name="url"/>
+    /// </summary>
+    /// <param name="url">The url of the targeted website (handles http/https)</param>
+    /// <returns>A valid configuration, or null if no valid configuration was found</returns>
+    public static async Task<Config?> FindValidConfig(string url, string? html = null)
+    {
+        Config c = await App.Database.GetConfigByDomainNameAsync(new UriBuilder(url).Host);
+
+        if (c != null) return c;
+        try
+        {
+            HttpClient client = new()
+            {
+                Timeout = new TimeSpan(0, 0, 10)
+            };
+            HtmlDocument doc = new();
+            doc.LoadHtml(html is not null ? html : await client.GetStringAsync(url));
+
+            // Parallel index through all generalized configs
+            Config? selectedConfig = null;
+            Parallel.ForEach(await App.Database.GetAllItemsAsync<GeneralizedConfig>(), (GeneralizedConfig config, ParallelLoopState state) =>
+            {
+                if (ConfigService.PrettyWrapSelector(doc, new Path(config.MatchPath), ConfigService.SelectorType.Text) != null)
+                {
+                    selectedConfig = config;
+                    state.Stop();
+                }
+            });
+            return selectedConfig;
+        }
+        catch (Exception e) when (
+        e is IOException ||
+        e is TaskCanceledException ||
+        e is System.Net.WebException)
+        {
+            return null;
+        }
     }
     #endregion
 

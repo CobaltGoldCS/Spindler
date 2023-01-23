@@ -48,12 +48,12 @@ namespace Spindler.ViewModels
         public void Load(Book book) => Task.Run(async () =>
         {
             this.book = book;
-            book.FindConfig();
-            configIsValid = book.Config is not null;
+            Config? config = await WebService.FindValidConfig(book.Url);
+            configIsValid = config is not null;
             if (!configIsValid) return;
 
-            webview = book.Config?.ExtraConfigs.GetOrDefault("webview", false) ?? false;
-            headless = book.Config?.ExtraConfigs.GetOrDefault("headless", false) ?? false;
+            webview = config?.ExtraConfigs.GetOrDefault("webview", false) ?? false;
+            headless = config?.ExtraConfigs.GetOrDefault("headless", false) ?? false;
 
             if (headless) Method = "Headless Reader";
             if (webview) Method = "Web View Reader";
@@ -61,11 +61,11 @@ namespace Spindler.ViewModels
             Title = book.Title;
             ImageUrl = book.ImageUrl;
 
-            Domain = book.Config!.DomainName;
-            TitleSelectorType = GetPathAsString(book.Config.TitlePath);
-            ContentSelectorType = GetPathAsString(book.Config.ContentPath);
-            PreviousSelectorType = GetPathAsString(book.Config.PrevUrlPath);
-            NextSelectorType = GetPathAsString(book.Config.NextUrlPath);
+            Domain = config!.DomainName;
+            TitleSelectorType = GetPathAsString(config.TitlePath);
+            ContentSelectorType = GetPathAsString(config.ContentPath);
+            PreviousSelectorType = GetPathAsString(config.PrevUrlPath);
+            NextSelectorType = GetPathAsString(config.NextUrlPath);
         });
 
         [RelayCommand]
