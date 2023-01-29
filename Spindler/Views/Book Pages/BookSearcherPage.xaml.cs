@@ -9,8 +9,10 @@ using System.Text.RegularExpressions;
 namespace Spindler.Views.Book_Pages;
 
 [QueryProperty(nameof(BooklistId), "bookListId")]
+[QueryProperty(nameof(InitialSource), "source")]
 public partial class BookSearcherPage : ContentPage
 {
+    #region Page Properties
     /// <summary>
     /// The current state of the Book Searcher Page. 
     /// Whether a book is found, saved, or not detected.
@@ -51,6 +53,20 @@ public partial class BookSearcherPage : ContentPage
             OnPropertyChanged();
         }
     }
+    #endregion
+
+    #region Initialization
+    /// <summary>
+    /// Initial loader variable for setting url when book searcher page is navigated to 
+    /// </summary>
+    public string InitialSource
+    {
+        set
+        {
+            Source = value;
+            Return();
+        }
+    }
 
 
     public BookSearcherPage()
@@ -84,6 +100,7 @@ public partial class BookSearcherPage : ContentPage
                 break;
         }
     }
+    #endregion
 
     /// <summary>
     /// Gets the Url that the <see cref="SearchBrowser"/> believes is the source
@@ -92,6 +109,7 @@ public partial class BookSearcherPage : ContentPage
     /// <seealso cref="UrlWebViewSource"/>
     private string GetUrlOfBrowser() => ((UrlWebViewSource)SearchBrowser.Source).Url;
 
+    #region Browser Event Handlers
     /// <summary>
     /// An event handler that triggers when a page is fully loaded by <see cref="SearchBrowser"/>
     /// </summary>
@@ -123,7 +141,9 @@ public partial class BookSearcherPage : ContentPage
         SwitchUiBasedOnState(State.BookNotFound);
         await SearchProgress.ProgressTo(0, 0, Easing.BounceOut);
     }
+    #endregion
 
+    #region Click Event Handlers
     /// <summary>
     /// Check if this website matches any of the user defined configurations for a book, and update the user interface if it does
     /// </summary>
@@ -237,5 +257,5 @@ public partial class BookSearcherPage : ContentPage
         SearchBrowser.Source = source;
         IsLoading = true;
     }
-
+    #endregion
 }
