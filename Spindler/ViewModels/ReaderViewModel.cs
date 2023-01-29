@@ -126,7 +126,7 @@ namespace Spindler.ViewModels
             if (await FailIfNull(data, "Invalid Url")) return;
             loadedData = data!;
             // Get image url from load
-            if (string.IsNullOrEmpty(CurrentBook!.ImageUrl))
+            if (string.IsNullOrEmpty(CurrentBook!.ImageUrl) || CurrentBook!.ImageUrl == "no_image.jpg")
             {
                 var html = await webService.HtmlOrError(CurrentBook.Url);
                 

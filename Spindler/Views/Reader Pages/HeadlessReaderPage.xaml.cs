@@ -112,7 +112,7 @@ public partial class HeadlessReaderPage : ContentPage, INotifyPropertyChanged
             if (await FailIfNull(config, "There is no valid configuration for this book")) return;
             webservice = new(config!);
 
-            if (string.IsNullOrEmpty(book.ImageUrl))
+            if (string.IsNullOrEmpty(book.ImageUrl) || book!.ImageUrl == "no_image.jpg")
                 book.ImageUrl = ConfigService.PrettyWrapSelector(doc, new Models.Path(config!.ImageUrlPath), ConfigService.SelectorType.Link) ?? "";
         }
 
