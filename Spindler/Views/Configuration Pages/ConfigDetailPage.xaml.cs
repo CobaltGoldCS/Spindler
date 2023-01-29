@@ -30,15 +30,6 @@ public partial class ConfigDetailPage : ContentPage
     {
         if (config.Id < 0)
         {
-            /*config = new Config
-            {
-                Id = -1,
-                DomainName = "",
-                ContentPath = "",
-                NextUrlPath = "",
-                PrevUrlPath = "",
-                TitlePath = "",
-            };*/
             AddButtonGroup.OkText = "Add";
             Title = "Add a new Config";
         }
@@ -63,12 +54,9 @@ public partial class ConfigDetailPage : ContentPage
     {
         InitializeComponent();
 
-        domainEntry.Behaviors.Add(new TextValidationBehavior((string value) =>
-        {
-            return domainValidationRegex.IsMatch(value);
-        }));
+        domainEntry.Behaviors.Add(new TextValidationBehavior(domainValidationRegex.IsMatch));
 
-        TextValidationBehavior validSelectorBehavior = new((string value) => ConfigService.IsValidSelector(value));
+        TextValidationBehavior validSelectorBehavior = new(ConfigService.IsValidSelector);
         contentEntry.Behaviors.Add(validSelectorBehavior);
         nextEntry.Behaviors.Add(validSelectorBehavior);
         prevEntry.Behaviors.Add(validSelectorBehavior);
