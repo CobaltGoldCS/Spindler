@@ -38,6 +38,9 @@
         </Grid>
         <TableView Grid.Row="1" Grid.ColumnSpan="3" VerticalOptions="StartAndExpand">
             <TableRoot>
+                <TableSection Title="Extra Configuration Options">
+                    <EntryCell x:Name="imageEntry" Label="Image Url Path" Text="{Binding ImageUrlPath}"/>
+                </TableSection>
                 <TableSection Title="Web View">
                     <SwitchCell x:Name="switchWebView" Text="Use Web View for Viewing this website" On="False" />
                 </TableSection>

@@ -88,21 +88,14 @@ public partial class GeneralizedConfigDetailPage : ContentPage
                             .Replace(@"\t", "     ")},
             { "headless", headlessSwitch.On },
         };
-
-        config.DomainName = domainEntry.Text;
-        config.ContentPath = contentEntry.Text;
-        config.NextUrlPath = nextEntry.Text;
-        config.PrevUrlPath = prevEntry.Text;
-        config.TitlePath = titleEntry.Text;
+        if (!ConfigService.IsValidSelector(config.ImageUrlPath))
+            config.ImageUrlPath = "";
 
         await App.Database.SaveItemAsync(config);
         await Shell.Current.GoToAsync("..");
     }
 
-    private async void Cancel_Clicked(object sender, EventArgs e)
-    {
-        await Shell.Current.GoToAsync("..");
-    }
+    private async void Cancel_Clicked(object sender, EventArgs e) => await Shell.Current.GoToAsync("..");
 
     #endregion
 }

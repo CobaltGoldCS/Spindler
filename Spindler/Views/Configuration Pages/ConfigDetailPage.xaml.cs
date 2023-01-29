@@ -91,12 +91,8 @@ public partial class ConfigDetailPage : ContentPage
             { "headless", headlessSwitch.On },
         };
 
-        config.DomainName = domainEntry.Text;
-        config.ContentPath = contentEntry.Text;
-        config.NextUrlPath = nextEntry.Text;
-        config.PrevUrlPath = prevEntry.Text;
-        config.TitlePath = titleEntry.Text;
-        config.ImageUrlPath = ConfigService.IsValidSelector(imageEntry.Text) ? imageEntry.Text : "";
+        if (!ConfigService.IsValidSelector(config.ImageUrlPath))
+            config.ImageUrlPath = "";
 
         await App.Database.SaveItemAsync(config);
         await Shell.Current.GoToAsync("..");
