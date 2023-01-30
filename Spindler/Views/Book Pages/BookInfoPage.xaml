@@ -9,7 +9,7 @@
     
     <Shell.TitleView>
         <Grid ColumnDefinitions="*, auto">
-            <Label Text="{Binding Title}" Grid.Column="0" FontSize="Large" VerticalOptions="Center" HorizontalOptions="FillAndExpand" TextColor="{StaticResource Primary}"/>
+            <Label Text="{Binding Title}" Grid.Column="0" FontSize="Large" VerticalOptions="Center" HorizontalOptions="FillAndExpand" TextColor="{StaticResource Primary}" MaxLines="2"/>
             <StackLayout Grid.Column="1" HorizontalOptions="EndAndExpand" Orientation="Horizontal" VerticalOptions="Center" Margin="0,0,10,0">
                 <ImageButton x:Name="AddToolBarItem"
                              HeightRequest="25"

@@ -45,7 +45,7 @@ namespace Spindler.ViewModels
         bool headless = false;
 
 
-        public async void Load(Book book)
+        public async Task Load(Book book)
         {
             this.book = book;
             Config? config = await WebService.FindValidConfig(book.Url);

@@ -16,8 +16,8 @@ public partial class BookInfoPage : ContentPage
 		BindingContext = ViewModel;
     }
 
-	private void LoadBook(Book book)
+	private async void LoadBook(Book book)
 	{
-		ViewModel.Load(book);
+		await ViewModel.Load(book);
     }
 }
