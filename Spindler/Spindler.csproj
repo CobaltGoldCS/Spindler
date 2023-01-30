@@ -133,6 +133,9 @@
 	  <Compile Update="Views\Configuration Pages\GeneralizedConfigDetailPage.xaml.cs">
 	    <DependentUpon>GeneralizedConfigDetailPage.xaml</DependentUpon>
 	  </Compile>
+	  <Compile Update="Views\Reader Pages\StandardReaderPage.xaml.cs">
+	    <DependentUpon>StandardReaderPage.xaml</DependentUpon>
+	  </Compile>
 	</ItemGroup>
 
 	<ItemGroup>
@@ -178,7 +181,7 @@
 	  <MauiXaml Update="Views\Reader Pages\HeadlessReaderPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
-	  <MauiXaml Update="Views\Reader Pages\ReaderPage.xaml">
+	  <MauiXaml Update="Views\Reader Pages\StandardReaderPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="Views\SettingsPage.xaml">

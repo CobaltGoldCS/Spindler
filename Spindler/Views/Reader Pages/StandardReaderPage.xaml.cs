@@ -7,7 +7,7 @@ using Spindler.Views;
 namespace Spindler;
 
 [QueryProperty(nameof(Book), "book")]
-public partial class ReaderPage : ContentPage
+public partial class StandardReaderPage : ContentPage
 {
 
     #region QueryProperty Handler
@@ -23,7 +23,7 @@ public partial class ReaderPage : ContentPage
     {
         Config? config = await WebService.FindValidConfig(book.Url);
 
-        var viewmodel = new ReaderViewModel()
+        var viewmodel = new StandardReaderViewModel()
         {
             CurrentBook = book,
             Config = config
@@ -33,7 +33,7 @@ public partial class ReaderPage : ContentPage
         await viewmodel.StartLoad();
     }
     #endregion
-    public ReaderPage()
+    public StandardReaderPage()
     {
         InitializeComponent();
     }

@@ -76,7 +76,7 @@ namespace Spindler.ViewModels
                 { "book", book! }
             };
 
-            string pageName = nameof(ReaderPage);
+            string pageName = nameof(StandardReaderPage);
             if (webview)
             {
                 pageName = nameof(WebviewReaderPage);

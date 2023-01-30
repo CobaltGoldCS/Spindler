@@ -8,7 +8,7 @@ using Spindler.Views;
 using Spindler.Views.Reader_Pages;
 namespace Spindler.ViewModels
 {
-    public partial class ReaderViewModel : ObservableObject, IReader
+    public partial class StandardReaderViewModel : ObservableObject, IReader
     {
         #region Class Attributes
         private WebService? _webservice = null;
@@ -109,7 +109,7 @@ namespace Spindler.ViewModels
         #endregion
 
         #region Initialization Functions
-        public ReaderViewModel()
+        public StandardReaderViewModel()
         { 
             IsLoading = true;
             title = "";
