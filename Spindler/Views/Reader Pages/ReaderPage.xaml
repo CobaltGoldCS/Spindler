@@ -15,7 +15,7 @@
     </ContentPage.BindingContext>
 
     <Shell.TitleView>
-        <Grid ColumnDefinitions="*, auto">
+        <Grid ColumnDefinitions="*, auto" BackgroundColor="{AppThemeBinding Dark={StaticResource DarkCardBackground}, Light={StaticResource White}}">
 
             <Label Text="{Binding Title}"
                    Grid.Column="0"
