@@ -1,20 +1,18 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
-using CommunityToolkit.Mvvm.DependencyInjection;
 using CommunityToolkit.Mvvm.Input;
 using HtmlAgilityPack;
-using Microsoft.Maui;
 using Spindler.Models;
 using Spindler.Services;
 using Spindler.Utilities;
 using Spindler.Views;
-using System.Windows.Input;
+using Spindler.Views.Reader_Pages;
 namespace Spindler.ViewModels
 {
-    public partial class ReaderViewModel : ObservableObject
+    public partial class ReaderViewModel : ObservableObject, IReader
     {
         #region Class Attributes
         private WebService? _webservice = null;
-        private WebService webService
+        private WebService WebService
         {
             get
             {
@@ -122,13 +120,13 @@ namespace Spindler.ViewModels
         public async Task StartLoad()
         {
             if (await FailIfNull(Config, "Configuration does not exist")) return;
-            LoadedData? data = await webService.LoadUrl(CurrentBook!.Url);
+            LoadedData? data = await WebService.LoadUrl(CurrentBook!.Url);
             if (await FailIfNull(data, "Invalid Url")) return;
             loadedData = data!;
             // Get image url from load
             if (string.IsNullOrEmpty(CurrentBook!.ImageUrl) || CurrentBook!.ImageUrl == "no_image.jpg")
             {
-                var html = await webService.HtmlOrError(CurrentBook.Url);
+                var html = await WebService.HtmlOrError(CurrentBook.Url);
                 
                 if (Result.IsError(html)) return;
                 var doc = new HtmlDocument();
@@ -147,20 +145,6 @@ namespace Spindler.ViewModels
         {
             ReadingLayout = readingLayout;
             BookmarkButton = bookmarkButton;
-        }
-
-        public async void OnShellNavigated(object? sender,
-                           ShellNavigatingEventArgs e)
-        {
-            if (e.Current.Location.OriginalString == "//BookLists/BookPage/ReaderPage")
-            {
-                if (CurrentBook != null)
-                {
-                    CurrentBook.Position = ReadingLayout!.ScrollY / ReadingLayout.ContentSize.Height;
-                    await App.Database.SaveItemAsync(CurrentBook);
-                }
-            }
-            Shell.Current.Navigating -= OnShellNavigated;
         }
         #endregion
 
@@ -189,7 +173,7 @@ namespace Spindler.ViewModels
             OnPropertyChanged(nameof(NextButtonIsVisible));
             OnPropertyChanged(nameof(PrevButtonIsVisible));
 
-            PreloadDataTask = webService.LoadData(loadedData.prevUrl, loadedData.nextUrl);
+            PreloadDataTask = WebService.LoadData(loadedData.prevUrl, loadedData.nextUrl);
             IsLoading = false;
         }
 
@@ -208,14 +192,23 @@ namespace Spindler.ViewModels
 
             });
         }
+
+        public async void OnShellNavigated(object? sender,
+                           ShellNavigatingEventArgs e)
+        {
+            if (e.Current.Location.OriginalString == "//BookLists/BookPage/ReaderPage")
+            {
+                if (CurrentBook != null)
+                {
+                    CurrentBook.Position = ReadingLayout!.ScrollY / ReadingLayout.ContentSize.Height;
+                    await App.Database.SaveItemAsync(CurrentBook);
+                }
+            }
+            Shell.Current.Navigating -= OnShellNavigated;
+        }
+
         #region Error Handlers
-        /// <summary>
-        /// Display <paramref name="message"/> if <paramref name="value"/> is <c>null</c>
-        /// </summary>
-        /// <param name="value">The value to check for nullability</param>
-        /// <param name="message">The value to display</param>
-        /// <returns>If the object is null or not</returns>
-        private async Task<bool> FailIfNull(object? value, string message)
+        public async Task<bool> FailIfNull(object? value, string message)
         {
             bool nullobj = value == null;
             if (nullobj)

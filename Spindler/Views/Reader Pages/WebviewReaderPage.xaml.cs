@@ -1,9 +1,10 @@
 using Spindler.Models;
+using Spindler.Views.Reader_Pages;
 
 namespace Spindler.Views;
 
 [QueryProperty(nameof(Book), "book")]
-public partial class WebviewReaderPage : ContentPage
+public partial class WebviewReaderPage : ContentPage, IReader
 {
     #region Class Attributes
     Book? book;
@@ -45,18 +46,6 @@ public partial class WebviewReaderPage : ContentPage
         forwardButton.IsEnabled = ReaderBrowser.CanGoForward;
     }
 
-    // FIXME: This does not handle android back buttons
-    public async void OnShellNavigated(object? sender,
-                           ShellNavigatingEventArgs e)
-    {
-        if (e.Current.Location.OriginalString == "//BookLists/BookPage/WebviewReaderPage")
-        {
-            await App.Database.SaveItemAsync(Book!);
-        }
-        Shell.Current.Navigating -= OnShellNavigated;
-        ReaderBrowser.Navigated -= WebViewOnNavigated;
-    }
-
     private void Back_Clicked(object sender, EventArgs e)
     {
         if (!ReaderBrowser.CanGoBack) return;
@@ -73,4 +62,20 @@ public partial class WebviewReaderPage : ContentPage
         if (!ReaderBrowser.CanGoForward) return;
         ReaderBrowser.GoForward();
     }
+
+    public async void OnShellNavigated(object? sender,
+                           ShellNavigatingEventArgs e)
+    {
+        if (e.Current.Location.OriginalString == "//BookLists/BookPage/WebviewReaderPage")
+        {
+            await App.Database.SaveItemAsync(Book!);
+        }
+        Shell.Current.Navigating -= OnShellNavigated;
+        ReaderBrowser.Navigated -= WebViewOnNavigated;
+    }
+
+    // There are never any meaningful null values in WebviewReaderPage
+#pragma warning disable CS1998 
+    public async Task<bool> FailIfNull(object? value, string message) => false;
+#pragma warning restore CS1998
 }

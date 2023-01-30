@@ -1,15 +1,15 @@
-
 using HtmlAgilityPack;
 using Spindler.Models;
 using Spindler.Services;
 using Spindler.Utilities;
+using Spindler.Views.Reader_Pages;
 using System.ComponentModel;
 using System.Text.RegularExpressions;
 
 namespace Spindler.Views;
 
 [QueryProperty(nameof(Book), "book")]
-public partial class HeadlessReaderPage : ContentPage, INotifyPropertyChanged
+public partial class HeadlessReaderPage : ContentPage, INotifyPropertyChanged, IReader
 {
     // Both of these are guaranteed not null after initial page loading
     WebService? webservice;
@@ -196,7 +196,7 @@ public partial class HeadlessReaderPage : ContentPage, INotifyPropertyChanged
         Task.Delay(500).Wait();
         retries--;
         // Check for cloudflare and increase retry count if it is found
-        var doc = new HtmlAgilityPack.HtmlDocument();
+        var doc = new HtmlDocument();
         doc.LoadHtml(html);
         if (ConfigService.CssElementHandler(doc, "h2.challenge-running", ConfigService.SelectorType.Text) is not null) retries = 3;
         await GetContentAsLoadedData();
@@ -247,13 +247,7 @@ public partial class HeadlessReaderPage : ContentPage, INotifyPropertyChanged
         });
     }
 
-    /// <summary>
-    /// Display <paramref name="message"/> if <paramref name="value"/> is <c>null</c>
-    /// </summary>
-    /// <param name="value">The value to check for nullability</param>
-    /// <param name="message">The message to display</param>
-    /// <returns>If the object is null or not</returns>
-    private async Task<bool> FailIfNull(object? value, string message)
+    public async Task<bool> FailIfNull(object? value, string message)
     {
         bool nullobj = value == null;
         if (nullobj)
