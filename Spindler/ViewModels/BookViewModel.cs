@@ -124,7 +124,7 @@ namespace Spindler.ViewModels
             {
                 { "book", CurrentPinnedBookSelection}
             };
-            await Shell.Current.GoToAsync($"{nameof(ReaderPage)}", parameters);
+            await Shell.Current.GoToAsync($"{nameof(BookInfoPage)}", parameters);
             executing = false;
             CurrentPinnedBookSelection = null;
         }
