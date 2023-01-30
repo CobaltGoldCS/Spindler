@@ -5,6 +5,7 @@
              xmlns:vms="clr-namespace:Spindler.ViewModels"
              xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
              xmlns:controls="clr-namespace:Spindler.CustomControls"
+             xmlns:behaviors="clr-namespace:Spindler.Behaviors"
              x:DataType="vms:BookInfoViewModel">
     
     <Shell.TitleView>
@@ -25,47 +26,59 @@
     </Shell.TitleView>
     
     <ScrollView>
-    <Grid RowDefinitions="auto, auto, auto, *"
-          BackgroundColor="{AppThemeBinding Dark={StaticResource DarkCardBackground}, Light={StaticResource White}}" Padding="0,10,0,0">
-        <Image  Source="{Binding ImageUrl}"
-                Aspect="AspectFill"
-                WidthRequest="106"
-                HeightRequest="138"
-                HorizontalOptions="Center"/>
-        <Label  x:Name="TitleView"
-                Text="{Binding Title}"
-                Grid.Row="1"
-                BackgroundColor="Transparent"
-                VerticalTextAlignment="Center"
-                HorizontalTextAlignment="Center"
-                FontAttributes="Bold"
-                FontSize="Title"
-                Padding="5,15,5,25"/>
-        <Button x:Name="ReadButton"
-                ZIndex="1"
-                WidthRequest="150"
-                Margin="0,0,0,-20"
-                CornerRadius="10"
-                Grid.Row="2"
-                Text="{Binding Path=Method, StringFormat='Read with \n{}'}"
-                Command="{Binding ReadClickedCommand}"
-        />
-        <Border Padding="0,20,0,0"
-                Grid.Row="3"
-            BackgroundColor="{AppThemeBinding Dark={StaticResource SpaceCadet}, Light={StaticResource LightBackground}}"
-            StrokeThickness="0">
-                <TableView>
-                    <TableRoot>
-                        <TableSection Title="Selector Information" TextColor="{StaticResource Primary}">
-                            <TextCell Detail="Domain Name" Text="Domain Name" TextColor="{StaticResource Primary}"/>
-                            <TextCell Text="Title Selector" Detail="{Binding TitleSelectorType}" TextColor="{StaticResource Primary}"/>
-                            <TextCell Text="Content Selector" Detail="{Binding ContentSelectorType}" TextColor="{StaticResource Primary}"/>
-                            <TextCell Text="Previous Selector" Detail="{Binding PreviousSelectorType}" TextColor="{StaticResource Primary}"/>
-                            <TextCell Text="Next Selector" Detail="{Binding NextSelectorType}" TextColor="{StaticResource Primary}"/>
-                        </TableSection>
-                    </TableRoot>
-                </TableView>
-            </Border>
-    </Grid>
+        <Grid>
+            <Image Source="{Binding ImageUrl}" Aspect="AspectFill" Margin="1" >
+                <Image.Behaviors>
+                    <behaviors:BlurBehavior Radius="5"/>
+                </Image.Behaviors>
+                
+            </Image>
+            <Grid RowDefinitions="auto, auto, auto, *"
+                Padding="0,0,0,0" Background="transparent">
+                <Image  Source="{Binding ImageUrl}"
+                        Aspect="AspectFill"
+                        WidthRequest="106"
+                        HeightRequest="138"
+                        HorizontalOptions="Center"/>
+                <Label  x:Name="TitleView"
+                        Text="{Binding Title}"
+                        Grid.Row="1"
+                        BackgroundColor="Transparent"
+                        VerticalTextAlignment="Center"
+                        HorizontalTextAlignment="Center"
+                        FontAttributes="Bold"
+                        FontSize="Title"
+                        Padding="5,15,5,25">
+                    <Label.Shadow>
+                        <Shadow Offset="10,10" Brush="Black" Radius="30" Opacity="1"/>
+                    </Label.Shadow>
+                </Label>
+                <Button x:Name="ReadButton"
+                        ZIndex="1"
+                        WidthRequest="150"
+                        Margin="0,0,0,-20"
+                        CornerRadius="10"
+                        Grid.Row="2"
+                        Text="{Binding Path=Method, StringFormat='Read with \n{}'}"
+                        Command="{Binding ReadClickedCommand}"
+                />      
+                <Border Padding="0,20,0,0" HorizontalOptions="Fill"
+                        Grid.Row="3"
+                        BackgroundColor="{AppThemeBinding Dark={StaticResource SpaceCadet}, Light={StaticResource LightBackground}}"
+                        StrokeThickness="0">
+                    <TableView>
+                        <TableRoot>
+                            <TableSection Title="Selector Information" TextColor="{StaticResource Primary}">
+                                <TextCell Detail="Domain Name" Text="Domain Name" TextColor="{StaticResource Primary}"/>
+                                <TextCell Text="Title Selector" Detail="{Binding TitleSelectorType}" TextColor="{StaticResource Primary}"/>
+                                <TextCell Text="Content Selector" Detail="{Binding ContentSelectorType}" TextColor="{StaticResource Primary}"/>
+                                <TextCell Text="Previous Selector" Detail="{Binding PreviousSelectorType}" TextColor="{StaticResource Primary}"/>
+                                <TextCell Text="Next Selector" Detail="{Binding NextSelectorType}" TextColor="{StaticResource Primary}"/>
+                            </TableSection>
+                        </TableRoot>
+                    </TableView>
+                </Border>
+            </Grid>
+        </Grid>
     </ScrollView>
 </ContentPage>

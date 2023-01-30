@@ -50,7 +50,12 @@ namespace Spindler.ViewModels
             this.book = book;
             Config? config = await WebService.FindValidConfig(book.Url);
             configIsValid = config is not null;
-            if (!configIsValid) return;
+            if (!configIsValid)
+            {
+                // This is for general configurations where the FindValidConfig call may fail due to a 403 forbidden or the sort
+                headless = true;
+                return;
+            }
 
             webview = config?.ExtraConfigs.GetOrDefault("webview", false) ?? false;
             headless = config?.ExtraConfigs.GetOrDefault("headless", false) ?? false;
