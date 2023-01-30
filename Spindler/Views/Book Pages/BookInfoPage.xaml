@@ -4,6 +4,7 @@
              x:Class="Spindler.Views.Book_Pages.BookInfoPage"
              xmlns:vms="clr-namespace:Spindler.ViewModels"
              xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             xmlns:controls="clr-namespace:Spindler.CustomControls"
              x:DataType="vms:BookInfoViewModel">
     
     <Shell.TitleView>
@@ -62,12 +63,12 @@
                     </Border>
                     <TableView>
                         <TableRoot>
-                            <TableSection Title="Selector Information">
-                                <TextCell Text="Domain Name" Detail="{Binding Domain}"/>
-                                <TextCell Text="Title Selector" Detail="{Binding TitleSelectorType}"/>
-                                <TextCell Text="Content Selector" Detail="{Binding ContentSelectorType}"/>
-                                <TextCell Text="Previous Selector" Detail="{Binding PreviousSelectorType}"/>
-                                <TextCell Text="Next Selector" Detail="{Binding NextSelectorType}"/>
+                            <TableSection Title="Selector Information" TextColor="{StaticResource Primary}">
+                                <controls:DetailTextCell DetailText="Domain Name" Text="{Binding Domain}"/>
+                                <controls:DetailTextCell DetailText="Title Selector" Text="{Binding TitleSelectorType}"/>
+                                <controls:DetailTextCell DetailText="Content Selector" Text="{Binding ContentSelectorType}"/>
+                                <controls:DetailTextCell DetailText="Previous Selector" Text="{Binding PreviousSelectorType}"/>
+                                <controls:DetailTextCell DetailText="Next Selector" Text="{Binding NextSelectorType}"/>
                             </TableSection>
                         </TableRoot>
                     </TableView>

@@ -38,16 +38,16 @@
         </Grid>
         <TableView Grid.Row="1" Grid.ColumnSpan="3" VerticalOptions="StartAndExpand">
             <TableRoot>
-                <TableSection Title="Extra Configuration Options">
+                <TableSection Title="Extra Configuration Options" TextColor="{StaticResource Primary}">
                     <EntryCell x:Name="imageEntry" Label="Image Url Path" Text="{Binding ImageUrlPath}"/>
                 </TableSection>
-                <TableSection Title="Web View">
-                    <SwitchCell x:Name="switchWebView" Text="Use Web View for Viewing this website" On="False" />
+                <TableSection Title="Web View" TextColor="{StaticResource Primary}">
+                    <controls:CustomSwitchCell x:Name="switchWebView" Text="Use Web View for Viewing this website" On="False" />
                 </TableSection>
-                <TableSection Title="Reader View">
+                <TableSection Title="Reader View" TextColor="{StaticResource Primary}">
                     <EntryCell x:Name="separatorEntry" Label="The Separator between p tags"/>
-                    <SwitchCell x:Name="animationSwitch" Text="Animated Autoscroll" On="True"/>
-                    <SwitchCell x:Name="headlessSwitch" Text="Enable headless mode (increased compatability, decreased performance)"/>
+                    <controls:CustomSwitchCell x:Name="animationSwitch" Text="Animated Autoscroll" On="True"/>
+                    <controls:CustomSwitchCell x:Name="headlessSwitch" Text="Enable headless mode (increased compatability, decreased performance)"/>
                 </TableSection>
             </TableRoot>
         </TableView>

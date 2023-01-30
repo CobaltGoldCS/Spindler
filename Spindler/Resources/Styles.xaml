@@ -51,6 +51,14 @@
         <Setter Property="DetailColor" Value="{StaticResource Primary}"/>
     </Style>
 
+    <Style TargetType="SwitchCell">
+        <Setter Property="OnColor" Value="{StaticResource Primary}"/>
+    </Style>
+
+    <Style TargetType="EntryCell">
+        <Setter Property="LabelColor" Value="{StaticResource Primary}"/>
+    </Style>
+
     <Style TargetType="IndicatorView">
         <Setter Property="IndicatorColor" Value="{AppThemeBinding Light={StaticResource LightGray}, Dark={StaticResource DarkGray}}"/>
         <Setter Property="SelectedIndicatorColor" Value="{AppThemeBinding Light={StaticResource DarkGray}, Dark={StaticResource LightGray}}"/>
