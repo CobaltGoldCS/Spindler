@@ -54,26 +54,18 @@
                 Grid.Row="3"
             BackgroundColor="{AppThemeBinding Dark={StaticResource SpaceCadet}, Light={StaticResource LightBackground}}"
             StrokeThickness="0">
-                <VerticalStackLayout>
-                    <Border 
-                        BackgroundColor="{StaticResource Warning}"
-                        IsVisible="{Binding ConfigIsValid}"
-                        >
-                        <Label Text="Could not find a valid config"/>
-                    </Border>
-                    <TableView>
-                        <TableRoot>
-                            <TableSection Title="Selector Information" TextColor="{StaticResource Primary}">
-                                <controls:DetailTextCell DetailText="Domain Name" Text="{Binding Domain}"/>
-                                <controls:DetailTextCell DetailText="Title Selector" Text="{Binding TitleSelectorType}"/>
-                                <controls:DetailTextCell DetailText="Content Selector" Text="{Binding ContentSelectorType}"/>
-                                <controls:DetailTextCell DetailText="Previous Selector" Text="{Binding PreviousSelectorType}"/>
-                                <controls:DetailTextCell DetailText="Next Selector" Text="{Binding NextSelectorType}"/>
-                            </TableSection>
-                        </TableRoot>
-                    </TableView>
-                </VerticalStackLayout>
-        </Border>
+                <TableView>
+                    <TableRoot>
+                        <TableSection Title="Selector Information" TextColor="{StaticResource Primary}">
+                            <TextCell Detail="Domain Name" Text="Domain Name" TextColor="{StaticResource Primary}"/>
+                            <TextCell Text="Title Selector" Detail="{Binding TitleSelectorType}" TextColor="{StaticResource Primary}"/>
+                            <TextCell Text="Content Selector" Detail="{Binding ContentSelectorType}" TextColor="{StaticResource Primary}"/>
+                            <TextCell Text="Previous Selector" Detail="{Binding PreviousSelectorType}" TextColor="{StaticResource Primary}"/>
+                            <TextCell Text="Next Selector" Detail="{Binding NextSelectorType}" TextColor="{StaticResource Primary}"/>
+                        </TableSection>
+                    </TableRoot>
+                </TableView>
+            </Border>
     </Grid>
     </ScrollView>
 </ContentPage>

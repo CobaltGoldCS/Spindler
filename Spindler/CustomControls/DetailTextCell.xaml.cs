@@ -8,7 +8,11 @@ public partial class DetailTextCell : ViewCell
     public string DetailText
     {
         get => (string)GetValue(DetailTextProperty);
-        set => SetValue(DetailTextProperty, value);
+        set
+        {
+            SetValue(DetailTextProperty, value);
+            ForceUpdateSize();
+        }
     }
 
     public static readonly BindableProperty TextProperty =
@@ -17,7 +21,11 @@ public partial class DetailTextCell : ViewCell
     public string Text
     {
         get => (string)GetValue(TextProperty);
-        set => SetValue(TextProperty, value);
+        set
+        {
+            SetValue(TextProperty, value);
+            ForceUpdateSize();
+        }
     }
 
     public DetailTextCell()
