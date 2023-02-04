@@ -3,36 +3,14 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:viewmodels="clr-namespace:Spindler.ViewModels"
              xmlns:models="clr-namespace:Spindler.Models"
+             xmlns:items="clr-namespace:Spindler.CustomControls.Items"
              xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
              x:DataType="viewmodels:BookViewModel"
-             x:Class="Spindler.Views.Book_Pages.BookPage">
+             x:Class="Spindler.Views.Book_Pages.BookPage"
+             x:Name="thisPage">
 
     <ContentPage.Resources>
         <toolkit:BoolToObjectConverter x:Key="ExpanderIconConverter" FalseObject="∨" TrueObject="∧"/>
-        <Style TargetType="Border">
-            <Setter Property="StrokeThickness" Value="2"/>
-            <Setter Property="VisualStateManager.VisualStateGroups">
-                <VisualStateGroupList>
-                    <!-- Set Selected Item Appearance-->
-                    <VisualStateGroup x:Name="CommonStates">
-                        <VisualState x:Name="Normal" >
-                            <VisualState.Setters>
-                                <Setter Property="Stroke"
-                                        Value="Transparent"/>
-                            </VisualState.Setters>
-                        </VisualState>
-                        <VisualState x:Name="Selected">
-                            <VisualState.Setters>
-                                <Setter Property="Stroke"
-                                        Value="{AppThemeBinding Dark={StaticResource White}, Light={StaticResource LightSpaceCadet}}"/>
-                                <Setter Property="BackgroundColor"
-                                        Value="Transparent"/>
-                            </VisualState.Setters>
-                        </VisualState>
-                    </VisualStateGroup>
-                </VisualStateGroupList>
-            </Setter>
-        </Style>
     </ContentPage.Resources>
 
     <Shell.TitleView>
@@ -145,8 +123,6 @@
         <CollectionView x:Name="BooksList"
                         Grid.Row="1"
                         ItemsSource="{Binding BookList}"
-                        SelectedItem="{Binding CurrentSelection}"
-                        SelectionChangedCommand="{Binding SelectionCommand}"
                         RemainingItemsThreshold="3"
                         RemainingItemsThresholdReachedCommand="{Binding EndOfListReachedCommand}"
                         SelectionMode="Single"
@@ -158,40 +134,11 @@
             </CollectionView.ItemsLayout>
             <CollectionView.ItemTemplate>
                 <DataTemplate>
-                    <!-- TODO: Move this into a custom control -->
-                    <Border>
-                        <Border.Shadow>
-                            <Shadow Offset="10,10" Brush="Black" Radius="30" Opacity="1"/>
-                        </Border.Shadow>
-                        <Grid
-                          x:DataType="models:Book"
-                          BackgroundColor="{AppThemeBinding Dark={StaticResource DarkCardBackground}, Light={StaticResource LightBackground}}"
-                          ColumnDefinitions="85, *"
-                          RowDefinitions="65, 45"
-                          >
-                            <Image Source="{Binding ImageUrl}"
-                                   Aspect="AspectFill"
-                                   Grid.RowSpan="2"/>
-                            <Label 
-                                VerticalTextAlignment="Center"
-                                HorizontalTextAlignment="Center"
-                                Grid.Column="1"
-                                Padding="5,0"
-                                FontSize="18"
-                                x:Name="TitleLabel"
-                                Text="{Binding Title}"
-                                MaxLines="2"/>
-                            <Label x:Name="UrlLabel"
-                                   Text="{Binding Url}"
-                                   MaxLines="2"
-                                   FontSize="Small"
-                                   Grid.Column="1"
-                                   Grid.Row="1"
-                                   VerticalOptions="Fill"
-                                   Padding="10,5,10,0"
-                                   TextColor="{AppThemeBinding Dark={StaticResource LightGray}, Light={StaticResource DarkGray}}" />
-                        </Grid>
-                    </Border>
+                    <items:BookItem 
+                        BookParameter="{Binding .}"
+                        SelectionCommand="{Binding Source={x:RelativeSource AncestorType={x:Type viewmodels:BookViewModel}}, Path=SelectionCommand}"
+                        DoubleTappedCommand="{Binding Source={x:RelativeSource AncestorType={x:Type viewmodels:BookViewModel}}, Path=DoubleTappedCommand}"/>
+
                 </DataTemplate>
             </CollectionView.ItemTemplate>
             <CollectionView.EmptyView>

@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Border  xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Spindler.CustomControls.Items.BookItem"
+             xmlns:models="clr-namespace:Spindler.Models"
+             x:Name="this">
+    <Border.Shadow>
+        <Shadow Offset="10,10" Brush="Black" Radius="30" Opacity="1"/>
+    </Border.Shadow>
+    <Border.GestureRecognizers>
+        <TapGestureRecognizer 
+            Tapped="Tapped"
+            Command="{Binding Source={x:Reference this}, Path=DoubleTappedCommand}"
+            CommandParameter="{Binding Source={x:Reference this}, Path=BookParameter}"
+            NumberOfTapsRequired="2"/>
+        <TapGestureRecognizer 
+            Tapped="Tapped"
+            Command="{Binding Source={x:Reference this}, Path=SelectionCommand}"
+            CommandParameter="{Binding Source={x:Reference this}, Path=BookParameter}"/>
+    </Border.GestureRecognizers>
+    <Grid
+        x:DataType="models:Book"
+        BackgroundColor="{AppThemeBinding Dark={StaticResource DarkCardBackground}, Light={StaticResource LightBackground}}"
+        ColumnDefinitions="85, *"
+        RowDefinitions="65, 45"
+        >
+        <Image Source="{Binding Source={x:Reference this}, Path=BookParameter.ImageUrl}"
+               Aspect="AspectFill"
+               Grid.RowSpan="2">
+        </Image>
+        <Label 
+            VerticalTextAlignment="Center"
+            HorizontalTextAlignment="Center"
+            Grid.Column="1"
+            Padding="5,0"
+            FontSize="18"
+            x:Name="TitleLabel"
+            Text="{Binding Source={x:Reference this}, Path=BookParameter.Title}"
+            MaxLines="2"/>
+        <Label x:Name="UrlLabel"
+            Text="{Binding Source={x:Reference this}, Path=BookParameter.Url}"
+            MaxLines="2"
+            FontSize="Small"
+            Grid.Column="1"
+            Grid.Row="1"
+            VerticalOptions="Fill"
+            Padding="10,5,10,0"
+            TextColor="{AppThemeBinding Dark={StaticResource LightGray}, Light={StaticResource DarkGray}}" />
+    </Grid>
+</Border>

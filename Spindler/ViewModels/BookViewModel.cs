@@ -1,6 +1,9 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Spindler.Models;
+using Spindler.Services;
+using Spindler.Utilities;
+using Spindler.Views;
 using Spindler.Views.Book_Pages;
 using System.Collections.ObjectModel;
 
@@ -14,8 +17,6 @@ namespace Spindler.ViewModels
         [ObservableProperty]
         public int id;
 
-        [ObservableProperty]
-        Book? currentSelection;
 
         [ObservableProperty]
         Book? currentPinnedBookSelection;
@@ -94,22 +95,50 @@ namespace Spindler.ViewModels
         }
 
 
+        bool executing = false;
         /// <summary>
         /// Method Called when a standard book is selected from the booklist
         /// </summary>
-        bool executing = false;
+        /// <param name="selection">The book that is selected</param>
         [RelayCommand]
-        private async void Selection()
+        private async void Selection(Book selection)
         {
-            if (executing || currentSelection == null)
+            if (executing)
                 return;
             var parameters = new Dictionary<string, object>()
             {
-                { "book", currentSelection}
+                { "book", selection}
             };
             await Shell.Current.GoToAsync($"{nameof(BookInfoPage)}", parameters);
             executing = false;
-            currentSelection = null;
+        }
+
+        /// <summary>
+        /// Method Called when a book is double tapped
+        /// </summary>
+        /// <param name="selection">The book that is tapped</param>
+        [RelayCommand]
+        private async void DoubleTapped(Book selection)
+        {
+            var parameters = new Dictionary<string, object>()
+            {
+                { "book", selection}
+            };
+
+            var config = await WebService.FindValidConfig(selection.Url);
+            
+            string pageName = nameof(StandardReaderPage);
+            if (config?.ExtraConfigs.GetOrDefault("webview", false) ?? false)
+            {
+                pageName = nameof(WebviewReaderPage);
+            }
+            if (config?.ExtraConfigs.GetOrDefault("headless", false) ?? false)
+            {
+                pageName = nameof(HeadlessReaderPage);
+            }
+
+            await Shell.Current.GoToAsync($"{pageName}", parameters);
+            executing = false;
         }
 
         /// <summary>
