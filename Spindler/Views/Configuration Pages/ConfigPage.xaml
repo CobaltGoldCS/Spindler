@@ -4,6 +4,7 @@
              xmlns:vms="clr-namespace:Spindler.ViewModels"
              xmlns:models="clr-namespace:Spindler.Models"
              xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             xmlns:items="clr-namespace:Spindler.CustomControls.Items"
              x:Class="Spindler.ConfigPage"
              x:DataType="vms:ConfigViewModel"
              Title="Configurations">
@@ -42,12 +43,7 @@
                 </CollectionView.ItemsLayout>
                 <CollectionView.ItemTemplate>
                     <DataTemplate x:DataType="models:Config">
-                        <Border Margin="8,0">
-                            <Grid RowDefinitions="50">
-                                <Label  Margin="10,0,0,0" VerticalTextAlignment="Center" 
-                                    FontSize="Large" x:Name="DomainNameLabel" Text="{Binding DomainName}"/>
-                            </Grid>
-                        </Border>
+                        <items:ConfigItem ConfigParameter="{Binding .}"/>
                     </DataTemplate>
                 </CollectionView.ItemTemplate>
                 <CollectionView.EmptyView>

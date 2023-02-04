@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Border Margin="8,0"
+        xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+        x:Class="Spindler.CustomControls.Items.ConfigItem"
+        x:Name="this">
+    <Grid RowDefinitions="50">
+        <Label  Margin="10,0,0,0" 
+                VerticalTextAlignment="Center" 
+                FontSize="Large"
+                x:Name="DomainNameLabel"
+                Text="{Binding Source={x:Reference this}, Path=ConfigParameter.DomainName}"/>
+    </Grid>
+</Border>
