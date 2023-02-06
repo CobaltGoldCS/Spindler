@@ -9,7 +9,7 @@ namespace Spindler.CustomControls;
 public partial class WebScraperBrowser : WebView
 {
     public static readonly BindableProperty VisibleProperty =
-                BindableProperty.Create(nameof(Visible), typeof(bool), typeof(WebScraperBrowser));
+                BindableProperty.Create(nameof(Visible), typeof(bool), typeof(WebScraperBrowser), defaultValue: true);
 
     /// <summary>
     /// Overrides the visibility options of a normal WebView
@@ -37,7 +37,7 @@ public partial class WebScraperBrowser : WebView
     /// </summary>
     /// <param name="selector">The selector to wait for </param>
     /// <param name="retryDelay">Delay before trying to find the selector again</param>
-    /// <param name="timeout">The duration before <see cref="WaitUntilValid(Models.Path, TimeSpan, TimeSpan)" times out/></param>
+    /// <param name="timeout">The duration before <see cref="WaitUntilValid(Models.Path, TimeSpan, TimeSpan)"/> times out</param>
     /// <returns>Whether or not WaitUntilValid was able to find a matching html sequence</returns>
     public async Task<bool> WaitUntilValid(Models.Path selector, TimeSpan retryDelay, TimeSpan timeout)
     {

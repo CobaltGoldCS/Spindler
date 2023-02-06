@@ -33,6 +33,7 @@
                  Navigating="PageLoading"
                  Grid.Row="2"
                  Grid.ColumnSpan="2"
+                 Visible="True"
                  />
         <Border Stroke="{StaticResource White}" 
                 Grid.Row="3">
