@@ -102,13 +102,6 @@ public partial class BookSearcherPage : ContentPage
     }
     #endregion
 
-    /// <summary>
-    /// Gets the Url that the <see cref="SearchBrowser"/> believes is the source
-    /// </summary>
-    /// <returns>Returns the last known url according to SearchBrowser</returns>
-    /// <seealso cref="UrlWebViewSource"/>
-    private string GetUrlOfBrowser() => ((UrlWebViewSource)SearchBrowser.Source).Url;
-
     #region Browser Event Handlers
     /// <summary>
     /// An event handler that triggers when a page is fully loaded by <see cref="SearchBrowser"/>
@@ -130,9 +123,7 @@ public partial class BookSearcherPage : ContentPage
     /// <param name="e">The event arguments associated with the WebNavigatingEvent</param>
     private async void PageLoading(object? _, WebNavigatingEventArgs e)
     {
-        bool urlComesFromWebView = source != GetUrlOfBrowser();
-        // Cancel load in web view because we don't want to get caught loading multiple URLs at the same time
-        if (urlComesFromWebView && IsLoading)
+        if (SearchBrowser.IsRedirect(source) && IsLoading)
         {
             e.Cancel = true;
             return;
@@ -152,12 +143,9 @@ public partial class BookSearcherPage : ContentPage
     [RelayCommand]
     private async Task CheckCompatible(string url = "")
     {
-        // Get and clean html 
-        var html = await SearchBrowser.EvaluateJavaScriptAsync(
-            "'<html>'+document.getElementsByTagName('html')[0].innerHTML+'</html>';");
-        html = Regex.Unescape(html ?? "");
+        string html = await SearchBrowser.GetHtml();
 
-        Config = await WebService.FindValidConfig(!string.IsNullOrEmpty(url) ? url : GetUrlOfBrowser(), html);
+        Config = await WebService.FindValidConfig(!string.IsNullOrEmpty(url) ? url : SearchBrowser.GetUrl(), html);
         if (Config is null) return;
 
         HtmlDocument doc = new();
@@ -187,9 +175,7 @@ public partial class BookSearcherPage : ContentPage
     [RelayCommand]
     private async void CreateBookFromConfigInformation()
     {
-        var html = await SearchBrowser.EvaluateJavaScriptAsync(
-            "'<html>'+document.getElementsByTagName('html')[0].innerHTML+'</html>';");
-        html = Regex.Unescape(html);
+        string html = await SearchBrowser.GetHtml();
 
         HtmlDocument doc = new();
         doc.LoadHtml(html);
