@@ -21,7 +21,7 @@
                          PrevClicked="PrevButton_Clicked"
                          NextClicked="NextButton_Clicked"/>
             <!-- Initial Setup-->
-            <WebView x:Name="HeadlessBrowser"  HorizontalOptions="FillAndExpand" IsVisible="false"/>
+            <controls:WebScraperBrowser x:Name="HeadlessBrowser"  HorizontalOptions="FillAndExpand" IsVisible="false"/>
         </Grid>
     </ScrollView>
 </ContentPage>

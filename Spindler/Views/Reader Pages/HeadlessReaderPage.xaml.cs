@@ -4,7 +4,6 @@ using Spindler.Services;
 using Spindler.Utilities;
 using Spindler.Views.Reader_Pages;
 using System.ComponentModel;
-using System.Text.RegularExpressions;
 
 namespace Spindler.Views;
 
@@ -99,12 +98,26 @@ public partial class HeadlessReaderPage : ContentPage, INotifyPropertyChanged, I
         await Book.UpdateLastViewedToNow();
     }
 
+    public async void OnShellNavigated(object? sender,
+                           ShellNavigatingEventArgs e)
+    {
+        if (e.Current.Location.OriginalString == "//BookLists/BookPage/HeadlessReaderPage" && e.Target.Location.OriginalString != "../ErrorPage")
+        {
+            if (Book != null)
+            {
+                Book.Position = ReadingLayout.ScrollY / ReadingLayout.ContentSize.Height;
+                await Book.UpdateLastViewedToNow();
+            }
+        }
+        Shell.Current.Navigating -= OnShellNavigated;
+    }
+
     private async void PageLoaded(object? sender, WebNavigatedEventArgs e)
     {
         // Define Config before accidentally breaking something
         if (config is null)
         {
-            string html = await GetAndDecodeHtml();
+            string html = await HeadlessBrowser.GetHtml();
             HtmlDocument doc = new();
             doc.LoadHtml(html);
 
@@ -117,11 +130,8 @@ public partial class HeadlessReaderPage : ContentPage, INotifyPropertyChanged, I
         }
 
         var result = e.Result;
-        if (result != WebNavigationResult.Success)
-        {
-            await FailIfNull(null, $"Browser was unable to navigate.");
-            return;
-        }
+        if (await FailIfCondition(result != WebNavigationResult.Success, $"Browser was unable to navigate.")) return;
+
         await GetContentAsLoadedData();
     }
 
@@ -158,49 +168,18 @@ public partial class HeadlessReaderPage : ContentPage, INotifyPropertyChanged, I
 
     private async Task GetContentAsLoadedData()
     {
-        string html = await GetAndDecodeHtml();
+        bool foundMatchingContent = await HeadlessBrowser.WaitUntilValid(new Models.Path(config!.ContentPath), TimeSpan.FromSeconds(2.0), TimeSpan.FromSeconds(20));
+        
+        if (await FailIfCondition(!foundMatchingContent, "Unable to get html specified by configuration")) return;
 
-        loadedData = await webservice!.LoadWebData(Book!.Url, html);
-        if (loadedData.title == "afb-4893")
-            await FailIfNull(null, "Invalid Url");
-        if (string.IsNullOrEmpty(loadedData.text))
-        {
-            await RetryLoadingTextContent();
-        }
+        loadedData = await webservice!.LoadWebData(Book!.Url, await HeadlessBrowser.GetHtml());
+
+        if (await FailIfCondition(loadedData.title == "afb-4893", "Invalid Url")) return;
+
+        if (await FailIfCondition(string.IsNullOrEmpty(loadedData.text), "Unable to obtain text content")) return;
+
         if (await FailIfNull(loadedData, "Configuration was unable to obtain values; check Configuration and Url")) return;
         UpdateUiUsingLoadedData();
-        retries = 3;
-    }
-    
-    /// <summary>
-    /// Obtain and decode raw html from <see cref="HeadlessBrowser"/>
-    /// </summary>
-    /// <returns>Valid html without escape sequences</returns>
-    private async Task<string> GetAndDecodeHtml()
-    {
-        string html = await HeadlessBrowser.EvaluateJavaScriptAsync(
-            "'<html>'+document.getElementsByTagName('html')[0].innerHTML+'</html>';") ?? "";
-        html = Regex.Unescape(html);
-        return html;
-    }
-
-    private int retries = 3;
-    private async Task RetryLoadingTextContent()
-    {
-        string html = await GetAndDecodeHtml();
-        if (retries == 0)
-        {
-            await FailIfNull(null, "Unable to obtain text content");
-            return;
-        }
-        Task.Delay(500).Wait();
-        retries--;
-        // Check for cloudflare and increase retry count if it is found
-        var doc = new HtmlDocument();
-        doc.LoadHtml(html);
-        if (ConfigService.CssElementHandler(doc, "h2.challenge-running", ConfigService.SelectorType.Text) is not null) retries = 3;
-        await GetContentAsLoadedData();
-        return;
     }
 
     private async void UpdateUiUsingLoadedData()
@@ -247,10 +226,9 @@ public partial class HeadlessReaderPage : ContentPage, INotifyPropertyChanged, I
         });
     }
 
-    public async Task<bool> FailIfNull(object? value, string message)
+    public async Task<bool> FailIfCondition(bool condition, string message)
     {
-        bool nullobj = value == null;
-        if (nullobj)
+        if (condition)
         {
             Dictionary<string, object> parameters = new()
             {
@@ -259,20 +237,8 @@ public partial class HeadlessReaderPage : ContentPage, INotifyPropertyChanged, I
             };
             await Shell.Current.GoToAsync($"../{nameof(ErrorPage)}", parameters);
         }
-        return nullobj;
+        return condition;
     }
 
-    public async void OnShellNavigated(object? sender,
-                           ShellNavigatingEventArgs e)
-    {
-        if (e.Current.Location.OriginalString == "//BookLists/BookPage/HeadlessReaderPage" && e.Target.Location.OriginalString != "../ErrorPage")
-        {
-            if (Book != null)
-            {
-                Book.Position = ReadingLayout.ScrollY / ReadingLayout.ContentSize.Height;
-                await Book.UpdateLastViewedToNow();
-            }
-        }
-        Shell.Current.Navigating -= OnShellNavigated;
-    }
+    public async Task<bool> FailIfNull(object? value, string message) => await FailIfCondition(value is null, message);
 }
