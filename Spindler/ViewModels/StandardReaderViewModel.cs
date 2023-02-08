@@ -72,7 +72,7 @@ namespace Spindler.ViewModels
         public async void NextClick()
         {
             var nextdata = (await PreloadDataTask!)![1];
-            if (!await FailIfNull(nextdata, "Invalid Url"))
+            if (await SafeAssertNotNull(nextdata, "Invalid Url"))
             {
                 await ReadingLayout!.ScrollToAsync(ReadingLayout.ScrollX, 0, false);
                 IsLoading = true;
@@ -85,7 +85,7 @@ namespace Spindler.ViewModels
         public async void PrevClick()
         {
             var prevdata = (await PreloadDataTask!)![0];
-            if (!await FailIfNull(prevdata, "Invalid Url"))
+            if (await SafeAssertNotNull(prevdata, "Invalid Url"))
             {
                 await ReadingLayout!.ScrollToAsync(ReadingLayout.ScrollX, 0, false);
                 IsLoading = true;
@@ -119,9 +119,9 @@ namespace Spindler.ViewModels
 
         public async Task StartLoad()
         {
-            if (await FailIfNull(Config, "Configuration does not exist")) return;
+            if (!await SafeAssertNotNull(Config, "Configuration does not exist")) return;
             LoadedData? data = await WebService.LoadUrl(CurrentBook!.Url);
-            if (await FailIfNull(data, "Invalid Url")) return;
+            if (!await SafeAssertNotNull(data, "Invalid Url")) return;
             loadedData = data!;
             // Get image url from load
             if (string.IsNullOrEmpty(CurrentBook!.ImageUrl) || CurrentBook!.ImageUrl == "no_image.jpg")
@@ -152,7 +152,7 @@ namespace Spindler.ViewModels
 
         private async void DataChanged()
         {
-            if (await FailIfNull(loadedData, "This is an invalid url")) return;
+            if (!await SafeAssertNotNull(loadedData, "This is an invalid url")) return;
             if (loadedData!.title == "afb-4893") // This means an error has occured while getting data from the WebService
             {
                 Dictionary<string, object> parameters = new()
@@ -208,7 +208,7 @@ namespace Spindler.ViewModels
         }
 
         #region Error Handlers
-        public async Task<bool> FailIfNull(object? value, string message)
+        public async Task<bool> SafeAssertNotNull(object? value, string message)
         {
             bool nullobj = value == null;
             if (nullobj)
@@ -220,8 +220,23 @@ namespace Spindler.ViewModels
                 };
                 await Shell.Current.GoToAsync($"../{nameof(ErrorPage)}", parameters);
             }
-            return nullobj;
+            return !nullobj;
         }
+
+        public async Task<bool> SafeAssert(bool condition, string message)
+        {
+            if (!condition)
+            {
+                Dictionary<string, object> parameters = new()
+                {
+                    { "errormessage", message },
+                    { "config", Config! }
+                };
+                await Shell.Current.GoToAsync($"../{nameof(ErrorPage)}", parameters);
+            }
+            return condition;
+        }
+
         #endregion
         #endregion
     }

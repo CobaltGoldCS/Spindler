@@ -122,7 +122,7 @@ public partial class HeadlessReaderPage : ContentPage, INotifyPropertyChanged, I
             doc.LoadHtml(html);
 
             config = await WebService.FindValidConfig(Book.Url, html);
-            if (await FailIfNull(config, "There is no valid configuration for this book")) return;
+            if (!await SafeAssertNotNull(config, "There is no valid configuration for this book")) return;
             webservice = new(config!);
 
             if (string.IsNullOrEmpty(book.ImageUrl) || book!.ImageUrl == "no_image.jpg")
@@ -130,7 +130,7 @@ public partial class HeadlessReaderPage : ContentPage, INotifyPropertyChanged, I
         }
 
         var result = e.Result;
-        if (await FailIfCondition(result != WebNavigationResult.Success, $"Browser was unable to navigate.")) return;
+        if (!await SafeAssert(result == WebNavigationResult.Success, $"Browser was unable to navigate.")) return;
 
         await GetContentAsLoadedData();
     }
@@ -170,21 +170,21 @@ public partial class HeadlessReaderPage : ContentPage, INotifyPropertyChanged, I
     {
         bool foundMatchingContent = await HeadlessBrowser.WaitUntilValid(new Models.Path(config!.ContentPath), TimeSpan.FromSeconds(2.0), TimeSpan.FromSeconds(20));
         
-        if (await FailIfCondition(!foundMatchingContent, "Unable to get html specified by configuration")) return;
+        if (!await SafeAssert(foundMatchingContent, "Unable to get html specified by configuration")) return;
 
         loadedData = await webservice!.LoadWebData(Book!.Url, await HeadlessBrowser.GetHtml());
 
-        if (await FailIfCondition(loadedData.title == "afb-4893", "Invalid Url")) return;
+        if (!await SafeAssert(loadedData.title != "afb-4893", "Invalid Url")) return;
 
-        if (await FailIfCondition(string.IsNullOrEmpty(loadedData.text), "Unable to obtain text content")) return;
+        if (!await SafeAssert(!string.IsNullOrEmpty(loadedData.text), "Unable to obtain text content")) return;
 
-        if (await FailIfNull(loadedData, "Configuration was unable to obtain values; check Configuration and Url")) return;
+        if (!await SafeAssertNotNull(loadedData, "Configuration was unable to obtain values; check Configuration and Url")) return;
         UpdateUiUsingLoadedData();
     }
 
     private async void UpdateUiUsingLoadedData()
     {
-        if (await FailIfNull(loadedData, "Couldn't get data")) return;
+        if (!await SafeAssertNotNull(loadedData, "Couldn't get data")) return;
 
         Title = loadedData!.title ?? "";
         ReaderTitle = loadedData!.title ?? "";
@@ -226,9 +226,10 @@ public partial class HeadlessReaderPage : ContentPage, INotifyPropertyChanged, I
         });
     }
 
-    public async Task<bool> FailIfCondition(bool condition, string message)
+    
+    public async Task<bool> SafeAssert(bool condition, string message)
     {
-        if (condition)
+        if (!condition)
         {
             Dictionary<string, object> parameters = new()
             {
@@ -240,5 +241,11 @@ public partial class HeadlessReaderPage : ContentPage, INotifyPropertyChanged, I
         return condition;
     }
 
-    public async Task<bool> FailIfNull(object? value, string message) => await FailIfCondition(value is null, message);
+    /// <summary>
+    /// Assert that <paramref name="value"/> is not null, or gracefully fail
+    /// </summary>
+    /// <param name="value">The value to check</param>
+    /// <param name="message">The error to pass to the user</param>
+    /// <returns>True if the value is not null, or false if it is </returns>
+    public async Task<bool> SafeAssertNotNull(object? value, string message) => await SafeAssert(value is not null, message);
 }

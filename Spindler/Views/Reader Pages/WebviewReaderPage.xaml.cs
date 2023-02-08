@@ -74,8 +74,9 @@ public partial class WebviewReaderPage : ContentPage, IReader
         ReaderBrowser.Navigated -= WebViewOnNavigated;
     }
 
-    // There are never any meaningful null values in WebviewReaderPage
-#pragma warning disable CS1998 
-    public async Task<bool> FailIfNull(object? value, string message) => false;
-#pragma warning restore CS1998
+
+    Task<bool> IReader.SafeAssert(bool condition, string message)
+    {
+        throw new NotImplementedException();
+    }
 }

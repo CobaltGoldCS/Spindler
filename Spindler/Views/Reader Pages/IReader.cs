@@ -3,12 +3,12 @@
     public interface IReader
     {
         /// <summary>
-        /// Display <paramref name="message"/> if <paramref name="value"/> is <c>null</c>
+        /// Display assert that <paramref name="condition"/> is true, or gracefully fail
         /// </summary>
-        /// <param name="value">The value to check for nullability</param>
-        /// <param name="message">The message to display</param>
-        /// <returns>If the object is null or not</returns>
-        protected Task<bool> FailIfNull(object? value, string message);
+        /// <param name="condition">The condition to evaluate</param>
+        /// <param name="message">The message to display if the condition is not met</param>
+        /// <returns>Whether the assertion succeeded or not</returns>
+        protected Task<bool> SafeAssert(bool condition, string message);
 
         /// <summary>
         /// Handler for when Shell Navigates to a new page
