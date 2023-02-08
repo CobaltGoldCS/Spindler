@@ -10,7 +10,12 @@
         <Model:Book/>
     </ContentPage.BindingContext>
     <Grid RowDefinitions="*, auto" ColumnDefinitions="*, *, *" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand">
-        <WebView x:Name="ReaderBrowser" Grid.Row="0" Grid.ColumnSpan="3" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand"/>
+        <WebView x:Name="ReaderBrowser"
+                 Grid.Row="0" 
+                 Grid.ColumnSpan="3"
+                 VerticalOptions="FillAndExpand"
+                 HorizontalOptions="FillAndExpand"
+                 Navigated="WebViewOnNavigated"/>
         <ImageButton x:Name="backButton" Source="arrow_left.svg" Clicked="Back_Clicked" HeightRequest="30" Grid.Row="1" Grid.Column="0">
             <ImageButton.Behaviors>
                 <toolkit:IconTintColorBehavior TintColor="{AppThemeBinding Dark={StaticResource White}, Light={StaticResource Black}}"/>

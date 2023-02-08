@@ -33,7 +33,6 @@ public partial class WebviewReaderPage : ContentPage, IReader
         InitializeComponent();
 
         Shell.Current.Navigating += OnShellNavigated;
-        ReaderBrowser.Navigated += WebViewOnNavigated;
     }
 
     private void WebViewOnNavigated(object? sender, WebNavigatedEventArgs @event)
