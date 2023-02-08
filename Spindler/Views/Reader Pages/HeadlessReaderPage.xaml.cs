@@ -236,7 +236,7 @@ public partial class HeadlessReaderPage : ContentPage, INotifyPropertyChanged, I
                 { "errormessage", message },
                 { "config", config! }
             };
-            await Shell.Current.GoToAsync($"../{nameof(ErrorPage)}", parameters);
+            await Shell.Current.GoToAsync($"/{nameof(ErrorPage)}", parameters);
         }
         return condition;
     }

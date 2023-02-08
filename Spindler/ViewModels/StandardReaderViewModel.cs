@@ -218,7 +218,7 @@ namespace Spindler.ViewModels
                     { "errormessage", message },
                     { "config", Config! }
                 };
-                await Shell.Current.GoToAsync($"../{nameof(ErrorPage)}", parameters);
+                await Shell.Current.GoToAsync($"/{nameof(ErrorPage)}", parameters);
             }
             return !nullobj;
         }

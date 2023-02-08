@@ -14,6 +14,11 @@
                     <TableSection Title="Having Multiple Problems? Use Compatability Mode">
                         <SwitchCell x:Name="HeadlessMode" OnChanged="HeadlessMode_OnChanged" Text="Open in headless (compatability) mode?"/>
                     </TableSection>
+                    <TableSection>
+                        <ViewCell>
+                            <Button Text="Reload" Clicked="ReloadClicked"/>
+                        </ViewCell>
+                    </TableSection>
                 </TableRoot>
             </TableView>
         </VerticalStackLayout>

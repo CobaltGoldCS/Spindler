@@ -1,7 +1,6 @@
 using Newtonsoft.Json;
 using Spindler.Models;
 using Spindler.Utilities;
-using System.Text.Json.Nodes;
 
 namespace Spindler.Views;
 
@@ -52,5 +51,10 @@ public partial class ErrorPage : ContentPage
         Config.ExtraConfigs["headless"] = HeadlessMode.On;
         Config.ExtraConfigsBlobbed = JsonConvert.SerializeObject(Config.ExtraConfigs);
         await App.Database.SaveItemAsync(Config!);
+    }
+
+    private async void ReloadClicked(object sender, EventArgs e)
+    {
+        await Shell.Current.GoToAsync("..");
     }
 }
