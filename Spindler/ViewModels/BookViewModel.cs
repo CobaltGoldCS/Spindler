@@ -160,14 +160,13 @@ namespace Spindler.ViewModels
         /// <summary>
         /// Populate the BookPage with relevant Data
         /// </summary>
-        /// <returns>A Task to await</returns>
-        public void Load() => Task.Run(async () =>
+        /// <returns>Nothing</returns>
+        public async void Load()
         {
-            await Task.Delay(275);
             BookList = await App.Database.GetBooksByBooklistIdAsync(id);
             PinnedBooks = new ObservableCollection<Book>(BookList.FindAll((book) => book.Pinned));
             PinnedBooksAreVisible = PinnedBooks.Count > 0;
-        });
+        }
 
         const int NUM_ITEMS_ADDED_TO_LIST = 100;
         /// <summary>
