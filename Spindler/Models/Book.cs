@@ -23,17 +23,17 @@ public class Book : IIndexedModel
     /// <summary>
     /// The name given to this book
     /// </summary>
-    public string Title { get; set; } = "";
+    public string Title { get; set; } = string.Empty;
 
     /// <summary>
     /// A url where data should be fetched in order to read this book
     /// </summary>
-    public string Url { get; set; } = "";
+    public string Url { get; set; } = string.Empty;
 
     /// <summary>
     /// Image Url of the book image
     /// </summary>
-    public string ImageUrl { get; set; }
+    public string ImageUrl { get; set; } = string.Empty;
 
     public bool Pinned { get; set; } = false;
 
