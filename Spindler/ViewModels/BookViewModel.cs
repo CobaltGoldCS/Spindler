@@ -44,10 +44,10 @@ namespace Spindler.ViewModels
 
         #endregion
 
-        public BookViewModel(int id, string title)
+        public BookViewModel(BookList list)
         {
-            this.id = id;
-            this.title = title;
+            id = list.Id;
+            title = list.Name;
         }
 
         ImageButton? AddButton;

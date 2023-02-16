@@ -21,7 +21,7 @@ public partial class BookPage : ContentPage
     {
         await list.UpdateAccessTimeToNow();
 
-        var binding = new BookViewModel(list.Id, list.Name);
+        var binding = new BookViewModel(list);
         binding.AddUiReferences(AddToolBarItem);
         BindingContext = binding;
         binding.Load();
