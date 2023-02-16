@@ -2,6 +2,7 @@ using CommunityToolkit.Maui.Views;
 using Spindler.Behaviors;
 using Spindler.CustomControls;
 using Spindler.Models;
+using System.Text.RegularExpressions;
 
 namespace Spindler.Views.Book_Pages;
 
@@ -58,7 +59,8 @@ public partial class BookDetailPage : ContentPage
         if (valid)
         {
             Book.Url = urlEntry.Text;
-            Book.Title = nameEntry.Text;
+            // Convert the book's title to title case
+            Book.Title = TitleCaseRegex().Replace(nameEntry.Text, m => m.Value.ToUpper());
             Book.ImageUrl = imageUrlEntry.Text;
             await Book.UpdateLastViewedToNow();
         }
@@ -100,6 +102,10 @@ public partial class BookDetailPage : ContentPage
         object? result = await this.ShowPopupAsync(popup);
         if (result is not BookList list) return;
         Book.BookListId = list.Id;
-    }    
+    }
+
+    /// A Regular Expression for selecting letters to capitalize for title case
+    [GeneratedRegex("(?<!\\S)\\p{Ll}")]
+    private static partial Regex TitleCaseRegex();
     #endregion
 }
