@@ -165,7 +165,7 @@ namespace Spindler.ViewModels
         /// Populate the BookPage with relevant Data
         /// </summary>
         /// <returns>Nothing</returns>
-        public async void Load()
+        public async Task Load()
         {
             BookList = await App.Database.GetBooksByBooklistIdAsync(id);
             PinnedBooks = new ObservableCollection<Book>(BookList.FindAll((book) => book.Pinned));
