@@ -105,6 +105,7 @@ namespace Spindler.ViewModels
         {
             if (executing)
                 return;
+            executing = true;
             var parameters = new Dictionary<string, object>()
             {
                 { "book", selection}
@@ -120,6 +121,9 @@ namespace Spindler.ViewModels
         [RelayCommand]
         private async void DoubleTapped(Book selection)
         {
+            if (executing)
+                return;
+            executing = true;
             var parameters = new Dictionary<string, object>()
             {
                 { "book", selection}
