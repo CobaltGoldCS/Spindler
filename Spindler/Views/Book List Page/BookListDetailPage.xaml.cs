@@ -42,7 +42,7 @@ public partial class BookListDetailPage : ContentPage
         InitializeComponent();
         /*UrlEntry.Behaviors.Add(new TextValidationBehavior((string text) =>
         {
-            bool validUrl = Uri.TryCreate(text, UriKind.Absolute, out Uri? uriresult) && (uriresult.Scheme == Uri.UriSchemeHttp || uriresult.Scheme == Uri.UriSchemeHttps);
+            bool validUrl = Uri.TryCreate(text, UriKind.Absolute, out Uri? url) && (url.Scheme == Uri.UriSchemeHttp || url.Scheme == Uri.UriSchemeHttps);
             return validUrl || text.Length == 0;
         }));*/
     }
