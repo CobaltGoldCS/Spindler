@@ -33,10 +33,7 @@
     <ScrollView>
         <Grid>
             <Image Source="{Binding ImageUrl}" Aspect="AspectFill" Margin="1" >
-                <Image.Behaviors>
-                    <behaviors:BlurBehavior Radius="5"/>
-                </Image.Behaviors>
-                
+
             </Image>
             <Grid RowDefinitions="auto, auto, auto, *"
                 Padding="0,0,0,0" Background="transparent">
