@@ -1,25 +1,37 @@
-namespace Spindler;
-using Microsoft.Maui.Controls;
+namespace Spindler.Views.Book_Pages;
 
 using Spindler.Models;
 using Spindler.ViewModels;
 
+[QueryProperty(nameof(Booklist), "booklist")]
 public partial class BookListPage : ContentPage
 {
+
+    #region QueryProperty Handler
+
+    public BookList Booklist
+    {
+        set
+        {
+            LoadBookList(value);
+        }
+    }
+
+    public async void LoadBookList(BookList list)
+    {
+        await list.UpdateAccessTimeToNow();
+
+        var binding = new BookListViewModel(list);
+        binding.AddUiReferences(AddToolBarItem);
+        BindingContext = binding;
+        await binding.Load();
+    }
+
+    #endregion
 
     public BookListPage()
     {
         InitializeComponent();
-        BindingContext = new BookListViewModel();
-    }
-
-    protected async override void OnAppearing()
-    {
-        PermissionStatus status = await Permissions.CheckStatusAsync<Permissions.NetworkState>();
-        if (status != PermissionStatus.Granted)
-        {
-            await Permissions.RequestAsync<Permissions.NetworkState>();
-        }
-        await Task.Run(((BookListViewModel)BindingContext).Load);
+        BooksList.Unfocus();
     }
 }

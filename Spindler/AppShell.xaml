@@ -10,8 +10,8 @@
         <Tab Icon="book.svg">
             <ShellContent
                 Title="Book Lists"
-                ContentTemplate="{DataTemplate local:BookListPage}"
-                Route="BookLists" />
+                ContentTemplate="{DataTemplate local:HomePage}"
+                Route="HomePage" />
         </Tab>
         <Tab Icon="gear.svg">
             <ShellContent

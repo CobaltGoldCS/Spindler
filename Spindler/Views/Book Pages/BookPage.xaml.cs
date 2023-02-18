@@ -1,37 +1,23 @@
-namespace Spindler.Views.Book_Pages;
-
 using Spindler.Models;
 using Spindler.ViewModels;
 
-[QueryProperty(nameof(Booklist), "booklist")]
+namespace Spindler.Views.Book_Pages;
+
+[QueryProperty(nameof(Book), "book")]
 public partial class BookPage : ContentPage
 {
-
-    #region QueryProperty Handler
-
-    public BookList Booklist
-    {
-        set
-        {
-            LoadBookList(value);
-        }
+	public Book Book { set => LoadBook(value); }
+	public BookViewModel ViewModel { get; set; }
+	public BookPage()
+	{
+		// TODO: Implement gaussian blur on image background
+		InitializeComponent();
+		ViewModel = new BookViewModel();
+		BindingContext = ViewModel;
     }
 
-    public async void LoadBookList(BookList list)
-    {
-        await list.UpdateAccessTimeToNow();
-
-        var binding = new BookViewModel(list);
-        binding.AddUiReferences(AddToolBarItem);
-        BindingContext = binding;
-        await binding.Load();
-    }
-
-    #endregion
-
-    public BookPage()
-    {
-        InitializeComponent();
-        BooksList.Unfocus();
+	private async void LoadBook(Book book)
+	{
+		await ViewModel.Load(book);
     }
 }

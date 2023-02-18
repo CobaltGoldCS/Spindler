@@ -1,28 +1,27 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:viewmodels="clr-namespace:Spindler.ViewModels"
-             xmlns:models="clr-namespace:Spindler.Models"
-             xmlns:items="clr-namespace:Spindler.CustomControls.Items"
-             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
-             x:DataType="viewmodels:BookViewModel"
              x:Class="Spindler.Views.Book_Pages.BookPage"
-             x:Name="thisPage">
-
-    <ContentPage.Resources>
-        <toolkit:BoolToObjectConverter x:Key="ExpanderIconConverter" FalseObject="∨" TrueObject="∧"/>
-    </ContentPage.Resources>
-
+             xmlns:vms="clr-namespace:Spindler.ViewModels"
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             xmlns:behaviors="clr-namespace:Spindler.Behaviors"
+             x:DataType="vms:BookViewModel">
+    
     <Shell.TitleView>
         <Grid ColumnDefinitions="*, auto">
-
-            <Label Text="{Binding Title}" Grid.Column="0" FontSize="Large" VerticalOptions="Center" HorizontalOptions="FillAndExpand" TextColor="{StaticResource Primary}"/>
+            <Label Text="{Binding Title}"
+                   Grid.Column="0"
+                   FontSize="Large"
+                   VerticalOptions="Center"
+                   HorizontalOptions="FillAndExpand"
+                   TextColor="{StaticResource Primary}"
+                   MaxLines="2"/>
             <StackLayout Grid.Column="1" HorizontalOptions="EndAndExpand" Orientation="Horizontal" VerticalOptions="Center" Margin="0,0,10,0">
                 <ImageButton x:Name="AddToolBarItem"
                              HeightRequest="25"
                              WidthRequest="25"
-                             Source="plus.svg"
-                             Command="{Binding AddToolBarItemCommand}">
+                             Source="kebab.svg"
+                             Command="{Binding ModifyClickedCommand}">
                     <ImageButton.Behaviors>
                         <toolkit:IconTintColorBehavior TintColor="{AppThemeBinding Dark={StaticResource White}, Light={StaticResource Black}}"/>
                     </ImageButton.Behaviors>
@@ -30,126 +29,61 @@
             </StackLayout>
         </Grid>
     </Shell.TitleView>
-    <!---Pinned Books-->
-    <Grid RowDefinitions="auto, *">
-        <Border
-            StrokeShape="RoundRectangle 10,10,10,10"
-            StrokeThickness="0"
-            Background="{AppThemeBinding Dark={StaticResource LightSpaceCadet}, Light={StaticResource LightGray}}"
-            Margin="5,0"
-            IsVisible="{Binding PinnedBooksAreVisible}">
-            <toolkit:Expander x:Name="PinView"
-                              Padding="7,-1,8,5">
-                <toolkit:Expander.Header>
-                    <Grid ColumnDefinitions="20, *, 25" Padding="0,7,0,0" BackgroundColor="{AppThemeBinding Dark={StaticResource LightSpaceCadet}, Light={StaticResource LightGray}}">
-                        <Image Source="pin.svg" Margin="8,3,0,5">
-                            <Image.Behaviors>
-                                <toolkit:IconTintColorBehavior 
-                                            TintColor="{AppThemeBinding Dark={StaticResource White}, Light={StaticResource LightSpaceCadet}}"/>
-                            </Image.Behaviors>
-                        </Image>
-                        <Label Text="Pinned Books" Grid.Column="1" Padding="10, -2, 0, 0" FontSize="Large" FontFamily="OpenSans (Semibold)" VerticalOptions="Center"/>
-                        <Label Text="{Binding Source={x:Reference PinView}, Path=IsExpanded, Converter={StaticResource ExpanderIconConverter}}"
-                           Grid.Column="2"
-                           FontSize="Large"
-                           Padding="2,-2,0,0"
-                           VerticalOptions="Center"
-                           FontFamily="OpenSans (Semibold)"/>
-                    </Grid>
-                </toolkit:Expander.Header>
-                <CollectionView x:Name="PinnedBooksList"
-                                ItemsSource="{Binding PinnedBooks}"
-                                SelectedItem="{Binding CurrentPinnedBookSelection}"
-                                SelectionChangedCommand="{Binding PinnedBookSelectionCommand}"
-                                SelectionMode="Single"
-                                ItemSizingStrategy="MeasureFirstItem"
-                                BackgroundColor="{AppThemeBinding Dark={StaticResource LightSpaceCadet}, Light={StaticResource LightGray}}"
-                            >
-                    <CollectionView.ItemsLayout>
-                        <LinearItemsLayout ItemSpacing="5" Orientation="Horizontal"/>
-                    </CollectionView.ItemsLayout>
-                    <CollectionView.ItemTemplate>
-                        <DataTemplate>
-                            <!-- TODO: Move this into a custom control -->
-                            <Border StrokeShape="RoundRectangle 16,10,16,10"
-                                    Stroke="{AppThemeBinding Dark=Transparent, Light={StaticResource Black}}"
-                                    StrokeThickness="{AppThemeBinding Dark=0, Light=2}"
-                                    BackgroundColor="Transparent">
-                                <Grid
-                                    x:DataType="models:Book"
-                                    BackgroundColor="{AppThemeBinding Dark={StaticResource DarkCardBackground}, Light={StaticResource LightGray}}"
-                                    ColumnDefinitions="200, 30"
-                                    RowDefinitions="65, 30">
-                                    <Label
-                                       FontSize="Body"
-                                       x:Name="TitleLabel"
-                                       Text="{Binding Title}"
-                                       MaxLines="4"
-                                       Padding="15,10,15,0"/>
-                                    <Image Grid.Row="1"
-                                       Source="pin.svg"
-                                       Aspect="AspectFit"
-                                       Margin="10,5,0,10"
-                                       HorizontalOptions="Start">
-                                        <Image.Behaviors>
-                                            <toolkit:IconTintColorBehavior 
-                                            TintColor="{AppThemeBinding Dark={StaticResource White}, Light={StaticResource LightSpaceCadet}}"/>
-                                        </Image.Behaviors>
-                                    </Image>
-                                    <ImageButton Grid.Column="1"
-                                             Grid.Row="1"
-                                             Padding="0,0,0,5"
-                                             HorizontalOptions="Center"
-                                             VerticalOptions="Center"
-                                             Source="kebab.svg"
-                                             Aspect="AspectFit"
-                                             x:Name="ConfigButton"
-                                             Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:BookViewModel}}, Path=ConfigButtonCommand}"
-                                             CommandParameter="{Binding}">
-                                        <ImageButton.Behaviors>
-                                            <toolkit:IconTintColorBehavior 
-                                            TintColor="{AppThemeBinding Dark={StaticResource White}, Light={StaticResource LightSpaceCadet}}"/>
-                                        </ImageButton.Behaviors>
-                                    </ImageButton>
-                                </Grid>
-                            </Border>
-                        </DataTemplate>
-                    </CollectionView.ItemTemplate>
-                </CollectionView>
-            </toolkit:Expander>
-        </Border>
-
-        <!--Standard book list-->
-        <CollectionView x:Name="BooksList"
+    
+    <ScrollView>
+        <Grid>
+            <Image Source="{Binding ImageUrl}" Aspect="AspectFill" Margin="1" >
+                <Image.Behaviors>
+                    <behaviors:BlurBehavior Radius="5"/>
+                </Image.Behaviors>
+                
+            </Image>
+            <Grid RowDefinitions="auto, auto, auto, *"
+                Padding="0,0,0,0" Background="transparent">
+                <Image  Source="{Binding ImageUrl}"
+                        Aspect="AspectFill"
+                        WidthRequest="106"
+                        HeightRequest="138"
+                        HorizontalOptions="Center"/>
+                <Label  x:Name="TitleView"
+                        Text="{Binding Title}"
                         Grid.Row="1"
-                        ItemsSource="{Binding BookList}"
-                        RemainingItemsThreshold="3"
-                        RemainingItemsThresholdReachedCommand="{Binding EndOfListReachedCommand}"
-                        SelectionMode="Single"
-                        ItemSizingStrategy="MeasureFirstItem"
-                        VerticalScrollBarVisibility="Always"
-                        Margin="5">
-            <CollectionView.ItemsLayout>
-                <LinearItemsLayout ItemSpacing="5" Orientation="Vertical"/>
-            </CollectionView.ItemsLayout>
-            <CollectionView.ItemTemplate>
-                <DataTemplate>
-                    <items:BookItem 
-                        BookParameter="{Binding .}"
-                        SelectionCommand="{Binding Source={x:RelativeSource AncestorType={x:Type viewmodels:BookViewModel}}, Path=SelectionCommand}"
-                        DoubleTappedCommand="{Binding Source={x:RelativeSource AncestorType={x:Type viewmodels:BookViewModel}}, Path=DoubleTappedCommand}"/>
-
-                </DataTemplate>
-            </CollectionView.ItemTemplate>
-            <CollectionView.EmptyView>
-                <ActivityIndicator IsRunning="True"/>
-            </CollectionView.EmptyView>
-            <CollectionView.Footer>
-                <ActivityIndicator 
-                    IsRunning="{Binding IsLoading}"
-                    HeightRequest="{Binding LoaderHeightRequest}"
-                    Color="{StaticResource Primary}"/>
-            </CollectionView.Footer>
-        </CollectionView>
-    </Grid>
+                        BackgroundColor="Transparent"
+                        VerticalTextAlignment="Center"
+                        HorizontalTextAlignment="Center"
+                        FontAttributes="Bold"
+                        FontSize="Title"
+                        Padding="5,15,5,25">
+                    <Label.Shadow>
+                        <Shadow Offset="10,10" Brush="Black" Radius="30" Opacity="1"/>
+                    </Label.Shadow>
+                </Label>
+                <Button x:Name="ReadButton"
+                        ZIndex="1"
+                        WidthRequest="150"
+                        Margin="0,0,0,-20"
+                        CornerRadius="10"
+                        Grid.Row="2"
+                        Text="{Binding Path=Method, StringFormat='Read with \n{}'}"
+                        Command="{Binding ReadClickedCommand}"
+                />      
+                <Border Padding="0,20,0,0" HorizontalOptions="Fill"
+                        Grid.Row="3"
+                        BackgroundColor="{AppThemeBinding Dark={StaticResource SpaceCadet}, Light={StaticResource LightBackground}}"
+                        StrokeThickness="0">
+                    <TableView>
+                        <TableRoot>
+                            <TableSection Title="Selector Information" TextColor="{StaticResource Primary}">
+                                <TextCell Detail="Domain Name" Text="Domain Name" TextColor="{StaticResource Primary}"/>
+                                <TextCell Text="Title Selector" Detail="{Binding TitleSelectorType}" TextColor="{StaticResource Primary}"/>
+                                <TextCell Text="Content Selector" Detail="{Binding ContentSelectorType}" TextColor="{StaticResource Primary}"/>
+                                <TextCell Text="Previous Selector" Detail="{Binding PreviousSelectorType}" TextColor="{StaticResource Primary}"/>
+                                <TextCell Text="Next Selector" Detail="{Binding NextSelectorType}" TextColor="{StaticResource Primary}"/>
+                            </TableSection>
+                        </TableRoot>
+                    </TableView>
+                </Border>
+            </Grid>
+        </Grid>
+    </ScrollView>
 </ContentPage>

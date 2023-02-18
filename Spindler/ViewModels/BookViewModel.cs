@@ -5,186 +5,116 @@ using Spindler.Services;
 using Spindler.Utilities;
 using Spindler.Views;
 using Spindler.Views.Book_Pages;
-using System.Collections.ObjectModel;
 
 namespace Spindler.ViewModels
 {
-    partial class BookViewModel : ObservableObject
+    public partial class BookViewModel : ObservableObject
     {
-        #region Bindings
-        [ObservableProperty]
-        public string title;
-        [ObservableProperty]
-        public int id;
+        public BookViewModel() { }
 
+        Book? book;
 
         [ObservableProperty]
-        Book? currentPinnedBookSelection;
+        string imageUrl = "no_image.jpg";
 
         [ObservableProperty]
-        List<Book>? bookList = null;
+        string title = "Loading...";
 
         [ObservableProperty]
-        ObservableCollection<Book> displayedBooks = new();
+        bool configIsValid = false;
 
         [ObservableProperty]
-        ObservableCollection<Book> pinnedBooks = new();
+        string domain = "Unknown";
 
         [ObservableProperty]
-        bool isLoading = false;
+        string titleSelectorType = "Unknown";
 
         [ObservableProperty]
-        bool expanded = false;
+        string contentSelectorType = "Unknown";
 
         [ObservableProperty]
-        bool pinnedBooksAreVisible = false;
+        string previousSelectorType = "Unknown";
 
         [ObservableProperty]
-        int loaderHeightRequest = 0;
+        string nextSelectorType = "Unknown";
 
-        #endregion
+        [ObservableProperty]
+        string method = "Normal Reader";
 
-        public BookViewModel(BookList list)
+        bool webview = false;
+        bool headless = false;
+
+
+        public async Task Load(Book book)
         {
-            id = list.Id;
-            title = list.Name;
+            this.book = book;
+            Config? config = await WebService.FindValidConfig(book.Url);
+            configIsValid = config is not null;
+            if (!configIsValid)
+            {
+                // This is for general configurations where the FindValidConfig call may fail due to a 403 forbidden or the sort
+                headless = true;
+                return;
+            }
+
+            webview = config?.ExtraConfigs.GetOrDefault("webview", false) ?? false;
+            headless = config?.ExtraConfigs.GetOrDefault("headless", false) ?? false;
+
+            if (headless) Method = "Headless Reader";
+            if (webview) Method = "Web View Reader";
+
+            Title = book.Title;
+            ImageUrl = book.ImageUrl;
+
+            Domain = config!.DomainName;
+            TitleSelectorType = GetPathAsString(config.TitlePath);
+            ContentSelectorType = GetPathAsString(config.ContentPath);
+            PreviousSelectorType = GetPathAsString(config.PrevUrlPath);
+            NextSelectorType = GetPathAsString(config.NextUrlPath);
         }
 
-        ImageButton? AddButton;
-        /// <summary>
-        /// Add references to BookPage Elements 
-        /// </summary>
-        /// <param name="addToolBarItem">The ImageButton Plus in the toolbar </param>
-        public void AddUiReferences(ImageButton addToolBarItem)
-        {
-            AddButton = addToolBarItem;
-        }
-
-        /// <summary>
-        /// Method called when one of the config buttons in the book list is selected
-        /// </summary>
-        /// <param name="book">The book that the config button is attached to</param>
         [RelayCommand]
-        private async void ConfigButton(Book book)
+        public async void ReadClicked()
         {
             Dictionary<string, object> parameters = new()
             {
-                { "book", book }
-            };
-            await Shell.Current.GoToAsync($"{nameof(BookDetailPage)}", parameters);
-        }
-
-        /// <summary>
-        /// Method called when the plus icon in the tool bar is selected
-        /// </summary>
-        [RelayCommand]
-        private async void AddToolBarItem()
-        {
-            await AddButton!.RelRotateTo(360, 250, Easing.CubicIn);
-            Dictionary<string, object> parameters = new()
-            {
-                { 
-                    "book", new Book()
-                    {
-                        BookListId = id,
-                        LastViewed = DateTime.UtcNow,
-                    }
-                }
-            };
-            await Shell.Current.GoToAsync($"{nameof(BookDetailPage)}", parameters);
-        }
-
-
-        bool executing = false;
-        /// <summary>
-        /// Method Called when a standard book is selected from the booklist
-        /// </summary>
-        /// <param name="selection">The book that is selected</param>
-        [RelayCommand]
-        private async void Selection(Book selection)
-        {
-            if (executing)
-                return;
-            executing = true;
-            var parameters = new Dictionary<string, object>()
-            {
-                { "book", selection}
-            };
-            await Shell.Current.GoToAsync($"{nameof(BookInfoPage)}", parameters);
-            executing = false;
-        }
-
-        /// <summary>
-        /// Method Called when a book is double tapped
-        /// </summary>
-        /// <param name="selection">The book that is tapped</param>
-        [RelayCommand]
-        private async void DoubleTapped(Book selection)
-        {
-            if (executing)
-                return;
-            executing = true;
-            var parameters = new Dictionary<string, object>()
-            {
-                { "book", selection}
+                { "book", book! }
             };
 
-            var config = await WebService.FindValidConfig(selection.Url);
-            
             string pageName = nameof(StandardReaderPage);
-            if (config?.ExtraConfigs.GetOrDefault("webview", false) ?? false)
+            if (webview)
             {
                 pageName = nameof(WebviewReaderPage);
             }
-            if (config?.ExtraConfigs.GetOrDefault("headless", false) ?? false)
+            if (headless)
             {
                 pageName = nameof(HeadlessReaderPage);
             }
 
-            await Shell.Current.GoToAsync($"{pageName}", parameters);
-            executing = false;
+            await Shell.Current.GoToAsync($"../{pageName}", parameters);
+            return;
         }
 
-        /// <summary>
-        /// Method called when a Pinned Book is selected
-        /// </summary>
         [RelayCommand]
-        private async void PinnedBookSelection()
+        public async void ModifyClicked()
         {
-            if (executing || CurrentPinnedBookSelection == null)
-                return;
-            var parameters = new Dictionary<string, object>()
+            Dictionary<string, object> parameters = new()
             {
-                { "book", CurrentPinnedBookSelection}
+                { "book", book! }
             };
-            await Shell.Current.GoToAsync($"{nameof(BookInfoPage)}", parameters);
-            executing = false;
+            await Shell.Current.GoToAsync($"../{nameof(BookDetailPage)}", parameters: parameters);
         }
 
-        /// <summary>
-        /// Populate the BookPage with relevant Data
-        /// </summary>
-        /// <returns>Nothing</returns>
-        public async Task Load()
+        private static string GetPathAsString(string path)
         {
-            BookList = await App.Database.GetBooksByBooklistIdAsync(id);
-            PinnedBooks = new ObservableCollection<Book>(BookList.FindAll((book) => book.Pinned));
-            PinnedBooksAreVisible = PinnedBooks.Count > 0;
+            var tempPath = new Models.Path(path);
+            return tempPath.type switch
+            {
+                Models.Path.Type.XPath => "X Path",
+                Models.Path.Type.Css => "CSS Path",
+                _ => "Unknown",
+            };
         }
 
-        const int NUM_ITEMS_ADDED_TO_LIST = 100;
-        /// <summary>
-        /// Method called when the user reaches the end of the displayed books
-        /// </summary>
-        [RelayCommand]
-        public void EndOfListReached()
-        {
-            LoaderHeightRequest = 20;
-            IsLoading = true;
-            foreach (Book book in BookList!.Skip(DisplayedBooks.Count).Take(NUM_ITEMS_ADDED_TO_LIST))
-                DisplayedBooks!.Add(book);
-            IsLoading = false;
-            LoaderHeightRequest = 0;
-        }
     }
 }

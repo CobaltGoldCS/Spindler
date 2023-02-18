@@ -152,6 +152,15 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <Compile Update="Views\Book List Page\HomePage.xaml.cs">
+	    <DependentUpon>HomePage.xaml</DependentUpon>
+	  </Compile>
+	  <Compile Update="Views\Book List Page\BookListPage.xaml.cs">
+	    <DependentUpon>BookListPage.xaml</DependentUpon>
+	  </Compile>
+	  <Compile Update="Views\Book Pages\BookPage.xaml.cs">
+	    <DependentUpon>BookPage.xaml</DependentUpon>
+	  </Compile>
 	  <Compile Update="Views\Configuration Pages\GeneralizedConfigDetailPage.xaml.cs">
 	    <DependentUpon>GeneralizedConfigDetailPage.xaml</DependentUpon>
 	  </Compile>
@@ -191,13 +200,13 @@
 	  <MauiXaml Update="Views\Book List Page\BookListDetailPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
-	  <MauiXaml Update="Views\Book List Page\BookListPage.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </MauiXaml>
-	  <MauiXaml Update="Views\Book Pages\BookInfoPage.xaml">
+	  <MauiXaml Update="Views\Book List Page\HomePage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="Views\Book Pages\BookPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Views\Book List Page\BookListPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="Views\Configuration Pages\GeneralizedConfigDetailPage.xaml">

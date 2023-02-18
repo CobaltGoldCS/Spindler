@@ -31,17 +31,18 @@ public partial class App : Application
         InitializeComponent();
         Batteries.Init();
         MainPage = shell;
-        Routing.RegisterRoute(nameof(BookPage), typeof(BookPage));
-        Routing.RegisterRoute($"{nameof(BookPage)}/{nameof(BookDetailPage)}", typeof(BookDetailPage));
-        Routing.RegisterRoute($"{nameof(BookPage)}/{nameof(BookDetailPage)}/{nameof(BookSearcherPage)}", typeof(BookSearcherPage));
+        Routing.RegisterRoute($"{nameof(HomePage)}/{nameof(BookDetailPage)}", typeof(BookDetailPage));
+        Routing.RegisterRoute($"{nameof(HomePage)}/{nameof(BookDetailPage)}/{nameof(BookSearcherPage)}", typeof(BookSearcherPage));
 
-        Routing.RegisterRoute($"{nameof(BookPage)}/{nameof(BookInfoPage)}", typeof(BookInfoPage));
-        Routing.RegisterRoute($"{nameof(BookPage)}/{nameof(StandardReaderPage)}", typeof(StandardReaderPage));
-        Routing.RegisterRoute($"{nameof(BookPage)}/{nameof(WebviewReaderPage)}", typeof(WebviewReaderPage));
-        Routing.RegisterRoute($"{nameof(BookPage)}/{nameof(HeadlessReaderPage)}", typeof(HeadlessReaderPage));
-        Routing.RegisterRoute($"{nameof(BookPage)}/{nameof(ErrorPage)}", typeof(ErrorPage));
+        Routing.RegisterRoute($"{nameof(HomePage)}/{nameof(BookListPage)}", typeof(BookListPage));
+        Routing.RegisterRoute($"{nameof(HomePage)}/{nameof(BookPage)}", typeof(BookPage));
 
-        Routing.RegisterRoute("BookLists/" + nameof(BookListDetailPage), typeof(BookListDetailPage));
+        Routing.RegisterRoute($"{nameof(HomePage)}/{nameof(StandardReaderPage)}", typeof(StandardReaderPage));
+        Routing.RegisterRoute($"{nameof(HomePage)}/{nameof(WebviewReaderPage)}", typeof(WebviewReaderPage));
+        Routing.RegisterRoute($"{nameof(HomePage)}/{nameof(HeadlessReaderPage)}", typeof(HeadlessReaderPage));
+        Routing.RegisterRoute($"{nameof(HomePage)}/{nameof(ErrorPage)}", typeof(ErrorPage));
+
+        Routing.RegisterRoute("HomePage/" + nameof(BookListDetailPage), typeof(BookListDetailPage));
         Routing.RegisterRoute("Config/" + nameof(ConfigDetailPage), typeof(ConfigDetailPage));
         Routing.RegisterRoute("GeneralConfig/" + nameof(GeneralizedConfigDetailPage), typeof(GeneralizedConfigDetailPage));
     }
