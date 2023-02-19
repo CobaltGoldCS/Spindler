@@ -51,6 +51,7 @@
 	  <DebugType>embedded</DebugType>
 	  <ApplicationVersion>3</ApplicationVersion>
 	  <ApplicationDisplayVersion>2022.2.28</ApplicationDisplayVersion>
+	  <Optimize>True</Optimize>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net7.0-ios|AnyCPU'">
@@ -65,6 +66,7 @@
 	  <DebugType>embedded</DebugType>
 	  <ApplicationVersion>3</ApplicationVersion>
 	  <ApplicationDisplayVersion>2022.2.28</ApplicationDisplayVersion>
+	  <Optimize>True</Optimize>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net7.0-maccatalyst|AnyCPU'">
@@ -79,6 +81,7 @@
 	  <DebugType>embedded</DebugType>
 	  <ApplicationVersion>3</ApplicationVersion>
 	  <ApplicationDisplayVersion>2022.2.28</ApplicationDisplayVersion>
+	  <Optimize>True</Optimize>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net7.0-windows10.0.19041.0|AnyCPU'">
@@ -91,6 +94,7 @@
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net7.0-android33.0|AnyCPU'">
 	  <ApplicationVersion>3</ApplicationVersion>
 	  <ApplicationDisplayVersion>2022.2.28</ApplicationDisplayVersion>
+	  <Optimize>True</Optimize>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net7.0-android33.0|AnyCPU'">
