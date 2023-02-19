@@ -65,7 +65,7 @@ public partial class WebviewReaderPage : ContentPage, IReader
     public async void OnShellNavigated(object? sender,
                            ShellNavigatingEventArgs e)
     {
-        if (e.Current.Location.OriginalString == "//BookLists/BookPage/WebviewReaderPage")
+        if (e.Target.Location.OriginalString == "..")
         {
             await App.Database.SaveItemAsync(Book!);
         }

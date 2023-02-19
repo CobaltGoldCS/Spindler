@@ -6,7 +6,7 @@
              xmlns:items="clr-namespace:Spindler.CustomControls.Items"
              xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
              x:DataType="viewmodels:BookListViewModel"
-             x:Class="Spindler.Views.Book_Pages.BookListPage"
+             x:Class="Spindler.Views.BookListPage"
              x:Name="thisPage">
 
     <ContentPage.Resources>

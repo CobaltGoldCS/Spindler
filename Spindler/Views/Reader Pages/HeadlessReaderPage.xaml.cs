@@ -101,7 +101,7 @@ public partial class HeadlessReaderPage : ContentPage, INotifyPropertyChanged, I
     public async void OnShellNavigated(object? sender,
                            ShellNavigatingEventArgs e)
     {
-        if (e.Current.Location.OriginalString == "//BookLists/BookPage/HeadlessReaderPage" && e.Target.Location.OriginalString != "../ErrorPage")
+        if (e.Target.Location.OriginalString == "..")
         {
             if (Book != null)
             {

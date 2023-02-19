@@ -1,7 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Spindler.Models;
-using Spindler.Views.Book_Pages;
+using Spindler.Views;
 
 namespace Spindler.ViewModels;
 

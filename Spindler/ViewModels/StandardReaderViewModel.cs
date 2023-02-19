@@ -196,7 +196,7 @@ namespace Spindler.ViewModels
         public async void OnShellNavigated(object? sender,
                            ShellNavigatingEventArgs e)
         {
-            if (e.Current.Location.OriginalString == "//BookLists/BookPage/ReaderPage")
+            if (e.Target.Location.OriginalString == "..")
             {
                 if (CurrentBook != null)
                 {

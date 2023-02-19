@@ -1,4 +1,4 @@
-namespace Spindler.Views.Book_Pages;
+namespace Spindler.Views;
 
 using Spindler.Models;
 using Spindler.ViewModels;
