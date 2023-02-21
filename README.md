@@ -45,3 +45,16 @@ For paths, the href attribute is prioritized, so if you want to get the text con
 Xpaths also have the ability to use _$ syntax_. This is generally not needed, however, because they allow you to target individual attributes by default.
 
 __Note__ that books require a booklist to be created first in order to function.
+
+## Example Configurations
+--------------------------------------------------------------
+Domain Name     | Title Path (Not required) | Content Path     | Previous Path                          | Next Path                              | Headless Mode | Image Url Path
+----------------|:--------------------------|:-----------------|:---------------------------------------|:---------------------------------------|:--------------|:-----------------
+scribblehub.com | div.chapter-title         | #chp-raw         | a.btn-prev                             |  a.btn-next                            | Yes           | .s_novel_img > img $src
+m.fanfiction.net| N/A                       | div#storycontent | //a[text()[contains(., 'Prev')]] $href | //a[text()[contains(., 'Next')]] $href | Yes           | N/A
+
+### General Configuration Examples
+Config Name     | Match Path                 | Title Path (Not required) | Content Path     | Previous Path                          | Next Path                              | Headless Mode | Image Url Path
+----------------|:---------------------------|:--------------------------|:-----------------|:---------------------------------------|:---------------------------------------|:--------------|:-----------------
+Madara WP Theme | .wp-manga-template-default | N/A                       | div.text-left    | a.prev_page                            | a.next_page                            | Yes | N/A
+Base WordPress Theme | body.post-template-default | N/A | div.entry-content | div.nav-previous > a | giv.nav-next > a | Either | N/A
