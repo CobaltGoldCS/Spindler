@@ -116,6 +116,7 @@ public class WebService
         catch (Exception e) when (
         e is IOException ||
         e is TaskCanceledException ||
+        e is HttpRequestException ||
         e is System.Net.WebException)
         {
             return null;
