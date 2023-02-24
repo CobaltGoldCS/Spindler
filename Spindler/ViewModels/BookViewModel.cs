@@ -48,25 +48,27 @@ namespace Spindler.ViewModels
         public async Task Load(Book book)
         {
             this.book = book;
+            Domain = new UriBuilder(book.Url).Host;
+
             Config? config = await WebService.FindValidConfig(book.Url);
-            configIsValid = config is not null;
-            if (!configIsValid)
+            
+            Title = book.Title;
+            ImageUrl = book.ImageUrl;
+            
+            if (config is null)
             {
                 // This is for general configurations where the FindValidConfig call may fail due to a 403 forbidden or the sort
                 headless = true;
+                Method = "Headless Reader";
                 return;
             }
 
-            webview = config?.ExtraConfigs.GetOrDefault("webview", false) ?? false;
-            headless = config?.ExtraConfigs.GetOrDefault("headless", false) ?? false;
+            webview = config!.ExtraConfigs.GetOrDefault("webview", false);
+            headless = config.ExtraConfigs.GetOrDefault("headless", false);
 
             if (headless) Method = "Headless Reader";
             if (webview) Method = "Web View Reader";
 
-            Title = book.Title;
-            ImageUrl = book.ImageUrl;
-
-            Domain = config!.DomainName;
             TitleSelectorType = GetPathAsString(config.TitlePath);
             ContentSelectorType = GetPathAsString(config.ContentPath);
             PreviousSelectorType = GetPathAsString(config.PrevUrlPath);
