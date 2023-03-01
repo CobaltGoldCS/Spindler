@@ -1,4 +1,5 @@
 ﻿using CommunityToolkit.Maui;
+using CommunityToolkit.Maui.Storage;
 
 #if ANDROID
 using Spindler.Platforms.Android;
@@ -24,13 +25,13 @@ public static class MauiProgram
                 fonts.AddFont("SignikaNegative-Bold.ttf", "Signika (Bold)");
                 fonts.AddFont("SignikaNegative-Regular.ttf", "Signika");
             })
-            // Fix CollectionView Lag in Android
+        // Fix CollectionView Lag in Android
 #if ANDROID
             .ConfigureMauiHandlers(h => {
                 h.AddHandler(typeof(CollectionView), typeof(CollectionViewHandlerEx));
             })
 #endif
-            ;
+        ;
         builder.Services
             .AddSingleton<AppShell>();
         return builder.Build();
