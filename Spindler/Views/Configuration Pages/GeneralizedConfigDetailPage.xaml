@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+<pages:BaseConfigDetailPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:pages="clr-namespace:Spindler.Views.Configuration_Pages"
              xmlns:models="clr-namespace:Spindler.Models"
              xmlns:controls="clr-namespace:Spindler.CustomControls"
              x:Class="Spindler.GeneralizedConfigDetailPage"
+             x:TypeArguments="models:GeneralizedConfig"
              Shell.PresentationMode="ModalAnimated"
              Title="Generalized Config Detail Page">
     <ContentPage.BindingContext>
@@ -38,6 +40,10 @@
         </Grid>
         <TableView Grid.Row="1" Grid.ColumnSpan="3" VerticalOptions="StartAndExpand">
             <TableRoot>
+                <TableSection>
+                    <TextCell x:Name="exportButton" Text="Export Config as JSON" IsEnabled="False" Tapped="ExportCommand" TextColor="{StaticResource Primary}"/>
+                    <TextCell x:Name="importButton" Text="Import Config from JSON file" IsEnabled="False" Tapped="ImportCommand" TextColor="{StaticResource Primary}"/>
+                </TableSection>
                 <TableSection Title="Extra Configuration Options" TextColor="{StaticResource Primary}">
                     <EntryCell x:Name="imageEntry" Label="Image Url Path" Text="{Binding ImageUrlPath}"/>
                 </TableSection>
@@ -60,4 +66,4 @@
                                  CancelClicked="Cancel_Clicked"
                                  HorizontalOptions="FillAndExpand"/>
     </Grid>
-</ContentPage>
+</pages:BaseConfigDetailPage>
