@@ -1,0 +1,126 @@
+﻿using CommunityToolkit.Maui.Alerts;
+using CommunityToolkit.Maui.Storage;
+using Newtonsoft.Json;
+using Spindler.Services;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Spindler.Views.Configuration_Pages
+{
+    public abstract class BaseConfigDetailPage<TConfig> : BaseConfigDetailPage where TConfig : Models.Config, new()
+    {
+        protected State state = State.NewConfig;
+
+        protected TConfig configuration = new() { Id = -1 };
+
+        protected TConfig Configuration
+        {
+            get => configuration;
+            set
+            {
+                configuration = value;
+                OnPropertyChanged();
+            }
+        }
+
+        protected enum State
+        {
+            NewConfig,
+            ModifyConfig
+        }
+
+        protected virtual void InitializePage(TConfig config)
+        {
+            this.Configuration = config;
+            BindingContext = Configuration;
+            if (config.Id < 0)
+            {
+                state = State.NewConfig;
+            }
+            else
+            {
+                state = State.ModifyConfig;
+            }
+        }
+
+        #region Click Handlers
+        protected virtual async void DeleteButton_Clicked(object sender, EventArgs e)
+        {
+            if (Configuration.Id < 0)
+                return;
+            await App.Database.DeleteItemAsync(Configuration);
+            await Shell.Current.GoToAsync("..");
+        }
+
+        protected virtual async void okButton_Clicked(object sender, EventArgs e)
+        {
+            if (!ConfigService.IsValidSelector(Configuration.ImageUrlPath))
+                Configuration.ImageUrlPath = "";
+
+            await App.Database.SaveItemAsync(Configuration);
+            await Shell.Current.GoToAsync("..");
+        }
+
+        protected virtual async void Cancel_Clicked(object sender, EventArgs e) => await Shell.Current.GoToAsync("..");
+
+        protected async void ExportCommand(object sender, EventArgs e)
+        {
+            CancellationToken cancellationToken = new();
+
+            string output = JsonConvert.SerializeObject(Configuration);
+            using MemoryStream stream = new(Encoding.Default.GetBytes(output));
+
+            try
+            {
+                FileSaverImplementation fileSaverInstance = new();
+                var filePath = await fileSaverInstance.SaveAsync($"{Configuration.Name.Replace('.', '-')}.json", stream, cancellationToken);
+                await Toast.Make($"File saved at {filePath}").Show(cancellationToken);
+#if IOS || MACCATALYST
+            fileSaverInstance.Dispose();
+#endif
+            }
+            catch (Exception ex)
+            {
+                await Toast.Make($"File not saved: {ex.Message}").Show(cancellationToken);
+            }
+        }
+
+        protected virtual async void ImportCommand(object sender, EventArgs e)
+        {
+            CancellationToken cancellationToken = new();
+            FileResult? file = await FilePicker.Default.PickAsync(PickOptions.Default);
+
+            if (file is null) return;
+
+            Stream contents = await file.OpenReadAsync();
+            MemoryStream stream = new();
+            await contents.CopyToAsync(stream);
+
+            string JSON = Encoding.Default.GetString(stream.ToArray());
+            TConfig? config = JsonConvert.DeserializeObject<TConfig>(JSON);
+            if (config is null)
+            {
+                await Toast.Make("File not saved: could not convert JSON to string").Show(cancellationToken);
+                return;
+            }
+            Configuration = config;
+            BindingContext = Configuration;
+            Configuration.Id = -1; // Required to create a new config
+        }
+
+        #endregion
+
+        public BaseConfigDetailPage() 
+        {
+            
+        }
+    }
+
+    public abstract class BaseConfigDetailPage : ContentPage
+    {
+        protected BaseConfigDetailPage() { }
+    }
+}
