@@ -36,8 +36,8 @@
         <TableView Grid.Row="1" VerticalOptions="StartAndExpand" HasUnevenRows="True">
             <TableRoot>
                 <TableSection>
-                    <TextCell x:Name="exportButton" Text="Export Button as JSON" IsEnabled="False" Tapped="ExportCommand"/>
-                    <TextCell x:Name="importButton" Text="Import Config from JSON file" IsEnabled="False" Tapped="ImportCommand"/>
+                    <TextCell x:Name="exportButton" Text="Export Config as JSON" IsEnabled="False" Tapped="ExportCommand" TextColor="{StaticResource Primary}"/>
+                    <TextCell x:Name="importButton" Text="Import Config from JSON file" IsEnabled="False" Tapped="ImportCommand" TextColor="{StaticResource Primary}"/>
                 </TableSection>
                 <TableSection Title="Extra Configuration Options" TextColor="{StaticResource Primary}">
                     <EntryCell x:Name="imageEntry" Label="Image Url Path" Text="{Binding ImageUrlPath}"/>

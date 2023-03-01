@@ -71,7 +71,7 @@ public partial class ConfigDetailPage : BaseConfigDetailPage<Config>
     #region Click Handlers
     protected override async void DeleteButton_Clicked(object sender, EventArgs e)
     {
-        if (!await DisplayAlert("Warning!", "Are you sure you want to delete this config?", "Yes", "No")) return;
+        if (state == State.ModifyConfig && !await DisplayAlert("Warning!", "Are you sure you want to delete this config?", "Yes", "No")) return;
         base.DeleteButton_Clicked(sender, e);
     }
 
