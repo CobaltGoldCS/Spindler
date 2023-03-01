@@ -49,8 +49,7 @@ namespace Spindler.Views.Configuration_Pages
         #region Click Handlers
         protected virtual async void DeleteButton_Clicked(object sender, EventArgs e)
         {
-            if (Configuration.Id < 0)
-                return;
+            if (state == State.NewConfig || !await DisplayAlert("Warning!", "Are you sure you want to delete this config?", "Yes", "No")) return;
             await App.Database.DeleteItemAsync(Configuration);
             await Shell.Current.GoToAsync("..");
         }
