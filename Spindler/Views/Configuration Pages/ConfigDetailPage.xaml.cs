@@ -1,21 +1,19 @@
+using CommunityToolkit.Maui.Alerts;
+using CommunityToolkit.Maui.Storage;
+using Newtonsoft.Json;
 using Spindler.Behaviors;
 using Spindler.Models;
 using Spindler.Services;
 using Spindler.Utilities;
+using Spindler.Views.Configuration_Pages;
+using System.Text;
 using System.Text.RegularExpressions;
 
 namespace Spindler;
 
 [QueryProperty(nameof(config), "config")]
-public partial class ConfigDetailPage : ContentPage
+public partial class ConfigDetailPage : BaseConfigDetailPage<Config>
 {
-    private Config Configuration = new() { Id = -1 };
-
-    #region Constants
-    private readonly Regex domainValidationRegex = new(@"^(?!www\.)(((?!\-))(xn\-\-)?[a-z0-9\-_]{0,61}[a-z0-9]{1,1}\.)*(xn\-\-)?([a-z0-9\-]{1,61}|[a-z0-9\-]{1,30})\.[a-z]{2,}$");
-    #endregion
-
-    #region QueryProperty handler
     public Config config
     {
         get => Configuration;
@@ -26,34 +24,42 @@ public partial class ConfigDetailPage : ContentPage
         }
     }
 
-    private void InitializePage(Config config)
+    #region Constants
+    private readonly Regex domainValidationRegex = new(@"^(?!www\.)(((?!\-))(xn\-\-)?[a-z0-9\-_]{0,61}[a-z0-9]{1,1}\.)*(xn\-\-)?([a-z0-9\-]{1,61}|[a-z0-9\-]{1,30})\.[a-z]{2,}$");
+    #endregion
+
+
+    protected override void InitializePage(Config config)
     {
-        if (config.Id < 0)
+        base.InitializePage(config);
+        switch (state)
         {
-            AddButtonGroup.OkText = "Add";
-            Title = "Add a new Config";
+            case State.NewConfig:
+                AddButtonGroup.OkText = "Add";
+                importButton.IsEnabled = true;
+                Title = "Add a new Config";
+                break;
+            case State.ModifyConfig:
+                AddButtonGroup.OkText = "Modify";
+                exportButton.IsEnabled = true;
+                Title = $"Modify {config.DomainName}";
+                break;
         }
-        else
-        {
-            AddButtonGroup.OkText = "Modify";
-            Title = $"Modify {config.DomainName}";
-        }
-        BindingContext = config;
-        switchWebView.On = config.ExtraConfigs.GetOrDefault("webview", false);
-        animationSwitch.On = config.ExtraConfigs.GetOrDefault("autoscrollanimation", true);
-        separatorEntry.Text = config.ExtraConfigs.GetOrDefault("separator", "\n")
+        BindingContext = Configuration;
+        switchWebView.On = Configuration.ExtraConfigs.GetOrDefault("webview", false);
+        animationSwitch.On = Configuration.ExtraConfigs.GetOrDefault("autoscrollanimation", true);
+        separatorEntry.Text = Configuration.ExtraConfigs.GetOrDefault("separator", "\n")
             .Replace(Environment.NewLine, @"\n")
             .Replace("\t", @"\t");
-        headlessSwitch.On = config.ExtraConfigs.GetOrDefault("headless", false);
+        headlessSwitch.On = Configuration.ExtraConfigs.GetOrDefault("headless", false);
     }
-    #endregion
 
 
 
     public ConfigDetailPage()
     {
+        
         InitializeComponent();
-
         domainEntry.Behaviors.Add(new TextValidationBehavior(domainValidationRegex.IsMatch));
 
         TextValidationBehavior validSelectorBehavior = new(ConfigService.IsValidSelector);
@@ -63,15 +69,13 @@ public partial class ConfigDetailPage : ContentPage
     }
 
     #region Click Handlers
-    private async void DeleteButton_Clicked(object sender, EventArgs e)
+    protected override async void DeleteButton_Clicked(object sender, EventArgs e)
     {
-        if (config.Id < 0) return;
         if (!await DisplayAlert("Warning!", "Are you sure you want to delete this config?", "Yes", "No")) return;
-        await App.Database.DeleteItemAsync(config);
-        await Shell.Current.GoToAsync("..");
+        base.DeleteButton_Clicked(sender, e);
     }
 
-    private async void okButton_Clicked(object sender, EventArgs e)
+    protected override async void okButton_Clicked(object sender, EventArgs e)
     {
         if (!domainValidationRegex.IsMatch(domainEntry.Text) ||
             !ConfigService.IsValidSelector(contentEntry.Text)||
@@ -91,17 +95,19 @@ public partial class ConfigDetailPage : ContentPage
             { "headless", headlessSwitch.On },
         };
 
-        if (!ConfigService.IsValidSelector(config.ImageUrlPath))
-            config.ImageUrlPath = "";
-
-        await App.Database.SaveItemAsync(config);
-        await Shell.Current.GoToAsync("..");
+        base.okButton_Clicked(sender, e);
     }
 
-    private async void Cancel_Clicked(object sender, EventArgs e)
+#endregion
+
+    protected override async void ImportCommand(object sender, EventArgs e)
     {
-        await Shell.Current.GoToAsync("..");
+        base.ImportCommand(sender, e);
+        switchWebView.On = Configuration.ExtraConfigs.GetOrDefault("webview", false);
+        animationSwitch.On = Configuration.ExtraConfigs.GetOrDefault("autoscrollanimation", true);
+        separatorEntry.Text = Configuration.ExtraConfigs.GetOrDefault("separator", "\n")
+            .Replace(Environment.NewLine, @"\n")
+            .Replace("\t", @"\t");
+        headlessSwitch.On = Configuration.ExtraConfigs.GetOrDefault("headless", false);
     }
-
-    #endregion
 }
