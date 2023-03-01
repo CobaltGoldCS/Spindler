@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace Spindler.Views.Configuration_Pages
 {
-    public abstract class BaseConfigDetailPage<TConfig> : BaseConfigDetailPage where TConfig : Models.Config, new()
+    public abstract class BaseConfigDetailPage<TConfig> : ContentPage where TConfig : Models.Config, new()
     {
         protected State state = State.NewConfig;
 
@@ -116,10 +116,5 @@ namespace Spindler.Views.Configuration_Pages
         {
             
         }
-    }
-
-    public abstract class BaseConfigDetailPage : ContentPage
-    {
-        protected BaseConfigDetailPage() { }
     }
 }
