@@ -54,6 +54,7 @@ public class Config : IIndexedModel
     /// </summary>
     public string PathType { get => _pathType; private set => _pathType = value; }
 
+    [JsonIgnore]
     /// <summary>
     /// The extra configs in string form. Use <see ref="ExtraConfigs"/> instead
     /// </summary>
