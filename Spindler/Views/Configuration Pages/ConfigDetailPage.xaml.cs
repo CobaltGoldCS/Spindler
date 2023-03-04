@@ -24,10 +24,6 @@ public partial class ConfigDetailPage : BaseConfigDetailPage<Config>
         }
     }
 
-    #region Constants
-    private readonly Regex domainValidationRegex = new(@"^(?!www\.)(((?!\-))(xn\-\-)?[a-z0-9\-_]{0,61}[a-z0-9]{1,1}\.)*(xn\-\-)?([a-z0-9\-]{1,61}|[a-z0-9\-]{1,30})\.[a-z]{2,}$");
-    #endregion
-
 
     protected override void InitializePage(Config config)
     {
@@ -60,7 +56,7 @@ public partial class ConfigDetailPage : BaseConfigDetailPage<Config>
     {
         
         InitializeComponent();
-        domainEntry.Behaviors.Add(new TextValidationBehavior(domainValidationRegex.IsMatch));
+        domainEntry.Behaviors.Add(new TextValidationBehavior(DomainValidationRegex().IsMatch));
 
         TextValidationBehavior validSelectorBehavior = new(ConfigService.IsValidSelector);
         contentEntry.Behaviors.Add(validSelectorBehavior);
@@ -70,9 +66,9 @@ public partial class ConfigDetailPage : BaseConfigDetailPage<Config>
 
     #region Click Handlers
 
-    protected override async void okButton_Clicked(object sender, EventArgs e)
+    protected override void okButton_Clicked(object sender, EventArgs e)
     {
-        if (!domainValidationRegex.IsMatch(domainEntry.Text) ||
+        if (!DomainValidationRegex().IsMatch(domainEntry.Text) ||
             !ConfigService.IsValidSelector(contentEntry.Text)||
             !ConfigService.IsValidSelector(nextEntry.Text)   ||
             !ConfigService.IsValidSelector(prevEntry.Text))
@@ -95,7 +91,7 @@ public partial class ConfigDetailPage : BaseConfigDetailPage<Config>
 
 #endregion
 
-    protected override async void ImportCommand(object sender, EventArgs e)
+    protected override void ImportCommand(object sender, EventArgs e)
     {
         base.ImportCommand(sender, e);
         switchWebView.On = Configuration.ExtraConfigs.GetOrDefault("webview", false);
@@ -105,4 +101,7 @@ public partial class ConfigDetailPage : BaseConfigDetailPage<Config>
             .Replace("\t", @"\t");
         headlessSwitch.On = Configuration.ExtraConfigs.GetOrDefault("headless", false);
     }
+
+    [GeneratedRegex("^(?!www\\.)(((?!\\-))(xn\\-\\-)?[a-z0-9\\-_]{0,61}[a-z0-9]{1,1}\\.)*(xn\\-\\-)?([a-z0-9\\-]{1,61}|[a-z0-9\\-]{1,30})\\.[a-z]{2,}$")]
+    private static partial Regex DomainValidationRegex();
 }
