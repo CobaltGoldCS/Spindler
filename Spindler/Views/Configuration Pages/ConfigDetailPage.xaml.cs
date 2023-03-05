@@ -94,7 +94,6 @@ public partial class ConfigDetailPage : BaseConfigDetailPage<Config>
     protected async void ImportCommand(object sender, EventArgs e)
     {
         await base.Import(sender, e);
-        var config = Configuration;
         switchWebView.On = Configuration.ExtraConfigs.GetOrDefault("webview", false);
         animationSwitch.On = Configuration.ExtraConfigs.GetOrDefault("autoscrollanimation", true);
         separatorEntry.Text = Configuration.ExtraConfigs.GetOrDefault("separator", "\n")
