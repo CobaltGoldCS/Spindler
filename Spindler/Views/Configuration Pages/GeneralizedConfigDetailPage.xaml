@@ -11,8 +11,8 @@
     <ContentPage.BindingContext>
         <models:GeneralizedConfig/>
     </ContentPage.BindingContext>
-    <Grid ColumnDefinitions="*, *, *" RowDefinitions="auto, *, auto" VerticalOptions="FillAndExpand" Padding="9,0,9,0">
-        <Grid RowDefinitions="40, 40, 40, 40, 40, 40" ColumnDefinitions="auto, *" Grid.ColumnSpan="3">
+    <Grid ColumnDefinitions="*, *, *" RowDefinitions="auto, *, auto" VerticalOptions="FillAndExpand">
+        <Grid RowDefinitions="40, 40, 40, 40, 40, 40" ColumnDefinitions="auto, *" Grid.ColumnSpan="3" Padding="9,0,9,0">
 
             <Label Text="Config Name:" VerticalOptions="Center"/>
             <Entry x:Name="domainEntry" HorizontalOptions="FillAndExpand" Grid.Column="1"

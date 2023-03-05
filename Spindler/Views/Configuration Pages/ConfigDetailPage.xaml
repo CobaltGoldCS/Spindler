@@ -12,8 +12,8 @@
     <ContentPage.BindingContext>
         <models:Config/>
     </ContentPage.BindingContext>
-    <Grid RowDefinitions="auto, *, auto" VerticalOptions="FillAndExpand" Padding="9,0,9,0">
-        <Grid RowDefinitions="40, 40, 40, 40, 40" ColumnDefinitions="auto, *">
+    <Grid RowDefinitions="auto, *, auto" VerticalOptions="FillAndExpand">
+        <Grid RowDefinitions="40, 40, 40, 40, 40" ColumnDefinitions="auto, *" Padding="9,0,9,0">
             <Label Text="Domain:" VerticalOptions="Center"/>
             <Entry x:Name="domainEntry" HorizontalOptions="FillAndExpand" Grid.Column="1"
                                Placeholder="Domain name of the website ex: google.com" Text="{Binding DomainName}"/>
