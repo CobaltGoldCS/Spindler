@@ -87,7 +87,7 @@ namespace Spindler.Views.Configuration_Pages
             }
         }
 
-        protected virtual async void ImportCommand(object sender, EventArgs e)
+        protected virtual async Task Import(object sender, EventArgs e)
         {
             CancellationToken cancellationToken = new();
             FileResult? file = await FilePicker.Default.PickAsync(PickOptions.Default);
