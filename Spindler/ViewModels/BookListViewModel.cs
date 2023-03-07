@@ -22,13 +22,13 @@ namespace Spindler.ViewModels
         Book? currentPinnedBookSelection;
 
         [ObservableProperty]
-        List<Book>? bookList = null;
+        List<Book> bookList = new();
 
         [ObservableProperty]
-        ObservableCollection<Book> displayedBooks = new();
+        ObservableCollection<WeakReference<Book>> displayedBooks = new();
 
         [ObservableProperty]
-        ObservableCollection<Book> pinnedBooks = new();
+        ObservableCollection<WeakReference<Book>> pinnedBooks = new();
 
         [ObservableProperty]
         bool isLoading = false;
@@ -167,8 +167,12 @@ namespace Spindler.ViewModels
         /// <returns>Nothing</returns>
         public async Task Load()
         {
-            BookList = await App.Database.GetBooksByBooklistIdAsync(id);
-            PinnedBooks = new ObservableCollection<Book>(BookList.FindAll((book) => book.Pinned));
+            BookList = new(await App.Database.GetBooksByBooklistIdAsync(Id));
+
+            foreach (Book book in BookList.FindAll((book) => book.Pinned))
+            {
+                PinnedBooks.Add(new WeakReference<Book>(book));
+            }
             PinnedBooksAreVisible = PinnedBooks.Count > 0;
         }
 
@@ -182,7 +186,7 @@ namespace Spindler.ViewModels
             LoaderHeightRequest = 20;
             IsLoading = true;
             foreach (Book book in BookList!.Skip(DisplayedBooks.Count).Take(NUM_ITEMS_ADDED_TO_LIST))
-                DisplayedBooks!.Add(book);
+                DisplayedBooks!.Add(new WeakReference<Book>(book));
             IsLoading = false;
             LoaderHeightRequest = 0;
         }
