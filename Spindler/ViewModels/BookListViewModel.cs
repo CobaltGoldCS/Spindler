@@ -22,7 +22,7 @@ namespace Spindler.ViewModels
         Book? currentPinnedBookSelection;
 
         [ObservableProperty]
-        List<Book> bookList = new();
+        List<Book>? bookList;
 
         [ObservableProperty]
         ObservableCollection<WeakReference<Book>> displayedBooks = new();
@@ -176,7 +176,7 @@ namespace Spindler.ViewModels
             PinnedBooksAreVisible = PinnedBooks.Count > 0;
         }
 
-        const int NUM_ITEMS_ADDED_TO_LIST = 100;
+        const int NUM_ITEMS_ADDED_TO_LIST = 50;
         /// <summary>
         /// Method called when the user reaches the end of the displayed books
         /// </summary>
