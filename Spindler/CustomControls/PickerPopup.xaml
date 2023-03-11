@@ -13,8 +13,7 @@
             SelectionMode="Single"
             SelectedItem="{Binding Source={x:Reference _this}, Path=SelectedItem}"
             SelectionChangedCommand="{Binding Source={x:Reference _this}, Path=SelectionChangedCommand}"
-            ItemsSource="{Binding Source={x:Reference _this}, Path=RenderedItems}"
-            RemainingItemsThresholdReachedCommand="{Binding Source={x:Reference _this}, Path=EndOfListReachedCommand}"
+            ItemsSource="{Binding Source={x:Reference _this}, Path=Items}"
             Grid.Row="1">
             <CollectionView.ItemsLayout>
                 <LinearItemsLayout 

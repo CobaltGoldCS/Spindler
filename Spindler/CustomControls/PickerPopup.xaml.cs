@@ -14,10 +14,17 @@ namespace Spindler.CustomControls;
 
 public partial class PickerPopup : Popup
 {
-	static byte INITIAL_ITEMS = 9;
-    static byte NUM_ITEMS_ADDED_TO_LIST = 5;
+    private IList<IIndexedModel>? items;
+    public IList<IIndexedModel> Items
+    {
+        get => items!;
+        set
+        {
+            items = value;
+            OnPropertyChanged();
+        }
+    }
 
-    public IList<object> Items { get; set; }
     private string? title;
     public string Title
     {
@@ -25,17 +32,6 @@ public partial class PickerPopup : Popup
         set
         {
             title = value;
-            OnPropertyChanged();
-        }
-    }
-
-    private ObservableCollection<object>? renderedItems;
-    public ObservableCollection<object> RenderedItems
-    {
-        get => renderedItems!;
-        set
-        {
-            renderedItems = value;
             OnPropertyChanged();
         }
     }
@@ -51,22 +47,16 @@ public partial class PickerPopup : Popup
         }
     }
 
-    public PickerPopup(string title, IEnumerable<object> items)
+    public PickerPopup(string title, IEnumerable<IIndexedModel> items)
     {
         InitializeComponent();
         Title = title;
-        Size  = new(0.9 * (DeviceDisplay.MainDisplayInfo.Width  / DeviceDisplay.MainDisplayInfo.Density),
-                    0.8 * (DeviceDisplay.MainDisplayInfo.Height / DeviceDisplay.MainDisplayInfo.Density));
+        double width = 0.9 * (DeviceDisplay.MainDisplayInfo.Width / DeviceDisplay.MainDisplayInfo.Density);
+        double height = 0.8 * (DeviceDisplay.MainDisplayInfo.Height / DeviceDisplay.MainDisplayInfo.Density);
+        Size  = new(width, height);
         Items = items.ToList();
-        RenderedItems = new(Items.Take(INITIAL_ITEMS));
     }
 
-    [RelayCommand]
-    public void EndOfListReached()
-    {
-        foreach (object item in Items!.Skip(RenderedItems.Count).Take(NUM_ITEMS_ADDED_TO_LIST))
-            RenderedItems!.Add(item);
-    }
     [RelayCommand]
     private void SelectionChanged()
     {
