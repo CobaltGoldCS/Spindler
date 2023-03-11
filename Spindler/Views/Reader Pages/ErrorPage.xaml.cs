@@ -53,6 +53,7 @@ public partial class ErrorPage : ContentPage
         if (e.Target.Location.OriginalString.Contains(nameof(ErrorPage)))
         {
             e.Cancel();
+            return;
         }
         // Redirect to BookPage If Normal Back Navigation button is pressed
         if (e.Target.Location.OriginalString == ".." && !ShouldReload)
