@@ -9,7 +9,7 @@ namespace Spindler.Views;
 public partial class ErrorPage : ContentPage
 {
 
-
+    #region Attributes
     private Config? config = null;
     public Config? Config
     {
@@ -20,6 +20,8 @@ public partial class ErrorPage : ContentPage
             OnConfigSet();
         }
     }
+    public bool ShouldReload = false;
+
     public string Message
     {
         set
@@ -27,6 +29,9 @@ public partial class ErrorPage : ContentPage
             LoadPage(value);
         }
     }
+
+    #endregion
+
     private void LoadPage(string message)
     {
         ErrorLabel.Text = message;
@@ -39,8 +44,25 @@ public partial class ErrorPage : ContentPage
     public ErrorPage()
     {
         InitializeComponent();
+        Shell.Current.Navigating += Navigating;
     }
 
+    private async void Navigating(object? sender, ShellNavigatingEventArgs e)
+    {
+        // Hopefully Prevent Duplicate Error Pages from being created at the same time
+        if (e.Target.Location.OriginalString.Contains(nameof(ErrorPage)))
+        {
+            e.Cancel();
+            return;
+        }
+        // Redirect to BookPage If Normal Back Navigation button is pressed
+        if (e.Target.Location.OriginalString == ".." && !ShouldReload)
+        {
+            e.Cancel();
+            await Shell.Current.GoToAsync("../..");
+        }
+        Shell.Current.Navigating -= Navigating;
+    }
 
     private async void HeadlessMode_OnChanged(object sender, ToggledEventArgs e)
     {
@@ -49,12 +71,12 @@ public partial class ErrorPage : ContentPage
             return;
         }
         Config.ExtraConfigs["headless"] = HeadlessMode.On;
-        Config.ExtraConfigsBlobbed = JsonConvert.SerializeObject(Config.ExtraConfigs);
         await App.Database.SaveItemAsync(Config!);
     }
 
     private async void ReloadClicked(object sender, EventArgs e)
     {
+        ShouldReload = true;
         await Shell.Current.GoToAsync("..");
     }
 }

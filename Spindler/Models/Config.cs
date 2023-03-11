@@ -58,7 +58,7 @@ public class Config : IIndexedModel
     /// <summary>
     /// The extra configs in string form. Use <see ref="ExtraConfigs"/> instead
     /// </summary>
-    public string ExtraConfigsBlobbed { get; set; } = "";
+    public string ExtraConfigsBlobbed { get; private set; } = "";
 
     /// <summary>
     /// A dictionary containing extra configuration settings

@@ -209,19 +209,7 @@ namespace Spindler.ViewModels
 
         #region Error Handlers
         public async Task<bool> SafeAssertNotNull(object? value, string message)
-        {
-            bool nullobj = value == null;
-            if (nullobj)
-            {
-                Dictionary<string, object> parameters = new()
-                {
-                    { "errormessage", message },
-                    { "config", Config! }
-                };
-                await Shell.Current.GoToAsync($"/{nameof(ErrorPage)}", parameters);
-            }
-            return !nullobj;
-        }
+            => await SafeAssert(value != null, message);
 
         public async Task<bool> SafeAssert(bool condition, string message)
         {
