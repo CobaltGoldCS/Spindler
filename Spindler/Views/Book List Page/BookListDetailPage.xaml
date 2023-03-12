@@ -25,7 +25,7 @@
             <Label Text="{Binding Booklist.LastAccessed}" Grid.Row="2" Grid.ColumnSpan="3" HorizontalTextAlignment="Center" VerticalOptions="Start"/>
             <!-- Color Pickers -->
             <CollectionView 
-                    ItemsSource="{Binding ColorList}" 
+                    ItemsSource="{Binding ColorList, Mode=OneTime}" 
                     SelectionMode="Single" 
                     SelectionChangedCommand="{Binding Color1PickedCommand}"
                     SelectedItem="{Binding ChosenColor1}" Grid.Row="3" Grid.ColumnSpan="2">
@@ -39,7 +39,7 @@
                 </CollectionView.ItemTemplate>
             </CollectionView>
             <CollectionView 
-                    ItemsSource="{Binding ColorList}" 
+                    ItemsSource="{Binding ColorList, Mode=OneTime}" 
                     SelectionMode="Single" 
                     SelectionChangedCommand="{Binding Color2PickedCommand}"
                     SelectedItem="{Binding ChosenColor2}" Grid.Row="4" Grid.ColumnSpan="2">
