@@ -16,7 +16,7 @@ namespace Spindler.ViewModels
         /// A list of valid colors to pick from in the color picker 
         /// </summary>
         [ObservableProperty]
-        public static readonly IList<ChooseColor> colorList = new ImmutableArray<ChooseColor>()
+        public static IList<ChooseColor> colorList = new List<ChooseColor>()
         {
             new ChooseColor(Colors.Black),
             new ChooseColor(Colors.White),
