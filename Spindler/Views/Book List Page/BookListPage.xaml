@@ -74,7 +74,7 @@
                     </Grid>
                 </toolkit:Expander.Header>
                 <CollectionView x:Name="PinnedBooksList"
-                                ItemsSource="{Binding PinnedBooks}"
+                                ItemsSource="{Binding PinnedBooks, Mode=OneTime}"
                                 SelectionMode="Single"
                                 ItemSizingStrategy="MeasureFirstItem"
                                 BackgroundColor="{AppThemeBinding Dark={StaticResource LightSpaceCadet}, Light={StaticResource LightGray}}"
@@ -97,7 +97,7 @@
         <!--Standard book list-->
         <CollectionView x:Name="BooksList"
                         Grid.Row="1"
-                        ItemsSource="{Binding DisplayedBooks}"
+                        ItemsSource="{Binding DisplayedBooks, Mode=OneTime}"
                         RemainingItemsThreshold="3"
                         RemainingItemsThresholdReachedCommand="{Binding EndOfListReachedCommand}"
                         SelectionMode="Single"
