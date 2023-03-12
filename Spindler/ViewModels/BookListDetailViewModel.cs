@@ -47,15 +47,10 @@ namespace Spindler.ViewModels
             }
         }
 
-        /// <summary>
-        /// A function that creates a popup warning about a booklist being deleted
-        /// </summary>
-        public Func<Task<bool>> CancellationWarning;
-        public BookListDetailViewModel(BookList Booklist, Func<Task<bool>> cancellationWarning)
+        public BookListDetailViewModel(BookList Booklist)
         {
             this.Booklist = Booklist;
             booklist = Booklist;
-            this.CancellationWarning = cancellationWarning;
 
             chosenColor1 = new ChooseColor(Booklist.Color1);
             chosenColor2 = new ChooseColor(Booklist.Color2);
@@ -87,7 +82,7 @@ namespace Spindler.ViewModels
         [RelayCommand]
         private async void Delete()
         {
-            if (Booklist.Id > 0 && await CancellationWarning())
+            if (Booklist.Id > 0 && await Application.Current!.MainPage!.DisplayAlert("Warning!", "Are you sure you want to delete this booklist?", "Yes", "No"))
             {
                 await App.Database.DeleteBookListAsync(Booklist);
             }

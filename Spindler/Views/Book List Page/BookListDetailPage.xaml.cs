@@ -5,25 +5,14 @@ using System.Linq;
 
 namespace Spindler;
 
-[QueryProperty(nameof(Booklist), "booklist")]
-public partial class BookListDetailPage : ContentPage
+public partial class BookListDetailPage : ContentPage, IQueryAttributable
 {
-    #region QueryProperty handler
-    private BookList _booklist = new();
-    public BookList Booklist
-    {
-        set
-        {
-            _booklist = value;
-            LoadBookList(value);
-        }
-        get { return _booklist; }
-    }
 
-    public void LoadBookList(BookList booklist)
+    public void ApplyQueryAttributes(IDictionary<string, object> query)
     {
+        BookList? booklist = query["booklist"] as BookList;
         // Handle if a new book needs to be created
-        if (booklist.Id < 0)
+        if (booklist!.Id < 0)
         {
             AddButtonGroup.OkText = "Add";
             Title = "Add a new Book List";
@@ -33,9 +22,8 @@ public partial class BookListDetailPage : ContentPage
             AddButtonGroup.OkText = $"Modify {booklist.Name}";
             Title = $"Modify {booklist.Name}";
         }
-        BindingContext = new BookListDetailViewModel(booklist, () => DisplayAlert("Warning!", "Are you sure you want to delete this booklist?", "Yes", "No"));
+        BindingContext = new BookListDetailViewModel(booklist);
     }
-    #endregion
 
     public BookListDetailPage()
     {
