@@ -2,32 +2,20 @@ namespace Spindler.Views;
 
 using Spindler.Models;
 using Spindler.ViewModels;
+using System.Collections.Generic;
 
-[QueryProperty(nameof(Booklist), "booklist")]
-public partial class BookListPage : ContentPage
+public partial class BookListPage : ContentPage, IQueryAttributable
 {
-
-    #region QueryProperty Handler
-
-    public BookList Booklist
+    public async void ApplyQueryAttributes(IDictionary<string, object> query)
     {
-        set
-        {
-            LoadBookList(value);
-        }
-    }
+        BookList? bookList = query["booklist"]! as BookList;
+        await bookList!.UpdateAccessTimeToNow();
 
-    public async void LoadBookList(BookList list)
-    {
-        await list.UpdateAccessTimeToNow();
-
-        var binding = new BookListViewModel(list);
+        var binding = new BookListViewModel(bookList);
         binding.AddUiReferences(AddToolBarItem);
         BindingContext = binding;
         await binding.Load();
     }
-
-    #endregion
 
     public BookListPage()
     {
