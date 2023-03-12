@@ -3,11 +3,10 @@ using Spindler.ViewModels;
 
 namespace Spindler.Views.Book_Pages;
 
-[QueryProperty(nameof(Book), "book")]
-public partial class BookPage : ContentPage
+public partial class BookPage : ContentPage, IQueryAttributable
 {
-	public Book Book { set => LoadBook(value); }
 	public BookViewModel ViewModel { get; set; }
+	
 	public BookPage()
 	{
 		// TODO: Implement gaussian blur on image background
@@ -16,8 +15,10 @@ public partial class BookPage : ContentPage
 		BindingContext = ViewModel;
     }
 
-	private async void LoadBook(Book book)
-	{
-		await ViewModel.Load(book);
+
+    public async void ApplyQueryAttributes(IDictionary<string, object> query)
+    {
+		Book? book = query["book"] as Book;
+        await ViewModel.Load(book!);
     }
 }
