@@ -146,13 +146,13 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <PackageReference Include="CommunityToolkit.Maui" Version="4.0.0" />
-	  <PackageReference Include="CommunityToolkit.Mvvm" Version="8.0.0" />
+	  <PackageReference Include="CommunityToolkit.Maui" Version="5.0.0" />
+	  <PackageReference Include="CommunityToolkit.Mvvm" Version="8.1.0" />
 	  <PackageReference Include="HtmlAgilityPack" Version="1.11.46" />
 	  <PackageReference Include="HtmlAgilityPack.CssSelectors.NetCore" Version="1.2.1" />
-	  <PackageReference Include="Newtonsoft.Json" Version="13.0.2-beta2" />
+	  <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
 	  <PackageReference Include="sqlite-net-pcl" Version="1.8.116" />
-	  <PackageReference Include="SQLitePCLRaw.provider.dynamic_cdecl" Version="2.1.2" />
+	  <PackageReference Include="SQLitePCLRaw.provider.dynamic_cdecl" Version="2.1.4" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -174,28 +174,28 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <MauiXaml Update="CustomControls\AddButtonGroup.xaml">
+	  <MauiXaml Update="Views\CustomControls\AddButtonGroup.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
-	  <MauiXaml Update="CustomControls\CustomSwitchCell.xaml">
+	  <MauiXaml Update="Views\CustomControls\CustomSwitchCell.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
-	  <MauiXaml Update="CustomControls\DetailTextCell.xaml">
+	  <MauiXaml Update="Views\CustomControls\DetailTextCell.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
-	  <MauiXaml Update="CustomControls\Items\BookItem.xaml">
+	  <MauiXaml Update="Views\CustomControls\Items\BookItem.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
-	  <MauiXaml Update="CustomControls\Items\ConfigItem.xaml">
+	  <MauiXaml Update="Views\CustomControls\Items\ConfigItem.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
-	  <MauiXaml Update="CustomControls\PickerPopup.xaml">
+	  <MauiXaml Update="Views\CustomControls\PickerPopup.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
-	  <MauiXaml Update="CustomControls\Reader.xaml">
+	  <MauiXaml Update="Views\CustomControls\Reader.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
-	  <MauiXaml Update="CustomControls\WebScraperBrowser.xaml">
+	  <MauiXaml Update="Views\CustomControls\WebScraperBrowser.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="Views\Book Pages\BookDetailPage.xaml">
