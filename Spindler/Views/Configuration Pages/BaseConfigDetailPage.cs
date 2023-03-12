@@ -2,20 +2,21 @@
 using CommunityToolkit.Maui.Storage;
 using Newtonsoft.Json;
 using Spindler.Services;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace Spindler.Views.Configuration_Pages
 {
-    public abstract class BaseConfigDetailPage<TConfig> : ContentPage where TConfig : Models.Config, new()
+    /// <summary>
+    /// A Base Class for Config Detail Pages, implementing non-page specific behaviors
+    /// <para> See <seealso cref="ConfigDetailPage"/> and <seealso cref="GeneralizedConfigDetailPage"/> </para>
+    /// </summary>
+    /// <typeparam name="TConfig">Must be derived from <code>Config</code></typeparam>
+    public abstract class BaseConfigDetailPage<TConfig> : ContentPage, IQueryAttributable where TConfig : Models.Config, new()
     {
+        #region Attributes
         protected State state = State.NewConfig;
 
         protected TConfig configuration = new() { Id = -1 };
-
         protected TConfig Configuration
         {
             get => configuration;
@@ -26,17 +27,11 @@ namespace Spindler.Views.Configuration_Pages
             }
         }
 
-        protected enum State
+        public virtual void ApplyQueryAttributes(IDictionary<string, object> query)
         {
-            NewConfig,
-            ModifyConfig
-        }
-
-        protected virtual void InitializePage(TConfig config)
-        {
-            this.Configuration = config;
+            Configuration = (query["config"] as TConfig)!;
             BindingContext = Configuration;
-            if (config.Id < 0)
+            if (Configuration.Id < 0)
             {
                 state = State.NewConfig;
             }
@@ -45,6 +40,14 @@ namespace Spindler.Views.Configuration_Pages
                 state = State.ModifyConfig;
             }
         }
+        #endregion
+
+        protected enum State
+        {
+            NewConfig,
+            ModifyConfig
+        }
+
 
         #region Click Handlers
         protected virtual async void DeleteButton_Clicked(object sender, EventArgs e)

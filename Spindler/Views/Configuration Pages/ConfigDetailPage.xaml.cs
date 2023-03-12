@@ -11,23 +11,12 @@ using System.Text.RegularExpressions;
 
 namespace Spindler;
 
-[QueryProperty(nameof(config), "config")]
 public partial class ConfigDetailPage : BaseConfigDetailPage<Config>
 {
-    public Config config
-    {
-        get => Configuration;
-        set
-        {
-            Configuration = value;
-            InitializePage(value);
-        }
-    }
 
-
-    protected override void InitializePage(Config config)
+    public override void ApplyQueryAttributes(IDictionary<string, object> query)
     {
-        base.InitializePage(config);
+        base.ApplyQueryAttributes(query);
         switch (state)
         {
             case State.NewConfig:
@@ -38,10 +27,9 @@ public partial class ConfigDetailPage : BaseConfigDetailPage<Config>
             case State.ModifyConfig:
                 AddButtonGroup.OkText = "Modify";
                 exportButton.IsEnabled = true;
-                Title = $"Modify {config.DomainName}";
+                Title = $"Modify {Configuration.DomainName}";
                 break;
         }
-        BindingContext = Configuration;
         switchWebView.On = Configuration.ExtraConfigs.GetOrDefault("webview", false);
         animationSwitch.On = Configuration.ExtraConfigs.GetOrDefault("autoscrollanimation", true);
         separatorEntry.Text = Configuration.ExtraConfigs.GetOrDefault("separator", "\n")
@@ -76,7 +64,7 @@ public partial class ConfigDetailPage : BaseConfigDetailPage<Config>
             return;
         }
 
-        config.ExtraConfigs = new()
+        Configuration.ExtraConfigs = new()
         {
             { "webview", switchWebView.On },
             { "autoscrollanimation", animationSwitch.On },

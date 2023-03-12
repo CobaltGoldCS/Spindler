@@ -6,24 +6,12 @@ using Spindler.Views.Configuration_Pages;
 
 namespace Spindler;
 
-[QueryProperty(nameof(config), "config")]
 public partial class GeneralizedConfigDetailPage : BaseConfigDetailPage<GeneralizedConfig>
 {
 
-    #region QueryProperty handler
-    public GeneralizedConfig config
+    public override void ApplyQueryAttributes(IDictionary<string, object> query)
     {
-        get => Configuration;
-        set
-        {
-            Configuration = value;
-            InitializePage(value);
-        }
-    }
-
-    protected override void InitializePage(GeneralizedConfig config)
-    {
-        base.InitializePage(config);
+        base.ApplyQueryAttributes(query);
         switch (state)
         {
             case State.NewConfig:
@@ -34,18 +22,16 @@ public partial class GeneralizedConfigDetailPage : BaseConfigDetailPage<Generali
             case State.ModifyConfig:
                 Buttons.OkText = "Modify";
                 exportButton.IsEnabled = true;
-                Title = $"Modify {config.DomainName}";
+                Title = $"Modify {Configuration.DomainName}";
                 break;
         }
-        BindingContext = config;
-        switchWebView.On = config.ExtraConfigs.GetOrDefault("webview", false);
-        animationSwitch.On = config.ExtraConfigs.GetOrDefault("autoscrollanimation", true);
-        separatorEntry.Text = config.ExtraConfigs.GetOrDefault("separator", "\n")
+        switchWebView.On = Configuration.ExtraConfigs.GetOrDefault("webview", false);
+        animationSwitch.On = Configuration.ExtraConfigs.GetOrDefault("autoscrollanimation", true);
+        separatorEntry.Text = Configuration.ExtraConfigs.GetOrDefault("separator", "\n")
             .Replace(Environment.NewLine, @"\n")
             .Replace("\t", @"\t");
-        headlessSwitch.On = config.ExtraConfigs.GetOrDefault("headless", false);
+        headlessSwitch.On = Configuration.ExtraConfigs.GetOrDefault("headless", false);
     }
-    #endregion
 
 
 
@@ -76,7 +62,7 @@ public partial class GeneralizedConfigDetailPage : BaseConfigDetailPage<Generali
             return;
         }
 
-        config.ExtraConfigs = new()
+        Configuration.ExtraConfigs = new()
         {
             { "webview", switchWebView.On },
             { "autoscrollanimation", animationSwitch.On },
