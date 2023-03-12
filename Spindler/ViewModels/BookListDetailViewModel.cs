@@ -2,6 +2,7 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Spindler.Models;
+using System.Collections.Immutable;
 
 namespace Spindler.ViewModels
 {
@@ -15,7 +16,7 @@ namespace Spindler.ViewModels
         /// A list of valid colors to pick from in the color picker 
         /// </summary>
         [ObservableProperty]
-        public static IList<ChooseColor> colorList = new List<ChooseColor>()
+        public static readonly IList<ChooseColor> colorList = new ImmutableArray<ChooseColor>()
         {
             new ChooseColor(Colors.Black),
             new ChooseColor(Colors.White),
@@ -36,7 +37,7 @@ namespace Spindler.ViewModels
             new ChooseColor(Colors.Red ),
             new ChooseColor(Colors.Purple ),
             new ChooseColor(Colors.Pink ),
-         };
+        };
         BookList booklist;
         public BookList Booklist
         {
