@@ -9,7 +9,7 @@
     
     <Shell.TitleView>
         <Grid ColumnDefinitions="*, auto">
-            <Label Text="{Binding Title}"
+            <Label Text="{Binding Title, Mode=OneWay}"
                    Grid.Column="0"
                    FontSize="Large"
                    VerticalOptions="Center"
@@ -32,18 +32,18 @@
     
     <ScrollView>
         <Grid>
-            <Image Source="{Binding ImageUrl}" Aspect="AspectFill" Margin="1" >
+            <Image Source="{Binding ImageUrl, Mode=OneWay}" Aspect="AspectFill" Margin="1" >
 
             </Image>
             <Grid RowDefinitions="auto, auto, auto, *"
                 Padding="0,0,0,0" Background="transparent">
-                <Image  Source="{Binding ImageUrl}"
+                <Image  Source="{Binding ImageUrl, Mode=OneWay}"
                         Aspect="AspectFill"
                         WidthRequest="106"
                         HeightRequest="138"
                         HorizontalOptions="Center"/>
                 <Label  x:Name="TitleView"
-                        Text="{Binding Title}"
+                        Text="{Binding Title, Mode=OneWay}"
                         Grid.Row="1"
                         BackgroundColor="Transparent"
                         VerticalTextAlignment="Center"
@@ -61,7 +61,7 @@
                         Margin="0,0,0,-20"
                         CornerRadius="10"
                         Grid.Row="2"
-                        Text="{Binding Path=Method, StringFormat='Read with \n{}'}"
+                        Text="{Binding Path=Method, Mode=OneWay, StringFormat='Read with \n{}'}"
                         Command="{Binding ReadClickedCommand}"
                 />      
                 <Border Padding="0,20,0,0" HorizontalOptions="Fill"
@@ -71,11 +71,11 @@
                     <TableView>
                         <TableRoot>
                             <TableSection Title="Selector Information" TextColor="{StaticResource Primary}">
-                                <TextCell Text="Domain Name" Detail="{Binding Domain}" TextColor="{StaticResource Primary}"/>
-                                <TextCell Text="Title Selector" Detail="{Binding TitleSelectorType}" TextColor="{StaticResource Primary}"/>
-                                <TextCell Text="Content Selector" Detail="{Binding ContentSelectorType}" TextColor="{StaticResource Primary}"/>
-                                <TextCell Text="Previous Selector" Detail="{Binding PreviousSelectorType}" TextColor="{StaticResource Primary}"/>
-                                <TextCell Text="Next Selector" Detail="{Binding NextSelectorType}" TextColor="{StaticResource Primary}"/>
+                                <TextCell Text="Domain Name" Detail="{Binding Domain, Mode=OneWay}" TextColor="{StaticResource Primary}"/>
+                                <TextCell Text="Title Selector" Detail="{Binding TitleSelectorType, Mode=OneWay}" TextColor="{StaticResource Primary}"/>
+                                <TextCell Text="Content Selector" Detail="{Binding ContentSelectorType, Mode=OneWay}" TextColor="{StaticResource Primary}"/>
+                                <TextCell Text="Previous Selector" Detail="{Binding PreviousSelectorType, Mode=OneWay}" TextColor="{StaticResource Primary}"/>
+                                <TextCell Text="Next Selector" Detail="{Binding NextSelectorType, Mode=OneWay}" TextColor="{StaticResource Primary}"/>
                             </TableSection>
                         </TableRoot>
                     </TableView>

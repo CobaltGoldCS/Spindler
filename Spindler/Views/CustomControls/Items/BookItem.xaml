@@ -10,13 +10,13 @@
     <Border.GestureRecognizers>
         <TapGestureRecognizer 
             Tapped="Tapped"
-            Command="{Binding Source={x:Reference this}, Path=DoubleTappedCommand}"
-            CommandParameter="{Binding Source={x:Reference this}, Path=BookParameter}"
+            Command="{Binding Source={x:Reference this}, Path=DoubleTappedCommand, Mode=OneWay}"
+            CommandParameter="{Binding Source={x:Reference this}, Path=BookParameter, Mode=OneWay}"
             NumberOfTapsRequired="2"/>
         <TapGestureRecognizer 
             Tapped="Tapped"
-            Command="{Binding Source={x:Reference this}, Path=SelectionCommand}"
-            CommandParameter="{Binding Source={x:Reference this}, Path=BookParameter}"/>
+            Command="{Binding Source={x:Reference this}, Path=SelectionCommand, Mode=OneWay}"
+            CommandParameter="{Binding Source={x:Reference this}, Path=BookParameter, Mode=OneWay}"/>
     </Border.GestureRecognizers>
     <Grid
         x:DataType="models:Book"
@@ -24,7 +24,7 @@
         ColumnDefinitions="85, *"
         RowDefinitions="65, 45"
         >
-        <Image Source="{Binding Source={x:Reference this}, Path=BookParameter.ImageUrl}"
+        <Image Source="{Binding Source={x:Reference this}, Path=BookParameter.ImageUrl, Mode=OneWay}"
                Aspect="AspectFill"
                Grid.RowSpan="2">
         </Image>
@@ -35,10 +35,10 @@
             Padding="5,0"
             FontSize="18"
             x:Name="TitleLabel"
-            Text="{Binding Source={x:Reference this}, Path=BookParameter.Title}"
+            Text="{Binding Source={x:Reference this}, Path=BookParameter.Title, Mode=OneWay}"
             MaxLines="2"/>
         <Label x:Name="UrlLabel"
-            Text="{Binding Source={x:Reference this}, Path=BookParameter.Url}"
+            Text="{Binding Source={x:Reference this}, Path=BookParameter.Url, Mode=OneWay}"
             MaxLines="2"
             FontSize="Small"
             Grid.Column="1"

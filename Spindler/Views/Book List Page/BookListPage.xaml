@@ -31,7 +31,7 @@
                              HeightRequest="25"
                              WidthRequest="25"
                              Source="plus.svg"
-                             Command="{Binding AddToolBarItemCommand}">
+                             Command="{Binding AddToolBarItemCommand, Mode=OneWay}">
                     <ImageButton.Behaviors>
                         <toolkit:IconTintColorBehavior TintColor="{AppThemeBinding Dark={StaticResource White}, Light={StaticResource Black}}"/>
                     </ImageButton.Behaviors>
@@ -65,7 +65,7 @@
                                FontSize="Large"
                                FontFamily="OpenSans (Semibold)"
                                VerticalOptions="Center"/>
-                        <Label Text="{Binding Source={x:Reference PinView}, Path=IsExpanded, Converter={StaticResource ExpanderIconConverter}}"
+                        <Label Text="{Binding Source={x:Reference PinView}, Path=IsExpanded, Converter={StaticResource ExpanderIconConverter}, Mode=OneWay}"
                            Grid.Column="2"
                            FontSize="Large"
                            Padding="2,-2,0,0"
@@ -85,9 +85,9 @@
                     <CollectionView.ItemTemplate>
                         <DataTemplate>
                             <items:PinnedBookItem 
-                                BookParameter="{Binding .}"
-                                SelectionCommand="{Binding Source={x:RelativeSource AncestorType={x:Type viewmodels:BookListViewModel}}, Path=SelectionCommand}"
-                                DoubleTappedCommand="{Binding Source={x:RelativeSource AncestorType={x:Type viewmodels:BookListViewModel}}, Path=DoubleTappedCommand}" />
+                                BookParameter="{Binding ., Mode=OneTime}"
+                                SelectionCommand="{Binding Source={x:RelativeSource AncestorType={x:Type viewmodels:BookListViewModel}}, Path=SelectionCommand, Mode=OneTime}"
+                                DoubleTappedCommand="{Binding Source={x:RelativeSource AncestorType={x:Type viewmodels:BookListViewModel}}, Path=DoubleTappedCommand, Mode=OneTime}" />
                         </DataTemplate>
                     </CollectionView.ItemTemplate>
                 </CollectionView>
@@ -99,7 +99,7 @@
                         Grid.Row="1"
                         ItemsSource="{Binding DisplayedBooks, Mode=OneTime}"
                         RemainingItemsThreshold="3"
-                        RemainingItemsThresholdReachedCommand="{Binding EndOfListReachedCommand}"
+                        RemainingItemsThresholdReachedCommand="{Binding EndOfListReachedCommand, Mode=OneTime}"
                         SelectionMode="Single"
                         ItemSizingStrategy="MeasureFirstItem"
                         VerticalScrollBarVisibility="Always"
@@ -110,9 +110,9 @@
             <CollectionView.ItemTemplate>
                 <DataTemplate>
                     <items:BookItem 
-                        BookParameter="{Binding .}"
-                        SelectionCommand="{Binding Source={x:RelativeSource AncestorType={x:Type viewmodels:BookListViewModel}}, Path=SelectionCommand}"
-                        DoubleTappedCommand="{Binding Source={x:RelativeSource AncestorType={x:Type viewmodels:BookListViewModel}}, Path=DoubleTappedCommand}"/>
+                        BookParameter="{Binding ., Mode=OneTime}"
+                        SelectionCommand="{Binding Source={x:RelativeSource AncestorType={x:Type viewmodels:BookListViewModel}}, Path=SelectionCommand, Mode=OneTime}"
+                        DoubleTappedCommand="{Binding Source={x:RelativeSource AncestorType={x:Type viewmodels:BookListViewModel}}, Path=DoubleTappedCommand, Mode=OneTime}"/>
 
                 </DataTemplate>
             </CollectionView.ItemTemplate>
@@ -121,8 +121,8 @@
             </CollectionView.EmptyView>
             <CollectionView.Footer>
                 <ActivityIndicator 
-                    IsRunning="{Binding IsLoading}"
-                    HeightRequest="{Binding LoaderHeightRequest}"
+                    IsRunning="{Binding IsLoading, Mode=OneWay}"
+                    HeightRequest="{Binding LoaderHeightRequest, Mode=OneWay}"
                     Color="{StaticResource Primary}"/>
             </CollectionView.Footer>
         </CollectionView>

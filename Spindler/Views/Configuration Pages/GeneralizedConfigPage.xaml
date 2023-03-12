@@ -15,7 +15,7 @@
     <Grid RowDefinitions="65, *">
         <Border StrokeShape="RoundRectangle 10,10,10,10" Margin="10,5,10,0" Stroke="{StaticResource DarkPrimary}">
             <Border.GestureRecognizers>
-                <TapGestureRecognizer Command="{Binding AddCommand}"/>
+                <TapGestureRecognizer Command="{Binding AddCommand, Mode=OneTime}"/>
             </Border.GestureRecognizers>
             <Grid ColumnDefinitions="*, 100" BackgroundColor="{StaticResource DarkPrimary}">
                 <Label Text="Add a Configuration" Grid.Row="0" VerticalTextAlignment="Center" FontSize="26" Margin="20,0,0,0" TextColor="{StaticResource White}"/>
@@ -31,7 +31,7 @@
                      IsRefreshing="{Binding IsRefreshing}">
             <CollectionView
               SelectionChangedCommand="{Binding ItemClickedCommand}"
-              ItemsSource="{Binding ConfigItems}"
+              ItemsSource="{Binding ConfigItems, Mode=OneWay}"
               ItemSizingStrategy="MeasureFirstItem"
               SelectionMode="Single"
               SelectedItem="{Binding SelectedItem}"
@@ -42,7 +42,7 @@
                 </CollectionView.ItemsLayout>
                 <CollectionView.ItemTemplate>
                     <DataTemplate x:DataType="models:Config">
-                        <items:ConfigItem ConfigParameter="{Binding .}"/>
+                        <items:ConfigItem ConfigParameter="{Binding ., Mode=OneTime}"/>
                     </DataTemplate>
                 </CollectionView.ItemTemplate>
                 <CollectionView.EmptyView>

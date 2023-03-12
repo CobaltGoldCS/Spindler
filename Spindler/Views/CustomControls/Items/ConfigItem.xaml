@@ -9,6 +9,6 @@
                 VerticalTextAlignment="Center" 
                 FontSize="Large"
                 x:Name="DomainNameLabel"
-                Text="{Binding Source={x:Reference this}, Path=ConfigParameter.DomainName}"/>
+                Text="{Binding Source={x:Reference this}, Path=ConfigParameter.DomainName, Mode=OneWay}"/>
     </Grid>
 </Border>
