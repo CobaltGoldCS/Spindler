@@ -19,16 +19,16 @@ namespace Spindler.ViewModels
 
 
         [ObservableProperty]
-        Book? currentPinnedBookSelection;
+        WeakReference<Book>? currentPinnedBookSelection;
 
         [ObservableProperty]
-        List<Book>? bookList;
+        List<Book> bookList = new();
 
         [ObservableProperty]
-        ObservableCollection<WeakReference<Book>> displayedBooks = new();
+        ObservableCollection<Book> displayedBooks = new();
 
         [ObservableProperty]
-        ObservableCollection<WeakReference<Book>> pinnedBooks = new();
+        ObservableCollection<Book> pinnedBooks = new();
 
         [ObservableProperty]
         bool isLoading = false;
@@ -146,22 +146,6 @@ namespace Spindler.ViewModels
         }
 
         /// <summary>
-        /// Method called when a Pinned Book is selected
-        /// </summary>
-        [RelayCommand]
-        private async void PinnedBookSelection()
-        {
-            if (executing || CurrentPinnedBookSelection == null)
-                return;
-            var parameters = new Dictionary<string, object>()
-            {
-                { "book", CurrentPinnedBookSelection}
-            };
-            await Shell.Current.GoToAsync($"{nameof(BookPage)}", parameters);
-            executing = false;
-        }
-
-        /// <summary>
         /// Populate the BookPage with relevant Data
         /// </summary>
         /// <returns>Nothing</returns>
@@ -169,14 +153,17 @@ namespace Spindler.ViewModels
         {
             BookList = new(await App.Database.GetBooksByBooklistIdAsync(Id));
 
-            foreach (Book book in BookList.FindAll((book) => book.Pinned))
-            {
-                PinnedBooks.Add(new WeakReference<Book>(book));
+            foreach (Book book in BookList.Take(NUM_ITEMS_ADDED_TO_LIST)) {
+                DisplayedBooks.Add(book);
+            }
+
+            foreach (Book book in BookList.FindAll((book) => book.Pinned)) {
+                PinnedBooks.Add(book);
             }
             PinnedBooksAreVisible = PinnedBooks.Count > 0;
         }
 
-        const int NUM_ITEMS_ADDED_TO_LIST = 50;
+        const int NUM_ITEMS_ADDED_TO_LIST = 20;
         /// <summary>
         /// Method called when the user reaches the end of the displayed books
         /// </summary>
@@ -185,8 +172,9 @@ namespace Spindler.ViewModels
         {
             LoaderHeightRequest = 20;
             IsLoading = true;
-            foreach (Book book in BookList!.Skip(DisplayedBooks.Count).Take(NUM_ITEMS_ADDED_TO_LIST))
-                DisplayedBooks!.Add(new WeakReference<Book>(book));
+            foreach (Book book in BookList!.Skip(DisplayedBooks.Count).Take(NUM_ITEMS_ADDED_TO_LIST)) {
+                DisplayedBooks!.Add(book);
+            }
             IsLoading = false;
             LoaderHeightRequest = 0;
         }
