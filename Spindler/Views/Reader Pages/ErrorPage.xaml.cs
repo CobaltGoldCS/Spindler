@@ -17,7 +17,7 @@ public partial class ErrorPage : ContentPage
         set
         {
             config = value;
-            OnConfigSet();
+            HeadlessMode.On = value?.ExtraConfigs.GetOrDefault("headless", false) ?? false;
         }
     }
     public bool ShouldReload = false;
@@ -26,21 +26,12 @@ public partial class ErrorPage : ContentPage
     {
         set
         {
-            LoadPage(value);
+            ErrorLabel.Text = value;
         }
     }
 
     #endregion
 
-    private void LoadPage(string message)
-    {
-        ErrorLabel.Text = message;
-    }
-
-    private void OnConfigSet()
-    {
-        HeadlessMode.On = Config?.ExtraConfigs.GetOrDefault("headless", false) ?? false;
-    }
     public ErrorPage()
     {
         InitializeComponent();
