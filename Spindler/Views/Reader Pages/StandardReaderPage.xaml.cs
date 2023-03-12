@@ -6,21 +6,11 @@ using Spindler.Views;
 
 namespace Spindler;
 
-[QueryProperty(nameof(Book), "book")]
-public partial class StandardReaderPage : ContentPage
+public partial class StandardReaderPage : ContentPage, IQueryAttributable
 {
-
-    #region QueryProperty Handler
-    public Book Book
+    public async void ApplyQueryAttributes(IDictionary<string, object> query)
     {
-        set
-        {
-            LoadBook(value);
-        }
-    }
-
-    private async void LoadBook(Book book)
-    {
+        Book book = (query["book"] as Book)!;
         Config? config = await WebService.FindValidConfig(book.Url);
 
         var viewmodel = new StandardReaderViewModel()
@@ -32,7 +22,7 @@ public partial class StandardReaderPage : ContentPage
         BindingContext = viewmodel;
         await viewmodel.StartLoad();
     }
-    #endregion
+
     public StandardReaderPage()
     {
         InitializeComponent();

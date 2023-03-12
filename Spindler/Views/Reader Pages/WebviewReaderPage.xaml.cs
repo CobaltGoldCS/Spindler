@@ -3,30 +3,17 @@ using Spindler.Views.Reader_Pages;
 
 namespace Spindler.Views;
 
-[QueryProperty(nameof(Book), "book")]
-public partial class WebviewReaderPage : ContentPage, IReader
+public partial class WebviewReaderPage : ContentPage, IQueryAttributable, IReader
 {
-    #region Class Attributes
-    Book? book;
-    #endregion
-    #region QueryProperty Handler
-    public Book Book
-    {
-        set
-        {
-            book = value;
-            LoadBook();
-        }
-        get => book!;
-    }
+    public Book? Book = new Book { Id = -1};
 
-    public async void LoadBook()
+    public async void ApplyQueryAttributes(IDictionary<string, object> query)
     {
+        Book = (query["book"] as Book)!;
         BindingContext = Book;
         ReaderBrowser.Source = Book.Url;
         await Book.UpdateLastViewedToNow();
     }
-    #endregion
 
     public WebviewReaderPage()
     {
@@ -35,6 +22,7 @@ public partial class WebviewReaderPage : ContentPage, IReader
         Shell.Current.Navigating += OnShellNavigated;
     }
 
+    #region Event Handlers
     private void WebViewOnNavigated(object? sender, WebNavigatedEventArgs @event)
     {
         if (@event.Result != WebNavigationResult.Success) return;
@@ -73,7 +61,9 @@ public partial class WebviewReaderPage : ContentPage, IReader
         ReaderBrowser.Navigated -= WebViewOnNavigated;
     }
 
+    #endregion
 
+    // This is safe to do because SafeAssert is never called in WebviewReaderPage
     Task<bool> IReader.SafeAssert(bool condition, string message)
     {
         throw new NotImplementedException();

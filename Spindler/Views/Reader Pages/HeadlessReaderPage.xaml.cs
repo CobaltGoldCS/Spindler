@@ -7,23 +7,13 @@ using System.ComponentModel;
 
 namespace Spindler.Views;
 
-[QueryProperty(nameof(Book), "book")]
-public partial class HeadlessReaderPage : ContentPage, INotifyPropertyChanged, IReader
+public partial class HeadlessReaderPage : ContentPage, INotifyPropertyChanged, IReader, IQueryAttributable
 {
     // Both of these are guaranteed not null after initial page loading
     WebService? webservice;
     Config? config;
     LoadedData? loadedData;
-    Book book = new Book();
-    public Book Book
-    {
-        set
-        {
-            book = value;
-            LoadBook(value);
-        }
-        get => book;
-    }
+    Book Book = new Book { Id = -1 };
 
     #region Binding Definitions
 
@@ -91,8 +81,9 @@ public partial class HeadlessReaderPage : ContentPage, INotifyPropertyChanged, I
         Shell.Current.Navigating += OnShellNavigated;
     }
 
-    public async void LoadBook(Book Book)
+    public async void ApplyQueryAttributes(IDictionary<string, object> query)
     {
+        Book = (query["book"] as Book)!;
         HeadlessBrowser.Navigated += PageLoaded;
         HeadlessBrowser.Source = Book.Url;
         await Book.UpdateLastViewedToNow();
@@ -125,8 +116,8 @@ public partial class HeadlessReaderPage : ContentPage, INotifyPropertyChanged, I
             if (!await SafeAssertNotNull(config, "There is no valid configuration for this book")) return;
             webservice = new(config!);
 
-            if (string.IsNullOrEmpty(book.ImageUrl) || book!.ImageUrl == "no_image.jpg")
-                book.ImageUrl = ConfigService.PrettyWrapSelector(doc, new Models.Path(config!.ImageUrlPath), ConfigService.SelectorType.Link) ?? "";
+            if (string.IsNullOrEmpty(Book.ImageUrl) || Book!.ImageUrl == "no_image.jpg")
+                Book.ImageUrl = ConfigService.PrettyWrapSelector(doc, new Models.Path(config!.ImageUrlPath), ConfigService.SelectorType.Link) ?? "";
         }
 
         var result = e.Result;
