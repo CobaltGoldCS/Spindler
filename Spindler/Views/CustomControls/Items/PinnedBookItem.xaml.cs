@@ -3,16 +3,16 @@ using System.Windows.Input;
 
 namespace Spindler.Views.CustomControls.Items;
 
-public partial class BookItem : Border
+public partial class PinnedBookItem : Border
 {
     public static readonly BindableProperty DoubleTappedCommandProperty =
-                BindableProperty.Create(nameof(DoubleTappedCommand), typeof(ICommand), typeof(BookItem));
+                    BindableProperty.Create(nameof(DoubleTappedCommand), typeof(ICommand), typeof(PinnedBookItem));
 
     public static readonly BindableProperty SelectionCommandProperty =
-                BindableProperty.Create(nameof(SelectionCommand), typeof(ICommand), typeof(BookItem));
+                BindableProperty.Create(nameof(SelectionCommand), typeof(ICommand), typeof(PinnedBookItem));
 
     public static readonly BindableProperty BookParameterProperty =
-                BindableProperty.Create(nameof(BookParameter), typeof(Book), typeof(BookItem));
+                BindableProperty.Create(nameof(BookParameter), typeof(Book), typeof(PinnedBookItem));
 
     public ICommand DoubleTappedCommand
     {
@@ -32,14 +32,13 @@ public partial class BookItem : Border
         set => SetValue(BookParameterProperty, value);
     }
 
-    public BookItem()
-	{
-		InitializeComponent();
-	}
-
     private void Tapped(object sender, TappedEventArgs e)
     {
         Stroke = Application.Current!.RequestedTheme == AppTheme.Light ? Colors.White : Colors.Black;
         BackgroundColor = Colors.Transparent;
     }
+    public PinnedBookItem()
+	{
+		InitializeComponent();
+	}
 }

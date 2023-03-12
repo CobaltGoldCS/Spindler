@@ -2,7 +2,7 @@
 <Border Margin="8,0"
         xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
         xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-        x:Class="Spindler.CustomControls.Items.ConfigItem"
+        x:Class="Spindler.Views.CustomControls.Items.ConfigItem"
         x:Name="this">
     <Grid RowDefinitions="50">
         <Label  Margin="10,0,0,0" 

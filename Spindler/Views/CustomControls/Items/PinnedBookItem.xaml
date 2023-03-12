@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Border xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+        x:Class="Spindler.Views.CustomControls.Items.PinnedBookItem"
+        xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+        StrokeShape="RoundRectangle 16,10,16,10"
+        Stroke="{AppThemeBinding Dark=Transparent, Light={StaticResource Black}}"
+        StrokeThickness="{AppThemeBinding Dark=0, Light=2}"
+        BackgroundColor="Transparent"
+        x:Name="this">
+    <Border.GestureRecognizers>
+        <TapGestureRecognizer 
+            Tapped="Tapped"
+            Command="{Binding Source={x:Reference this}, Path=DoubleTappedCommand}"
+            CommandParameter="{Binding Source={x:Reference this}, Path=BookParameter}"
+            NumberOfTapsRequired="2"/>
+        <TapGestureRecognizer 
+            Tapped="Tapped"
+            Command="{Binding Source={x:Reference this}, Path=SelectionCommand}"
+            CommandParameter="{Binding Source={x:Reference this}, Path=BookParameter}"/>
+    </Border.GestureRecognizers>
+
+    <Grid
+        BackgroundColor="{AppThemeBinding Dark={StaticResource DarkCardBackground}, Light={StaticResource LightGray}}"
+        ColumnDefinitions="200, 30"
+        RowDefinitions="65, 30">
+        <Label
+            FontSize="Body"
+            x:Name="TitleLabel"
+            Text="{Binding Source={x:Reference this}, Path=BookParameter.Title}"
+            MaxLines="4"
+            Padding="15,10,15,0"/>
+        <Image Grid.Row="1"
+            Source="pin.svg"
+            Aspect="AspectFit"
+            Margin="10,5,0,10"
+            HorizontalOptions="Start">
+            <Image.Behaviors>
+                <toolkit:IconTintColorBehavior TintColor="{AppThemeBinding Dark={StaticResource White}, Light={StaticResource LightSpaceCadet}}"/>
+            </Image.Behaviors>
+        </Image>
+    </Grid>
+</Border>

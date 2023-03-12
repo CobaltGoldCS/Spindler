@@ -1,6 +1,6 @@
 using Spindler.Models;
 
-namespace Spindler.CustomControls.Items;
+namespace Spindler.Views.CustomControls.Items;
 
 public partial class ConfigItem : Border
 {
