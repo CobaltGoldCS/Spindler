@@ -6,33 +6,23 @@ using System.Text.RegularExpressions;
 
 namespace Spindler.Views.Book_Pages;
 
-[QueryProperty(nameof(Book), "book")]
-public partial class BookDetailPage : ContentPage
+public partial class BookDetailPage : ContentPage, IQueryAttributable
 {
     #region QueryProperty Handler
-    private Book _book = new();
-    public Book Book
-    {
-        set
-        {
-            _book = value;
-            LoadBook(value);
-        }
-        get => _book;
-    }
+    Book? Book;
 
-    public void LoadBook(Book book)
+    public void ApplyQueryAttributes(IDictionary<string, object> query)
     {
-        if (book.Id < 0)
+        Book = query["book"] as Book;
+        if (Book!.Id < 0)
         {
             AddButtonGroup.OkText = "Add";
             Title = "Add a new Book";
             return;
         }
         AddButtonGroup.OkText = "Modify";
-        Title = $"Modify {book.Title}";
-        BindingContext = book;
-
+        Title = $"Modify {Book.Title}";
+        BindingContext = Book;
     }
     #endregion
 
@@ -58,7 +48,7 @@ public partial class BookDetailPage : ContentPage
 
         if (valid)
         {
-            Book.Url = urlEntry.Text;
+            Book!.Url = urlEntry.Text;
             // Convert the book's title to title case
             Book.Title = TitleCaseRegex().Replace(nameEntry.Text, m => m.Value.ToUpper());
             Book.ImageUrl = imageUrlEntry.Text;
@@ -73,7 +63,7 @@ public partial class BookDetailPage : ContentPage
         {
             return;
         }
-        if (Book.Id > 0)
+        if (Book!.Id > 0)
         {
             await App.Database.DeleteItemAsync(Book);
         }
@@ -89,7 +79,7 @@ public partial class BookDetailPage : ContentPage
     {
         Dictionary<string, object> parameters = new()
         {
-            { "bookListId", Book.BookListId },
+            { "bookListId", Book!.BookListId },
             { "source", string.IsNullOrEmpty(Book.Url) ? "https://example.com" : Book.Url }
 
         };
@@ -101,7 +91,7 @@ public partial class BookDetailPage : ContentPage
         var popup = new PickerPopup("Switch Book Lists", await App.Database.GetBookListsAsync());
         object? result = await this.ShowPopupAsync(popup);
         if (result is not BookList list) return;
-        Book.BookListId = list.Id;
+        Book!.BookListId = list.Id;
     }
 
     /// A Regular Expression for selecting letters to capitalize for title case
