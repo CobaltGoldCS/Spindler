@@ -12,12 +12,18 @@
         <vms:GeneralizedConfigViewModel/>
     </ContentPage.BindingContext>
 
-    <Grid RowDefinitions="65, *">
-        <Border StrokeShape="RoundRectangle 10,10,10,10" Margin="10,5,10,0" Stroke="{StaticResource DarkPrimary}">
+    <Grid RowDefinitions="65, *"
+          CompressedLayout.IsHeadless="True">
+        <Border StrokeShape="RoundRectangle 10,10,10,10"
+                Margin="10,5,10,0"
+                Stroke="{StaticResource DarkPrimary}"
+                CompressedLayout.IsHeadless="True">
             <Border.GestureRecognizers>
                 <TapGestureRecognizer Command="{Binding AddCommand, Mode=OneTime}"/>
             </Border.GestureRecognizers>
-            <Grid ColumnDefinitions="*, 100" BackgroundColor="{StaticResource DarkPrimary}">
+            <Grid ColumnDefinitions="*, 100" 
+                  BackgroundColor="{StaticResource DarkPrimary}"
+                  CompressedLayout.IsHeadless="True">
                 <Label Text="Add a Configuration" Grid.Row="0" VerticalTextAlignment="Center" FontSize="26" Margin="20,0,0,0" TextColor="{StaticResource White}"/>
                 <Image Source="plus.svg" Grid.Column="1"  WidthRequest="50" Margin="10,10,3,10" HorizontalOptions="End">
                     <Image.Behaviors>
@@ -46,7 +52,8 @@
                     </DataTemplate>
                 </CollectionView.ItemTemplate>
                 <CollectionView.EmptyView>
-                    <Grid RowDefinitions="*, 60, 30">
+                    <Grid RowDefinitions="*, 60, 30"
+                          CompressedLayout.IsHeadless="True">
                         <Image Source="gear.svg" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand" Aspect="AspectFit">
                             <Image.Behaviors>
                                 <toolkit:IconTintColorBehavior TintColor="{AppThemeBinding Dark={StaticResource White}, Light={StaticResource Black}}"/>

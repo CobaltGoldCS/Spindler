@@ -3,8 +3,10 @@
         xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
         xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
         x:Class="Spindler.Views.CustomControls.Items.ConfigItem"
+        CompressedLayout.IsHeadless="True"
         x:Name="this">
-    <Grid RowDefinitions="50">
+    <Grid RowDefinitions="50"
+          CompressedLayout.IsHeadless="True">
         <Label  Margin="10,0,0,0" 
                 VerticalTextAlignment="Center" 
                 FontSize="Large"

@@ -10,8 +10,16 @@
     <ContentPage.ToolbarItems>
         <ToolbarItem Clicked="Bookmark_Clicked" x:Name="BookmarkItem" IconImageSource="bookmark.svg"/>
     </ContentPage.ToolbarItems>
-    <ScrollView x:Name="ReadingLayout" Orientation="Vertical" IsEnabled="True" VerticalScrollBarVisibility="Always" >
-        <Grid x:Name="Scroller" VerticalOptions="FillAndExpand" RowDefinitions="auto,0">
+    <ScrollView 
+        x:Name="ReadingLayout" 
+        Orientation="Vertical"
+        IsEnabled="True" 
+        VerticalScrollBarVisibility="Always"
+        CompressedLayout.IsHeadless="True">
+        <Grid x:Name="Scroller"
+              VerticalOptions="FillAndExpand" 
+              RowDefinitions="auto,0"
+              CompressedLayout.IsHeadless="True">
             <!-- The actual setup -->
             <controls:Reader Text="{Binding Source={x:Reference Headless}, Path = Text}"
                          Title="{Binding Source={x:Reference Headless}, Path = ReaderTitle}"

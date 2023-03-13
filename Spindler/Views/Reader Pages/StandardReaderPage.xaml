@@ -15,7 +15,9 @@
     </ContentPage.BindingContext>
 
     <Shell.TitleView>
-        <Grid ColumnDefinitions="*, auto" BackgroundColor="{AppThemeBinding Dark={StaticResource DarkCardBackground}, Light={StaticResource White}}">
+        <Grid ColumnDefinitions="*, auto"
+              BackgroundColor="{AppThemeBinding Dark={StaticResource DarkCardBackground}, Light={StaticResource White}}"
+              CompressedLayout.IsHeadless="True">
 
             <Label Text="{Binding Title}"
                    Grid.Column="0"
@@ -25,6 +27,7 @@
                    MaxLines="2"
                    TextColor="{StaticResource Primary}"/>
             <StackLayout Grid.Column="1"
+                         CompressedLayout.IsHeadless="True"
                          HorizontalOptions="EndAndExpand"
                          Orientation="Horizontal"
                          VerticalOptions="Center"
@@ -38,7 +41,7 @@
             </StackLayout>
         </Grid>
     </Shell.TitleView>
-    <ScrollView x:Name="ReadingLayout" Orientation="Vertical" IsEnabled="True" VerticalScrollBarVisibility="Always" >
+    <ScrollView x:Name="ReadingLayout" Orientation="Vertical" IsEnabled="True" VerticalScrollBarVisibility="Always" CompressedLayout.IsHeadless="True">
         <controls:Reader Text="{Binding Text}"
                          Title="{Binding Title}"
                          Loading="{Binding IsLoading}"

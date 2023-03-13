@@ -14,7 +14,7 @@
     </ContentPage.Resources>
 
     <Shell.TitleView>
-        <Grid ColumnDefinitions="*, auto">
+        <Grid ColumnDefinitions="*, auto" CompressedLayout.IsHeadless="True">
 
             <Label Text="{Binding Title}"
                    Grid.Column="0"
@@ -40,18 +40,21 @@
         </Grid>
     </Shell.TitleView>
     <!---Pinned Books-->
-    <Grid RowDefinitions="auto, *">
+    <Grid RowDefinitions="auto, *" CompressedLayout.IsHeadless="True">
         <Border
             StrokeShape="RoundRectangle 10,10,10,10"
             StrokeThickness="0"
             Background="{AppThemeBinding Dark={StaticResource LightSpaceCadet}, Light={StaticResource LightGray}}"
             Margin="5,0"
-            IsVisible="{Binding PinnedBooksAreVisible}">
+            IsVisible="{Binding PinnedBooksAreVisible}"
+            CompressedLayout.IsHeadless="True">
             <toolkit:Expander x:Name="PinView"
-                              Padding="7,-1,8,5">
+                              Padding="7,-1,8,5"
+                              CompressedLayout.IsHeadless="True">
                 <toolkit:Expander.Header>
                     <Grid ColumnDefinitions="20, *, 25"
                           Padding="0,7,0,0"
+                          CompressedLayout.IsHeadless="True"
                           BackgroundColor="{AppThemeBinding Dark={StaticResource LightSpaceCadet}, Light={StaticResource LightGray}}">
                         <Image Source="pin.svg" Margin="8,3,0,5">
                             <Image.Behaviors>

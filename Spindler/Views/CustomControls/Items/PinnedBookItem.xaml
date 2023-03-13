@@ -7,6 +7,7 @@
         Stroke="{AppThemeBinding Dark=Transparent, Light={StaticResource Black}}"
         StrokeThickness="{AppThemeBinding Dark=0, Light=2}"
         BackgroundColor="Transparent"
+        CompressedLayout.IsHeadless="True"
         x:Name="this">
     <Border.GestureRecognizers>
         <TapGestureRecognizer 
@@ -21,6 +22,7 @@
     </Border.GestureRecognizers>
 
     <Grid
+        CompressedLayout.IsHeadless="True"
         BackgroundColor="{AppThemeBinding Dark={StaticResource DarkCardBackground}, Light={StaticResource LightGray}}"
         ColumnDefinitions="200, 30"
         RowDefinitions="65, 30">

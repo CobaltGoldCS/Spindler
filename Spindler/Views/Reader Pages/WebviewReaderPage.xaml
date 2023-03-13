@@ -9,7 +9,11 @@
     <ContentPage.BindingContext>
         <Model:Book/>
     </ContentPage.BindingContext>
-    <Grid RowDefinitions="*, auto" ColumnDefinitions="*, *, *" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand">
+    <Grid RowDefinitions="*, auto" 
+          ColumnDefinitions="*, *, *" 
+          VerticalOptions="FillAndExpand"
+          HorizontalOptions="FillAndExpand"
+          CompressedLayout.IsHeadless="True">
         <WebView x:Name="ReaderBrowser"
                  Grid.Row="0" 
                  Grid.ColumnSpan="3"

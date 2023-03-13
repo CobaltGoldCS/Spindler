@@ -4,6 +4,7 @@
       x:Class="Spindler.CustomControls.Reader"
       RowDefinitions="auto, auto, auto, *, auto"
       x:Name="this"
+      CompressedLayout.IsHeadless="True"
       BackgroundColor="{AppThemeBinding Dark={StaticResource DarkCardBackground}, Light={StaticResource White}}"
       >
     <Label x:Name="TitleView"
@@ -31,7 +32,8 @@
         Color="{StaticResource Primary}"
         Grid.Row="2"/>
     
-    <Border 
+    <Border
+        CompressedLayout.IsHeadless="True"
         x:Name="TextContainer"
         StrokeShape="RoundRectangle 40,40,40,40"
         Padding="0,20,0,0"
@@ -47,7 +49,8 @@
     <ContentView 
         Grid.Row="4"
         Padding="0,0,0,10"
-        BackgroundColor="{AppThemeBinding Dark={StaticResource DarkCardBackground}, Light={StaticResource White}}">
+        BackgroundColor="{AppThemeBinding Dark={StaticResource DarkCardBackground}, Light={StaticResource White}}"
+        CompressedLayout.IsHeadless="True">
         <Button x:Name="NextButton"
             IsVisible="{Binding Source = {x:Reference this}, Path = NextVisible}"
             CornerRadius="10"

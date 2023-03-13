@@ -12,13 +12,13 @@
     <ContentPage.BindingContext>
         <vms:ConfigViewModel/>
     </ContentPage.BindingContext>
-    <Grid RowDefinitions="65, *">
+    <Grid RowDefinitions="65, *" CompressedLayout.IsHeadless="True">
         <!-- Top Button Area-->
         <Border StrokeShape="RoundRectangle 10,10,10,10" Margin="10,5,10,0" Stroke="{StaticResource DarkPrimary}">
             <Border.GestureRecognizers>
                 <TapGestureRecognizer Command="{Binding AddCommand, Mode=OneTime}"/>
             </Border.GestureRecognizers>
-            <Grid ColumnDefinitions="*, 100" Margin="0,0,0,0" BackgroundColor="{StaticResource DarkPrimary}">
+            <Grid ColumnDefinitions="*, 100" Margin="0,0,0,0" BackgroundColor="{StaticResource DarkPrimary}" CompressedLayout.IsHeadless="True">
                 <Label Text="Add a Configuration" Grid.Row="0" VerticalTextAlignment="Center" FontSize="26" Margin="20,0,0,0" TextColor="{StaticResource White}"/>
                 <Image Source="plus.svg" Grid.Column="1"  WidthRequest="50" Margin="10,10,3,10" HorizontalOptions="End">
                     <Image.Behaviors>
@@ -47,7 +47,7 @@
                     </DataTemplate>
                 </CollectionView.ItemTemplate>
                 <CollectionView.EmptyView>
-                    <Grid RowDefinitions="*, 60, 35">
+                    <Grid RowDefinitions="*, 60, 35" CompressedLayout.IsHeadless="True">
                         <Image Source="gear.svg" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand" Aspect="AspectFit">
                             <Image.Behaviors>
                                 <toolkit:IconTintColorBehavior TintColor="{AppThemeBinding Dark={StaticResource White}, Light={StaticResource Black}}"/>
