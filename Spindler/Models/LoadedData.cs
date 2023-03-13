@@ -13,12 +13,12 @@ public class LoadedData
     /// <summary>
     /// A url pointing to the "next chapter" of the book
     /// </summary>
-    public string? nextUrl;
+    public string nextUrl = string.Empty;
 
     /// <summary>
     /// A url pointing to the "previous chapter" of the book
     /// </summary>
-    public string? prevUrl;
+    public string prevUrl = string.Empty;
 
     /// <summary>
     /// A url pointing to the current location the data was obtained from

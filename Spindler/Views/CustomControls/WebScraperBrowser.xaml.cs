@@ -48,7 +48,7 @@ public partial class WebScraperBrowser : WebView
              HtmlDocument doc = new();
              doc.LoadHtml(html);
              string? textString = ConfigService.PrettyWrapSelector(doc, selector, ConfigService.SelectorType.Text);
-             if (textString is not null)
+             if (textString != string.Empty)
                  return true;
             await Task.Delay(retryDelay);
         }

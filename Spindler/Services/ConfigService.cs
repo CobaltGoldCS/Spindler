@@ -85,7 +85,7 @@ public class ConfigService
     /// <param name="path">A string representation of the target's xpath</param>
     /// <returns cref="string">A string containing the target text, or an empty string if nothing is found</returns>
     /// <exception cref="XPathException">If there is any error in the xpath</exception>
-    public static string? PrettyWrapSelector(HtmlDocument nav, Path path, SelectorType type)
+    public static string PrettyWrapSelector(HtmlDocument nav, Path path, SelectorType type)
     {
         try
         {
@@ -95,7 +95,7 @@ public class ConfigService
                 Path.Type.Css => CssElementHandler(nav, path.path, type),
                 _ => throw new NotImplementedException("This type is not implemented (PrettyWrapSelector)"),
             };
-            return HttpUtility.HtmlDecode(value);
+            return HttpUtility.HtmlDecode(value) ?? string.Empty;
         }
         catch (XPathException e)
         {
@@ -113,7 +113,7 @@ public class ConfigService
     /// <exception cref="NotImplementedException">If they selector type has not been implemented</exception>
     public static string? CssElementHandler(HtmlDocument nav, string path, SelectorType type)
     {
-
+        // Custom $ Syntax
         MatchCollection attributes = Regex.Matches(path, "(.+) \\$(.+)");
         if (attributes.Any())
         {
@@ -141,6 +141,7 @@ public class ConfigService
 
     public static string? XPathHandler(HtmlDocument nav, string path, SelectorType type)
     {
+        // Custom $ Syntax
         MatchCollection attributes = Regex.Matches(path, "(.+) \\$(.+)");
         if (attributes.Any())
         {
