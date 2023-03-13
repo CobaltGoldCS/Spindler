@@ -44,6 +44,8 @@ public class Book : IIndexedModel
 
     public double Position { get; set; }
 
+    public bool HasNextChapter = false;
+
     /// <summary>
     /// Updates <see cref="LastViewed"/> to the current time, and saves booklist in the database.
     /// </summary>
