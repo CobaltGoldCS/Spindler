@@ -42,9 +42,12 @@ public partial class WebScraperBrowser : WebView {
             string html = await GetHtml();
             HtmlDocument doc = new();
             doc.LoadHtml(html);
-            string? textString = ConfigService.PrettyWrapSelector(doc, selector, ConfigService.SelectorType.Text);
+            string textString = ConfigService.PrettyWrapSelector(doc, selector, ConfigService.SelectorType.Text);
             if (textString != string.Empty)
+            {
+                timer.Stop();
                 return true;
+            }
             await Task.Delay(retryDelay);
         }
         timer.Stop();
@@ -69,11 +72,7 @@ public partial class WebScraperBrowser : WebView {
     }
 
     public static WebScraperBrowser CreateHeadless() {
-        return new WebScraperBrowser(false);
-    }
-
-    private WebScraperBrowser(bool visible) {
-
+        return new WebScraperBrowser();
     }
 
 
