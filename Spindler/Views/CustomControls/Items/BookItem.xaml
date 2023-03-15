@@ -30,6 +30,15 @@
                Aspect="AspectFill"
                Grid.RowSpan="2">
         </Image>
+        <Ellipse Fill="{StaticResource Warning}"
+                 Grid.Column="1"
+                 HeightRequest="10"
+                 WidthRequest="10"
+                 HorizontalOptions="End"
+                 VerticalOptions="Start"
+                 Margin="0,5,5,0"
+                 ZIndex="5"
+                 IsVisible="{Binding Source={x:Reference this}, Path=BookParameter.HasNextChapter, Mode=OneWay}"/>
         <Label 
             VerticalTextAlignment="Center"
             HorizontalTextAlignment="Center"
@@ -39,13 +48,6 @@
             x:Name="TitleLabel"
             Text="{Binding Source={x:Reference this}, Path=BookParameter.Title, Mode=OneWay}"
             MaxLines="2"/>
-        <!--
-        <Ellipse Background="{StaticResource Warning}"
-                 Grid.Column="1"
-                 ZIndex="5"
-                 Margin="0,0,-10,0"
-                 IsVisible="{Binding Source={x:Reference this}, Path=BookParameter.HasNextChapter, Mode=OneWay}"/>
-        -->
         <Label x:Name="UrlLabel"
             Text="{Binding Source={x:Reference this}, Path=BookParameter.Url, Mode=OneWay}"
             MaxLines="2"
