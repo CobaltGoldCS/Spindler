@@ -6,16 +6,14 @@ using Spindler.Services;
 
 namespace Spindler.CustomControls;
 
-public partial class WebScraperBrowser : WebView
-{
+public partial class WebScraperBrowser : WebView {
     public static readonly BindableProperty VisibleProperty =
                 BindableProperty.Create(nameof(Visible), typeof(bool), typeof(WebScraperBrowser), defaultValue: true);
 
     /// <summary>
     /// Overrides the visibility options of a normal WebView
     /// </summary>
-    public bool Visible
-    {
+    public bool Visible {
         get => (bool)GetValue(VisibleProperty);
         set => SetValue(VisibleProperty, value);
     }
@@ -24,8 +22,7 @@ public partial class WebScraperBrowser : WebView
     /// Get the html of the current page using a JavaScript Evaluation
     /// </summary>
     /// <returns>Html of the given page</returns>
-    public async Task<string> GetHtml()
-    {
+    public async Task<string> GetHtml() {
         string html = await EvaluateJavaScriptAsync(
             "'<html>'+document.getElementsByTagName('html')[0].innerHTML+'</html>';") ?? "";
         html = Regex.Unescape(html);
@@ -39,17 +36,15 @@ public partial class WebScraperBrowser : WebView
     /// <param name="retryDelay">Delay before trying to find the selector again</param>
     /// <param name="timeout">The duration before <see cref="WaitUntilValid(Models.Path, TimeSpan, TimeSpan)"/> times out</param>
     /// <returns>Whether or not WaitUntilValid was able to find a matching html sequence</returns>
-    public async Task<bool> WaitUntilValid(Models.Path selector, TimeSpan retryDelay, TimeSpan timeout)
-    {
+    public async Task<bool> WaitUntilValid(Models.Path selector, TimeSpan retryDelay, TimeSpan timeout) {
         var timer = Stopwatch.StartNew();
-        while(timer.Elapsed < timeout)
-        {
-             string html = await GetHtml();
-             HtmlDocument doc = new();
-             doc.LoadHtml(html);
-             string? textString = ConfigService.PrettyWrapSelector(doc, selector, ConfigService.SelectorType.Text);
-             if (textString != string.Empty)
-                 return true;
+        while (timer.Elapsed < timeout) {
+            string html = await GetHtml();
+            HtmlDocument doc = new();
+            doc.LoadHtml(html);
+            string? textString = ConfigService.PrettyWrapSelector(doc, selector, ConfigService.SelectorType.Text);
+            if (textString != string.Empty)
+                return true;
             await Task.Delay(retryDelay);
         }
         timer.Stop();
@@ -69,10 +64,17 @@ public partial class WebScraperBrowser : WebView
     /// <returns>Whether WebScraperBrowser redirected or not</returns>
     public bool IsRedirect(string lastKnownUrl) => GetUrl() != lastKnownUrl;
 
-    public WebScraperBrowser()
-	{
-		InitializeComponent();
-	}
+    public WebScraperBrowser() {
+        InitializeComponent();
+    }
+
+    public static WebScraperBrowser CreateHeadless() {
+        return new WebScraperBrowser(false);
+    }
+
+    private WebScraperBrowser(bool visible) {
+
+    }
 
 
 }

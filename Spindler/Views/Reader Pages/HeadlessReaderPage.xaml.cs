@@ -117,7 +117,7 @@ public partial class HeadlessReaderPage : ContentPage, INotifyPropertyChanged, I
             webservice = new(config!);
 
             if (string.IsNullOrEmpty(Book.ImageUrl) || Book!.ImageUrl == "no_image.jpg")
-                Book.ImageUrl = ConfigService.PrettyWrapSelector(doc, new Models.Path(config!.ImageUrlPath), ConfigService.SelectorType.Link) ?? "";
+                Book.ImageUrl = ConfigService.PrettyWrapSelector(doc, new Models.Path(config!.ImageUrlPath), ConfigService.SelectorType.Link);
         }
 
         var result = e.Result;
@@ -131,7 +131,7 @@ public partial class HeadlessReaderPage : ContentPage, INotifyPropertyChanged, I
         await App.Database.SaveItemAsync<Book>(new()
         {
             BookListId = Book!.BookListId,
-            Title = "Bookmark: " + loadedData!.title,
+            Title = "Bookmark: " + loadedData!.Title,
             Url = loadedData.currentUrl!,
             Position = ReadingLayout!.ScrollY / ReadingLayout.ContentSize.Height,
         });
@@ -165,11 +165,13 @@ public partial class HeadlessReaderPage : ContentPage, INotifyPropertyChanged, I
 
         loadedData = await webservice!.LoadWebData(Book!.Url, await HeadlessBrowser.GetHtml());
 
-        if (!await SafeAssert(loadedData.title != "afb-4893", "Invalid Url")) return;
+        if (!await SafeAssert(loadedData.Title != "afb-4893", "Invalid Url")) return;
 
-        if (!await SafeAssert(!string.IsNullOrEmpty(loadedData.text), "Unable to obtain text content")) return;
+        if (!await SafeAssert(!string.IsNullOrEmpty(loadedData.Text), "Unable to obtain text content")) return;
 
         if (!await SafeAssertNotNull(loadedData, "Configuration was unable to obtain values; check Configuration and Url")) return;
+
+        Book!.HasNextChapter = WebService.IsUrl(loadedData.nextUrl);
         UpdateUiUsingLoadedData();
     }
 
@@ -177,10 +179,10 @@ public partial class HeadlessReaderPage : ContentPage, INotifyPropertyChanged, I
     {
         if (!await SafeAssertNotNull(loadedData, "Couldn't get data")) return;
 
-        Title = loadedData!.title ?? "";
-        ReaderTitle = loadedData!.title ?? "";
+        Title = loadedData!.Title ?? "";
+        ReaderTitle = loadedData!.Title ?? "";
 
-        Text = loadedData.text ?? "";
+        Text = loadedData.Text ?? "";
 
         NextVisible = WebService.IsUrl(loadedData.nextUrl);
         PrevVisible = WebService.IsUrl(loadedData.prevUrl);

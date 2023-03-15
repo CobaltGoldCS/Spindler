@@ -22,7 +22,7 @@ namespace Spindler.ViewModels
         WeakReference<Book>? currentPinnedBookSelection;
 
         [ObservableProperty]
-        List<Book> bookList = new();
+        List<Book> currentList = new();
 
         [ObservableProperty]
         ObservableCollection<Book> displayedBooks = new();
@@ -86,7 +86,7 @@ namespace Spindler.ViewModels
                 { 
                     "book", new Book()
                     {
-                        BookListId = id,
+                        BookListId = Id,
                         LastViewed = DateTime.UtcNow,
                     }
                 }
@@ -151,13 +151,13 @@ namespace Spindler.ViewModels
         /// <returns>Nothing</returns>
         public async Task Load()
         {
-            BookList = new(await App.Database.GetBooksByBooklistIdAsync(Id));
+            CurrentList = new(await App.Database.GetBooksByBooklistIdAsync(Id));
 
-            foreach (Book book in BookList.Take(NUM_ITEMS_ADDED_TO_LIST)) {
+            foreach (Book book in CurrentList.Take(NUM_ITEMS_ADDED_TO_LIST)) {
                 DisplayedBooks.Add(book);
             }
 
-            foreach (Book book in BookList.FindAll((book) => book.Pinned)) {
+            foreach (Book book in CurrentList.FindAll((book) => book.Pinned)) {
                 PinnedBooks.Add(book);
             }
             PinnedBooksAreVisible = PinnedBooks.Count > 0;
@@ -172,7 +172,7 @@ namespace Spindler.ViewModels
         {
             LoaderHeightRequest = 20;
             IsLoading = true;
-            foreach (Book book in BookList!.Skip(DisplayedBooks.Count).Take(NUM_ITEMS_ADDED_TO_LIST)) {
+            foreach (Book book in CurrentList!.Skip(DisplayedBooks.Count).Take(NUM_ITEMS_ADDED_TO_LIST)) {
                 DisplayedBooks!.Add(book);
             }
             IsLoading = false;

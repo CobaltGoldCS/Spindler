@@ -185,10 +185,10 @@ public class WebService
         Task<string> text = Task.Run(() => { return configService!.GetContent(doc); });
         LoadedData data = new()
         {
-            text = await text,
+            Text = await text,
             nextUrl = ConfigService.PrettyWrapSelector(doc, configService!.nextpath!, type: ConfigService.SelectorType.Link),
             prevUrl = ConfigService.PrettyWrapSelector(doc, configService.previouspath!, type: ConfigService.SelectorType.Link),
-            title = configService.GetTitle(doc),
+            Title = configService.GetTitle(doc),
             config = config,
             currentUrl = url
         };
@@ -203,8 +203,8 @@ public class WebService
     /// <returns>LoadedData in error form</returns>
     private LoadedData MakeError(string message = "") => new()
     {
-        title = "afb-4893",
-        text = message,
+        Title = "afb-4893",
+        Text = message,
         config = config,
     };
     #endregion

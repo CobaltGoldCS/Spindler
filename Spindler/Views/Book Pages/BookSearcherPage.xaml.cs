@@ -151,7 +151,7 @@ public partial class BookSearcherPage : ContentPage
         HtmlDocument doc = new();
         doc.LoadHtml(html);
 
-        string? content = ConfigService.PrettyWrapSelector(doc, new Models.Path(Config.ContentPath), ConfigService.SelectorType.Text);
+        string content = ConfigService.PrettyWrapSelector(doc, new Models.Path(Config.ContentPath), ConfigService.SelectorType.Text);
 
         SwitchUiBasedOnState(!string.IsNullOrEmpty(content) ? State.BookFound : State.BookNotFound);
 
@@ -180,12 +180,12 @@ public partial class BookSearcherPage : ContentPage
         HtmlDocument doc = new();
         doc.LoadHtml(html);
 
-        string? title = ConfigService.PrettyWrapSelector(doc, new Models.Path(Config!.TitlePath), ConfigService.SelectorType.Text);
+        string title = ConfigService.PrettyWrapSelector(doc, new Models.Path(Config!.TitlePath), ConfigService.SelectorType.Text);
         await App.Database.SaveItemAsync(
             new Book
             {
                 BookListId = BooklistId,
-                Title = title ?? "Could not find title for book",
+                Title = title,
                 Url = Source
             }
         );

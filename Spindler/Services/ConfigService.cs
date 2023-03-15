@@ -206,7 +206,7 @@ public class ConfigService
     {
         if (string.IsNullOrWhiteSpace(titlepath!.path))
             titlepath = new Path("//title");
-        return HttpUtility.HtmlDecode(PrettyWrapSelector(nav, titlepath, type: SelectorType.Text))!;
+        return HttpUtility.HtmlDecode(PrettyWrapSelector(nav, titlepath, type: SelectorType.Text));
     }
     #endregion
 }

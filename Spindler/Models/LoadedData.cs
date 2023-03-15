@@ -1,14 +1,17 @@
-﻿namespace Spindler.Models;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+
+namespace Spindler.Models;
 
 /// <summary>
 /// A model whoose job is to hold the loaded data of a given webpage for display in the user interface
 /// </summary>
-public class LoadedData
+public partial class LoadedData : ObservableObject
 {
     /// <summary>
     /// The text content of the loaded page
     /// </summary>
-    public string? text;
+    [ObservableProperty]
+    private string? text;
 
     /// <summary>
     /// A url pointing to the "next chapter" of the book
@@ -28,7 +31,8 @@ public class LoadedData
     /// <summary>
     /// The title, scraped from the webpage
     /// </summary>
-    public string? title;
+    [ObservableProperty]
+    private string? title;
 
     /// <summary>
     /// The <see cref="Config"/> that was used as reference in order to scrape page data

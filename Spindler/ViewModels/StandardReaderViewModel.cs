@@ -32,12 +32,8 @@ namespace Spindler.ViewModels
         #region Bindable Properties
 
         [ObservableProperty]
-        public LoadedData? loadedData;
+        public LoadedData? currentData;
 
-        [ObservableProperty]
-        private string title;
-        [ObservableProperty]
-        private string text;
         [ObservableProperty]
         private bool isLoading;
 
@@ -47,8 +43,8 @@ namespace Spindler.ViewModels
         {
             get
             {
-                if (loadedData is not null)
-                    return WebService.IsUrl(loadedData.prevUrl);
+                if (CurrentData is not null)
+                    return WebService.IsUrl(CurrentData.prevUrl);
                 else
                     return defaultvisible;
             }
@@ -57,8 +53,8 @@ namespace Spindler.ViewModels
         {
             get
             {
-                if (loadedData is not null)
-                    return WebService.IsUrl(loadedData.nextUrl);
+                if (CurrentData is not null)
+                    return WebService.IsUrl(CurrentData.nextUrl);
                 else
                     return defaultvisible;
             }
@@ -76,7 +72,7 @@ namespace Spindler.ViewModels
             {
                 await ReadingLayout!.ScrollToAsync(ReadingLayout.ScrollX, 0, false);
                 IsLoading = true;
-                loadedData = nextdata;
+                CurrentData = nextdata;
                 DataChanged();
             }
         }
@@ -89,7 +85,7 @@ namespace Spindler.ViewModels
             {
                 await ReadingLayout!.ScrollToAsync(ReadingLayout.ScrollX, 0, false);
                 IsLoading = true;
-                loadedData = prevdata;
+                CurrentData = prevdata;
                 DataChanged();
             }
         }
@@ -101,8 +97,8 @@ namespace Spindler.ViewModels
             await App.Database.SaveItemAsync<Book>(new()
             {
                 BookListId = CurrentBook!.BookListId,
-                Title = "Bookmark: " + loadedData!.title,
-                Url = loadedData.currentUrl!,
+                Title = "Bookmark: " + CurrentData!.Title,
+                Url = CurrentData.currentUrl!,
                 Position = ReadingLayout!.ScrollY / ReadingLayout.ContentSize.Height,
             });
         }
@@ -112,8 +108,6 @@ namespace Spindler.ViewModels
         public StandardReaderViewModel()
         { 
             IsLoading = true;
-            title = "";
-            text = "";
             Shell.Current.Navigating += OnShellNavigated;
         }
 
@@ -122,7 +116,7 @@ namespace Spindler.ViewModels
             if (!await SafeAssertNotNull(Config, "Configuration does not exist")) return;
             LoadedData? data = await WebService.LoadUrl(CurrentBook!.Url);
             if (!await SafeAssertNotNull(data, "Invalid Url")) return;
-            loadedData = data!;
+            CurrentData = data!;
             // Get image url from load
             if (string.IsNullOrEmpty(CurrentBook!.ImageUrl) || CurrentBook!.ImageUrl == "no_image.jpg")
             {
@@ -132,7 +126,7 @@ namespace Spindler.ViewModels
                 var doc = new HtmlDocument();
                 doc.LoadHtml(html.AsOk().Value);
 
-                CurrentBook.ImageUrl = ConfigService.PrettyWrapSelector(doc, new Models.Path(Config!.ImageUrlPath), ConfigService.SelectorType.Link) ?? "";
+                CurrentBook.ImageUrl = ConfigService.PrettyWrapSelector(doc, new Models.Path(Config!.ImageUrlPath), ConfigService.SelectorType.Link);
             }
             DataChanged();
             await DelayScroll();
@@ -152,28 +146,26 @@ namespace Spindler.ViewModels
 
         private async void DataChanged()
         {
-            if (!await SafeAssertNotNull(loadedData, "This is an invalid url")) return;
-            if (loadedData!.title == "afb-4893") // This means an error has occured while getting data from the WebService
+            if (!await SafeAssertNotNull(CurrentData, "This is an invalid url")) return;
+            if (CurrentData!.Title == "afb-4893") // This means an error has occured while getting data from the WebService
             {
                 Dictionary<string, object> parameters = new()
                 {
-                    { "errormessage", loadedData.text! },
-                    { "config", loadedData.config! }
+                    { "errormessage", CurrentData.Text! },
+                    { "config", CurrentData.config! }
                 };
                 await Shell.Current.GoToAsync($"../{nameof(ErrorPage)}", parameters);
                 return;
             }
             // Database updates
-            CurrentBook!.Url = loadedData.currentUrl!;
+            CurrentBook!.Url = CurrentData.currentUrl!;
+            CurrentBook.HasNextChapter = WebService.IsUrl(CurrentData.nextUrl);
             await CurrentBook.UpdateLastViewedToNow();
-
-            Title = loadedData.title ?? "";
-            Text = loadedData.text ?? "";
 
             OnPropertyChanged(nameof(NextButtonIsVisible));
             OnPropertyChanged(nameof(PrevButtonIsVisible));
 
-            PreloadDataTask = WebService.LoadData(loadedData.prevUrl, loadedData.nextUrl);
+            PreloadDataTask = WebService.LoadData(CurrentData.prevUrl, CurrentData.nextUrl);
             IsLoading = false;
         }
 
