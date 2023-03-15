@@ -159,7 +159,7 @@ public partial class HeadlessReaderPage : ContentPage, INotifyPropertyChanged, I
 
     private async Task GetContentAsLoadedData()
     {
-        bool foundMatchingContent = await HeadlessBrowser.WaitUntilValid(new Models.Path(config!.ContentPath), TimeSpan.FromSeconds(2.0), TimeSpan.FromSeconds(20));
+        bool foundMatchingContent = await HeadlessBrowser.WaitUntilValid(new Models.Path(config!.ContentPath), TimeSpan.FromSeconds(1.0), TimeSpan.FromSeconds(20));
         
         if (!await SafeAssert(foundMatchingContent, "Unable to get html specified by configuration")) return;
 
