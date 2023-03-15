@@ -57,15 +57,13 @@ public partial class HomeViewModel : ObservableObject
     [RelayCommand]
     private async void Selection()
     {
-        if (CurrentSelection == null) return;
-        var selectedItem = currentSelection;
-        await selectedItem!.UpdateAccessTimeToNow();
+        if (CurrentSelection is null) return;
+        await CurrentSelection!.UpdateAccessTimeToNow();
         Dictionary<string, object> parameters = new()
         {
-            { "booklist", selectedItem! }
+            { "booklist", CurrentSelection! }
         };
         await Shell.Current.GoToAsync($"{nameof(BookListPage)}", parameters);
-        CurrentSelection = null;
     }
 
     public async void Load()
