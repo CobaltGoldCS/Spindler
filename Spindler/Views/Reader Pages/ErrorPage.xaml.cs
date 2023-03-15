@@ -17,7 +17,7 @@ public partial class ErrorPage : ContentPage
         set
         {
             config = value;
-            HeadlessMode.On = value?.ExtraConfigs.GetOrDefault("headless", false) ?? false;
+            HeadlessMode.On = (bool?)value?.ExtraConfigs.GetValueOrDefault("headless", false) ?? false;
         }
     }
     public bool ShouldReload = false;

@@ -179,7 +179,7 @@ namespace Spindler.ViewModels
                 {
                     await ReadingLayout!.ScrollToAsync(ReadingLayout.ScrollX,
                         Math.Clamp(CurrentBook!.Position, 0d, 1d) * ReadingLayout.ContentSize.Height,
-                        Config!.ExtraConfigs.GetOrDefault("autoscrollanimation", true));
+                        (bool)Config!.ExtraConfigs.GetValueOrDefault("autoscrollanimation", true));
                 });
 
             });

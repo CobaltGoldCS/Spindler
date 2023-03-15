@@ -192,7 +192,7 @@ public partial class HeadlessReaderPage : ContentPage, INotifyPropertyChanged, I
             {
                 await ReadingLayout.ScrollToAsync(ReadingLayout.ScrollX,
                  Math.Clamp(Book!.Position, 0d, 1d) * ReadingLayout.ContentSize.Height,
-                 config!.ExtraConfigs.GetOrDefault("autoscrollanimation", true));
+                 (bool)config!.ExtraConfigs.GetValueOrDefault("autoscrollanimation", true));
                 Book.Position = 0;
             });
         });

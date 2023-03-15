@@ -25,12 +25,12 @@ public partial class GeneralizedConfigDetailPage : BaseConfigDetailPage<Generali
                 Title = $"Modify {Configuration.DomainName}";
                 break;
         }
-        switchWebView.On = Configuration.ExtraConfigs.GetOrDefault("webview", false);
-        animationSwitch.On = Configuration.ExtraConfigs.GetOrDefault("autoscrollanimation", true);
-        separatorEntry.Text = Configuration.ExtraConfigs.GetOrDefault("separator", "\n")
+        switchWebView.On = (bool)Configuration.ExtraConfigs.GetValueOrDefault("webview", false);
+        animationSwitch.On = (bool)Configuration.ExtraConfigs.GetValueOrDefault("autoscrollanimation", true);
+        separatorEntry.Text = ((string)Configuration.ExtraConfigs.GetValueOrDefault("separator", "\n"))
             .Replace(Environment.NewLine, @"\n")
             .Replace("\t", @"\t");
-        headlessSwitch.On = Configuration.ExtraConfigs.GetOrDefault("headless", false);
+        headlessSwitch.On = (bool)Configuration.ExtraConfigs.GetValueOrDefault("headless", false);
     }
 
 
@@ -77,12 +77,12 @@ public partial class GeneralizedConfigDetailPage : BaseConfigDetailPage<Generali
     protected async void ImportCommand(object sender, EventArgs e)
     {
         await base.Import(sender, e);
-        switchWebView.On = Configuration.ExtraConfigs.GetOrDefault("webview", false);
-        animationSwitch.On = Configuration.ExtraConfigs.GetOrDefault("autoscrollanimation", true);
-        separatorEntry.Text = Configuration.ExtraConfigs.GetOrDefault("separator", "\n")
+        switchWebView.On = (bool)Configuration.ExtraConfigs.GetValueOrDefault("webview", false);
+        animationSwitch.On = (bool)Configuration.ExtraConfigs.GetValueOrDefault("autoscrollanimation", true);
+        separatorEntry.Text = ((string)Configuration.ExtraConfigs.GetValueOrDefault("separator", "\n"))
             .Replace(Environment.NewLine, @"\n")
             .Replace("\t", @"\t");
-        headlessSwitch.On = Configuration.ExtraConfigs.GetOrDefault("headless", false);
+        headlessSwitch.On = (bool)Configuration.ExtraConfigs.GetValueOrDefault("headless", false);
     }
 
     #endregion

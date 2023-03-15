@@ -63,8 +63,8 @@ namespace Spindler.ViewModels
                 return;
             }
 
-            webview = config!.ExtraConfigs.GetOrDefault("webview", false);
-            headless = config.ExtraConfigs.GetOrDefault("headless", false);
+            webview = (bool)config!.ExtraConfigs.GetValueOrDefault("webview", false);
+            headless = (bool)config.ExtraConfigs.GetValueOrDefault("headless", false);
 
             if (headless) Method = "Headless Reader";
             if (webview) Method = "Web View Reader";
