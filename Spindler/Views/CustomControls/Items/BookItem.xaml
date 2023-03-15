@@ -37,7 +37,6 @@
                  HorizontalOptions="End"
                  VerticalOptions="Start"
                  Margin="0,5,5,0"
-                 ZIndex="5"
                  IsVisible="{Binding Source={x:Reference this}, Path=BookParameter.HasNextChapter, Mode=OneWay}"/>
         <Label 
             VerticalTextAlignment="Center"

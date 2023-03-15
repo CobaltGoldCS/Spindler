@@ -157,7 +157,6 @@ public partial class HeadlessReaderPage : ContentPage, INotifyPropertyChanged, I
 
         if (!await SafeAssert(!string.IsNullOrEmpty(LoadedData.Text), "Unable to obtain text content")) return;
 
-        Book!.HasNextChapter = WebService.IsUrl(LoadedData.nextUrl);
         UpdateUiUsingLoadedData();
     }
 
@@ -170,6 +169,7 @@ public partial class HeadlessReaderPage : ContentPage, INotifyPropertyChanged, I
         var baseUri = new Uri(LoadedData.currentUrl!);
         LoadedData.prevUrl = new Uri(baseUri, LoadedData.prevUrl).ToString();
         LoadedData.nextUrl = new Uri(baseUri, LoadedData.nextUrl).ToString();
+        Book!.HasNextChapter = NextVisible;
 
         await ScrollToLastReadPositionIfApplicable();
         IsLoading = false;

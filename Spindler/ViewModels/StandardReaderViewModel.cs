@@ -159,11 +159,11 @@ namespace Spindler.ViewModels
             }
             // Database updates
             CurrentBook!.Url = CurrentData.currentUrl!;
-            CurrentBook.HasNextChapter = WebService.IsUrl(CurrentData.nextUrl);
             await CurrentBook.UpdateLastViewedToNow();
 
             OnPropertyChanged(nameof(NextButtonIsVisible));
             OnPropertyChanged(nameof(PrevButtonIsVisible));
+            CurrentBook.HasNextChapter = NextButtonIsVisible;
 
             PreloadDataTask = WebService.LoadData(CurrentData.prevUrl, CurrentData.nextUrl);
             IsLoading = false;
