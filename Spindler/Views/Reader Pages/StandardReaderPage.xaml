@@ -6,7 +6,7 @@
              xmlns:ViewModel="clr-namespace:Spindler.ViewModels"
              xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
              xmlns:controls="clr-namespace:Spindler.CustomControls"
-             Title="{Binding Title}"
+             Title="{Binding CurrentData.Title}"
              Shell.BackgroundColor="{AppThemeBinding Dark={StaticResource DarkCardBackground}, Light={StaticResource White}}"
              Shell.TabBarIsVisible="False">
 
@@ -19,7 +19,7 @@
               BackgroundColor="{AppThemeBinding Dark={StaticResource DarkCardBackground}, Light={StaticResource White}}"
               CompressedLayout.IsHeadless="True">
 
-            <Label Text="{Binding Title}"
+            <Label Text="{Binding CurrentData.Title}"
                    Grid.Column="0"
                    FontSize="Large"
                    VerticalOptions="Center"
@@ -42,8 +42,8 @@
         </Grid>
     </Shell.TitleView>
     <ScrollView x:Name="ReadingLayout" Orientation="Vertical" IsEnabled="True" VerticalScrollBarVisibility="Always" CompressedLayout.IsHeadless="True">
-        <controls:Reader Text="{Binding Text}"
-                         Title="{Binding Title}"
+        <controls:Reader Text="{Binding CurrentData.Text}"
+                         Title="{Binding CurrentData.Title}"
                          Loading="{Binding IsLoading}"
                          NextVisible="{Binding NextButtonIsVisible}"
                          PrevVisible="{Binding PrevButtonIsVisible}"
