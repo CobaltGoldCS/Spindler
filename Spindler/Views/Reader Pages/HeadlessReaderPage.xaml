@@ -6,7 +6,7 @@
              Shell.TabBarIsVisible="False"
              Shell.BackgroundColor="{AppThemeBinding Dark={StaticResource DarkCardBackground}, Light={StaticResource White}}"
              x:Name="Headless"
-             Title="Loading">
+             Title="{Binding Source={x:Reference Headless}, Path = LoadedData.Title}">
     <ContentPage.ToolbarItems>
         <ToolbarItem Clicked="Bookmark_Clicked" x:Name="BookmarkItem" IconImageSource="bookmark.svg"/>
     </ContentPage.ToolbarItems>
@@ -21,8 +21,8 @@
               RowDefinitions="auto,0"
               CompressedLayout.IsHeadless="True">
             <!-- The actual setup -->
-            <controls:Reader Text="{Binding Source={x:Reference Headless}, Path = Text}"
-                         Title="{Binding Source={x:Reference Headless}, Path = ReaderTitle}"
+            <controls:Reader Text="{Binding Source={x:Reference Headless}, Path = LoadedData.Text}"
+                         Title="{Binding Source={x:Reference Headless}, Path = LoadedData.Title}"
                          Loading="{Binding Source={x:Reference Headless}, Path = IsLoading}"
                          NextVisible="{Binding Source={x:Reference Headless}, Path = NextVisible}"
                          PrevVisible="{Binding Source={x:Reference Headless}, Path = PrevVisible}"

@@ -12,29 +12,17 @@ public partial class HeadlessReaderPage : ContentPage, INotifyPropertyChanged, I
     // Both of these are guaranteed not null after initial page loading
     WebService? webservice;
     Config? config;
-    LoadedData? loadedData;
     Book Book = new Book { Id = -1 };
 
     #region Binding Definitions
 
-    string? text;
-    public string? Text
+    LoadedData loadedData = new() { Title = "Loading" };
+    public LoadedData LoadedData
     {
-        get => text;
+        get => loadedData;
         set
         {
-            text = value;
-            OnPropertyChanged();
-        }
-    }
-
-    string? readerTitle;
-    public string? ReaderTitle
-    {
-        get => readerTitle;
-        set
-        {
-            readerTitle = value;
+            loadedData = value;
             OnPropertyChanged();
         }
     }
@@ -163,34 +151,25 @@ public partial class HeadlessReaderPage : ContentPage, INotifyPropertyChanged, I
         
         if (!await SafeAssert(foundMatchingContent, "Unable to get html specified by configuration")) return;
 
-        loadedData = await webservice!.LoadWebData(Book!.Url, await HeadlessBrowser.GetHtml());
+        LoadedData = await webservice!.LoadWebData(Book!.Url, await HeadlessBrowser.GetHtml());
 
-        if (!await SafeAssert(loadedData.Title != "afb-4893", "Invalid Url")) return;
+        if (!await SafeAssert(LoadedData.Title != "afb-4893", "Invalid Url")) return;
 
-        if (!await SafeAssert(!string.IsNullOrEmpty(loadedData.Text), "Unable to obtain text content")) return;
+        if (!await SafeAssert(!string.IsNullOrEmpty(LoadedData.Text), "Unable to obtain text content")) return;
 
-        if (!await SafeAssertNotNull(loadedData, "Configuration was unable to obtain values; check Configuration and Url")) return;
-
-        Book!.HasNextChapter = WebService.IsUrl(loadedData.nextUrl);
+        Book!.HasNextChapter = WebService.IsUrl(LoadedData.nextUrl);
         UpdateUiUsingLoadedData();
     }
 
     private async void UpdateUiUsingLoadedData()
     {
-        if (!await SafeAssertNotNull(loadedData, "Couldn't get data")) return;
-
-        Title = loadedData!.Title ?? "";
-        ReaderTitle = loadedData!.Title ?? "";
-
-        Text = loadedData.Text ?? "";
-
-        NextVisible = WebService.IsUrl(loadedData.nextUrl);
-        PrevVisible = WebService.IsUrl(loadedData.prevUrl);
+        NextVisible = WebService.IsUrl(LoadedData.nextUrl);
+        PrevVisible = WebService.IsUrl(LoadedData.prevUrl);
 
         // Turn relative urls into absolutes
-        var baseUri = new Uri(loadedData.currentUrl!);
-        loadedData.prevUrl = new Uri(baseUri, loadedData.prevUrl).ToString();
-        loadedData.nextUrl = new Uri(baseUri, loadedData.nextUrl).ToString();
+        var baseUri = new Uri(LoadedData.currentUrl!);
+        LoadedData.prevUrl = new Uri(baseUri, LoadedData.prevUrl).ToString();
+        LoadedData.nextUrl = new Uri(baseUri, LoadedData.nextUrl).ToString();
 
         await ScrollToLastReadPositionIfApplicable();
         IsLoading = false;
