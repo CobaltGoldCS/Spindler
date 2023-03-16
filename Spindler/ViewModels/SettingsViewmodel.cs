@@ -47,16 +47,6 @@ public partial class SettingsViewmodel : ObservableObject
     [ObservableProperty]
     private bool isBusy = false;
 
-    [RelayCommand]
-    public async void CheckNextChapter() {
-        if (IsBusy) return;
-        IsBusy = true;
-
-        NextChapterService service = new();
-        await service.Run();
-        IsBusy = false;
-    }
-
     public SettingsViewmodel() 
     {
         Shell.Current.Navigating += Navigating;

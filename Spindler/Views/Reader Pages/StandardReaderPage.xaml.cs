@@ -8,6 +8,7 @@ namespace Spindler;
 
 public partial class StandardReaderPage : ContentPage, IQueryAttributable
 {
+    CancellationTokenRegistration tokenRegistration = new();
     public async void ApplyQueryAttributes(IDictionary<string, object> query)
     {
         Book book = (query["book"] as Book)!;
@@ -19,6 +20,8 @@ public partial class StandardReaderPage : ContentPage, IQueryAttributable
             Config = config
         };
         viewmodel.AttachReferencesToUI(ReadingLayout, BookmarkItem);
+        var service = new NextChapterService();
+        await service.CheckChaptersInBookList(book.BookListId, tokenRegistration.Token);
         BindingContext = viewmodel;
         await viewmodel.StartLoad();
     }

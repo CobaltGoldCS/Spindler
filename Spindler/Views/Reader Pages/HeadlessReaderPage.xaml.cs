@@ -1,3 +1,4 @@
+using CommunityToolkit.Maui.Alerts;
 using HtmlAgilityPack;
 using Spindler.Models;
 using Spindler.Services;
@@ -12,7 +13,9 @@ public partial class HeadlessReaderPage : ContentPage, INotifyPropertyChanged, I
     // Both of these are guaranteed not null after initial page loading
     WebService? webservice;
     Config? config;
+
     Book Book = new Book { Id = -1 };
+
 
     #region Binding Definitions
 
@@ -69,12 +72,16 @@ public partial class HeadlessReaderPage : ContentPage, INotifyPropertyChanged, I
         Shell.Current.Navigating += OnShellNavigated;
     }
 
+    CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
     public async void ApplyQueryAttributes(IDictionary<string, object> query)
     {
         Book = (query["book"] as Book)!;
         HeadlessBrowser.Navigated += PageLoaded;
         HeadlessBrowser.Source = Book.Url;
+        NextChapterService chapterService = new();
         await Book.UpdateLastViewedToNow();
+
+        await chapterService.CheckChaptersInBookList(Book.BookListId, cancellationTokenSource.Token, NextChapterBrowser);
     }
 
     public async void OnShellNavigated(object? sender,
@@ -88,6 +95,7 @@ public partial class HeadlessReaderPage : ContentPage, INotifyPropertyChanged, I
                 await Book.UpdateLastViewedToNow();
             }
         }
+        cancellationTokenSource.Cancel();
         Shell.Current.Navigating -= OnShellNavigated;
     }
 
