@@ -29,6 +29,15 @@ public class DataService
         await database.UpdateAsync(item);
     }
 
+    public async Task SaveItemsAsync<T>(IEnumerable<T> items)
+        where T : IIndexedModel, new()
+    {
+        var itemsToInsert = items.Where((T item) => item.GetId() < 0);
+        var itemsToUpdate = items.Where((T item) => item.GetId() >= 0);
+        await database.UpdateAllAsync(itemsToUpdate);
+        await database.InsertAllAsync(itemsToInsert);
+    }
+
     public async Task<List<T>> GetAllItemsAsync<T>() where T : IIndexedModel, new()
         => await database.Table<T>().ToListAsync();
 
