@@ -20,8 +20,6 @@ public partial class StandardReaderPage : ContentPage, IQueryAttributable
             Config = config
         };
         viewmodel.AttachReferencesToUI(ReadingLayout, BookmarkItem);
-        var service = new NextChapterService();
-        await service.CheckChaptersInBookList(book.BookListId, tokenRegistration.Token);
         BindingContext = viewmodel;
         await viewmodel.StartLoad();
     }

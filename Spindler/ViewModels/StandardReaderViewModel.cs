@@ -110,9 +110,19 @@ namespace Spindler.ViewModels
             IsLoading = true;
             Shell.Current.Navigating += OnShellNavigated;
         }
-
+        CancellationTokenSource tokenRegistration = new CancellationTokenSource();
         public async Task StartLoad()
         {
+            // Start background chapter checker service
+            var service = new NextChapterService();
+            var mainthread = Dispatcher.GetForCurrentThread();
+            await Task.Run(async () =>
+            {
+                var updateQueue = await service.CheckChaptersInBookList(CurrentBook!.BookListId, tokenRegistration.Token);
+                await mainthread.DispatchAsync(async () => await App.Database.SaveItemsAsync(updateQueue));
+
+            });
+
             if (!await SafeAssertNotNull(Config, "Configuration does not exist")) return;
             LoadedData? data = await WebService.LoadUrl(CurrentBook!.Url);
             if (!await SafeAssertNotNull(data, "Invalid Url")) return;
@@ -196,6 +206,7 @@ namespace Spindler.ViewModels
                     await App.Database.SaveItemAsync(CurrentBook);
                 }
             }
+            tokenRegistration.Cancel();
             Shell.Current.Navigating -= OnShellNavigated;
         }
 

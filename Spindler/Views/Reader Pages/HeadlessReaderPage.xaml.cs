@@ -1,9 +1,12 @@
 using CommunityToolkit.Maui.Alerts;
 using HtmlAgilityPack;
+using Microsoft.Maui.ApplicationModel;
+using Microsoft.Maui.Dispatching;
 using Spindler.Models;
 using Spindler.Services;
 using Spindler.Utilities;
 using Spindler.Views.Reader_Pages;
+using System.Collections.Concurrent;
 using System.ComponentModel;
 
 namespace Spindler.Views;
@@ -72,7 +75,8 @@ public partial class HeadlessReaderPage : ContentPage, INotifyPropertyChanged, I
         Shell.Current.Navigating += OnShellNavigated;
     }
 
-    CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
+    readonly CancellationTokenSource nextChapterTaskToken = new();
+
     public async void ApplyQueryAttributes(IDictionary<string, object> query)
     {
         Book = (query["book"] as Book)!;
@@ -80,23 +84,11 @@ public partial class HeadlessReaderPage : ContentPage, INotifyPropertyChanged, I
         HeadlessBrowser.Source = Book.Url;
         NextChapterService chapterService = new();
         await Book.UpdateLastViewedToNow();
-
-        await chapterService.CheckChaptersInBookList(Book.BookListId, cancellationTokenSource.Token, NextChapterBrowser);
-    }
-
-    public async void OnShellNavigated(object? sender,
-                           ShellNavigatingEventArgs e)
-    {
-        if (e.Target.Location.OriginalString == "..")
+        await Task.Run(async () =>
         {
-            if (Book != null)
-            {
-                Book.Position = ReadingLayout.ScrollY / ReadingLayout.ContentSize.Height;
-                await Book.UpdateLastViewedToNow();
-            }
-        }
-        cancellationTokenSource.Cancel();
-        Shell.Current.Navigating -= OnShellNavigated;
+            IEnumerable<Book> updateQueue = await chapterService.CheckChaptersInBookList(Book.BookListId, nextChapterTaskToken.Token);
+            await Dispatcher.DispatchAsync(async () => await App.Database.SaveItemsAsync(updateQueue));
+        });
     }
 
     private async void PageLoaded(object? sender, WebNavigatedEventArgs e)
@@ -166,6 +158,23 @@ public partial class HeadlessReaderPage : ContentPage, INotifyPropertyChanged, I
         if (!await SafeAssert(!string.IsNullOrEmpty(LoadedData.Text), "Unable to obtain text content")) return;
 
         UpdateUiUsingLoadedData();
+    }
+
+    public async void OnShellNavigated(object? sender,
+                           ShellNavigatingEventArgs e)
+    {
+        if (e.Target.Location.OriginalString == "..")
+        {
+            if (Book != null)
+            {
+                Book.Position = ReadingLayout.ScrollY / ReadingLayout.ContentSize.Height;
+                await Book.UpdateLastViewedToNow();
+            }
+        }
+        // This will safely cancel the nextChapter task
+        nextChapterTaskToken.Cancel();
+
+        Shell.Current.Navigating -= OnShellNavigated;
     }
 
     private async void UpdateUiUsingLoadedData()

@@ -2,9 +2,12 @@
 using HtmlAgilityPack;
 using Spindler.CustomControls;
 using Spindler.Models;
+using Spindler.Views.Book_Pages;
+using System.Collections.Concurrent;
+using System.Collections.Generic;
 
 namespace Spindler.Services {
-    public class NextChapterService 
+    public class NextChapterService
     {
         public NextChapterService() { }
 
@@ -27,19 +30,33 @@ namespace Spindler.Services {
         }
 
         /// <summary>
-        /// Checks all the books in a booklist with <paramref name="id"/> for their next chapter and updates the database
+        /// Checks all the books in a booklist with <paramref name="booklistId"/> for their next chapter and updates the database
         /// </summary>
-        /// <param name="id">The id of the target booklist</param>
+        /// <param name="booklistId">The id of the target booklist</param>
         /// <param name="browser">A webscraper browser instance</param>
         /// <param name="token">A token to cancel the operation if needed</param>
         /// <returns></returns>
-        public async Task CheckChaptersInBookList(int id, CancellationToken token, WebScraperBrowser? browser = null) {
+        public async Task<IEnumerable<Book>> CheckChaptersInBookList(int booklistId, CancellationToken token, WebScraperBrowser? browser = null)
+        {
             browser ??= new WebScraperBrowser();
-            List<Book> books = await App.Database.GetBooksByBooklistIdAsync(id);
-            foreach (Book book in books) {
-                if (token.IsCancellationRequested) return;
+            List<Book> books = await App.Database.GetBooksByBooklistIdAsync(booklistId);
+            List<Book> filteredBooks = books.FindAll((book) => !book.HasNextChapter);
+            return await CheckChaptersInBookList(filteredBooks, token, browser);
+        }
 
-                if (book.HasNextChapter) continue;
+        public async Task<IEnumerable<Book>> CheckChaptersInBookList(Book book, CancellationToken token, WebScraperBrowser? browser = null)
+        {
+            browser ??= new WebScraperBrowser();
+            List<Book> books = await App.Database.GetBooksByBooklistIdAsync(book.BookListId);
+            List<Book> filteredBooks = books.FindAll((filterBook) => !filterBook.HasNextChapter && filterBook.Id != book.Id);
+            return await CheckChaptersInBookList(filteredBooks, token, browser);
+        }
+
+        public async Task<IEnumerable<Book>> CheckChaptersInBookList(List<Book> books, CancellationToken token, WebScraperBrowser browser) {
+            List<Book> verifiedbooks = new();
+
+            foreach (Book book in books) {
+                if (token.IsCancellationRequested) return verifiedbooks;
 
                 browser.Source = book.Url;
                 string html = await browser.GetHtml();
@@ -54,8 +71,9 @@ namespace Spindler.Services {
                 var nextUrl = ConfigService.PrettyWrapSelector(doc, new(config.NextUrlPath), ConfigService.SelectorType.Link);
 
                 book.HasNextChapter = nextUrl.Length > 0;
-                await App.Database.SaveItemAsync(book);
+                verifiedbooks.Add(book);
             }
+            return verifiedbooks;
         }
     }
 }
