@@ -156,7 +156,7 @@ namespace Spindler.ViewModels
             foreach (Book book in CurrentList.Take(NUM_ITEMS_ADDED_TO_LIST)) {
                 DisplayedBooks.Add(book);
             }
-
+            
             foreach (Book book in CurrentList.FindAll((book) => book.Pinned)) {
                 PinnedBooks.Add(book);
             }

@@ -28,9 +28,7 @@
                          PrevVisible="{Binding Source={x:Reference Headless}, Path = PrevVisible}"
                          PrevClicked="PrevButton_Clicked"
                          NextClicked="NextButton_Clicked"/>
-            <!-- Initial Setup-->
-            <controls:WebScraperBrowser x:Name="HeadlessBrowser"  IsVisible="false"/>
-            <controls:WebScraperBrowser x:Name="NextChapterBrowser" IsVisible="false"/>
+            <controls:WebScraperBrowser x:Name="HeadlessBrowser" Visible="False" Grid.Row="1"/>
         </Grid>
     </ScrollView>
 </ContentPage>

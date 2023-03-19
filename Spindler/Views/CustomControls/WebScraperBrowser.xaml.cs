@@ -71,8 +71,12 @@ public partial class WebScraperBrowser : WebView {
         InitializeComponent();
     }
 
+    private WebScraperBrowser(object _)
+    {
+    }
+
     public static WebScraperBrowser CreateHeadless() {
-        return new WebScraperBrowser();
+        return new WebScraperBrowser(new object());
     }
 
 

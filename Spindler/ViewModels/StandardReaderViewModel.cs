@@ -114,12 +114,12 @@ namespace Spindler.ViewModels
         public async Task StartLoad()
         {
             // Start background chapter checker service
+            var mainThread = Dispatcher.GetForCurrentThread();
             var service = new NextChapterService();
-            var mainthread = Dispatcher.GetForCurrentThread();
             await Task.Run(async () =>
             {
                 var updateQueue = await service.CheckChaptersInBookList(CurrentBook!.BookListId, tokenRegistration.Token);
-                await mainthread.DispatchAsync(async () => await App.Database.SaveItemsAsync(updateQueue));
+                await mainThread!.DispatchAsync(async () => await App.Database.SaveItemsAsync(updateQueue));
 
             });
 
