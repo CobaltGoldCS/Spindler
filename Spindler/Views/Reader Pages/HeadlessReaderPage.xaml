@@ -8,7 +8,7 @@
              x:Name="Headless"
              Title="{Binding Source={x:Reference Headless}, Path = LoadedData.Title}">
     <ContentPage.ToolbarItems>
-        <ToolbarItem Clicked="Bookmark_Clicked" x:Name="BookmarkItem" IconImageSource="bookmark.svg"/>
+        <ToolbarItem Command="{Binding Source={x:Reference Headless}, Path = BookmarkCommand}" x:Name="BookmarkItem" IconImageSource="bookmark.svg"/>
     </ContentPage.ToolbarItems>
     <ScrollView 
         x:Name="ReadingLayout" 
@@ -26,8 +26,8 @@
                          Loading="{Binding Source={x:Reference Headless}, Path = IsLoading}"
                          NextVisible="{Binding Source={x:Reference Headless}, Path = NextVisible}"
                          PrevVisible="{Binding Source={x:Reference Headless}, Path = PrevVisible}"
-                         PrevClicked="PrevButton_Clicked"
-                         NextClicked="NextButton_Clicked"/>
+                         PreviousCommand="{Binding Source={x:Reference Headless}, Path = PrevButtonCommand}"
+                         NextCommand="{Binding Source={x:Reference Headless}, Path = NextButtonCommand}"/>
             <controls:WebScraperBrowser x:Name="HeadlessBrowser" Visible="False" Grid.Row="1"/>
         </Grid>
     </ScrollView>

@@ -1,4 +1,5 @@
 using CommunityToolkit.Maui.Alerts;
+using CommunityToolkit.Mvvm.Input;
 using HtmlAgilityPack;
 using Microsoft.Maui.ApplicationModel;
 using Microsoft.Maui.Dispatching;
@@ -71,7 +72,6 @@ public partial class HeadlessReaderPage : ContentPage, INotifyPropertyChanged, I
     public HeadlessReaderPage()
     {
         InitializeComponent();
-        
         Shell.Current.Navigating += OnShellNavigated;
     }
 
@@ -118,9 +118,11 @@ public partial class HeadlessReaderPage : ContentPage, INotifyPropertyChanged, I
             return;
 
         await GetContentAsLoadedData();
+        await UpdateUiUsingLoadedData();
     }
 
-    private async void Bookmark_Clicked(object _, EventArgs e)
+    [RelayCommand]
+    private async void Bookmark()
     {
         await App.Database.SaveItemAsync<Book>(new()
         {
@@ -131,7 +133,8 @@ public partial class HeadlessReaderPage : ContentPage, INotifyPropertyChanged, I
         });
     }
 
-    private async void PrevButton_Clicked(object _, EventArgs e)
+    [RelayCommand]
+    private async void PrevButton()
     {
         IsLoading = true;
         Book!.Url = loadedData!.prevUrl!;
@@ -141,7 +144,8 @@ public partial class HeadlessReaderPage : ContentPage, INotifyPropertyChanged, I
         NextVisible = false;
     }
 
-    private async void NextButton_Clicked(object _, EventArgs e)
+    [RelayCommand]
+    private async void NextButton()
     {
         IsLoading = true;
         Book!.Url = loadedData!.nextUrl!;
@@ -151,6 +155,9 @@ public partial class HeadlessReaderPage : ContentPage, INotifyPropertyChanged, I
         NextVisible = false;
     }
 
+    /// <summary>
+    /// Find and extract content into <see cref="LoadedData"/>
+    /// </summary>
     private async Task GetContentAsLoadedData()
     {
         bool foundMatchingContent = await HeadlessBrowser.WaitUntilValid(new Models.Path(config!.ContentPath), TimeSpan.FromSeconds(1.0), TimeSpan.FromSeconds(20));
@@ -166,25 +173,12 @@ public partial class HeadlessReaderPage : ContentPage, INotifyPropertyChanged, I
         if (!await SafeAssert(!string.IsNullOrEmpty(LoadedData.Text), "Unable to obtain text content"))
             return;
 
-        UpdateUiUsingLoadedData();
     }
 
-    public async void OnShellNavigated(object? _,
-                           ShellNavigatingEventArgs e)
-    {
-        if (e.Target.Location.OriginalString == "..")
-        {
-            Book.Position = ReadingLayout.ScrollY / ReadingLayout.ContentSize.Height;
-            Book!.HasNextChapter = NextVisible;
-            await Book.UpdateViewTimeAndSave();
-        }
-        // This will safely cancel the nextChapter task
-        nextChapterTaskToken.Cancel();
-
-        Shell.Current.Navigating -= OnShellNavigated;
-    }
-
-    private async void UpdateUiUsingLoadedData()
+    /// <summary>
+    /// Updates the User Interface using <see cref="LoadedData"/>
+    /// </summary>
+    private async Task UpdateUiUsingLoadedData()
     {
         NextVisible = WebService.IsUrl(LoadedData.nextUrl);
         PrevVisible = WebService.IsUrl(LoadedData.prevUrl);
@@ -199,6 +193,9 @@ public partial class HeadlessReaderPage : ContentPage, INotifyPropertyChanged, I
         IsLoading = false;
     }
 
+    /// <summary>
+    /// If the book has a previous position, scroll to it
+    /// </summary>
     private async Task ScrollToLastReadPositionIfApplicable()
     {
         if (Book!.Position <= 0)
@@ -220,6 +217,21 @@ public partial class HeadlessReaderPage : ContentPage, INotifyPropertyChanged, I
         });
     }
 
+    public async void OnShellNavigated(object? _,
+                           ShellNavigatingEventArgs e)
+    {
+        if (e.Target.Location.OriginalString == "..")
+        {
+            Book.Position = ReadingLayout.ScrollY / ReadingLayout.ContentSize.Height;
+            Book!.HasNextChapter = NextVisible;
+            await Book.UpdateViewTimeAndSave();
+        }
+        // This will safely cancel the nextChapter task
+        nextChapterTaskToken.Cancel();
+
+        Shell.Current.Navigating -= OnShellNavigated;
+    }
+
     /// <summary>
     /// Assert that <paramref name="condition"/> is true or fail with <see cref="ErrorPage"/>
     /// </summary>
@@ -234,7 +246,7 @@ public partial class HeadlessReaderPage : ContentPage, INotifyPropertyChanged, I
         Dictionary<string, object> parameters = new()
         {
             { "errormessage", message },
-            { "config", config! }
+            { "config"      , config! }
         };
         await Shell.Current.GoToAsync($"/{nameof(ErrorPage)}", parameters);
         return false;
