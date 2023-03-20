@@ -8,7 +8,6 @@ namespace Spindler;
 
 public partial class StandardReaderPage : ContentPage, IQueryAttributable
 {
-    CancellationTokenRegistration tokenRegistration = new();
     public async void ApplyQueryAttributes(IDictionary<string, object> query)
     {
         Book book = (query["book"] as Book)!;
