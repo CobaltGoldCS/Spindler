@@ -83,17 +83,17 @@ public partial class HeadlessReaderPage : ContentPage, INotifyPropertyChanged, I
         HeadlessBrowser.Navigated += PageLoaded;
         HeadlessBrowser.Source = Book.Url;
         NextChapterService chapterService = new();
-        await Book.UpdateLastViewedToNow();
+        await Book.UpdateViewTimeAndSave();
         await Task.Run(async () =>
         {
-            IEnumerable<Book> updateQueue = await chapterService.CheckChaptersInBookList(Book.BookListId, nextChapterTaskToken.Token);
+            IEnumerable<Book> updateQueue = await chapterService.CheckChaptersInBookList(Book, nextChapterTaskToken.Token);
             await Dispatcher.DispatchAsync(async () => await App.Database.SaveItemsAsync(updateQueue));
         });
     }
 
     private async void PageLoaded(object? sender, WebNavigatedEventArgs e)
     {
-        // Define Config before accidentally breaking something
+        // Define Values before accidentally breaking something
         if (config is null)
         {
             string html = await HeadlessBrowser.GetHtml();
@@ -101,15 +101,20 @@ public partial class HeadlessReaderPage : ContentPage, INotifyPropertyChanged, I
             doc.LoadHtml(html);
 
             config = await WebService.FindValidConfig(Book.Url, html);
-            if (!await SafeAssertNotNull(config, "There is no valid configuration for this book")) return;
+            if (!await SafeAssertNotNull(config, "There is no valid configuration for this book"))
+                return;
             webservice = new(config!);
 
+            // We only want this check to run at the beginning when config is null
             if (string.IsNullOrEmpty(Book.ImageUrl) || Book!.ImageUrl == "no_image.jpg")
                 Book.ImageUrl = ConfigService.PrettyWrapSelector(doc, new Models.Path(config!.ImageUrlPath), ConfigService.SelectorType.Link);
         }
 
         var result = e.Result;
-        if (!await SafeAssert(result == WebNavigationResult.Success, $"Browser was unable to navigate.")) return;
+        if (!await SafeAssert(result != WebNavigationResult.Failure, "Browser failed to obtain data."))
+            return;
+        if (!await SafeAssert(result != WebNavigationResult.Timeout, "Url timed out. Please Try again"))
+            return;
 
         await GetContentAsLoadedData();
     }
@@ -149,13 +154,16 @@ public partial class HeadlessReaderPage : ContentPage, INotifyPropertyChanged, I
     {
         bool foundMatchingContent = await HeadlessBrowser.WaitUntilValid(new Models.Path(config!.ContentPath), TimeSpan.FromSeconds(1.0), TimeSpan.FromSeconds(20));
         
-        if (!await SafeAssert(foundMatchingContent, "Unable to get html specified by configuration")) return;
+        if (!await SafeAssert(foundMatchingContent, "Unable to get html specified by configuration"))
+            return;
 
         LoadedData = await webservice!.LoadWebData(Book!.Url, await HeadlessBrowser.GetHtml());
 
-        if (!await SafeAssert(LoadedData.Title != "afb-4893", "Invalid Url")) return;
+        if (!await SafeAssert(LoadedData.Title != "afb-4893", "Invalid Url"))
+            return;
 
-        if (!await SafeAssert(!string.IsNullOrEmpty(LoadedData.Text), "Unable to obtain text content")) return;
+        if (!await SafeAssert(!string.IsNullOrEmpty(LoadedData.Text), "Unable to obtain text content"))
+            return;
 
         UpdateUiUsingLoadedData();
     }
@@ -184,12 +192,10 @@ public partial class HeadlessReaderPage : ContentPage, INotifyPropertyChanged, I
         var baseUri = new Uri(LoadedData.currentUrl!);
         LoadedData.prevUrl = new Uri(baseUri, LoadedData.prevUrl).ToString();
         LoadedData.nextUrl = new Uri(baseUri, LoadedData.nextUrl).ToString();
-        Book!.HasNextChapter = NextVisible;
+
 
         await ScrollToLastReadPositionIfApplicable();
         IsLoading = false;
-        await App.Database.SaveItemAsync(Book);
-
     }
 
     private async Task ScrollToLastReadPositionIfApplicable()
@@ -199,33 +205,38 @@ public partial class HeadlessReaderPage : ContentPage, INotifyPropertyChanged, I
             return;
         }
 
+        var scrollPosition = Math.Clamp(Book!.Position, 0d, 1d) * ReadingLayout.ContentSize.Height;
+        var shouldAnimate = (bool)config!.ExtraConfigs.GetValueOrDefault("autoscrollanimation", true);
         await Task.Run(async () =>
         {
             while (ReadingLayout.ContentSize.Height < 1000)
-                await Task.Delay(50);
+                await Task.Delay(TimeSpan.FromMilliseconds(50));
             await MainThread.InvokeOnMainThreadAsync(async () =>
             {
-                await ReadingLayout.ScrollToAsync(ReadingLayout.ScrollX,
-                 Math.Clamp(Book!.Position, 0d, 1d) * ReadingLayout.ContentSize.Height,
-                 (bool)config!.ExtraConfigs.GetValueOrDefault("autoscrollanimation", true));
+                await ReadingLayout.ScrollToAsync(ReadingLayout.ScrollX, scrollPosition, shouldAnimate);
                 Book.Position = 0;
             });
         });
     }
 
-    
+    /// <summary>
+    /// Assert that <paramref name="condition"/> is true or fail with <see cref="ErrorPage"/>
+    /// </summary>
+    /// <param name="condition">The condition to assert if true</param>
+    /// <param name="message">A message for the <see cref="ErrorPage"/> to display</param>
+    /// <returns>The result of the condition</returns>
     public async Task<bool> SafeAssert(bool condition, string message)
     {
-        if (!condition)
+        if (condition)
+            return true;
+
+        Dictionary<string, object> parameters = new()
         {
-            Dictionary<string, object> parameters = new()
-            {
-                { "errormessage", message },
-                { "config", config! }
-            };
-            await Shell.Current.GoToAsync($"/{nameof(ErrorPage)}", parameters);
-        }
-        return condition;
+            { "errormessage", message },
+            { "config", config! }
+        };
+        await Shell.Current.GoToAsync($"/{nameof(ErrorPage)}", parameters);
+        return false;
     }
 
     /// <summary>
