@@ -12,7 +12,7 @@ public partial class WebviewReaderPage : ContentPage, IQueryAttributable, IReade
         Book = (query["book"] as Book)!;
         BindingContext = Book;
         ReaderBrowser.Source = Book.Url;
-        await Book.UpdateLastViewedToNow();
+        await Book.UpdateViewTimeAndSave();
     }
 
     public WebviewReaderPage()

@@ -165,11 +165,9 @@ public partial class HeadlessReaderPage : ContentPage, INotifyPropertyChanged, I
     {
         if (e.Target.Location.OriginalString == "..")
         {
-            if (Book != null)
-            {
-                Book.Position = ReadingLayout.ScrollY / ReadingLayout.ContentSize.Height;
-                await Book.UpdateLastViewedToNow();
-            }
+            Book.Position = ReadingLayout.ScrollY / ReadingLayout.ContentSize.Height;
+            Book!.HasNextChapter = NextVisible;
+            await Book.UpdateViewTimeAndSave();
         }
         // This will safely cancel the nextChapter task
         nextChapterTaskToken.Cancel();

@@ -50,7 +50,7 @@ public class Book : IIndexedModel
     /// Updates <see cref="LastViewed"/> to the current time, and saves booklist in the database.
     /// </summary>
     /// <returns>An awaitable <see cref="Task"/></returns>
-    public async Task UpdateLastViewedToNow()
+    public async Task UpdateViewTimeAndSave()
     {
         LastViewed = DateTime.UtcNow;
         await App.Database.SaveItemAsync(this);

@@ -169,7 +169,7 @@ namespace Spindler.ViewModels
             }
             // Database updates
             CurrentBook!.Url = CurrentData.currentUrl!;
-            await CurrentBook.UpdateLastViewedToNow();
+            await CurrentBook.UpdateViewTimeAndSave();
 
             OnPropertyChanged(nameof(NextButtonIsVisible));
             OnPropertyChanged(nameof(PrevButtonIsVisible));

@@ -52,7 +52,7 @@ public partial class BookDetailPage : ContentPage, IQueryAttributable
             // Convert the book's title to title case
             Book.Title = TitleCaseRegex().Replace(nameEntry.Text, m => m.Value.ToUpper());
             Book.ImageUrl = imageUrlEntry.Text;
-            await Book.UpdateLastViewedToNow();
+            await Book.UpdateViewTimeAndSave();
         }
         await Close();
     }
