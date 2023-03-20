@@ -94,8 +94,21 @@ namespace Spindler.ViewModels
             await Shell.Current.GoToAsync($"{nameof(BookDetailPage)}", parameters);
         }
 
-
+        object locker = new();
         bool executing = false;
+
+        bool Executing
+        {
+            get
+            {
+                lock (locker) { return executing; }
+            }
+
+            set
+            {
+                lock (locker) { executing = value; }
+            }
+        }
         /// <summary>
         /// Method Called when a standard book is selected from the booklist
         /// </summary>
@@ -103,15 +116,14 @@ namespace Spindler.ViewModels
         [RelayCommand]
         private async void Selection(Book selection)
         {
-            if (executing)
+            if (Executing)
                 return;
-            executing = true;
+            Executing = true;
             var parameters = new Dictionary<string, object>()
             {
                 { "book", selection}
             };
             await Shell.Current.GoToAsync($"{nameof(BookPage)}", parameters);
-            executing = false;
         }
 
         /// <summary>
@@ -121,9 +133,9 @@ namespace Spindler.ViewModels
         [RelayCommand]
         private async void DoubleTapped(Book selection)
         {
-            if (executing)
+            if (Executing)
                 return;
-            executing = true;
+            Executing = true;
             var parameters = new Dictionary<string, object>()
             {
                 { "book", selection}
@@ -142,7 +154,6 @@ namespace Spindler.ViewModels
             }
 
             await Shell.Current.GoToAsync($"{pageName}", parameters);
-            executing = false;
         }
 
         /// <summary>
