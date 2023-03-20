@@ -78,13 +78,29 @@ public class ConfigService
     }
 
     #region Selectors using Paths
+
     /// <summary>
-    /// Attempt to get text from element pointed to by xpath
+    /// Attempt to get text from element pointed to by <paramref name="path"/>
+    /// </summary>
+    /// <param name="html">Html to select from</param>
+    /// <param name="path">A string representation of the target's css or x path</param>
+    /// <returns cref="string">A string containing the target text, or an empty string if nothing is found</returns>
+    /// <exception cref="XPathException">If there is any error in the path</exception>
+    public static string PrettyWrapSelector(string html, Path path, SelectorType type)
+    {
+        HtmlDocument doc = new();
+        doc.LoadHtml(html);
+
+        return PrettyWrapSelector(nav: doc, path, type);
+    }
+
+    /// <summary>
+    /// Attempt to get text from element pointed to by <paramref name="path"/>
     /// </summary>
     /// <param name="nav">The HtmlDocument to get the text from</param>
-    /// <param name="path">A string representation of the target's xpath</param>
+    /// <param name="path">A string representation of the target's css or x path</param>
     /// <returns cref="string">A string containing the target text, or an empty string if nothing is found</returns>
-    /// <exception cref="XPathException">If there is any error in the xpath</exception>
+    /// <exception cref="XPathException">If there is any error in the path</exception>
     public static string PrettyWrapSelector(HtmlDocument nav, Path path, SelectorType type)
     {
         try

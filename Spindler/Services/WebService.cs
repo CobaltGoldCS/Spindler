@@ -82,6 +82,7 @@ public class WebService
         bool created = Uri.TryCreate(url, UriKind.RelativeOrAbsolute, out Uri _);
         return created && (url!.StartsWith("http") || url.StartsWith('/'));
     }
+
     /// <summary>
     /// Find a valid website configuration based on <paramref name="url"/>
     /// </summary>
