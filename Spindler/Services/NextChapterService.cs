@@ -13,51 +13,30 @@ namespace Spindler.Services
         { 
         }
 
-        public async Task Run(CancellationToken token) {
-            List<BookList> bookLists = await App.Database.GetBookListsAsync();
-            Task[] processes = new Task[bookLists.Count];
-
-            int i = 0;
-            foreach (BookList bookList in bookLists) {
-                processes[i] = CheckChaptersInBookList(bookList.Id, token);
-                i++;
-            }
-            try
-            {
-                await Task.WhenAll(processes);
-            } catch (TaskCanceledException)
-            {
-                await Toast.Make("Stopped Looking for New Chapters", CommunityToolkit.Maui.Core.ToastDuration.Short).Show();
-            }
-        }
-
         /// <summary>
         /// Checks all the books in a booklist with <paramref name="booklistId"/> for their next chapter and updates the database
         /// </summary>
         /// <param name="booklistId">The id of the target booklist</param>
-        /// <param name="browser">A webscraper browser instance</param>
         /// <param name="token">A token to cancel the operation if needed</param>
         /// <returns></returns>
-        public async Task<IEnumerable<Book>> CheckChaptersInBookList(int booklistId, CancellationToken token, WebScraperBrowser? browser = null)
+        public async Task<IEnumerable<Book>> CheckChaptersInBookList(int booklistId, CancellationToken token)
         {
-            browser ??= WebScraperBrowser.CreateHeadless();
             List<Book> books = await App.Database.GetBooksByBooklistIdAsync(booklistId);
             List<Book> filteredBooks = books.FindAll((book) => !book.HasNextChapter);
-            return await CheckChaptersInBookList(filteredBooks, token, browser);
+            return await CheckChaptersInBookList(filteredBooks, token);
         }
 
-        public async Task<IEnumerable<Book>> CheckChaptersInBookList(Book book, CancellationToken token, WebScraperBrowser? browser = null)
+        public async Task<IEnumerable<Book>> CheckChaptersInBookList(Book book, CancellationToken token)
         {
-            browser ??= WebScraperBrowser.CreateHeadless();
             List<Book> books = await App.Database.GetBooksByBooklistIdAsync(book.BookListId);
             List<Book> filteredBooks = books.FindAll((filterBook) => !filterBook.HasNextChapter && filterBook.Id != book.Id);
-            return await CheckChaptersInBookList(filteredBooks, token, browser);
+            return await CheckChaptersInBookList(filteredBooks, token);
         }
 
-        public async Task<IEnumerable<Book>> CheckChaptersInBookList(List<Book> books, CancellationToken token, WebScraperBrowser browser) {
+        public async Task<IEnumerable<Book>> CheckChaptersInBookList(List<Book> books, CancellationToken token) {
             List<Book> verifiedbooks = new();
 
-            var engine = EngineBuilder.New().UseJurassic().Build();
+            var engine = EngineBuilder.New().Build();
 
             foreach (Book book in books) {
                 if (token.IsCancellationRequested) return verifiedbooks;
