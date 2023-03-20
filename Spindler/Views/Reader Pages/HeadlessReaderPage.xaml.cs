@@ -94,7 +94,7 @@ public partial class HeadlessReaderPage : ContentPage, INotifyPropertyChanged, I
     /// <summary>
     /// Handle changes in content when the page is loaded
     /// </summary>
-    private async void PageLoaded(object? _, WebNavigatedEventArgs _)
+    private async void PageLoaded(object? _, WebNavigatedEventArgs e)
     {
         // Define Values before accidentally breaking something
         if (config is null)
@@ -120,7 +120,7 @@ public partial class HeadlessReaderPage : ContentPage, INotifyPropertyChanged, I
         await GetContentAsLoadedData();
     }
 
-    private async void Bookmark_Clicked(object _, EventArgs _)
+    private async void Bookmark_Clicked(object _, EventArgs e)
     {
         await App.Database.SaveItemAsync<Book>(new()
         {
@@ -131,7 +131,7 @@ public partial class HeadlessReaderPage : ContentPage, INotifyPropertyChanged, I
         });
     }
 
-    private async void PrevButton_Clicked(object _, EventArgs _)
+    private async void PrevButton_Clicked(object _, EventArgs e)
     {
         IsLoading = true;
         Book!.Url = loadedData!.prevUrl!;
@@ -141,7 +141,7 @@ public partial class HeadlessReaderPage : ContentPage, INotifyPropertyChanged, I
         NextVisible = false;
     }
 
-    private async void NextButton_Clicked(object sender, EventArgs e)
+    private async void NextButton_Clicked(object _, EventArgs e)
     {
         IsLoading = true;
         Book!.Url = loadedData!.nextUrl!;
