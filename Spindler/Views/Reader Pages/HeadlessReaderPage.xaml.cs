@@ -91,14 +91,15 @@ public partial class HeadlessReaderPage : ContentPage, INotifyPropertyChanged, I
         });
     }
 
-    private async void PageLoaded(object? sender, WebNavigatedEventArgs e)
+    /// <summary>
+    /// Handle changes in content when the page is loaded
+    /// </summary>
+    private async void PageLoaded(object? _, WebNavigatedEventArgs _)
     {
         // Define Values before accidentally breaking something
         if (config is null)
         {
             string html = await HeadlessBrowser.GetHtml();
-            HtmlDocument doc = new();
-            doc.LoadHtml(html);
 
             config = await WebService.FindValidConfig(Book.Url, html);
             if (!await SafeAssertNotNull(config, "There is no valid configuration for this book"))
@@ -107,7 +108,7 @@ public partial class HeadlessReaderPage : ContentPage, INotifyPropertyChanged, I
 
             // We only want this check to run at the beginning when config is null
             if (string.IsNullOrEmpty(Book.ImageUrl) || Book!.ImageUrl == "no_image.jpg")
-                Book.ImageUrl = ConfigService.PrettyWrapSelector(doc, new Models.Path(config!.ImageUrlPath), ConfigService.SelectorType.Link);
+                Book.ImageUrl = ConfigService.PrettyWrapSelector(html, new Models.Path(config!.ImageUrlPath), ConfigService.SelectorType.Link);
         }
 
         var result = e.Result;
@@ -119,7 +120,7 @@ public partial class HeadlessReaderPage : ContentPage, INotifyPropertyChanged, I
         await GetContentAsLoadedData();
     }
 
-    private async void Bookmark_Clicked(object sender, EventArgs e)
+    private async void Bookmark_Clicked(object _, EventArgs _)
     {
         await App.Database.SaveItemAsync<Book>(new()
         {
@@ -130,7 +131,7 @@ public partial class HeadlessReaderPage : ContentPage, INotifyPropertyChanged, I
         });
     }
 
-    private async void PrevButton_Clicked(object sender, EventArgs e)
+    private async void PrevButton_Clicked(object _, EventArgs _)
     {
         IsLoading = true;
         Book!.Url = loadedData!.prevUrl!;
@@ -168,7 +169,7 @@ public partial class HeadlessReaderPage : ContentPage, INotifyPropertyChanged, I
         UpdateUiUsingLoadedData();
     }
 
-    public async void OnShellNavigated(object? sender,
+    public async void OnShellNavigated(object? _,
                            ShellNavigatingEventArgs e)
     {
         if (e.Target.Location.OriginalString == "..")
