@@ -44,11 +44,10 @@ namespace Spindler.Services
                 var document = await engine.OpenUrl(book.Url);
                 string html = document.Document.InnerHTML;
                 Config? config = await WebService.FindValidConfig(book.Url, html);
-                if (config is null || (bool)config.ExtraConfigs.GetValueOrDefault("webview", false)) continue;
+                if (config is null || (bool)config.ExtraConfigs.GetValueOrDefault("webview", false)) 
+                    continue;
 
-                HtmlDocument doc = new();
-                doc.LoadHtml(html);
-                var nextUrl = ConfigService.PrettyWrapSelector(doc, new(config.NextUrlPath), ConfigService.SelectorType.Link);
+                var nextUrl = ConfigService.PrettyWrapSelector(html, new(config.NextUrlPath), ConfigService.SelectorType.Link);
 
                 book.HasNextChapter = nextUrl.Length > 0;
                 verifiedbooks.Add(book);
