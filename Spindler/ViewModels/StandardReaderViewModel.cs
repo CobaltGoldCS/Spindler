@@ -1,4 +1,5 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+﻿using CommunityToolkit.Maui.Core.Extensions;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using HtmlAgilityPack;
 using Spindler.Models;
@@ -12,17 +13,21 @@ namespace Spindler.ViewModels
     {
         #region Class Attributes
         private ReaderDataService? readerService = null;
-        private ReaderDataService ReaderService
+        public ReaderDataService ReaderService
         {
             get
             {
-                readerService ??= new(Config!);
-                return readerService;
+                // This should not deadlock, but if the page does, its probably this line
+                if (!Task.Run(async() => await SafeAssertNotNull(readerService, "Configuration does not exist")).Result)
+                {
+                    return new ReaderDataService(new Config());
+                }
+                return readerService!;
             }
+            set => readerService = value;
         }
 
         public Book CurrentBook = new() { Title = "Loading" };
-        public Config? Config { get; set; }
 
         /// <summary>
         /// Task that should hold an array of length 2 containing (previous chapter, next chapter) in that order
@@ -58,6 +63,30 @@ namespace Spindler.ViewModels
                 else
                     return defaultvisible;
             }
+        }
+
+        double ReaderScrollPosition = 0;
+        double ReaderHeight = 0;
+
+        // FIXME: This resets ReaderScrollPosition and ReaderHeight to 0 when 
+        // leaving the page. That is why the last line is there
+        public async void Scrolled(object sender, ScrolledEventArgs e)
+        {
+            var scrollView = (ScrollView)sender;
+            if (scrollView.ScrollY > 0)
+            {
+                ReaderScrollPosition = scrollView.ScrollY;
+            }
+            if (scrollView.ContentSize.Height > 0)
+            {
+                ReaderHeight = scrollView.ContentSize.Height;
+            }
+            await Task.Run(() => {
+                var scrollPercentage = ReaderScrollPosition / ReaderHeight;
+                if (scrollPercentage.IsZeroOrNaN())
+                    return;
+                CurrentBook.Position = scrollPercentage;
+            });
         }
         #endregion
         #endregion
@@ -110,6 +139,10 @@ namespace Spindler.ViewModels
             IsLoading = true;
             Shell.Current.Navigating += OnShellNavigated;
         }
+        public void LoadRequiredInfo(ReaderDataService readerService)
+        {
+            ReaderService = readerService;
+        }
         CancellationTokenSource tokenRegistration = new CancellationTokenSource();
         public async Task StartLoad()
         {
@@ -121,9 +154,6 @@ namespace Spindler.ViewModels
                 var updateQueue = await service.CheckChaptersInBookList(CurrentBook!.BookListId, tokenRegistration.Token);
                 await mainThread!.DispatchAsync(async () => await App.Database.SaveItemsAsync(updateQueue));
             });
-
-            if (!await SafeAssertNotNull(Config, "Configuration does not exist"))
-                return;
 
             LoadedData? data = await ReaderService.LoadUrl(CurrentBook!.Url);
 
@@ -138,15 +168,14 @@ namespace Spindler.ViewModels
                 
                 if (Result.IsError(html)) return;
 
-                CurrentBook.ImageUrl = ConfigService.PrettyWrapSelector(html.AsOk().Value, new Models.Path(Config!.ImageUrlPath), ConfigService.SelectorType.Link);
+                CurrentBook.ImageUrl = ConfigService.PrettyWrapSelector(html.AsOk().Value, new Models.Path(ReaderService.Config.ImageUrlPath), ConfigService.SelectorType.Link);
             }
             DataChanged();
             await DelayScroll();
         }
 
-        private ScrollView? ReadingLayout;
         private ImageButton? BookmarkButton;
-
+        private ScrollView? ReadingLayout;
         public void AttachReferencesToUI(ScrollView readingLayout, ImageButton bookmarkButton)
         {
             ReadingLayout = readingLayout;
@@ -180,14 +209,15 @@ namespace Spindler.ViewModels
             {
                 await Task.Delay(100);
 
-                var actualScrollHeight = Math.Clamp(CurrentBook!.Position, 0d, 1d) * ReadingLayout!.ContentSize.Height;
-                var hasAutoScrollAnimation = (bool)Config!.ExtraConfigs.GetValueOrDefault("autoscrollanimation", true);
+  
+                var hasAutoScrollAnimation = (bool)ReaderService.Config.ExtraConfigs.GetValueOrDefault("autoscrollanimation", true);
                 
                 MainThread.BeginInvokeOnMainThread(async () =>
                 {
-                    await ReadingLayout!.ScrollToAsync(ReadingLayout.ScrollX,
-                        actualScrollHeight,
-                        hasAutoScrollAnimation);
+                    await (ReadingLayout?.ScrollToAsync(
+                        ReaderScrollPosition,
+                        ReaderHeight,
+                        hasAutoScrollAnimation) ?? Task.CompletedTask);
                 });
 
             });
@@ -198,7 +228,6 @@ namespace Spindler.ViewModels
         {
             if (e.Target.Location.OriginalString == "..")
             {
-                CurrentBook.Position = ReadingLayout!.ScrollY / ReadingLayout.ContentSize.Height;
                 CurrentBook.HasNextChapter = NextButtonIsVisible;
                 await App.Database.SaveItemAsync(CurrentBook);
             }
@@ -218,7 +247,7 @@ namespace Spindler.ViewModels
             Dictionary<string, object> parameters = new()
             {
                 { "errormessage", message },
-                { "config", Config! }
+                { "config", ReaderService.Config }
             };
             await Shell.Current.GoToAsync($"../{nameof(ErrorPage)}", parameters);
             return false;
