@@ -43,7 +43,7 @@ namespace Spindler.Services
 
                 var document = await engine.OpenUrl(book.Url);
                 string html = document.Document.InnerHTML;
-                Config? config = await WebService.FindValidConfig(book.Url, html);
+                Config? config = await Config.FindValidConfig(book.Url, html);
                 if (config is null || (bool)config.ExtraConfigs.GetValueOrDefault("webview", false)) 
                     continue;
 

@@ -141,7 +141,7 @@ namespace Spindler.ViewModels
                 { "book", selection}
             };
 
-            var config = await WebService.FindValidConfig(selection.Url);
+            var config = await Config.FindValidConfig(selection.Url);
             
             string pageName = nameof(StandardReaderPage);
             if ((bool?)config?.ExtraConfigs.GetValueOrDefault("webview", false) ?? false)

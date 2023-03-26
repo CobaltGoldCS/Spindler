@@ -145,7 +145,7 @@ public partial class BookSearcherPage : ContentPage
     {
         string html = await SearchBrowser.GetHtml();
 
-        Config = await WebService.FindValidConfig(!string.IsNullOrEmpty(url) ? url : SearchBrowser.GetUrl(), html);
+        Config = await Config.FindValidConfig(!string.IsNullOrEmpty(url) ? url : SearchBrowser.GetUrl(), html);
         if (Config is null) return;
 
         HtmlDocument doc = new();

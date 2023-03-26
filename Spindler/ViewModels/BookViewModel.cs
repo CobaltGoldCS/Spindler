@@ -50,7 +50,7 @@ namespace Spindler.ViewModels
             this.book = book;
             Domain = new UriBuilder(book.Url).Host;
 
-            Config? config = await WebService.FindValidConfig(book.Url);
+            Config? config = await Config.FindValidConfig(book.Url);
             
             Title = book.Title;
             ImageUrl = book.ImageUrl;

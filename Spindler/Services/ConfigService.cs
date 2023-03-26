@@ -224,5 +224,6 @@ public class ConfigService
             titlepath = new Path("//title");
         return HttpUtility.HtmlDecode(PrettyWrapSelector(nav, titlepath, type: SelectorType.Text));
     }
+
     #endregion
 }

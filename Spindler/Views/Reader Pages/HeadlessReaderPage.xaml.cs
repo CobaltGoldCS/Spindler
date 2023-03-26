@@ -101,7 +101,7 @@ public partial class HeadlessReaderPage : ContentPage, INotifyPropertyChanged, I
         {
             string html = await HeadlessBrowser.GetHtml();
 
-            config = await WebService.FindValidConfig(Book.Url, html);
+            config = await Config.FindValidConfig(Book.Url, html);
             if (!await SafeAssertNotNull(config, "There is no valid configuration for this book"))
                 return;
             webservice = new(config!);
