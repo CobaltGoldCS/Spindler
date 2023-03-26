@@ -3,13 +3,25 @@ using SQLite;
 
 namespace Spindler.Services;
 
-public class DataService
+public class DataService : IDataService
 {
     private readonly SQLiteAsyncConnection database;
 
     public DataService(string dbPath)
     {
         database = new SQLiteAsyncConnection(dbPath,
+                SQLiteOpenFlags.ReadWrite |
+                SQLiteOpenFlags.Create |
+                SQLiteOpenFlags.SharedCache
+            );
+        database.CreateTablesAsync(createFlags: CreateFlags.None, typeof(Book), typeof(BookList), typeof(Config), typeof(GeneralizedConfig)).Wait();
+    }
+
+    public DataService()
+    {
+        string databasePath = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Spindler.db");
+
+        database = new SQLiteAsyncConnection(databasePath,
                 SQLiteOpenFlags.ReadWrite |
                 SQLiteOpenFlags.Create |
                 SQLiteOpenFlags.SharedCache

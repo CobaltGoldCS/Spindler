@@ -7,7 +7,7 @@ using System.Collections.ObjectModel;
 
 namespace Spindler.ViewModels
 {
-    partial class BookListViewModel : ObservableObject
+    public partial class BookListViewModel : ObservableObject
     {
         #region Bindings
         [ObservableProperty]
@@ -42,7 +42,11 @@ namespace Spindler.ViewModels
 
         #endregion
 
-        public BookListViewModel(BookList list)
+        public BookListViewModel() 
+        { 
+        }
+
+        public void SetBookList(BookList list)
         {
             id = list.Id;
             title = list.Name;
@@ -139,39 +143,6 @@ namespace Spindler.ViewModels
                 { "book", selection}
             };
 
-
-            /* Unmerged change from project 'Spindler (net7.0-windows10.0.19041.0)'
-            Before:
-                        var config = await Config.FindValidConfig(selection.Url);
-
-                        string pageName = nameof(StandardReaderPage);
-            After:
-                        var config = await Config.FindValidConfig(selection.Url);
-
-                        string pageName = nameof(StandardReaderPage);
-            */
-
-            /* Unmerged change from project 'Spindler (net7.0-maccatalyst)'
-            Before:
-                        var config = await Config.FindValidConfig(selection.Url);
-
-                        string pageName = nameof(StandardReaderPage);
-            After:
-                        var config = await Config.FindValidConfig(selection.Url);
-
-                        string pageName = nameof(StandardReaderPage);
-            */
-
-            /* Unmerged change from project 'Spindler (net7.0-ios)'
-            Before:
-                        var config = await Config.FindValidConfig(selection.Url);
-
-                        string pageName = nameof(StandardReaderPage);
-            After:
-                        var config = await Config.FindValidConfig(selection.Url);
-
-                        string pageName = nameof(StandardReaderPage);
-            */
             var config = await Config.FindValidConfig(selection.Url);
 
             string pageName = nameof(StandardReaderPage);

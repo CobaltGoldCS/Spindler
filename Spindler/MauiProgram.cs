@@ -1,4 +1,7 @@
 ﻿using CommunityToolkit.Maui;
+using Spindler.Services;
+using Spindler.ViewModels;
+using Spindler.Views;
 
 #if ANDROID
 using Spindler.Platforms.Android;
@@ -33,7 +36,19 @@ public static class MauiProgram
 #endif
         ;
         builder.Services
+            .AddShellRoutes()
+            .AddSingleton<DataService>()
             .AddSingleton<AppShell>();
+        
         return builder.Build();
+    }
+
+
+    private static IServiceCollection AddShellRoutes(this IServiceCollection service)
+    {
+        service.AddSingletonWithShellRoute<HomePage, HomeViewModel>(nameof(HomePage));
+        service.AddTransientWithShellRoute<BookListPage, BookListViewModel>($"{nameof(HomePage)}/{nameof(BookListPage)}");
+
+        return service;
     }
 }

@@ -4,11 +4,8 @@
              xmlns:models="clr-namespace:Spindler.Models"
              xmlns:viewmodels="clr-namespace:Spindler.ViewModels"
              xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
-             x:Class="Spindler.HomePage">
-
-    <ContentPage.BindingContext>
-        <viewmodels:HomeViewModel/>
-    </ContentPage.BindingContext>
+             x:Class="Spindler.HomePage"
+             x:DataType="viewmodels:HomeViewModel">
 
     <ContentPage.Behaviors>
         <toolkit:StatusBarBehavior StatusBarColor="{StaticResource Primary}"/>
@@ -80,7 +77,7 @@
                     Orientation="Vertical" />
         </CollectionView.ItemsLayout>
         <CollectionView.ItemTemplate>
-            <DataTemplate>
+            <DataTemplate x:DataType="models:BookList">
                 <Border 
                         Stroke="{AppThemeBinding Dark={StaticResource White}, Light={StaticResource Black}}"
                         Background="{Binding Background}"

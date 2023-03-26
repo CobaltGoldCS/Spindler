@@ -1,7 +1,12 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Spindler.Models;
+using Spindler.Services;
 using Spindler.Views;
+using System.Collections.Generic;
+using System;
+using System.Collections.ObjectModel;
+using System.Collections;
 
 namespace Spindler.ViewModels;
 
@@ -10,13 +15,16 @@ public partial class HomeViewModel : ObservableObject
     [ObservableProperty]
     BookList? currentSelection;
 
-    public HomeViewModel()
+    DataService Database;
+
+    public HomeViewModel(DataService database)
     {
+        Database = database;
     }
 
-    private List<BookList>? _bookLists;
+    private ObservableCollection<BookList>? _bookLists;
     // I don't know what's happening here, but for some reason I have to do this in order to refresh the UI
-    public List<BookList>? BookLists
+    public ObservableCollection<BookList>? BookLists
     {
         get => _bookLists;
         set
@@ -63,12 +71,29 @@ public partial class HomeViewModel : ObservableObject
         {
             { "booklist", CurrentSelection! }
         };
+        BookLists!.RemoveAt(BookLists!.IndexOf(CurrentSelection!));
+        BookLists.Insert(0, CurrentSelection!);
+        OnPropertyChanged(nameof(BookLists));
         await Shell.Current.GoToAsync($"{nameof(BookListPage)}", parameters);
+
+        CurrentSelection = null;
     }
 
     public async void Load()
     {
-        BookLists = await App.Database.GetBookListsAsync();
+        await Task.Run(async () =>
+        {
+            var updatedBooklist = await Database.GetBookListsAsync();
+            if (BookLists is null)
+            {
+                BookLists = new(updatedBooklist);
+            }
+            var set = new HashSet<BookList>(BookLists.ToList());
+            if (!set.Equals(updatedBooklist))
+            {
+                BookLists = new(updatedBooklist);
+            }
+        });
     }
 
 }
