@@ -29,7 +29,7 @@ public partial class DetailTextCell : ViewCell
     }
 
     public DetailTextCell()
-	{
-		InitializeComponent();
-	}
+    {
+        InitializeComponent();
+    }
 }

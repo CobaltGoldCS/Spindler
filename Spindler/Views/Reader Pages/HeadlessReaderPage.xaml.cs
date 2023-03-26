@@ -1,13 +1,7 @@
-using CommunityToolkit.Maui.Alerts;
 using CommunityToolkit.Mvvm.Input;
-using HtmlAgilityPack;
-using Microsoft.Maui.ApplicationModel;
-using Microsoft.Maui.Dispatching;
 using Spindler.Models;
 using Spindler.Services;
-using Spindler.Utilities;
 using Spindler.Views.Reader_Pages;
-using System.Collections.Concurrent;
 using System.ComponentModel;
 
 namespace Spindler.Views;
@@ -160,7 +154,7 @@ public partial class HeadlessReaderPage : ContentPage, INotifyPropertyChanged, I
     private async Task GetContentAsLoadedData()
     {
         bool foundMatchingContent = await HeadlessBrowser.WaitUntilValid(new Models.Path(ReaderService!.Config.ContentPath), TimeSpan.FromSeconds(1.0), TimeSpan.FromSeconds(20));
-        
+
         if (!await SafeAssert(foundMatchingContent, "Unable to get html specified by configuration"))
             return;
 

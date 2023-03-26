@@ -14,7 +14,7 @@ public partial class ConfigItem : Border
         set => SetValue(ConfigParameterProperty, value);
     }
     public ConfigItem()
-	{
-		InitializeComponent();
-	}
+    {
+        InitializeComponent();
+    }
 }

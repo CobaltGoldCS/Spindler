@@ -1,8 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Spindler.Models;
-using Spindler.Services;
-using Spindler.Utilities;
 using Spindler.Views;
 using Spindler.Views.Book_Pages;
 using System.Collections.ObjectModel;
@@ -83,7 +81,7 @@ namespace Spindler.ViewModels
             await AddButton!.RelRotateTo(360, 250, Easing.CubicIn);
             Dictionary<string, object> parameters = new()
             {
-                { 
+                {
                     "book", new Book()
                     {
                         BookListId = Id,
@@ -141,8 +139,41 @@ namespace Spindler.ViewModels
                 { "book", selection}
             };
 
+
+            /* Unmerged change from project 'Spindler (net7.0-windows10.0.19041.0)'
+            Before:
+                        var config = await Config.FindValidConfig(selection.Url);
+
+                        string pageName = nameof(StandardReaderPage);
+            After:
+                        var config = await Config.FindValidConfig(selection.Url);
+
+                        string pageName = nameof(StandardReaderPage);
+            */
+
+            /* Unmerged change from project 'Spindler (net7.0-maccatalyst)'
+            Before:
+                        var config = await Config.FindValidConfig(selection.Url);
+
+                        string pageName = nameof(StandardReaderPage);
+            After:
+                        var config = await Config.FindValidConfig(selection.Url);
+
+                        string pageName = nameof(StandardReaderPage);
+            */
+
+            /* Unmerged change from project 'Spindler (net7.0-ios)'
+            Before:
+                        var config = await Config.FindValidConfig(selection.Url);
+
+                        string pageName = nameof(StandardReaderPage);
+            After:
+                        var config = await Config.FindValidConfig(selection.Url);
+
+                        string pageName = nameof(StandardReaderPage);
+            */
             var config = await Config.FindValidConfig(selection.Url);
-            
+
             string pageName = nameof(StandardReaderPage);
             if ((bool?)config?.ExtraConfigs.GetValueOrDefault("webview", false) ?? false)
             {
@@ -164,11 +195,13 @@ namespace Spindler.ViewModels
         {
             CurrentList = new(await App.Database.GetBooksByBooklistIdAsync(Id));
 
-            foreach (Book book in CurrentList.Take(NUM_ITEMS_ADDED_TO_LIST)) {
+            foreach (Book book in CurrentList.Take(NUM_ITEMS_ADDED_TO_LIST))
+            {
                 DisplayedBooks.Add(book);
             }
-            
-            foreach (Book book in CurrentList.FindAll((book) => book.Pinned)) {
+
+            foreach (Book book in CurrentList.FindAll((book) => book.Pinned))
+            {
                 PinnedBooks.Add(book);
             }
             PinnedBooksAreVisible = PinnedBooks.Count > 0;
@@ -183,7 +216,8 @@ namespace Spindler.ViewModels
         {
             LoaderHeightRequest = 20;
             IsLoading = true;
-            foreach (Book book in CurrentList!.Skip(DisplayedBooks.Count).Take(NUM_ITEMS_ADDED_TO_LIST)) {
+            foreach (Book book in CurrentList!.Skip(DisplayedBooks.Count).Take(NUM_ITEMS_ADDED_TO_LIST))
+            {
                 DisplayedBooks!.Add(book);
             }
             IsLoading = false;

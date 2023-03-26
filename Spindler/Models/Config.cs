@@ -2,7 +2,6 @@
 using Newtonsoft.Json;
 using Spindler.Services;
 using SQLite;
-using System.Text.Json.Serialization;
 
 namespace Spindler.Models;
 

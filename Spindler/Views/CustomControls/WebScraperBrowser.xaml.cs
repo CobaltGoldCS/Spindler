@@ -1,19 +1,47 @@
+
+/* Unmerged change from project 'Spindler (net7.0-windows10.0.19041.0)'
+Before:
 using System.Diagnostics;
-using System.Runtime.CompilerServices;
-using System.Text.RegularExpressions;
+After:
 using HtmlAgilityPack;
 using Spindler.Services;
+using System.Diagnostics;
+*/
+
+/* Unmerged change from project 'Spindler (net7.0-maccatalyst)'
+Before:
+using System.Diagnostics;
+After:
+using HtmlAgilityPack;
+using Spindler.Services;
+using System.Diagnostics;
+*/
+
+/* Unmerged change from project 'Spindler (net7.0-ios)'
+Before:
+using System.Diagnostics;
+After:
+using HtmlAgilityPack;
+using Spindler.Services;
+using System.Diagnostics;
+*/
+using HtmlAgilityPack;
+using Spindler.Services;
+using System.Diagnostics;
+using System.Text.RegularExpressions;
 
 namespace Spindler.CustomControls;
 
-public partial class WebScraperBrowser : WebView {
+public partial class WebScraperBrowser : WebView
+{
     public static readonly BindableProperty VisibleProperty =
                 BindableProperty.Create(nameof(Visible), typeof(bool), typeof(WebScraperBrowser), defaultValue: true);
 
     /// <summary>
     /// Overrides the visibility options of a normal WebView
     /// </summary>
-    public bool Visible {
+    public bool Visible
+    {
         get => (bool)GetValue(VisibleProperty);
         set => SetValue(VisibleProperty, value);
     }
@@ -22,7 +50,8 @@ public partial class WebScraperBrowser : WebView {
     /// Get the html of the current page using a JavaScript Evaluation
     /// </summary>
     /// <returns>Html of the given page</returns>
-    public async Task<string> GetHtml() {
+    public async Task<string> GetHtml()
+    {
         string html = await EvaluateJavaScriptAsync(
             "'<html>'+document.getElementsByTagName('html')[0].innerHTML+'</html>';") ?? "";
         html = Regex.Unescape(html);
@@ -36,9 +65,11 @@ public partial class WebScraperBrowser : WebView {
     /// <param name="retryDelay">Delay before trying to find the selector again</param>
     /// <param name="timeout">The duration before <see cref="WaitUntilValid(Models.Path, TimeSpan, TimeSpan)"/> times out</param>
     /// <returns>Whether or not WaitUntilValid was able to find a matching html sequence</returns>
-    public async Task<bool> WaitUntilValid(Models.Path selector, TimeSpan retryDelay, TimeSpan timeout) {
+    public async Task<bool> WaitUntilValid(Models.Path selector, TimeSpan retryDelay, TimeSpan timeout)
+    {
         var timer = Stopwatch.StartNew();
-        while (timer.Elapsed < timeout) {
+        while (timer.Elapsed < timeout)
+        {
             string html = await GetHtml();
             HtmlDocument doc = new();
             doc.LoadHtml(html);
@@ -67,7 +98,8 @@ public partial class WebScraperBrowser : WebView {
     /// <returns>Whether WebScraperBrowser redirected or not</returns>
     public bool IsRedirect(string lastKnownUrl) => GetUrl() != lastKnownUrl;
 
-    public WebScraperBrowser() {
+    public WebScraperBrowser()
+    {
         InitializeComponent();
     }
 
@@ -75,7 +107,8 @@ public partial class WebScraperBrowser : WebView {
     {
     }
 
-    public static WebScraperBrowser CreateHeadless() {
+    public static WebScraperBrowser CreateHeadless()
+    {
         return new WebScraperBrowser(new object());
     }
 

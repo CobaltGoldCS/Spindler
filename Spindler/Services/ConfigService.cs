@@ -1,7 +1,6 @@
 ﻿using HtmlAgilityPack;
 using HtmlAgilityPack.CssSelectors.NetCore;
 using Spindler.Models;
-using Spindler.Utilities;
 using System.Text.RegularExpressions;
 using System.Web;
 using System.Xml.XPath;
@@ -246,7 +245,7 @@ public class ConfigService
         return stringWriter.ToString();
     }
 
-    
+
 
     #endregion
 }

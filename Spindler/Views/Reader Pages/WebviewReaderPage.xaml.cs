@@ -5,7 +5,7 @@ namespace Spindler.Views;
 
 public partial class WebviewReaderPage : ContentPage, IQueryAttributable, IReader
 {
-    public Book? Book = new Book { Id = -1};
+    public Book? Book = new Book { Id = -1 };
 
     public async void ApplyQueryAttributes(IDictionary<string, object> query)
     {

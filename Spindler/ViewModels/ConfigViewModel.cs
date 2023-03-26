@@ -49,7 +49,7 @@ public partial class ConfigViewModel : ObservableObject
     {
         Dictionary<string, object> parameters = new()
         {
-            { 
+            {
                 "config",
                 new Config() { Id = -1 }
             }

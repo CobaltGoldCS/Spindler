@@ -38,7 +38,7 @@ public partial class PinnedBookItem : Border
         BackgroundColor = Colors.Transparent;
     }
     public PinnedBookItem()
-	{
-		InitializeComponent();
-	}
+    {
+        InitializeComponent();
+    }
 }

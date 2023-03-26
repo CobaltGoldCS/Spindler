@@ -1,12 +1,7 @@
-using CommunityToolkit.Maui.Alerts;
-using CommunityToolkit.Maui.Storage;
-using Newtonsoft.Json;
 using Spindler.Behaviors;
 using Spindler.Models;
 using Spindler.Services;
-using Spindler.Utilities;
 using Spindler.Views.Configuration_Pages;
-using System.Text;
 using System.Text.RegularExpressions;
 
 namespace Spindler;
@@ -41,8 +36,41 @@ public partial class ConfigDetailPage : BaseConfigDetailPage<Config>
 
 
     public ConfigDetailPage()
+
+    /* Unmerged change from project 'Spindler (net7.0-windows10.0.19041.0)'
+    Before:
+        {
+
+            InitializeComponent();
+    After:
+        {
+
+            InitializeComponent();
+    */
+
+    /* Unmerged change from project 'Spindler (net7.0-maccatalyst)'
+    Before:
+        {
+
+            InitializeComponent();
+    After:
+        {
+
+            InitializeComponent();
+    */
+
+    /* Unmerged change from project 'Spindler (net7.0-ios)'
+    Before:
+        {
+
+            InitializeComponent();
+    After:
+        {
+
+            InitializeComponent();
+    */
     {
-        
+
         InitializeComponent();
         domainEntry.Behaviors.Add(new TextValidationBehavior(DomainValidationRegex().IsMatch));
 
@@ -57,8 +85,8 @@ public partial class ConfigDetailPage : BaseConfigDetailPage<Config>
     protected override void okButton_Clicked(object sender, EventArgs e)
     {
         if (!DomainValidationRegex().IsMatch(domainEntry.Text) ||
-            !ConfigService.IsValidSelector(contentEntry.Text)||
-            !ConfigService.IsValidSelector(nextEntry.Text)   ||
+            !ConfigService.IsValidSelector(contentEntry.Text) ||
+            !ConfigService.IsValidSelector(nextEntry.Text) ||
             !ConfigService.IsValidSelector(prevEntry.Text))
         {
             return;
@@ -77,7 +105,7 @@ public partial class ConfigDetailPage : BaseConfigDetailPage<Config>
         base.okButton_Clicked(sender, e);
     }
 
-#endregion
+    #endregion
 
     protected async void ImportCommand(object sender, EventArgs e)
     {

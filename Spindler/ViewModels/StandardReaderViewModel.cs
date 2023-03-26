@@ -1,7 +1,6 @@
 ﻿using CommunityToolkit.Maui.Core.Extensions;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using HtmlAgilityPack;
 using Spindler.Models;
 using Spindler.Services;
 using Spindler.Utilities;
@@ -18,7 +17,7 @@ namespace Spindler.ViewModels
             get
             {
                 // This should not deadlock, but if the page does, its probably this line
-                if (!Task.Run(async() => await SafeAssertNotNull(readerService, "Configuration does not exist")).Result)
+                if (!Task.Run(async () => await SafeAssertNotNull(readerService, "Configuration does not exist")).Result)
                 {
                     return new ReaderDataService(new Config());
                 }
@@ -69,7 +68,7 @@ namespace Spindler.ViewModels
         double ReaderHeight = 0;
 
         // FIXME: This resets ReaderScrollPosition and ReaderHeight to 0 when 
-        // leaving the page. That is why the last line is there
+        // leaving the page. This means that auto scroll does not work anymore
         public async void Scrolled(object sender, ScrolledEventArgs e)
         {
             var scrollView = (ScrollView)sender;
@@ -81,7 +80,8 @@ namespace Spindler.ViewModels
             {
                 ReaderHeight = scrollView.ContentSize.Height;
             }
-            await Task.Run(() => {
+            await Task.Run(() =>
+            {
                 var scrollPercentage = ReaderScrollPosition / ReaderHeight;
                 if (scrollPercentage.IsZeroOrNaN())
                     return;
@@ -135,7 +135,7 @@ namespace Spindler.ViewModels
 
         #region Initialization Functions
         public StandardReaderViewModel()
-        { 
+        {
             IsLoading = true;
             Shell.Current.Navigating += OnShellNavigated;
         }
@@ -165,7 +165,7 @@ namespace Spindler.ViewModels
             if (string.IsNullOrEmpty(CurrentBook!.ImageUrl) || CurrentBook!.ImageUrl == "no_image.jpg")
             {
                 var html = await ReaderService.WebService.HtmlOrError(CurrentBook.Url);
-                
+
                 if (Result.IsError(html)) return;
 
                 CurrentBook.ImageUrl = ConfigService.PrettyWrapSelector(html.AsOk().Value, new Models.Path(ReaderService.Config.ImageUrlPath), ConfigService.SelectorType.Link);
@@ -209,9 +209,9 @@ namespace Spindler.ViewModels
             {
                 await Task.Delay(100);
 
-  
+
                 var hasAutoScrollAnimation = (bool)ReaderService.Config.ExtraConfigs.GetValueOrDefault("autoscrollanimation", true);
-                
+
                 MainThread.BeginInvokeOnMainThread(async () =>
                 {
                     await (ReadingLayout?.ScrollToAsync(

@@ -1,13 +1,12 @@
-using Spindler.Models;
 using System.Windows.Input;
 
 namespace Spindler.CustomControls;
 
 public partial class Reader : Grid
 {
-	public Reader()
-	{
-		InitializeComponent();
+    public Reader()
+    {
+        InitializeComponent();
         TextView.FontFamily = Preferences.Default.Get("font", "OpenSans (Regular)");
         TextView.FontSize = Preferences.Default.Get("font_size", 15);
         TextView.LineHeight = Preferences.Default.Get("line_spacing", 1.5f);
@@ -17,11 +16,11 @@ public partial class Reader : Grid
     public static readonly BindableProperty TextProperty =
                 BindableProperty.Create(nameof(Text), typeof(string), typeof(Grid));
 
-	public string Text
+    public string Text
     {
-		get => (string)GetValue(TextProperty);
-		set { SetValue(TextProperty, value); }
-	}
+        get => (string)GetValue(TextProperty);
+        set { SetValue(TextProperty, value); }
+    }
 
     public static readonly BindableProperty TitleProperty =
                 BindableProperty.Create(nameof(Title), typeof(string), typeof(Grid));

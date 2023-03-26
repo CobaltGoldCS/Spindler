@@ -9,9 +9,9 @@ public partial class AddButtonGroup : Grid
     public event EventHandler? CancelClicked;
 
     public AddButtonGroup()
-	{
-		InitializeComponent();
-	}
+    {
+        InitializeComponent();
+    }
 
     private void Button_Clicked(object sender, EventArgs e)
     {

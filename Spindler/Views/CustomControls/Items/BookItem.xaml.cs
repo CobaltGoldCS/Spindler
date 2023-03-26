@@ -33,9 +33,9 @@ public partial class BookItem : Border
     }
 
     public BookItem()
-	{
-		InitializeComponent();
-	}
+    {
+        InitializeComponent();
+    }
 
     private void Tapped(object sender, TappedEventArgs e)
     {

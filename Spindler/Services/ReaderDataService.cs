@@ -1,11 +1,9 @@
 ﻿using HtmlAgilityPack;
 using HtmlAgilityPack.CssSelectors.NetCore;
-using Microsoft.Maui.Controls;
 using Spindler.Models;
 using System.Web;
-
-using Path = Spindler.Models.Path;
 using HtmlOrError = Spindler.Utilities.Result<string, string>;
+using Path = Spindler.Models.Path;
 
 namespace Spindler.Services;
 
@@ -24,7 +22,7 @@ public class ReaderDataService
     /// Internal Config
     /// </summary>
     public Config Config { get; private set; }
-    
+
     public ReaderDataService(Config config)
     {
         Config = config;
@@ -64,7 +62,7 @@ public class ReaderDataService
         }
         try
         {
-            url = WebService.MakeAbsoluteUrl(new (url)).ToString();
+            url = WebService.MakeAbsoluteUrl(new(url)).ToString();
 
             HtmlOrError html = await WebService.HtmlOrError(url);
             if (html is HtmlOrError.Error error)

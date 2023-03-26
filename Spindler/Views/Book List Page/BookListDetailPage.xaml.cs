@@ -1,7 +1,5 @@
-using Spindler.Behaviors;
 using Spindler.Models;
 using Spindler.ViewModels;
-using System.Linq;
 
 namespace Spindler;
 

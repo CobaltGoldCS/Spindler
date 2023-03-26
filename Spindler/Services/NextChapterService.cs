@@ -1,16 +1,12 @@
-﻿using CommunityToolkit.Maui.Alerts;
-using HtmlAgilityPack;
-using Knyaz.Optimus;
-using Knyaz.Optimus.Scripting.Jurassic;
-using Spindler.CustomControls;
+﻿using Knyaz.Optimus;
 using Spindler.Models;
 
 namespace Spindler.Services
 {
     public class NextChapterService
     {
-        public NextChapterService() 
-        { 
+        public NextChapterService()
+        {
         }
 
         /// <summary>
@@ -33,18 +29,20 @@ namespace Spindler.Services
             return await CheckChaptersInBookList(filteredBooks, token);
         }
 
-        public async Task<IEnumerable<Book>> CheckChaptersInBookList(List<Book> books, CancellationToken token) {
+        public async Task<IEnumerable<Book>> CheckChaptersInBookList(List<Book> books, CancellationToken token)
+        {
             List<Book> verifiedbooks = new();
 
             var engine = EngineBuilder.New().Build();
 
-            foreach (Book book in books) {
+            foreach (Book book in books)
+            {
                 if (token.IsCancellationRequested) return verifiedbooks;
 
                 var document = await engine.OpenUrl(book.Url);
                 string html = document.Document.InnerHTML;
                 Config? config = await Config.FindValidConfig(book.Url, html);
-                if (config is null || (bool)config.ExtraConfigs.GetValueOrDefault("webview", false)) 
+                if (config is null || (bool)config.ExtraConfigs.GetValueOrDefault("webview", false))
                     continue;
 
                 var nextUrl = ConfigService.PrettyWrapSelector(html, new(config.NextUrlPath), ConfigService.SelectorType.Link);

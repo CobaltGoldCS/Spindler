@@ -26,7 +26,7 @@ public partial class HomeViewModel : ObservableObject
                 SetProperty(ref _bookLists, value, nameof(BookLists));
             }
         }
-    }  
+    }
 
     [RelayCommand]
     private async void ConfigButton(int id)

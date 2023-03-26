@@ -1,13 +1,6 @@
 using CommunityToolkit.Maui.Views;
-using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using Microsoft.Maui.Devices;
 using Spindler.Models;
-using System.Collections;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.ComponentModel;
-using static Microsoft.Maui.ApplicationModel.Permissions;
 
 
 namespace Spindler.CustomControls;
@@ -53,7 +46,7 @@ public partial class PickerPopup : Popup
         Title = title;
         double width = 0.9 * (DeviceDisplay.MainDisplayInfo.Width / DeviceDisplay.MainDisplayInfo.Density);
         double height = 0.8 * (DeviceDisplay.MainDisplayInfo.Height / DeviceDisplay.MainDisplayInfo.Density);
-        Size  = new(width, height);
+        Size = new(width, height);
         Items = items.ToList();
     }
 

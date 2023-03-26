@@ -81,7 +81,7 @@ namespace Spindler.Views.Configuration_Pages
                 var filePath = await fileSaverInstance.SaveAsync($"{Configuration.Name.Replace('.', '-')}.json", stream, cancellationToken);
                 await Toast.Make($"File saved at {filePath}").Show(cancellationToken);
 #if IOS || MACCATALYST
-            fileSaverInstance.Dispose();
+                fileSaverInstance.Dispose();
 #endif
             }
             catch (Exception ex)
@@ -115,9 +115,9 @@ namespace Spindler.Views.Configuration_Pages
 
         #endregion
 
-        public BaseConfigDetailPage() 
+        public BaseConfigDetailPage()
         {
-            
+
         }
     }
 }

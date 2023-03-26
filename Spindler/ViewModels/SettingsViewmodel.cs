@@ -1,11 +1,4 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
-using CommunityToolkit.Mvvm.Input;
-using HtmlAgilityPack;
-using Spindler.CustomControls;
-using Spindler.Models;
-using Spindler.Services;
-using System.Diagnostics.Contracts;
-using System.Diagnostics.Metrics;
 
 namespace Spindler.ViewModels;
 
@@ -37,8 +30,8 @@ public partial class SettingsViewmodel : ObservableObject
     public float FontSpacing
     {
         get => fontSpacing;
-        set 
-        { 
+        set
+        {
             SetProperty(ref fontSpacing, value);
             Preferences.Set("line_spacing", value);
         }
@@ -47,14 +40,14 @@ public partial class SettingsViewmodel : ObservableObject
     [ObservableProperty]
     private bool isBusy = false;
 
-    public SettingsViewmodel() 
+    public SettingsViewmodel()
     {
         Shell.Current.Navigating += Navigating;
     }
 
-    private void Navigating(object? sender, ShellNavigatingEventArgs e) 
+    private void Navigating(object? sender, ShellNavigatingEventArgs e)
     {
-        if (IsBusy) 
+        if (IsBusy)
         {
             e.Cancel();
             return;

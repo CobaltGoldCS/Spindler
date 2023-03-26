@@ -1,5 +1,4 @@
-﻿using Spindler.Models;
-using HtmlOrError = Spindler.Utilities.Result<string, string>;
+﻿using HtmlOrError = Spindler.Utilities.Result<string, string>;
 
 namespace Spindler.Services;
 
@@ -40,7 +39,7 @@ public class WebService
         }
         Client.BaseAddress = baseUrl;
     }
-    
+
 
     /// <summary>
     /// Check if <paramref name="url"/> is in a valid http or https format

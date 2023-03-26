@@ -4,7 +4,6 @@ using HtmlAgilityPack;
 using Spindler.CustomControls;
 using Spindler.Models;
 using Spindler.Services;
-using System.Text.RegularExpressions;
 
 namespace Spindler.Views.Book_Pages;
 
@@ -202,8 +201,8 @@ public partial class BookSearcherPage : ContentPage
         PickerPopup popup = new("Choose a config to search", await App.Database.GetAllItemsAsync<Config>());
         var result = await this.ShowPopupAsync(popup);
 
-        if (result is not Config config || 
-            !Uri.TryCreate("https://" + config.DomainName, new UriCreationOptions(), out Uri? url)) 
+        if (result is not Config config ||
+            !Uri.TryCreate("https://" + config.DomainName, new UriCreationOptions(), out Uri? url))
             return;
         Source = url.OriginalString ?? "";
         SearchBrowser.Source = url;

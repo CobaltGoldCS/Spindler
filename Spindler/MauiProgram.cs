@@ -1,5 +1,4 @@
 ﻿using CommunityToolkit.Maui;
-using CommunityToolkit.Maui.Storage;
 
 #if ANDROID
 using Spindler.Platforms.Android;
@@ -27,7 +26,8 @@ public static class MauiProgram
             })
         // Fix CollectionView Lag in Android
 #if ANDROID
-            .ConfigureMauiHandlers(h => {
+            .ConfigureMauiHandlers(h =>
+            {
                 h.AddHandler(typeof(CollectionView), typeof(CollectionViewHandlerEx));
             })
 #endif
