@@ -12,20 +12,22 @@ using Path = Models.Path;
 public class ConfigService
 {
 
-    public Path? titlepath = null;
-    public Path? contentpath = null;
-    public Path? nextpath = null;
-    public Path? previouspath = null;
-    public Dictionary<string, object>? extraconfigs = default;
+    public Path titlepath;
+    public Path contentpath;
+    public Path nextpath;
+    public Path previouspath;
+    public Dictionary<string, object> extraconfigs;
+
+    public int configId;
 
     public bool IsNull = false;
 
     public ConfigService(Config config)
     {
-        if (config is null)
+        configId = config.Id;
+        if (string.IsNullOrEmpty(config.TitlePath))
         {
-            IsNull = true;
-            return;
+            config.TitlePath = "//title";
         }
         titlepath = new Path(config.TitlePath);
         contentpath = new Path(config.ContentPath);
@@ -44,6 +46,14 @@ public class ConfigService
         /// Denotes a preference for text of html elements (target text)
         /// </summary>
         Text,
+    }
+
+    public enum Selector
+    {
+        Title,
+        Content,
+        NextUrl,
+        PrevUrl
     }
 
     /// <summary>
@@ -77,8 +87,31 @@ public class ConfigService
         }
     }
 
+    public Path GetPath(Selector selector)
+    {
+        switch (selector)
+        {
+            case Selector.Title:
+                return titlepath;
+            case Selector.Content:
+                return contentpath;
+            case Selector.PrevUrl:
+                return previouspath;
+            case Selector.NextUrl:
+                return nextpath;
+            default:
+                throw new NotImplementedException("Selector not implemented (PrettyWrapSelector)");
+        }
+    }
+
+    public Dictionary<string, object> GetExtraConfigs() => extraconfigs;
+
     #region Selectors using Paths
 
+    public string PrettyWrapSelector(string html, Selector selector, SelectorType type)
+    {
+        return PrettyWrapSelector(html, GetPath(selector), type);
+    }
     /// <summary>
     /// Attempt to get text from element pointed to by <paramref name="path"/>
     /// </summary>
@@ -213,17 +246,7 @@ public class ConfigService
         return stringWriter.ToString();
     }
 
-    /// <summary>
-    /// Get title from <paramref name="nav"/>
-    /// </summary>
-    /// <param name="nav">The document to get the title from</param>
-    /// <returns>A title determined by the titlepath</returns>
-    public string GetTitle(HtmlDocument nav)
-    {
-        if (string.IsNullOrWhiteSpace(titlepath!.path))
-            titlepath = new Path("//title");
-        return HttpUtility.HtmlDecode(PrettyWrapSelector(nav, titlepath, type: SelectorType.Text));
-    }
+    
 
     #endregion
 }

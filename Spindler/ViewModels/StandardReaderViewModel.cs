@@ -11,13 +11,13 @@ namespace Spindler.ViewModels
     public partial class StandardReaderViewModel : ObservableObject, IReader
     {
         #region Class Attributes
-        private WebService? _webservice = null;
-        private WebService WebService
+        private ReaderDataService? readerService = null;
+        private ReaderDataService ReaderService
         {
             get
             {
-                _webservice ??= new(Config!);
-                return _webservice;
+                readerService ??= new(Config!);
+                return readerService;
             }
         }
 
@@ -125,7 +125,7 @@ namespace Spindler.ViewModels
             if (!await SafeAssertNotNull(Config, "Configuration does not exist"))
                 return;
 
-            LoadedData? data = await WebService.LoadUrl(CurrentBook!.Url);
+            LoadedData? data = await ReaderService.LoadUrl(CurrentBook!.Url);
 
             if (!await SafeAssertNotNull(data, "Invalid Url"))
                 return;
@@ -134,7 +134,7 @@ namespace Spindler.ViewModels
             // Get image url from load
             if (string.IsNullOrEmpty(CurrentBook!.ImageUrl) || CurrentBook!.ImageUrl == "no_image.jpg")
             {
-                var html = await WebService.HtmlOrError(CurrentBook.Url);
+                var html = await ReaderService.WebService.HtmlOrError(CurrentBook.Url);
                 
                 if (Result.IsError(html)) return;
 
@@ -169,7 +169,7 @@ namespace Spindler.ViewModels
             OnPropertyChanged(nameof(NextButtonIsVisible));
             OnPropertyChanged(nameof(PrevButtonIsVisible));
 
-            PreloadDataTask = WebService.LoadData(CurrentData.prevUrl, CurrentData.nextUrl);
+            PreloadDataTask = ReaderService.LoadData(CurrentData.prevUrl, CurrentData.nextUrl);
             IsLoading = false;
         }
 

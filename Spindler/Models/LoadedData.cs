@@ -34,8 +34,4 @@ public partial class LoadedData : ObservableObject
     [ObservableProperty]
     private string? title;
 
-    /// <summary>
-    /// The <see cref="Config"/> that was used as reference in order to scrape page data
-    /// </summary>
-    public Config? config;
 }

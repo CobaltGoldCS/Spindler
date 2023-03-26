@@ -15,8 +15,7 @@ namespace Spindler.Views;
 public partial class HeadlessReaderPage : ContentPage, INotifyPropertyChanged, IReader, IQueryAttributable
 {
     // Both of these are guaranteed not null after initial page loading
-    WebService? webservice;
-    Config? config;
+    ReaderDataService? ReaderService;
 
     Book Book = new Book { Id = -1 };
 
@@ -97,14 +96,14 @@ public partial class HeadlessReaderPage : ContentPage, INotifyPropertyChanged, I
     private async void PageLoaded(object? _, WebNavigatedEventArgs e)
     {
         // Define Values before accidentally breaking something
-        if (config is null)
+        if (ReaderService is null)
         {
             string html = await HeadlessBrowser.GetHtml();
 
-            config = await Config.FindValidConfig(Book.Url, html);
+            var config = await Config.FindValidConfig(Book.Url, html);
             if (!await SafeAssertNotNull(config, "There is no valid configuration for this book"))
                 return;
-            webservice = new(config!);
+            ReaderService = new(config!);
 
             // We only want this check to run at the beginning when config is null
             if (string.IsNullOrEmpty(Book.ImageUrl) || Book!.ImageUrl == "no_image.jpg")
@@ -160,12 +159,12 @@ public partial class HeadlessReaderPage : ContentPage, INotifyPropertyChanged, I
     /// </summary>
     private async Task GetContentAsLoadedData()
     {
-        bool foundMatchingContent = await HeadlessBrowser.WaitUntilValid(new Models.Path(config!.ContentPath), TimeSpan.FromSeconds(1.0), TimeSpan.FromSeconds(20));
+        bool foundMatchingContent = await HeadlessBrowser.WaitUntilValid(new Models.Path(ReaderService!.Config.ContentPath), TimeSpan.FromSeconds(1.0), TimeSpan.FromSeconds(20));
         
         if (!await SafeAssert(foundMatchingContent, "Unable to get html specified by configuration"))
             return;
 
-        LoadedData = await webservice!.LoadWebData(Book!.Url, await HeadlessBrowser.GetHtml());
+        LoadedData = await ReaderService!.LoadReaderData(Book!.Url, await HeadlessBrowser.GetHtml());
 
         if (!await SafeAssert(LoadedData.Title != "afb-4893", "Invalid Url"))
             return;
@@ -204,7 +203,7 @@ public partial class HeadlessReaderPage : ContentPage, INotifyPropertyChanged, I
         }
 
         var scrollPosition = Math.Clamp(Book!.Position, 0d, 1d) * ReadingLayout.ContentSize.Height;
-        var shouldAnimate = (bool)config!.ExtraConfigs.GetValueOrDefault("autoscrollanimation", true);
+        var shouldAnimate = (bool)ReaderService!.Config.ExtraConfigs.GetValueOrDefault("autoscrollanimation", true);
         await Task.Run(async () =>
         {
             while (ReadingLayout.ContentSize.Height < 1000)
@@ -246,7 +245,7 @@ public partial class HeadlessReaderPage : ContentPage, INotifyPropertyChanged, I
         Dictionary<string, object> parameters = new()
         {
             { "errormessage", message },
-            { "config"      , config! }
+            { "config"      , ReaderService!.Config }
         };
         await Shell.Current.GoToAsync($"/{nameof(ErrorPage)}", parameters);
         return false;
