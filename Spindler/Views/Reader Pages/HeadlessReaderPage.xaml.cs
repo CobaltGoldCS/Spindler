@@ -191,12 +191,11 @@ public partial class HeadlessReaderPage : ContentPage, INotifyPropertyChanged, I
     /// </summary>
     private async Task ScrollToLastReadPositionIfApplicable()
     {
-        if (Book!.Position <= 0)
+        if (Book.Position <= 0)
         {
             return;
         }
 
-        var scrollPosition = Math.Clamp(Book!.Position, 0d, 1d) * ReadingLayout.ContentSize.Height;
         var shouldAnimate = (bool)ReaderService!.Config.ExtraConfigs.GetValueOrDefault("autoscrollanimation", true);
         await Task.Run(async () =>
         {
@@ -204,7 +203,7 @@ public partial class HeadlessReaderPage : ContentPage, INotifyPropertyChanged, I
                 await Task.Delay(TimeSpan.FromMilliseconds(50));
             await MainThread.InvokeOnMainThreadAsync(async () =>
             {
-                await ReadingLayout.ScrollToAsync(ReadingLayout.ScrollX, scrollPosition, shouldAnimate);
+                await ReadingLayout.ScrollToAsync(ReadingLayout.ScrollX, Book.Position, shouldAnimate);
                 Book.Position = 0;
             });
         });
@@ -215,8 +214,8 @@ public partial class HeadlessReaderPage : ContentPage, INotifyPropertyChanged, I
     {
         if (e.Target.Location.OriginalString == "..")
         {
-            Book.Position = ReadingLayout.ScrollY / ReadingLayout.ContentSize.Height;
-            Book!.HasNextChapter = NextVisible;
+            Book.Position = ReadingLayout.ScrollY;
+            Book.HasNextChapter = NextVisible;
             await Book.UpdateViewTimeAndSave();
         }
         // This will safely cancel the nextChapter task
