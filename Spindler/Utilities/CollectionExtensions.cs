@@ -14,7 +14,7 @@ namespace Spindler.Utilities
     {
         /// <summary>
         /// Execute either an add or remove operation on observablecollection in order to 
-        /// update the ui correctly while preserving other values like scroll
+        /// update the <paramref name="baseCollection"/> to match <paramref name="targetValues"/> while preserving other values like scroll
         /// </summary>
         /// <typeparam name="T">Any type that can be stored by an IEnumerable</typeparam>
         /// <param name="baseCollection">The <see cref="ObservableCollection{T}"/> to operate on</param>
