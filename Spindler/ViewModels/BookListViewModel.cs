@@ -172,7 +172,7 @@ namespace Spindler.ViewModels
                 
                 if (DisplayedBooks.Count > 0)
                 {
-                    DisplayedBooks.ExecuteAddAndDeleteTransactions(CurrentList);
+                    DisplayedBooks.ExecuteAddAndDeleteTransactions(CurrentList.Take(DisplayedBooks.Count));
                 }
                 else
                 {
