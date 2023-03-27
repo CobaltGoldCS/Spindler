@@ -11,6 +11,7 @@ namespace Spindler.ViewModels
     public partial class StandardReaderViewModel : ObservableObject, IReader
     {
         #region Class Attributes
+        CancellationTokenSource tokenRegistration = new CancellationTokenSource();
         private ReaderDataService? readerService = null;
         public ReaderDataService ReaderService
         {
@@ -27,6 +28,9 @@ namespace Spindler.ViewModels
         }
 
         public Book CurrentBook = new() { Title = "Loading" };
+
+        private ImageButton? BookmarkButton;
+        private ScrollView? ReadingLayout;
 
         /// <summary>
         /// Task that should hold an array of length 2 containing (previous chapter, next chapter) in that order
@@ -65,27 +69,16 @@ namespace Spindler.ViewModels
         }
 
         double ReaderScrollPosition = 0;
-        double ReaderHeight = 0;
 
-        // FIXME: This resets ReaderScrollPosition and ReaderHeight to 0 when 
-        // leaving the page. This means that auto scroll does not work anymore
-        public async void Scrolled(object sender, ScrolledEventArgs e)
+        public async void Scrolled(object? sender, ScrolledEventArgs e)
         {
-            var scrollView = (ScrollView)sender;
-            if (scrollView.ScrollY > 0)
-            {
-                ReaderScrollPosition = scrollView.ScrollY;
-            }
-            if (scrollView.ContentSize.Height > 0)
-            {
-                ReaderHeight = scrollView.ContentSize.Height;
-            }
             await Task.Run(() =>
             {
-                var scrollPercentage = ReaderScrollPosition / ReaderHeight;
-                if (scrollPercentage.IsZeroOrNaN())
+                ReaderScrollPosition = e.ScrollY;
+                if (ReaderScrollPosition.IsZeroOrNaN())
                     return;
-                CurrentBook.Position = scrollPercentage;
+
+                CurrentBook.Position = ReaderScrollPosition;
             });
         }
         #endregion
@@ -137,13 +130,15 @@ namespace Spindler.ViewModels
         public StandardReaderViewModel()
         {
             IsLoading = true;
-            Shell.Current.Navigating += OnShellNavigated;
         }
-        public void LoadRequiredInfo(ReaderDataService readerService)
+        public void SetRequiredInfo(ReaderDataService readerService)
         {
             ReaderService = readerService;
         }
-        CancellationTokenSource tokenRegistration = new CancellationTokenSource();
+        public void SetCurrentBook(Book book)
+        {
+            this.CurrentBook = book;
+        }
         public async Task StartLoad()
         {
             // Start background chapter checker service
@@ -173,15 +168,24 @@ namespace Spindler.ViewModels
             DataChanged();
             await DelayScroll();
         }
-
-        private ImageButton? BookmarkButton;
-        private ScrollView? ReadingLayout;
-        public void AttachReferencesToUI(ScrollView readingLayout, ImageButton bookmarkButton)
+        public void SetReferencesToUI(ScrollView readingLayout, ImageButton bookmarkButton)
         {
             ReadingLayout = readingLayout;
             BookmarkButton = bookmarkButton;
         }
         #endregion
+
+        public async void OnShellNavigated(object? sender,
+                           ShellNavigatingEventArgs e)
+        {
+            if (e.Target.Location.OriginalString == "..")
+            {
+                CurrentBook.HasNextChapter = NextButtonIsVisible;
+                await App.Database.SaveItemAsync(CurrentBook);
+            }
+            tokenRegistration.Cancel();
+            Shell.Current.Navigating -= OnShellNavigated;
+        }
 
         #region Helperfunctions
 
@@ -207,6 +211,9 @@ namespace Spindler.ViewModels
         {
             await Task.Run(async () =>
             {
+                if (CurrentBook.Position <= 0)
+                    return;
+
                 await Task.Delay(100);
 
 
@@ -215,24 +222,12 @@ namespace Spindler.ViewModels
                 MainThread.BeginInvokeOnMainThread(async () =>
                 {
                     await (ReadingLayout?.ScrollToAsync(
-                        ReaderScrollPosition,
-                        ReaderHeight,
+                        0,
+                        CurrentBook.Position,
                         hasAutoScrollAnimation) ?? Task.CompletedTask);
                 });
 
             });
-        }
-
-        public async void OnShellNavigated(object? sender,
-                           ShellNavigatingEventArgs e)
-        {
-            if (e.Target.Location.OriginalString == "..")
-            {
-                CurrentBook.HasNextChapter = NextButtonIsVisible;
-                await App.Database.SaveItemAsync(CurrentBook);
-            }
-            tokenRegistration.Cancel();
-            Shell.Current.Navigating -= OnShellNavigated;
         }
 
         #region Error Handlers

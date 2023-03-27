@@ -10,16 +10,17 @@ public partial class StandardReaderPage : ContentPage, IQueryAttributable
         Book book = (query["book"] as Book)!;
         Config? config = await Config.FindValidConfig(book.Url);
 
-        var viewmodel = new StandardReaderViewModel()
-        {
-            CurrentBook = book,
-        };
+        var viewmodel = new StandardReaderViewModel();
+        
+        // Attach required information to View Model
         if (config is not null)
         {
-            viewmodel.LoadRequiredInfo(new(config));
+            viewmodel.SetRequiredInfo(new(config));
         }
+        viewmodel.SetReferencesToUI(ReadingLayout, BookmarkItem);
+        viewmodel.SetCurrentBook(book);
         ReadingLayout.Scrolled += viewmodel.Scrolled;
-        viewmodel.AttachReferencesToUI(ReadingLayout, BookmarkItem);
+
         BindingContext = viewmodel;
         await viewmodel.StartLoad();
     }
