@@ -46,7 +46,11 @@ public static class MauiProgram
 
     private static IServiceCollection AddShellRoutes(this IServiceCollection service)
     {
-        service.AddSingletonWithShellRoute<HomePage, HomeViewModel>(nameof(HomePage));
+        // These cannot be defined with a Shell Route because they are already 
+        // Present within the AppShell As Tab Pages
+        service.AddSingleton<HomePage>();
+        service.AddSingleton<HomeViewModel>();
+
         service.AddTransientWithShellRoute<BookListPage, BookListViewModel>($"{nameof(HomePage)}/{nameof(BookListPage)}");
 
         return service;
