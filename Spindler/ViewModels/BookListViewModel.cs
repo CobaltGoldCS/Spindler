@@ -1,6 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Spindler.Models;
+using Spindler.Utilities;
 using Spindler.Views;
 using Spindler.Views.Book_Pages;
 using System.Collections.ObjectModel;
@@ -11,13 +12,9 @@ namespace Spindler.ViewModels
     {
         #region Bindings
         [ObservableProperty]
-        public string title;
+        public string title = "Book List";
         [ObservableProperty]
         public int id;
-
-
-        [ObservableProperty]
-        WeakReference<Book>? currentPinnedBookSelection;
 
         [ObservableProperty]
         List<Book> currentList = new();
@@ -48,8 +45,8 @@ namespace Spindler.ViewModels
 
         public void SetBookList(BookList list)
         {
-            id = list.Id;
-            title = list.Name;
+            Id = list.Id;
+            Title = list.Name;
         }
 
         ImageButton? AddButton;
@@ -126,6 +123,8 @@ namespace Spindler.ViewModels
                 { "book", selection}
             };
             await Shell.Current.GoToAsync($"{nameof(BookPage)}", parameters);
+
+            Executing = false;
         }
 
         /// <summary>
@@ -156,6 +155,8 @@ namespace Spindler.ViewModels
             }
 
             await Shell.Current.GoToAsync($"{pageName}", parameters);
+
+            Executing = false;
         }
 
         /// <summary>
@@ -164,18 +165,36 @@ namespace Spindler.ViewModels
         /// <returns>Nothing</returns>
         public async Task Load()
         {
-            CurrentList = new(await App.Database.GetBooksByBooklistIdAsync(Id));
-
-            foreach (Book book in CurrentList.Take(NUM_ITEMS_ADDED_TO_LIST))
+            await Task.Run(async () =>
             {
-                DisplayedBooks.Add(book);
-            }
+                CurrentList = new(await App.Database.GetBooksByBooklistIdAsync(Id));
 
-            foreach (Book book in CurrentList.FindAll((book) => book.Pinned))
-            {
-                PinnedBooks.Add(book);
-            }
-            PinnedBooksAreVisible = PinnedBooks.Count > 0;
+                
+                if (DisplayedBooks.Count > 0)
+                {
+                    DisplayedBooks.ExecuteAddAndDeleteTransactions(CurrentList);
+                }
+                else
+                {
+                    foreach(var book in CurrentList.Take(NUM_ITEMS_ADDED_TO_LIST))
+                    {
+                        DisplayedBooks.Add(book);
+                    }
+                }
+
+                if (PinnedBooks.Count > 0)
+                {
+                    PinnedBooks.ExecuteAddAndDeleteTransactions(CurrentList);
+                }
+                else
+                {
+                    foreach (var book in CurrentList.Take(NUM_ITEMS_ADDED_TO_LIST))
+                    {
+                        PinnedBooks.Add(book);
+                    }
+                }
+                PinnedBooksAreVisible = PinnedBooks.Count > 0;
+            });
         }
 
         const int NUM_ITEMS_ADDED_TO_LIST = 20;
