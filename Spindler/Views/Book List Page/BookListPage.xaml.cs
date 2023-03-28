@@ -15,9 +15,7 @@ public partial class BookListPage : ContentPage, IQueryAttributable
         viewmodel.SetBookList(bookList);
         viewmodel.AddUiReferences(AddToolBarItem);
         BindingContext = viewmodel;
-        await viewmodel.Load();
     }
-
     public BookListPage(BookListViewModel viewmodel)
     {
         InitializeComponent();

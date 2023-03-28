@@ -13,6 +13,7 @@
         <toolkit:BoolToObjectConverter x:Key="ExpanderIconConverter" FalseObject="∨" TrueObject="∧"/>
     </ContentPage.Resources>
 
+
     <Shell.TitleView>
         <Grid ColumnDefinitions="*, auto" CompressedLayout.IsHeadless="True">
 
@@ -97,37 +98,41 @@
             </toolkit:Expander>
         </Border>
 
-        <!--Standard book list-->
-        <CollectionView x:Name="BooksList"
-                        Grid.Row="1"
+        <RefreshView IsRefreshing="{Binding IsLoading}" 
+                     Command="{Binding LoadCommand}"
+                     Margin="5"
+                     Grid.Row="1">
+            <!--Standard book list-->
+            <CollectionView x:Name="BooksList"
                         ItemsSource="{Binding DisplayedBooks, Mode=OneTime}"
                         RemainingItemsThreshold="3"
                         RemainingItemsThresholdReachedCommand="{Binding EndOfListReachedCommand, Mode=OneTime}"
                         SelectionMode="Single"
                         ItemSizingStrategy="MeasureFirstItem"
                         VerticalScrollBarVisibility="Always"
-                        Margin="5">
-            <CollectionView.ItemsLayout>
-                <LinearItemsLayout ItemSpacing="5" Orientation="Vertical"/>
-            </CollectionView.ItemsLayout>
-            <CollectionView.ItemTemplate>
-                <DataTemplate>
-                    <items:BookItem 
+                        >
+                <CollectionView.ItemsLayout>
+                    <LinearItemsLayout ItemSpacing="5" Orientation="Vertical"/>
+                </CollectionView.ItemsLayout>
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <items:BookItem 
                         BookParameter="{Binding ., Mode=OneTime}"
                         SelectionCommand="{Binding Source={x:RelativeSource AncestorType={x:Type viewmodels:BookListViewModel}}, Path=SelectionCommand, Mode=OneTime}"
                         DoubleTappedCommand="{Binding Source={x:RelativeSource AncestorType={x:Type viewmodels:BookListViewModel}}, Path=DoubleTappedCommand, Mode=OneTime}"/>
 
-                </DataTemplate>
-            </CollectionView.ItemTemplate>
-            <CollectionView.EmptyView>
-                <ActivityIndicator IsRunning="True"/>
-            </CollectionView.EmptyView>
-            <CollectionView.Footer>
-                <ActivityIndicator 
-                    IsRunning="{Binding IsLoading, Mode=OneWay}"
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+                <CollectionView.EmptyView>
+                    <ActivityIndicator IsRunning="True"/>
+                </CollectionView.EmptyView>
+                <CollectionView.Footer>
+                    <ActivityIndicator 
+                    IsRunning="{Binding IsExpanding, Mode=OneWay}"
                     HeightRequest="{Binding LoaderHeightRequest, Mode=OneWay}"
                     Color="{StaticResource Primary}"/>
-            </CollectionView.Footer>
-        </CollectionView>
+                </CollectionView.Footer>
+            </CollectionView>
+        </RefreshView>
     </Grid>
 </ContentPage>
