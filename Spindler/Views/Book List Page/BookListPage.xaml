@@ -124,7 +124,7 @@
                     </DataTemplate>
                 </CollectionView.ItemTemplate>
                 <CollectionView.EmptyView>
-                    <ActivityIndicator IsRunning="True"/>
+                    <ActivityIndicator IsRunning="True" Color="{StaticResource Primary}"/>
                 </CollectionView.EmptyView>
                 <CollectionView.Footer>
                     <ActivityIndicator 

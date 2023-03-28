@@ -30,14 +30,14 @@
                Aspect="AspectFill"
                Grid.RowSpan="2">
         </Image>
-        <Ellipse Fill="{StaticResource Warning}"
-                 Grid.Column="1"
-                 HeightRequest="10"
-                 WidthRequest="10"
-                 HorizontalOptions="End"
-                 VerticalOptions="Start"
-                 Margin="0,5,5,0"
-                 IsVisible="{Binding Source={x:Reference this}, Path=BookParameter.HasNextChapter, Mode=OneWay}"/>
+        <Path Fill="{StaticResource Warning}"
+              Data="M 0,0 L 0, 10 L 10, 0Z"
+              HeightRequest="10"
+              WidthRequest="10"
+              HorizontalOptions="Start"
+              VerticalOptions="Start"
+              Margin="0,0,0,0"
+              IsVisible="{Binding Source={x:Reference this}, Path=BookParameter.HasNextChapter, Mode=OneWay}"/>
         <Label 
             VerticalTextAlignment="Center"
             HorizontalTextAlignment="Center"
