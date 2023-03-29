@@ -89,6 +89,13 @@ public partial class HeadlessReaderPage : ContentPage, INotifyPropertyChanged, I
     /// </summary>
     private async void PageLoaded(object? _, WebNavigatedEventArgs e)
     {
+
+        var result = e.Result;
+        if (!await SafeAssert(result != WebNavigationResult.Failure, "Browser failed to obtain data."))
+            return;
+        if (!await SafeAssert(result != WebNavigationResult.Timeout, "Url timed out. Please Try again"))
+            return;
+
         // Define Values before accidentally breaking something
         if (ReaderService is null)
         {
@@ -104,11 +111,6 @@ public partial class HeadlessReaderPage : ContentPage, INotifyPropertyChanged, I
                 Book.ImageUrl = ConfigService.PrettyWrapSelector(html, new Models.Path(config!.ImageUrlPath), ConfigService.SelectorType.Link);
         }
 
-        var result = e.Result;
-        if (!await SafeAssert(result != WebNavigationResult.Failure, "Browser failed to obtain data."))
-            return;
-        if (!await SafeAssert(result != WebNavigationResult.Timeout, "Url timed out. Please Try again"))
-            return;
 
         await GetContentAsLoadedData();
         await UpdateUiUsingLoadedData();

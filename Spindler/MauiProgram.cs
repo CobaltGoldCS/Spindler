@@ -37,7 +37,7 @@ public static class MauiProgram
         ;
         builder.Services
             .AddShellRoutes()
-            .AddSingleton<DataService>()
+            .AddSingleton<IDataService, DataService>()
             .AddSingleton<AppShell>();
         
         return builder.Build();
