@@ -6,16 +6,16 @@ using Spindler.ViewModels;
 public partial class HomePage : ContentPage
 {
 
-    public HomePage(DataService database)
+    public HomePage(HomeViewModel viewModel)
     {
         InitializeComponent();
-        BindingContext = new HomeViewModel(database);
+        BindingContext = viewModel;
+        viewModel.Load();
     }
 
     protected async override void OnAppearing()
     {
         RequestPermissionIfNotGranted();
-        await Task.Run(((HomeViewModel)BindingContext).Load);
     }
 
     private static async void RequestPermissionIfNotGranted()

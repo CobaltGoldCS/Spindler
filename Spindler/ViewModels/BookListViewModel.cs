@@ -11,7 +11,7 @@ namespace Spindler.ViewModels
 {
     public partial class BookListViewModel : ObservableObject
     {
-        private readonly DataService Database;
+        private readonly IDataService Database;
         #region Bindings
         [ObservableProperty]
         public string title = "Book List";
@@ -44,7 +44,7 @@ namespace Spindler.ViewModels
 
         #endregion
 
-        public BookListViewModel(DataService database) 
+        public BookListViewModel(IDataService database) 
         {
             Database = database;
         }
