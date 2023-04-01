@@ -242,7 +242,7 @@ namespace Spindler.ViewModels
             Dictionary<string, object> parameters = new()
             {
                 { "errormessage", message },
-                { "config", ReaderService.Config }
+                { "config", readerService?.Config }
             };
             await Shell.Current.GoToAsync($"../{nameof(ErrorPage)}", parameters);
             return false;

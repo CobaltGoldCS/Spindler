@@ -13,7 +13,7 @@ namespace Spindler.ViewModels
         Book? book;
 
         [ObservableProperty]
-        string imageUrl = "no_image.jpg";
+        string imageUrl = "";
 
         [ObservableProperty]
         string title = "Loading...";

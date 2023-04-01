@@ -251,12 +251,16 @@ public partial class HeadlessReaderPage : ContentPage, INotifyPropertyChanged, I
     {
         if (condition)
             return true;
+
         Dictionary<string, object> parameters = new()
         {
             { "errormessage", message },
-            { "config"      , ReaderService.Config }
+            { "config", readerService?.Config }
         };
-        await Shell.Current.GoToAsync($"/{nameof(ErrorPage)}", parameters);
+        MainThread.BeginInvokeOnMainThread(async () =>
+        {
+            await Shell.Current.GoToAsync($"/{nameof(ErrorPage)}", parameters);
+        });
         return false;
     }
 
