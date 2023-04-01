@@ -11,12 +11,9 @@ public partial class HomePage : ContentPage
         InitializeComponent();
         BindingContext = viewModel;
         viewModel.Load();
-    }
-
-    protected async override void OnAppearing()
-    {
         RequestPermissionIfNotGranted();
     }
+
 
     private static async void RequestPermissionIfNotGranted()
     {
