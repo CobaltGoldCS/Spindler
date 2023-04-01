@@ -48,39 +48,6 @@ namespace Spindler.ViewModels
             this.book = book;
             Domain = new UriBuilder(book.Url).Host;
 
-
-            /* Unmerged change from project 'Spindler (net7.0-windows10.0.19041.0)'
-            Before:
-                        Config? config = await Config.FindValidConfig(book.Url);
-
-                        Title = book.Title;
-            After:
-                        Config? config = await Config.FindValidConfig(book.Url);
-
-                        Title = book.Title;
-            */
-
-            /* Unmerged change from project 'Spindler (net7.0-maccatalyst)'
-            Before:
-                        Config? config = await Config.FindValidConfig(book.Url);
-
-                        Title = book.Title;
-            After:
-                        Config? config = await Config.FindValidConfig(book.Url);
-
-                        Title = book.Title;
-            */
-
-            /* Unmerged change from project 'Spindler (net7.0-ios)'
-            Before:
-                        Config? config = await Config.FindValidConfig(book.Url);
-
-                        Title = book.Title;
-            After:
-                        Config? config = await Config.FindValidConfig(book.Url);
-
-                        Title = book.Title;
-            */
             Config? config = await Config.FindValidConfig(book.Url);
 
             Title = book.Title;

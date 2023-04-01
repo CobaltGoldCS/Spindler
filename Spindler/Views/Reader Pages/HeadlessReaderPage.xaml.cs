@@ -8,8 +8,20 @@ namespace Spindler.Views;
 
 public partial class HeadlessReaderPage : ContentPage, INotifyPropertyChanged, IReader, IQueryAttributable
 {
-    // Both of these are guaranteed not null after initial page loading
-    ReaderDataService? ReaderService;
+    private ReaderDataService? readerService = null;
+    public ReaderDataService ReaderService
+    {
+        get
+        {
+            // This should not deadlock, but if the page does, its probably this line
+            if (!Task.Run(async () => await SafeAssertNotNull(readerService, "Configuration does not exist")).Result)
+            {
+                return new ReaderDataService(new Config());
+            }
+            return readerService!;
+        }
+        set => readerService = value;
+    }
 
     Book Book = new Book { Id = -1 };
 
@@ -75,6 +87,7 @@ public partial class HeadlessReaderPage : ContentPage, INotifyPropertyChanged, I
         Book = (query["book"] as Book)!;
         HeadlessBrowser.Navigated += PageLoaded;
         HeadlessBrowser.Source = Book.Url;
+
         NextChapterService chapterService = new();
         await Book.UpdateViewTimeAndSave();
         await Task.Run(async () =>
@@ -96,14 +109,16 @@ public partial class HeadlessReaderPage : ContentPage, INotifyPropertyChanged, I
         if (!await SafeAssert(result != WebNavigationResult.Timeout, "Url timed out. Please Try again"))
             return;
 
-        // Define Values before accidentally breaking something
-        if (ReaderService is null)
+        // check underlying reader service because ReaderService is guaranteed not null
+        if (readerService is null)
         {
             string html = await HeadlessBrowser.GetHtml();
 
             var config = await Config.FindValidConfig(Book.Url, html);
+            
             if (!await SafeAssertNotNull(config, "There is no valid configuration for this book"))
                 return;
+
             ReaderService = new(config!);
 
             // We only want this check to run at the beginning when config is null
@@ -236,11 +251,10 @@ public partial class HeadlessReaderPage : ContentPage, INotifyPropertyChanged, I
     {
         if (condition)
             return true;
-
         Dictionary<string, object> parameters = new()
         {
             { "errormessage", message },
-            { "config"      , ReaderService!.Config }
+            { "config"      , ReaderService.Config }
         };
         await Shell.Current.GoToAsync($"/{nameof(ErrorPage)}", parameters);
         return false;
@@ -252,5 +266,8 @@ public partial class HeadlessReaderPage : ContentPage, INotifyPropertyChanged, I
     /// <param name="value">The value to check</param>
     /// <param name="message">The error to pass to the user</param>
     /// <returns>True if the value is not null, or false if it is </returns>
-    public async Task<bool> SafeAssertNotNull(object? value, string message) => await SafeAssert(value is not null, message);
+    public async Task<bool> SafeAssertNotNull(object? value, string message)
+    {
+        return await SafeAssert(value is not null, message);
+    }
 }
