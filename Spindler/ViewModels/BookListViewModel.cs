@@ -42,6 +42,22 @@ namespace Spindler.ViewModels
         [ObservableProperty]
         int loaderHeightRequest = 0;
 
+        string filterText = string.Empty;
+        public string FilterText
+        {
+            get => filterText;
+            set
+            {
+                filterText = value;
+                DisplayedBooks.Clear();
+                foreach (var book in CurrentList.Where(book => book.Name.Contains(value)).Take(NUM_ITEMS_ADDED_TO_LIST))
+                {
+                    DisplayedBooks.Add(book);
+                }
+                SetProperty(ref filterText, value);
+            }
+        }
+
         #endregion
 
         public BookListViewModel(IDataService database) 
@@ -215,7 +231,10 @@ namespace Spindler.ViewModels
 
                 LoaderHeightRequest = 20;
                 IsExpanding = true;
-                foreach (Book book in CurrentList!.Skip(DisplayedBooks.Count).Take(NUM_ITEMS_ADDED_TO_LIST))
+                foreach (Book book in CurrentList!
+                                        .Where(book => book.Name.Contains(FilterText))
+                                        .Skip(DisplayedBooks.Count)
+                                        .Take(NUM_ITEMS_ADDED_TO_LIST))
                 {
                     DisplayedBooks!.Add(book);
                 }
