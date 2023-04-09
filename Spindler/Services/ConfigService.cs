@@ -15,6 +15,7 @@ public class ConfigService
     public Path contentpath;
     public Path nextpath;
     public Path previouspath;
+    public Path imageUrlPath;
     public Dictionary<string, object> extraconfigs;
 
     public int configId;
@@ -32,6 +33,7 @@ public class ConfigService
         contentpath = new Path(config.ContentPath);
         nextpath = new Path(config.NextUrlPath);
         previouspath = new Path(config.PrevUrlPath);
+        imageUrlPath = new Path(config.ImageUrlPath);
         extraconfigs = config.ExtraConfigs;
     }
 
@@ -52,7 +54,8 @@ public class ConfigService
         Title,
         Content,
         NextUrl,
-        PrevUrl
+        PrevUrl,
+        ImageUrl,
     }
 
     /// <summary>
@@ -98,8 +101,10 @@ public class ConfigService
                 return previouspath;
             case Selector.NextUrl:
                 return nextpath;
+            case Selector.ImageUrl:
+                return imageUrlPath;
             default:
-                throw new NotImplementedException("Selector not implemented (PrettyWrapSelector)");
+                throw new NotImplementedException("Selector not implemented (ConfigService.GetPath)");
         }
     }
 
