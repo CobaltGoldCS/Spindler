@@ -12,20 +12,7 @@ namespace Spindler.ViewModels
     {
         #region Class Attributes
         CancellationTokenSource tokenRegistration = new CancellationTokenSource();
-        private ReaderDataService? readerService = null;
-        public ReaderDataService ReaderService
-        {
-            get
-            {
-                // This should not deadlock, but if the page does, its probably this line
-                if (!Task.Run(async () => await SafeAssertNotNull(readerService, "Configuration does not exist")).Result)
-                {
-                    return new ReaderDataService(new Config(), new StandardWebService());
-                }
-                return readerService!;
-            }
-            set => readerService = value;
-        }
+        public ReaderDataService ReaderService = new ReaderDataService(new Config(), new StandardWebService());
 
         public Book CurrentBook = new() { Title = "Loading" };
 
@@ -90,7 +77,7 @@ namespace Spindler.ViewModels
         public async void NextClick()
         {
             var nextdata = (await PreloadDataTask!)![1];
-            if (await SafeAssertNotNull(nextdata, "Invalid Url"))
+            if (await (this as IReader).SafeAssertNotNull(nextdata, "Invalid Url"))
             {
                 await ReadingLayout!.ScrollToAsync(ReadingLayout.ScrollX, 0, false);
                 IsLoading = true;
@@ -103,7 +90,7 @@ namespace Spindler.ViewModels
         public async void PrevClick()
         {
             var prevdata = (await PreloadDataTask!)![0];
-            if (await SafeAssertNotNull(prevdata, "Invalid Url"))
+            if (await (this as IReader).SafeAssertNotNull(prevdata, "Invalid Url"))
             {
                 await ReadingLayout!.ScrollToAsync(ReadingLayout.ScrollX, 0, false);
                 IsLoading = true;
@@ -137,14 +124,14 @@ namespace Spindler.ViewModels
         }
         public void SetCurrentBook(Book book)
         {
-            this.CurrentBook = book;
+            CurrentBook = book;
         }
         public async Task StartLoad()
         {
 
             LoadedData? data = await ReaderService.LoadUrl(CurrentBook!.Url);
 
-            if (!await SafeAssertNotNull(data, "Invalid Url"))
+            if (!await (this as IReader).SafeAssertNotNull(data, "Invalid Url"))
                 return;
 
             CurrentData = data!;
@@ -155,7 +142,8 @@ namespace Spindler.ViewModels
 
                 if (Result.IsError(html)) return;
 
-                CurrentBook.ImageUrl = ConfigService.PrettyWrapSelector(html.AsOk().Value, new Models.Path(ReaderService.Config.ImageUrlPath), ConfigService.SelectorType.Link);
+                CurrentBook.ImageUrl = ReaderService.ConfigService.PrettyWrapSelector(
+                    html.AsOk().Value, ConfigService.Selector.ImageUrl, ConfigService.SelectorType.Link);
             }
             DataChanged();
             await DelayScroll();
@@ -183,7 +171,7 @@ namespace Spindler.ViewModels
 
         private async void DataChanged()
         {
-            if (!await SafeAssertNotNull(CurrentData, "This is an invalid url"))
+            if (!await (this as IReader).SafeAssertNotNull(CurrentData, "This is an invalid url"))
                 return;
             if (!await SafeAssert(CurrentData!.Title != "afb-4893", CurrentData.Text!)) // This means an error has occurred while getting data from the WebService
                 return;
@@ -223,18 +211,16 @@ namespace Spindler.ViewModels
         }
 
         #region Error Handlers
-        public async Task<bool> SafeAssertNotNull(object? value, string message)
-            => await SafeAssert(value != null, message);
 
         public async Task<bool> SafeAssert(bool condition, string message)
         {
             if (condition)
                 return true;
 
-            Dictionary<string, object> parameters = new()
+            Dictionary<string, object?> parameters = new()
             {
                 { "errormessage", message },
-                { "config", readerService?.Config }
+                { "config", ReaderService.Config }
             };
             await Shell.Current.GoToAsync($"../{nameof(ErrorPage)}", parameters);
             return false;

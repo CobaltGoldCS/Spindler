@@ -136,7 +136,7 @@ public partial class HeadlessReaderPage : ContentPage, INotifyPropertyChanged, I
     {
         LoadedData? foundMatchingContent = await ReaderService!.LoadUrl(url);
 
-        if (!await SafeAssertNotNull(foundMatchingContent, "Unable to get html specified by configuration"))
+        if (!await ((IReader)this).SafeAssertNotNull(foundMatchingContent, "Unable to get html specified by configuration"))
             return;
 
         LoadedData = foundMatchingContent!;
@@ -226,16 +226,5 @@ public partial class HeadlessReaderPage : ContentPage, INotifyPropertyChanged, I
 
         await Shell.Current.GoToAsync($"/{nameof(ErrorPage)}", parameters);
         return false;
-    }
-
-    /// <summary>
-    /// Assert that <paramref name="value"/> is not null, or gracefully fail
-    /// </summary>
-    /// <param name="value">The value to check</param>
-    /// <param name="message">The error to pass to the user</param>
-    /// <returns>True if the value is not null, or false if it is </returns>
-    public async Task<bool> SafeAssertNotNull(object? value, string message)
-    {
-        return await SafeAssert(value is not null, message);
     }
 }
