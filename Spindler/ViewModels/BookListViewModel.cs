@@ -50,7 +50,8 @@ namespace Spindler.ViewModels
             {
                 filterText = value;
                 DisplayedBooks.Clear();
-                foreach (var book in CurrentList.Where(book => book.Name.Contains(value)).Take(NUM_ITEMS_ADDED_TO_LIST))
+                var lowercase = value.ToLower();
+                foreach (var book in CurrentList.Where(book => book.Name.ToLower().Contains(lowercase)).Take(NUM_ITEMS_ADDED_TO_LIST))
                 {
                     DisplayedBooks.Add(book);
                 }
