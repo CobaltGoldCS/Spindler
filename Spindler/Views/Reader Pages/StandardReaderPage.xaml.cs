@@ -1,4 +1,5 @@
 using Spindler.Models;
+using Spindler.Services;
 using Spindler.ViewModels;
 
 namespace Spindler;
@@ -15,7 +16,7 @@ public partial class StandardReaderPage : ContentPage, IQueryAttributable
         // Attach required information to View Model
         if (config is not null)
         {
-            viewmodel.SetRequiredInfo(new(config));
+            viewmodel.SetRequiredInfo(new(config, new StandardWebService()));
         }
         viewmodel.SetReferencesToUI(ReadingLayout, BookmarkItem);
         viewmodel.SetCurrentBook(book);

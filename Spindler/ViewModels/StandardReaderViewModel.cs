@@ -20,7 +20,7 @@ namespace Spindler.ViewModels
                 // This should not deadlock, but if the page does, its probably this line
                 if (!Task.Run(async () => await SafeAssertNotNull(readerService, "Configuration does not exist")).Result)
                 {
-                    return new ReaderDataService(new Config());
+                    return new ReaderDataService(new Config(), new StandardWebService());
                 }
                 return readerService!;
             }
@@ -52,7 +52,7 @@ namespace Spindler.ViewModels
             get
             {
                 if (CurrentData is not null)
-                    return WebService.IsUrl(CurrentData.prevUrl);
+                    return WebUtilities.IsUrl(CurrentData.prevUrl);
                 else
                     return defaultvisible;
             }
@@ -62,7 +62,7 @@ namespace Spindler.ViewModels
             get
             {
                 if (CurrentData is not null)
-                    return WebService.IsUrl(CurrentData.nextUrl);
+                    return WebUtilities.IsUrl(CurrentData.nextUrl);
                 else
                     return defaultvisible;
             }
@@ -141,14 +141,6 @@ namespace Spindler.ViewModels
         }
         public async Task StartLoad()
         {
-            // Start background chapter checker service
-            var mainThread = Dispatcher.GetForCurrentThread();
-            var service = new NextChapterService();
-            await Task.Run(async () =>
-            {
-                var updateQueue = await service.CheckChaptersInBookList(CurrentBook!.BookListId, tokenRegistration.Token);
-                await mainThread!.DispatchAsync(async () => await App.Database.SaveItemsAsync(updateQueue));
-            });
 
             LoadedData? data = await ReaderService.LoadUrl(CurrentBook!.Url);
 
@@ -159,7 +151,7 @@ namespace Spindler.ViewModels
             // Get image url from load
             if (string.IsNullOrEmpty(CurrentBook!.ImageUrl) || CurrentBook!.ImageUrl == "no_image.jpg")
             {
-                var html = await ReaderService.WebService.HtmlOrError(CurrentBook.Url);
+                var html = await ReaderService.WebService.GetHtmlFromUrl(CurrentBook.Url);
 
                 if (Result.IsError(html)) return;
 

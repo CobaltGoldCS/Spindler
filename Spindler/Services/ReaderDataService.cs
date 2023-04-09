@@ -1,6 +1,7 @@
 ﻿using HtmlAgilityPack;
 using HtmlAgilityPack.CssSelectors.NetCore;
 using Spindler.Models;
+using Spindler.Utilities;
 using System.Web;
 using HtmlOrError = Spindler.Utilities.Result<string, string>;
 using Path = Spindler.Models.Path;
@@ -17,17 +18,37 @@ public class ReaderDataService
     /// <summary>
     /// Internal WebService
     /// </summary>
-    public WebService WebService { get; private set; }
+    public IWebService WebService { get; private set; }
     /// <summary>
     /// Internal Config
     /// </summary>
     public Config Config { get; private set; }
 
-    public ReaderDataService(Config config)
+    private WebUtilities WebUtilities = new();
+
+    public ReaderDataService(Config config, IWebService webService)
     {
         Config = config;
         ConfigService = new(config);
-        WebService = new();
+        WebService = webService;
+    }
+
+    public async Task<bool> setConfigFromUrl(string url)
+    {
+        HtmlOrError html = await WebService.GetHtmlFromUrl(url);
+
+        if (Result.IsError(html))
+            return false;
+
+        var config = await Config.FindValidConfig(url, html.AsOk().Value);
+
+        if (config is null)
+            return false;
+
+        Config = config;
+        ConfigService = new(Config);
+
+        return true;
     }
 
     /// <summary>
@@ -51,20 +72,20 @@ public class ReaderDataService
     /// <returns>A LoadedData task holding either a null LoadedData, or a LoadedData with valid values</returns>
     public async Task<LoadedData?> LoadUrl(string url)
     {
-        if (!WebService.IsUrl(url))
+        if (!WebUtilities.IsUrl(url))
         {
             return null;
         }
-        if (!WebService.HasBaseAddress())
+        if (!WebUtilities.HasBaseUrl())
         {
             if (!Uri.TryCreate(url, UriKind.Absolute, out Uri? uri)) return null;
-            WebService.SetBaseAddress(new Uri(uri.GetLeftPart(UriPartial.Authority) + "/", UriKind.Absolute));
+            WebUtilities.SetBaseUrl(new Uri(uri.GetLeftPart(UriPartial.Authority) + "/", UriKind.Absolute));
         }
         try
         {
-            url = WebService.MakeAbsoluteUrl(new(url)).ToString();
+            url = WebUtilities.MakeAbsoluteUrl(new(url)).ToString();
 
-            HtmlOrError html = await WebService.HtmlOrError(url);
+            HtmlOrError html = await WebService.GetHtmlFromUrl(url);
             if (html is HtmlOrError.Error error)
             {
                 return MakeError(error.Value);
@@ -90,10 +111,10 @@ public class ReaderDataService
         HtmlDocument doc = new();
         doc.LoadHtml(html);
 
-        if (!WebService.HasBaseAddress())
+        if (!WebUtilities.HasBaseUrl())
         {
             if (!Uri.TryCreate(url, UriKind.Absolute, out Uri? uri)) return MakeError(url);
-            WebService.SetBaseAddress(new Uri(uri.GetLeftPart(UriPartial.Authority) + "/", UriKind.Absolute));
+            WebUtilities.SetBaseUrl(new Uri(uri.GetLeftPart(UriPartial.Authority) + "/", UriKind.Absolute));
         }
 
         Task<string> text = Task.Run(() => { return GetContent(doc); });
@@ -128,6 +149,7 @@ public class ReaderDataService
         // Node contains child nodes, so we must get the text of each
         StringWriter stringWriter = new();
         string separator = (string)ConfigService.GetExtraConfigs()!.GetValueOrDefault("separator", "\n");
+
         foreach (HtmlNode child in node.ChildNodes)
         {
             if (child.OriginalName == "br")

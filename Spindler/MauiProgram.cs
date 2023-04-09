@@ -2,7 +2,6 @@
 using Spindler.Services;
 using Spindler.ViewModels;
 using Spindler.Views;
-using Spindler.Utilities;
 
 #if ANDROID
 using Spindler.Platforms.Android;

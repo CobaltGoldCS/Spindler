@@ -1,6 +1,8 @@
 using CommunityToolkit.Mvvm.Input;
+using Spindler.CustomControls;
 using Spindler.Models;
 using Spindler.Services;
+using Spindler.Utilities;
 using Spindler.Views.Reader_Pages;
 using System.ComponentModel;
 
@@ -8,20 +10,7 @@ namespace Spindler.Views;
 
 public partial class HeadlessReaderPage : ContentPage, INotifyPropertyChanged, IReader, IQueryAttributable
 {
-    private ReaderDataService? readerService = null;
-    public ReaderDataService ReaderService
-    {
-        get
-        {
-            // This should not deadlock, but if the page does, its probably this line
-            if (!Task.Run(async () => await SafeAssertNotNull(readerService, "Configuration does not exist")).Result)
-            {
-                return new ReaderDataService(new Config());
-            }
-            return readerService!;
-        }
-        set => readerService = value;
-    }
+    ReaderDataService? ReaderService { get; set; } = null;
 
     Book Book = new Book { Id = -1 };
 
@@ -85,8 +74,12 @@ public partial class HeadlessReaderPage : ContentPage, INotifyPropertyChanged, I
     public async void ApplyQueryAttributes(IDictionary<string, object> query)
     {
         Book = (query["book"] as Book)!;
-        HeadlessBrowser.Navigated += PageLoaded;
-        HeadlessBrowser.Source = Book.Url;
+
+        ReaderService = new ReaderDataService(new Config(), new HeadlessWebService(HeadlessBrowser));
+
+
+        if (!await SafeAssert(await ReaderService.setConfigFromUrl(Book.Url), "Could not get configuration information from website"))
+            return;
 
         NextChapterService chapterService = new();
         await Book.UpdateViewTimeAndSave();
@@ -95,39 +88,8 @@ public partial class HeadlessReaderPage : ContentPage, INotifyPropertyChanged, I
             IEnumerable<Book> updateQueue = await chapterService.CheckChaptersInBookList(Book, nextChapterTaskToken.Token);
             await Dispatcher.DispatchAsync(async () => await App.Database.SaveItemsAsync(updateQueue));
         });
-    }
 
-    /// <summary>
-    /// Handle changes in content when the page is loaded
-    /// </summary>
-    private async void PageLoaded(object? _, WebNavigatedEventArgs e)
-    {
-
-        var result = e.Result;
-        if (!await SafeAssert(result != WebNavigationResult.Failure, "Browser failed to obtain data."))
-            return;
-        if (!await SafeAssert(result != WebNavigationResult.Timeout, "Url timed out. Please Try again"))
-            return;
-
-        // check underlying reader service because ReaderService is guaranteed not null
-        if (readerService is null)
-        {
-            string html = await HeadlessBrowser.GetHtml();
-
-            var config = await Config.FindValidConfig(Book.Url, html);
-            
-            if (!await SafeAssertNotNull(config, "There is no valid configuration for this book"))
-                return;
-
-            ReaderService = new(config!);
-
-            // We only want this check to run at the beginning when config is null
-            if (string.IsNullOrEmpty(Book.ImageUrl) || Book!.ImageUrl == "no_image.jpg")
-                Book.ImageUrl = ConfigService.PrettyWrapSelector(html, new Models.Path(config!.ImageUrlPath), ConfigService.SelectorType.Link);
-        }
-
-
-        await GetContentAsLoadedData();
+        await GetContentAsLoadedData(Book.Url);
         await UpdateUiUsingLoadedData();
     }
 
@@ -148,39 +110,41 @@ public partial class HeadlessReaderPage : ContentPage, INotifyPropertyChanged, I
     {
         IsLoading = true;
         Book!.Url = loadedData!.prevUrl!;
-        HeadlessBrowser.Source = loadedData!.prevUrl;
-        await ReadingLayout.ScrollToAsync(ReadingLayout.ScrollX, 0, false);
         PrevVisible = false;
         NextVisible = false;
+        await ReadingLayout.ScrollToAsync(ReadingLayout.ScrollX, 0, false);
+        await GetContentAsLoadedData(Book.Url);
+        await UpdateUiUsingLoadedData();
     }
 
     [RelayCommand]
     private async void NextButton()
     {
         IsLoading = true;
-        Book!.Url = loadedData!.nextUrl!;
-        HeadlessBrowser.Source = loadedData!.nextUrl;
-        await ReadingLayout.ScrollToAsync(ReadingLayout.ScrollX, 0, false);
         PrevVisible = false;
         NextVisible = false;
+        Book!.Url = loadedData!.nextUrl!;
+        await ReadingLayout.ScrollToAsync(ReadingLayout.ScrollX, 0, false);
+        await GetContentAsLoadedData(Book.Url);
+        await UpdateUiUsingLoadedData();
     }
 
     /// <summary>
     /// Find and extract content into <see cref="LoadedData"/>
     /// </summary>
-    private async Task GetContentAsLoadedData()
+    private async Task GetContentAsLoadedData(string url)
     {
-        bool foundMatchingContent = await HeadlessBrowser.WaitUntilValid(new Models.Path(ReaderService!.Config.ContentPath), TimeSpan.FromSeconds(1.0), TimeSpan.FromSeconds(20));
+        LoadedData? foundMatchingContent = await ReaderService!.LoadUrl(url);
 
-        if (!await SafeAssert(foundMatchingContent, "Unable to get html specified by configuration"))
+        if (!await SafeAssertNotNull(foundMatchingContent, "Unable to get html specified by configuration"))
             return;
 
-        LoadedData = await ReaderService!.LoadReaderData(Book!.Url, await HeadlessBrowser.GetHtml());
+        LoadedData = foundMatchingContent!;
 
         if (!await SafeAssert(LoadedData.Title != "afb-4893", "Invalid Url"))
             return;
 
-        if (!await SafeAssert(!string.IsNullOrEmpty(LoadedData.Text), "Unable to obtain text content"))
+        if (!await SafeAssert(!string.IsNullOrEmpty(LoadedData.Text), "Content path unable to match html"))
             return;
 
     }
@@ -190,8 +154,8 @@ public partial class HeadlessReaderPage : ContentPage, INotifyPropertyChanged, I
     /// </summary>
     private async Task UpdateUiUsingLoadedData()
     {
-        NextVisible = WebService.IsUrl(LoadedData.nextUrl);
-        PrevVisible = WebService.IsUrl(LoadedData.prevUrl);
+        NextVisible = WebUtilities.IsUrl(LoadedData.nextUrl);
+        PrevVisible = WebUtilities.IsUrl(LoadedData.prevUrl);
 
         // Turn relative urls into absolutes
         var baseUri = new Uri(LoadedData.currentUrl!);
@@ -252,11 +216,14 @@ public partial class HeadlessReaderPage : ContentPage, INotifyPropertyChanged, I
         if (condition)
             return true;
 
+#pragma warning disable CS8604 // Possible null reference argument.
         Dictionary<string, object> parameters = new()
         {
             { "errormessage", message },
-            { "config", readerService?.Config }
+            { "config", ReaderService?.Config }
         };
+#pragma warning restore CS8604 
+
         await Shell.Current.GoToAsync($"/{nameof(ErrorPage)}", parameters);
         return false;
     }
