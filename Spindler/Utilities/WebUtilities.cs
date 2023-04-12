@@ -48,6 +48,12 @@
             return new Uri(BaseUrl, url!);
         }
 
+        public Uri MakeAbsoluteUrl(string url)
+        {
+            Uri modifierUrl = new Uri(url, UriKind.RelativeOrAbsolute);
+            return MakeAbsoluteUrl(modifierUrl);
+        }
+
         public void SetBaseUrl(Uri baseUrl)
         {
             if (HasBaseUrl())

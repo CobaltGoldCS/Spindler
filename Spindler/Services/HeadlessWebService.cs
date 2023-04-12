@@ -1,5 +1,4 @@
-﻿using Android.Text;
-using Spindler.CustomControls;
+﻿using Spindler.CustomControls;
 using Spindler.Utilities;
 using System.Diagnostics;
 

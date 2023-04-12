@@ -59,8 +59,8 @@ public class ReaderDataService
     /// <returns>A Task containing a LoadedData array of length 2 [prevdata, nextdata]</returns>
     public async Task<LoadedData?[]> LoadData(string prevUrl, string nextUrl)
     {
-        Task<LoadedData?> prevTask = LoadUrl(prevUrl);
-        Task<LoadedData?> nextTask = LoadUrl(nextUrl);
+        Task<LoadedData?> prevTask = LoadUrl(WebUtilities.MakeAbsoluteUrl(prevUrl).ToString());
+        Task<LoadedData?> nextTask = LoadUrl(WebUtilities.MakeAbsoluteUrl(nextUrl).ToString());
         var loaded = await Task.WhenAll(prevTask, nextTask);
         return loaded;
     }
@@ -83,7 +83,7 @@ public class ReaderDataService
         }
         try
         {
-            url = WebUtilities.MakeAbsoluteUrl(new(url)).ToString();
+            url = WebUtilities.MakeAbsoluteUrl(url).ToString();
 
             HtmlOrError html = await WebService.GetHtmlFromUrl(url);
             if (html is HtmlOrError.Error error)
