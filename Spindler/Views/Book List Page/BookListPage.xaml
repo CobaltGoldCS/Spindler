@@ -106,7 +106,7 @@
             <!--Standard book list-->
             <CollectionView x:Name="BooksList"
                         ItemsSource="{Binding DisplayedBooks, Mode=OneTime}"
-                        RemainingItemsThreshold="3"
+                        RemainingItemsThreshold="5"
                         RemainingItemsThresholdReachedCommand="{Binding EndOfListReachedCommand, Mode=OneTime}"
                         SelectionMode="Single"
                         ItemSizingStrategy="MeasureFirstItem"
