@@ -22,7 +22,7 @@ namespace Spindler.ViewModels
         /// <summary>
         /// Task that should hold an array of length 2 containing (previous chapter, next chapter) in that order
         /// </summary>
-        private Task<LoadedData?[]>? PreloadDataTask;
+        private Task<Result<LoadedData, string>[]>? PreloadDataTask;
 
         #region Bindable Properties
 
@@ -77,26 +77,31 @@ namespace Spindler.ViewModels
         public async void NextClick()
         {
             var nextdata = (await PreloadDataTask!)![1];
-            if (await (this as IReader).SafeAssertNotNull(nextdata, "Invalid Url"))
+            if (Result.IsError(nextdata))
             {
-                await ReadingLayout!.ScrollToAsync(ReadingLayout.ScrollX, 0, false);
-                IsLoading = true;
-                CurrentData = nextdata;
-                DataChanged();
+                await SafeAssert(false, nextdata.AsError().Value);
+                return;
             }
+            await ReadingLayout!.ScrollToAsync(ReadingLayout.ScrollX, 0, false);
+            IsLoading = true;
+            CurrentData = nextdata.AsOk().Value;
+            DataChanged();
         }
 
         [RelayCommand]
         public async void PrevClick()
         {
             var prevdata = (await PreloadDataTask!)![0];
-            if (await (this as IReader).SafeAssertNotNull(prevdata, "Invalid Url"))
+            
+            if (Result.IsError(prevdata))
             {
-                await ReadingLayout!.ScrollToAsync(ReadingLayout.ScrollX, 0, false);
-                IsLoading = true;
-                CurrentData = prevdata;
-                DataChanged();
+                await SafeAssert(false, prevdata.AsError().Value);
+                return;
             }
+            await ReadingLayout!.ScrollToAsync(ReadingLayout.ScrollX, 0, false);
+            IsLoading = true;
+            CurrentData = prevdata.AsOk().Value;
+            DataChanged();
         }
 
         [RelayCommand]
@@ -129,12 +134,15 @@ namespace Spindler.ViewModels
         public async Task StartLoad()
         {
 
-            LoadedData? data = await ReaderService.LoadUrl(CurrentBook!.Url);
+            Result<LoadedData, string> data = await ReaderService.LoadUrl(CurrentBook!.Url);
 
-            if (!await (this as IReader).SafeAssertNotNull(data, "Invalid Url"))
+            if (Result.IsError(data))
+            {
+                await SafeAssert(false, data.AsError().Value);
                 return;
+            }
 
-            CurrentData = data!;
+            CurrentData = data.AsOk().Value;
             // Get image url from load
             if (string.IsNullOrEmpty(CurrentBook!.ImageUrl) || CurrentBook!.ImageUrl == "no_image.jpg")
             {
@@ -171,10 +179,6 @@ namespace Spindler.ViewModels
 
         private async void DataChanged()
         {
-            if (!await (this as IReader).SafeAssertNotNull(CurrentData, "This is an invalid url"))
-                return;
-            if (!await SafeAssert(CurrentData!.Title != "afb-4893", CurrentData.Text!)) // This means an error has occurred while getting data from the WebService
-                return;
             // Database updates
             CurrentBook!.Url = CurrentData.currentUrl!;
             await CurrentBook.UpdateViewTimeAndSave();

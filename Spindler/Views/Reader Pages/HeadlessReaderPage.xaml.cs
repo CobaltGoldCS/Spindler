@@ -10,7 +10,7 @@ namespace Spindler.Views;
 
 public partial class HeadlessReaderPage : ContentPage, INotifyPropertyChanged, IReader, IQueryAttributable
 {
-    ReaderDataService? ReaderService { get; set; } = null;
+    ReaderDataService ReaderService { get; set; }
 
     Book Book = new Book { Id = -1 };
 
@@ -63,7 +63,10 @@ public partial class HeadlessReaderPage : ContentPage, INotifyPropertyChanged, I
 
     #endregion
 
+
+#pragma warning disable CS8618 // ReaderService is declared in ApplyQueryAttributes, so it is never not null
     public HeadlessReaderPage()
+#pragma warning restore CS8618 
     {
         InitializeComponent();
         Shell.Current.Navigating += OnShellNavigated;
@@ -101,7 +104,7 @@ public partial class HeadlessReaderPage : ContentPage, INotifyPropertyChanged, I
             BookListId = Book!.BookListId,
             Title = "Bookmark: " + loadedData!.Title,
             Url = loadedData.currentUrl!,
-            Position = ReadingLayout!.ScrollY / ReadingLayout.ContentSize.Height,
+            Position = ReadingLayout!.ScrollY,
         });
     }
 
@@ -134,15 +137,15 @@ public partial class HeadlessReaderPage : ContentPage, INotifyPropertyChanged, I
     /// </summary>
     private async Task GetContentAsLoadedData(string url)
     {
-        LoadedData? foundMatchingContent = await ReaderService!.LoadUrl(url);
+        Result<LoadedData, string> resultContent = await ReaderService!.LoadUrl(url);
 
-        if (!await ((IReader)this).SafeAssertNotNull(foundMatchingContent, "Unable to get html specified by configuration"))
+        if (Result.IsError(resultContent))
+        {
+            await SafeAssert(false, resultContent.AsError().Value);
             return;
+        }
 
-        LoadedData = foundMatchingContent!;
-
-        if (!await SafeAssert(LoadedData.Title != "afb-4893", "Invalid Url"))
-            return;
+        LoadedData = resultContent.AsOk().Value;
 
         if (!await SafeAssert(!string.IsNullOrEmpty(LoadedData.Text), "Content path unable to match html"))
             return;
