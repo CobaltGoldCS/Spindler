@@ -239,10 +239,12 @@ public class ConfigService
         string separator = (string)extraconfigs!.GetValueOrDefault("separator", "\n");
         foreach (HtmlNode child in node.ChildNodes)
         {
-            if (child.OriginalName == "br")
+            if (child.InnerText.Length == 0)
             {
-                if (child.NextSibling?.OriginalName != "br")
-                    stringWriter.Write("\n");
+                if (child.OriginalName == "br" && child.NextSibling?.OriginalName != "br")
+                {
+                     stringWriter.Write("\n");
+                }
                 continue;
             }
             stringWriter.WriteLine($"\t\t{HttpUtility.HtmlDecode(child.InnerText)}{separator}");
