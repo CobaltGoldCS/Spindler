@@ -15,13 +15,14 @@
 
 
     <Shell.TitleView>
-        <Grid ColumnDefinitions="*, auto" CompressedLayout.IsHeadless="True">
+        <Grid  ColumnDefinitions="*, auto" CompressedLayout.IsHeadless="True">
 
             <Entry Placeholder="{Binding Title}"
                    Text="{Binding FilterText}"
                    Grid.Column="0"
+                   Margin="-20,0,0,0"
                    FontSize="Large"
-                   VerticalOptions="Center"
+                   VerticalOptions="Start"
                    HorizontalOptions="FillAndExpand"
                    TextColor="{AppThemeBinding Dark={StaticResource White}, Light={StaticResource Black}}"/>
             <StackLayout Grid.Column="1"
