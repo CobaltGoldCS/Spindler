@@ -20,7 +20,6 @@
             <Entry Placeholder="{Binding Title}"
                    Text="{Binding FilterText}"
                    Grid.Column="0"
-                   Margin="-20,0,0,0"
                    FontSize="Large"
                    VerticalOptions="Start"
                    HorizontalOptions="FillAndExpand"
@@ -89,9 +88,9 @@
                         <LinearItemsLayout ItemSpacing="5" Orientation="Horizontal"/>
                     </CollectionView.ItemsLayout>
                     <CollectionView.ItemTemplate>
-                        <DataTemplate>
+                        <DataTemplate x:DataType="models:Book">
                             <items:PinnedBookItem 
-                                BookParameter="{Binding ., Mode=OneTime}"
+                                BookParameter="{Binding Path=., Mode=OneTime}"
                                 SelectionCommand="{Binding Source={x:RelativeSource AncestorType={x:Type viewmodels:BookListViewModel}}, Path=SelectionCommand, Mode=OneTime}"
                                 DoubleTappedCommand="{Binding Source={x:RelativeSource AncestorType={x:Type viewmodels:BookListViewModel}}, Path=DoubleTappedCommand, Mode=OneTime}" />
                         </DataTemplate>
@@ -117,9 +116,9 @@
                     <LinearItemsLayout ItemSpacing="5" Orientation="Vertical"/>
                 </CollectionView.ItemsLayout>
                 <CollectionView.ItemTemplate>
-                    <DataTemplate>
+                    <DataTemplate x:DataType="models:Book">
                         <items:BookItem 
-                        BookParameter="{Binding ., Mode=OneTime}"
+                        BookParameter="{Binding Path=., Mode=OneTime}"
                         SelectionCommand="{Binding Source={x:RelativeSource AncestorType={x:Type viewmodels:BookListViewModel}}, Path=SelectionCommand, Mode=OneTime}"
                         DoubleTappedCommand="{Binding Source={x:RelativeSource AncestorType={x:Type viewmodels:BookListViewModel}}, Path=DoubleTappedCommand, Mode=OneTime}"/>
 
