@@ -180,14 +180,15 @@ public partial class HeadlessReaderPage : ContentPage, INotifyPropertyChanged, I
             return;
         }
 
-        var shouldAnimate = (bool)ReaderService!.Config.ExtraConfigs.GetValueOrDefault("autoscrollanimation", true);
         await Task.Run(async () =>
         {
             while (ReadingLayout.ContentSize.Height < 1000)
                 await Task.Delay(TimeSpan.FromMilliseconds(50));
             await MainThread.InvokeOnMainThreadAsync(async () =>
             {
-                await ReadingLayout.ScrollToAsync(ReadingLayout.ScrollX, Book.Position, shouldAnimate);
+                await ReadingLayout.ScrollToAsync(ReadingLayout.ScrollX,
+                    Book.Position, 
+                    ReaderService!.Config.HasAutoscrollAnimation);
                 Book.Position = 0;
             });
         });

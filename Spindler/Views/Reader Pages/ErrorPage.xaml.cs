@@ -6,7 +6,7 @@ namespace Spindler.Views;
 [QueryProperty(nameof(Message), "errormessage")]
 public partial class ErrorPage : ContentPage
 {
-
+    
     #region Attributes
     private Config? config = null;
     public Config? Config
@@ -15,7 +15,8 @@ public partial class ErrorPage : ContentPage
         set
         {
             config = value;
-            HeadlessMode.On = (bool?)value?.ExtraConfigs.GetValueOrDefault("headless", false) ?? false;
+            // TODO: Make this reactable for Config to actually be affected
+            HeadlessMode.On = config?.UsesHeadless ?? false;
         }
     }
     public bool ShouldReload = false;
@@ -59,7 +60,7 @@ public partial class ErrorPage : ContentPage
         {
             return;
         }
-        Config.ExtraConfigs["headless"] = HeadlessMode.On;
+        Config.UsesHeadless = HeadlessMode.On;
         await App.Database.SaveItemAsync(Config!);
     }
 

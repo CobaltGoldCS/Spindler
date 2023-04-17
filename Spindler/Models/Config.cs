@@ -73,6 +73,56 @@ public class Config : IIndexedModel
             ExtraConfigsBlobbed = JsonConvert.SerializeObject(value);
         }
     }
+
+    [Ignore]
+    public string Separator
+    {
+        get => (string)ExtraConfigs.GetValueOrDefault("separator", "\n");
+        set
+        {
+            var tempExtraConfigs = ExtraConfigs;
+            tempExtraConfigs["separator"] = value;
+            ExtraConfigs = tempExtraConfigs;
+        }
+    }
+
+    [Ignore]
+    public bool UsesWebview
+    {
+        get => (bool)ExtraConfigs.GetValueOrDefault("webview", false);
+        set
+        {
+            var tempExtraConfigs = ExtraConfigs;
+            tempExtraConfigs["webview"] = value;
+            ExtraConfigs = tempExtraConfigs;
+        }
+    }
+
+    [Ignore]
+    public bool UsesHeadless
+    {
+        get => (bool)ExtraConfigs.GetValueOrDefault("headless", false);
+        set
+        {
+            var tempExtraConfigs = ExtraConfigs;
+            tempExtraConfigs["headless"] = value;
+            ExtraConfigs = tempExtraConfigs;
+        }
+    }
+
+    [Ignore]
+    public bool HasAutoscrollAnimation
+    {
+        get => (bool)ExtraConfigs.GetValueOrDefault("autoscrollanimation", true);
+        set
+        {
+            var tempExtraConfigs = ExtraConfigs;
+            tempExtraConfigs["autoscrollanimation"] = value;
+            ExtraConfigs = tempExtraConfigs;
+        }
+    }
+
+
     public void SetPathType(string pathType)
     {
         PathType = pathType;

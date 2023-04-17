@@ -1,6 +1,5 @@
 ﻿using HtmlAgilityPack;
 using HtmlAgilityPack.CssSelectors.NetCore;
-using Java.Lang;
 using Spindler.Models;
 using Spindler.Utilities;
 using System.Text.RegularExpressions;
@@ -112,13 +111,19 @@ public partial class ReaderDataService
             WebUtilities.SetBaseUrl(new Uri(uri.GetLeftPart(UriPartial.Authority) + "/", UriKind.Absolute));
         }
 
-        string text = GetContent(doc);
+        Task<string>[] selections = new Task<string>[4];
+        selections[0] = Task.Run(() => GetContent(doc));
+        selections[1] = Task.Run(() => GetTitle(html));
+        selections[2] = Task.Run(() => ConfigService.PrettyWrapSelector(html, ConfigService.Selector.NextUrl, type: ConfigService.SelectorType.Link));
+        selections[3] = Task.Run(() => ConfigService.PrettyWrapSelector(html, ConfigService.Selector.NextUrl, type: ConfigService.SelectorType.Link));
+        string[] content = await Task.WhenAll(selections);
+
         LoadedData data = new()
         {
-            Text = text,
-            nextUrl = ConfigService.PrettyWrapSelector(html, ConfigService.Selector.NextUrl, type: ConfigService.SelectorType.Link),
-            prevUrl = ConfigService.PrettyWrapSelector(html, ConfigService.Selector.PrevUrl, type: ConfigService.SelectorType.Link),
-            Title = GetTitle(html),
+            Text = content[0],
+            Title = content[1],
+            nextUrl = content[2],
+            prevUrl = content[3],
             currentUrl = url
         };
 
@@ -140,11 +145,10 @@ public partial class ReaderDataService
             _ => throw new NotImplementedException("This path type has not been implemented {ConfigService.GetContent}"),
         };
 
-        string separator = (string)ConfigService.GetExtraConfigs()!.GetValueOrDefault("separator", "\n");
         if (node == null) return string.Empty;
         if (!node.HasChildNodes)
         {
-            return HttpUtility.HtmlDecode(node.InnerText).Replace("\n", separator);
+            return HttpUtility.HtmlDecode(node.InnerText).Replace("\n", Config.Separator);
         }
 
         // Node contains child nodes, so we must get the text of each
@@ -152,7 +156,7 @@ public partial class ReaderDataService
 
         foreach (HtmlNode child in node.ChildNodes)
         {
-            string innerText = matchWhitespaceOnly().Replace(HttpUtility.HtmlDecode(child.InnerText), string.Empty);
+            string innerText = whiteSpaceOnly.Replace(HttpUtility.HtmlDecode(child.InnerText), string.Empty);
             if (innerText.Length == 0)
             {
                 if (child.OriginalName == "br" && child.NextSibling?.OriginalName != "br")
@@ -161,8 +165,8 @@ public partial class ReaderDataService
                 }
                 continue;
             }
-            stringWriter.Write($"\t\t{HttpUtility.HtmlDecode(child.InnerText).Replace("\n", separator)}");
-            stringWriter.Write(separator);
+            stringWriter.Write($"\t\t{HttpUtility.HtmlDecode(child.InnerText).Replace("\n", Config.Separator)}");
+            stringWriter.Write(Config.Separator);
         }
         return stringWriter.ToString();
     }
@@ -178,6 +182,5 @@ public partial class ReaderDataService
         return HttpUtility.HtmlDecode(ConfigService.PrettyWrapSelector(html, ConfigService.Selector.Title, type: ConfigService.SelectorType.Text));
     }
 
-    [GeneratedRegex("^\\s+$", RegexOptions.Multiline, "en-US")]
-    private static partial Regex matchWhitespaceOnly();
+    private static readonly Regex whiteSpaceOnly = new("^\\s+$", RegexOptions.Multiline);
 }

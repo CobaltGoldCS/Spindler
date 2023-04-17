@@ -25,54 +25,21 @@ public partial class ConfigDetailPage : BaseConfigDetailPage<Config>
                 Title = $"Modify {Configuration.DomainName}";
                 break;
         }
-        switchWebView.On = (bool)Configuration.ExtraConfigs.GetValueOrDefault("webview", false);
-        animationSwitch.On = (bool)Configuration.ExtraConfigs.GetValueOrDefault("autoscrollanimation", true);
-        separatorEntry.Text = ((string)Configuration.ExtraConfigs.GetValueOrDefault("separator", "\n"))
+        switchWebView.On = Configuration.UsesWebview;
+        animationSwitch.On = Configuration.HasAutoscrollAnimation;
+        separatorEntry.Text = Configuration.Separator
             .Replace(Environment.NewLine, @"\n")
             .Replace("\t", @"\t");
-        headlessSwitch.On = (bool)Configuration.ExtraConfigs.GetValueOrDefault("headless", false);
+        headlessSwitch.On = Configuration.UsesHeadless;
     }
 
 
 
     public ConfigDetailPage()
-
-    /* Unmerged change from project 'Spindler (net7.0-windows10.0.19041.0)'
-    Before:
-        {
-
-            InitializeComponent();
-    After:
-        {
-
-            InitializeComponent();
-    */
-
-    /* Unmerged change from project 'Spindler (net7.0-maccatalyst)'
-    Before:
-        {
-
-            InitializeComponent();
-    After:
-        {
-
-            InitializeComponent();
-    */
-
-    /* Unmerged change from project 'Spindler (net7.0-ios)'
-    Before:
-        {
-
-            InitializeComponent();
-    After:
-        {
-
-            InitializeComponent();
-    */
     {
 
         InitializeComponent();
-        domainEntry.Behaviors.Add(new TextValidationBehavior(DomainValidationRegex().IsMatch));
+        domainEntry.Behaviors.Add(new TextValidationBehavior(DomainValidationRegex.IsMatch));
 
         TextValidationBehavior validSelectorBehavior = new(ConfigService.IsValidSelector);
         contentEntry.Behaviors.Add(validSelectorBehavior);
@@ -84,7 +51,7 @@ public partial class ConfigDetailPage : BaseConfigDetailPage<Config>
 
     protected override void okButton_Clicked(object sender, EventArgs e)
     {
-        if (!DomainValidationRegex().IsMatch(domainEntry.Text) ||
+        if (!DomainValidationRegex.IsMatch(domainEntry.Text) ||
             !ConfigService.IsValidSelector(contentEntry.Text) ||
             !ConfigService.IsValidSelector(nextEntry.Text) ||
             !ConfigService.IsValidSelector(prevEntry.Text))
@@ -110,14 +77,12 @@ public partial class ConfigDetailPage : BaseConfigDetailPage<Config>
     protected async void ImportCommand(object sender, EventArgs e)
     {
         await base.Import(sender, e);
-        switchWebView.On = (bool)Configuration.ExtraConfigs.GetValueOrDefault("webview", false);
-        animationSwitch.On = (bool)Configuration.ExtraConfigs.GetValueOrDefault("autoscrollanimation", true);
-        separatorEntry.Text = ((string)Configuration.ExtraConfigs.GetValueOrDefault("separator", "\n"))
+        switchWebView.On = Configuration.UsesWebview;
+        animationSwitch.On = Configuration.HasAutoscrollAnimation;
+        separatorEntry.Text = Configuration.Separator
             .Replace(Environment.NewLine, @"\n")
             .Replace("\t", @"\t");
-        headlessSwitch.On = (bool)Configuration.ExtraConfigs.GetValueOrDefault("headless", false);
+        headlessSwitch.On = Configuration.UsesHeadless;
     }
-
-    [GeneratedRegex("^(?!www\\.)(((?!\\-))(xn\\-\\-)?[a-z0-9\\-_]{0,61}[a-z0-9]{1,1}\\.)*(xn\\-\\-)?([a-z0-9\\-]{1,61}|[a-z0-9\\-]{1,30})\\.[a-z]{2,}$")]
-    private static partial Regex DomainValidationRegex();
+    private static readonly Regex DomainValidationRegex = new("^(?!www\\.)(((?!\\-))(xn\\-\\-)?[a-z0-9\\-_]{0,61}[a-z0-9]{1,1}\\.)*(xn\\-\\-)?([a-z0-9\\-]{1,61}|[a-z0-9\\-]{1,30})\\.[a-z]{2,}$");
 }
