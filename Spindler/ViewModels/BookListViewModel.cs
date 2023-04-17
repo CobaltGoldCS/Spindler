@@ -71,26 +71,6 @@ namespace Spindler.ViewModels
             Id = list.Id;
             Title = list.Name;
 
-            // Set up pinned books
-            CurrentList = await Database.GetBooksByBooklistIdAsync(Id);
-            foreach (var book in CurrentList.Where(book => book.Pinned))
-            {
-                PinnedBooks.Add(book);
-            }
-            PinnedBooksAreVisible = PinnedBooks.Count > 0;
-
-            // Set up normal books
-            LoaderHeightRequest = 20;
-            IsExpanding = true;
-            foreach (Book book in CurrentList!
-                                    .Where(book => book.Name.Contains(FilterText))
-                                    .Skip(DisplayedBooks.Count)
-                                    .Take(NUM_ITEMS_ADDED_TO_LIST))
-            {
-                DisplayedBooks!.Add(book);
-            }
-            IsExpanding = false;
-            LoaderHeightRequest = 0;
         }
 
         ImageButton? AddButton;
@@ -232,12 +212,21 @@ namespace Spindler.ViewModels
         /// Method called when the user reaches the end of the displayed books
         /// </summary>
         [RelayCommand]
-        public void EndOfListReached()
+        public async void EndOfListReached()
         {
             // First time load
-            if (DisplayedBooks.Count < NUM_ITEMS_ADDED_TO_LIST)
+            if (DisplayedBooks.Count == 0)
             {
-                return;
+                await Task.Delay(175);
+                // Set up pinned books
+                CurrentList = await Database.GetBooksByBooklistIdAsync(Id);
+                foreach (var book in CurrentList.Where(book => book.Pinned))
+                {
+                    PinnedBooks.Add(book);
+                }
+                PinnedBooksAreVisible = PinnedBooks.Count > 0;
+
+                LoaderHeightRequest = 0;
             }
 
             LoaderHeightRequest = 20;
