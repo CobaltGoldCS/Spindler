@@ -180,7 +180,7 @@ namespace Spindler.ViewModels
         private async void DataChanged()
         {
             // Database updates
-            CurrentBook!.Url = CurrentData.currentUrl!;
+            CurrentBook!.Url = CurrentData!.currentUrl!;
             await CurrentBook.UpdateViewTimeAndSave();
 
             OnPropertyChanged(nameof(NextButtonIsVisible));
