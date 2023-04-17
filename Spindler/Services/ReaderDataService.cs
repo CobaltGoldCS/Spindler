@@ -115,7 +115,7 @@ public partial class ReaderDataService
         selections[0] = Task.Run(() => GetContent(doc));
         selections[1] = Task.Run(() => GetTitle(html));
         selections[2] = Task.Run(() => ConfigService.PrettyWrapSelector(html, ConfigService.Selector.NextUrl, type: ConfigService.SelectorType.Link));
-        selections[3] = Task.Run(() => ConfigService.PrettyWrapSelector(html, ConfigService.Selector.NextUrl, type: ConfigService.SelectorType.Link));
+        selections[3] = Task.Run(() => ConfigService.PrettyWrapSelector(html, ConfigService.Selector.PrevUrl, type: ConfigService.SelectorType.Link));
         string[] content = await Task.WhenAll(selections);
 
         LoadedData data = new()
