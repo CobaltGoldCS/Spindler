@@ -24,7 +24,6 @@
         Background="{AppThemeBinding Dark={StaticResource DarkCardBackground}, Light={StaticResource LightBackground}}"
         ColumnDefinitions="85, *"
         RowDefinitions="65, 45"
-        CompressedLayout.IsHeadless="True"
         >
         <Image Source="{Binding Source={x:Reference this}, Path=BookParameter.ImageUrl, Mode=OneWay}"
                Aspect="AspectFill"
