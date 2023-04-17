@@ -188,6 +188,13 @@ public class ConfigService
         };
     }
 
+    /// <summary>
+    /// Select string from <paramref name="nav"/> using a xpath
+    /// </summary>
+    /// <param name="nav">The document to select string from </param>
+    /// <param name="path">The xpath to use</param>
+    /// <param name="type">The specific type to prioritize</param>
+    /// <returns>A string based on the xpath syntax used</returns>
     public static string? XPathHandler(HtmlDocument nav, string path, SelectorType type)
     {
         // Custom $ Syntax
