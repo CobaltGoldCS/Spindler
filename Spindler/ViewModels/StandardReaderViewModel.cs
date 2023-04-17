@@ -200,15 +200,12 @@ namespace Spindler.ViewModels
 
                 await Task.Delay(100);
 
-
-                var hasAutoScrollAnimation = (bool)ReaderService.Config.ExtraConfigs.GetValueOrDefault("autoscrollanimation", true);
-
                 MainThread.BeginInvokeOnMainThread(async () =>
                 {
                     await (ReadingLayout?.ScrollToAsync(
                         0,
                         CurrentBook.Position,
-                        hasAutoScrollAnimation) ?? Task.CompletedTask);
+                        ReaderService.Config.HasAutoscrollAnimation) ?? Task.CompletedTask);
                 });
 
             });

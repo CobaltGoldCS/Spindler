@@ -39,8 +39,7 @@ namespace Spindler.ViewModels
         [ObservableProperty]
         string method = "Normal Reader";
 
-        bool webview = false;
-        bool headless = false;
+        Config? config;
 
 
         public async Task Load(Book book)
@@ -48,7 +47,7 @@ namespace Spindler.ViewModels
             this.book = book;
             Domain = new UriBuilder(book.Url).Host;
 
-            Config? config = await Config.FindValidConfig(book.Url);
+            config = await Config.FindValidConfig(book.Url);
 
             Title = book.Title;
             ImageUrl = book.ImageUrl;
@@ -56,16 +55,13 @@ namespace Spindler.ViewModels
             if (config is null)
             {
                 // This is for general configurations where the FindValidConfig call may fail due to a 403 forbidden or the sort
-                headless = true;
+                config = new Config() { UsesHeadless = true };
                 Method = "Headless Reader";
                 return;
             }
 
-            webview = (bool)config!.ExtraConfigs.GetValueOrDefault("webview", false);
-            headless = (bool)config.ExtraConfigs.GetValueOrDefault("headless", false);
-
-            if (headless) Method = "Headless Reader";
-            if (webview) Method = "Web View Reader";
+            if (config!.UsesHeadless) Method = "Headless Reader";
+            if (config!.UsesWebview) Method = "Web View Reader";
 
             TitleSelectorType = GetPathAsString(config.TitlePath);
             ContentSelectorType = GetPathAsString(config.ContentPath);
@@ -82,15 +78,15 @@ namespace Spindler.ViewModels
             };
 
             string pageName = nameof(StandardReaderPage);
-            if (webview)
+            if (config!.UsesWebview)
             {
                 pageName = nameof(WebviewReaderPage);
             }
-            if (headless)
+            if (config.UsesHeadless)
             {
                 pageName = nameof(HeadlessReaderPage);
             }
-
+            // TODO: Give Reader Pages the ability to take configs as a parameter
             await Shell.Current.GoToAsync($"../{pageName}", parameters);
             return;
         }

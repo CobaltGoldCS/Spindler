@@ -42,7 +42,7 @@ namespace Spindler.Services
                 var document = await engine.OpenUrl(book.Url);
                 string html = document.Document.InnerHTML;
                 Config? config = await Config.FindValidConfig(book.Url, html);
-                if (config is null || (bool)config.ExtraConfigs.GetValueOrDefault("webview", false))
+                if (config is null || config.UsesWebview)
                     continue;
 
                 var nextUrl = ConfigService.PrettyWrapSelector(html, new(config.NextUrlPath), ConfigService.SelectorType.Link);

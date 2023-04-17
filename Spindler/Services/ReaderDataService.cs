@@ -2,13 +2,14 @@
 using HtmlAgilityPack.CssSelectors.NetCore;
 using Spindler.Models;
 using Spindler.Utilities;
+using System.Text.RegularExpressions;
 using System.Web;
 using HtmlOrError = Spindler.Utilities.Result<string, string>;
 using Path = Spindler.Models.Path;
 
 namespace Spindler.Services;
 
-public class ReaderDataService
+public partial class ReaderDataService
 {
     // This is so other things can access lower level APIs
     /// <summary>
@@ -78,7 +79,7 @@ public class ReaderDataService
         }
         if (!WebUtilities.HasBaseUrl())
         {
-            if (!Uri.TryCreate(url, UriKind.Absolute, out Uri? uri)) return null;
+            if (!Uri.TryCreate(url, UriKind.Absolute, out Uri? uri)) return new Result<LoadedData, string>.Error($"'{url}' is not a valid");
             WebUtilities.SetBaseUrl(new Uri(uri.GetLeftPart(UriPartial.Authority) + "/", UriKind.Absolute));
         }
         url = WebUtilities.MakeAbsoluteUrl(url).ToString();
@@ -110,19 +111,30 @@ public class ReaderDataService
             WebUtilities.SetBaseUrl(new Uri(uri.GetLeftPart(UriPartial.Authority) + "/", UriKind.Absolute));
         }
 
-        Task<string> text = Task.Run(() => { return GetContent(doc); });
+        Task<string>[] selections = new Task<string>[4];
+        selections[0] = Task.Run(() => GetContent(doc));
+        selections[1] = Task.Run(() => GetTitle(html));
+        selections[2] = Task.Run(() => ConfigService.PrettyWrapSelector(html, ConfigService.Selector.NextUrl, type: ConfigService.SelectorType.Link));
+        selections[3] = Task.Run(() => ConfigService.PrettyWrapSelector(html, ConfigService.Selector.NextUrl, type: ConfigService.SelectorType.Link));
+        string[] content = await Task.WhenAll(selections);
+
         LoadedData data = new()
         {
-            Text = await text,
-            nextUrl = ConfigService.PrettyWrapSelector(html, ConfigService.Selector.NextUrl, type: ConfigService.SelectorType.Link),
-            prevUrl = ConfigService.PrettyWrapSelector(html, ConfigService.Selector.PrevUrl, type: ConfigService.SelectorType.Link),
-            Title = GetTitle(html),
+            Text = content[0],
+            Title = content[1],
+            nextUrl = content[2],
+            prevUrl = content[3],
             currentUrl = url
         };
 
         return new Result<LoadedData, string>.Ok(data);
     }
 
+    /// <summary>
+    /// Smart Get Content that matches given content path using <see cref="Path"/>
+    /// </summary>
+    /// <param name="nav">The HtmlDocument to evaluate for matches</param>
+    /// <returns>A String containing the text of the content matched by contentpath</returns>
     public string GetContent(HtmlDocument nav)
     {
         Path contentPath = ConfigService.GetPath(ConfigService.Selector.Content);
@@ -136,22 +148,25 @@ public class ReaderDataService
         if (node == null) return string.Empty;
         if (!node.HasChildNodes)
         {
-            return HttpUtility.HtmlDecode(node.InnerText);
+            return HttpUtility.HtmlDecode(node.InnerText).Replace("\n", Config.Separator);
         }
 
         // Node contains child nodes, so we must get the text of each
         StringWriter stringWriter = new();
-        string separator = (string)ConfigService.GetExtraConfigs()!.GetValueOrDefault("separator", "\n");
 
         foreach (HtmlNode child in node.ChildNodes)
         {
-            if (child.OriginalName == "br")
+            string innerText = whiteSpaceOnly.Replace(HttpUtility.HtmlDecode(child.InnerText), string.Empty);
+            if (innerText.Length == 0)
             {
-                if (child.NextSibling?.OriginalName != "br")
+                if (child.OriginalName == "br" && child.NextSibling?.OriginalName != "br")
+                {
                     stringWriter.Write("\n");
+                }
                 continue;
             }
-            stringWriter.WriteLine($"\t\t{HttpUtility.HtmlDecode(child.InnerText)}{separator}");
+            stringWriter.Write($"\t\t{HttpUtility.HtmlDecode(child.InnerText).Replace("\n", Config.Separator)}");
+            stringWriter.Write(Config.Separator);
         }
         return stringWriter.ToString();
     }
@@ -167,15 +182,5 @@ public class ReaderDataService
         return HttpUtility.HtmlDecode(ConfigService.PrettyWrapSelector(html, ConfigService.Selector.Title, type: ConfigService.SelectorType.Text));
     }
 
-
-    /// <summary>
-    /// Make an error output with an optional message
-    /// </summary>
-    /// <param name="message">An optional error message</param>
-    /// <returns>LoadedData in error form</returns>
-    private LoadedData MakeError(string message = "") => new LoadedData()
-    {
-        Title = "afb-4893",
-        Text = message,
-    };
+    private static readonly Regex whiteSpaceOnly = new("^\\s+$", RegexOptions.Multiline);
 }

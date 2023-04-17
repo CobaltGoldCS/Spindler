@@ -16,7 +16,6 @@ public class ConfigService
     public Path nextpath;
     public Path previouspath;
     public Path imageUrlPath;
-    public Dictionary<string, object> extraconfigs;
 
     public int configId;
 
@@ -34,7 +33,6 @@ public class ConfigService
         nextpath = new Path(config.NextUrlPath);
         previouspath = new Path(config.PrevUrlPath);
         imageUrlPath = new Path(config.ImageUrlPath);
-        extraconfigs = config.ExtraConfigs;
     }
 
     public enum SelectorType
@@ -107,8 +105,6 @@ public class ConfigService
                 throw new NotImplementedException("Selector not implemented (ConfigService.GetPath)");
         }
     }
-
-    public Dictionary<string, object> GetExtraConfigs() => extraconfigs;
 
     #region Selectors using Paths
 
@@ -192,6 +188,13 @@ public class ConfigService
         };
     }
 
+    /// <summary>
+    /// Select string from <paramref name="nav"/> using a xpath
+    /// </summary>
+    /// <param name="nav">The document to select string from </param>
+    /// <param name="path">The xpath to use</param>
+    /// <param name="type">The specific type to prioritize</param>
+    /// <returns>A string based on the xpath syntax used</returns>
     public static string? XPathHandler(HtmlDocument nav, string path, SelectorType type)
     {
         // Custom $ Syntax
@@ -213,46 +216,5 @@ public class ConfigService
             value = Regex.Match(value, "((?:https?:/)?/[-a-zA-Z0-9+&@#/%?=~_|!:, .;]*[-a-zA-Z0-9+&@#/%=~_|])").Value;
         return value;
     }
-
-    /// <summary>
-    /// Smart Get Content that matches given content path using xpath
-    /// </summary>
-    /// <param name="nav">The HtmlDocument to evaluate for matches</param>
-    /// <returns>A String containing the text of the content matched by contentpath</returns>
-    public string GetContent(HtmlDocument nav)
-    {
-        HtmlNode node = contentpath!.type switch
-        {
-            Path.Type.Css => nav.QuerySelector(contentpath.path),
-            Path.Type.XPath => nav.DocumentNode.SelectSingleNode(contentpath.path),
-            _ => throw new NotImplementedException("This path type has not been implemented {ConfigService.GetContent}"),
-        };
-
-        if (node == null) return string.Empty;
-        if (!node.HasChildNodes)
-        {
-            return HttpUtility.HtmlDecode(node.InnerText);
-        }
-
-        // Node contains child nodes, so we must get the text of each
-        StringWriter stringWriter = new();
-        string separator = (string)extraconfigs!.GetValueOrDefault("separator", "\n");
-        foreach (HtmlNode child in node.ChildNodes)
-        {
-            if (child.InnerText.Length == 0)
-            {
-                if (child.OriginalName == "br" && child.NextSibling?.OriginalName != "br")
-                {
-                     stringWriter.Write("\n");
-                }
-                continue;
-            }
-            stringWriter.WriteLine($"\t\t{HttpUtility.HtmlDecode(child.InnerText)}{separator}");
-        }
-        return stringWriter.ToString();
-    }
-
-
-
     #endregion
 }

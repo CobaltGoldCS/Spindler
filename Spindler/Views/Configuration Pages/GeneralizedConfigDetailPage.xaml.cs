@@ -24,12 +24,12 @@ public partial class GeneralizedConfigDetailPage : BaseConfigDetailPage<Generali
                 Title = $"Modify {Configuration.DomainName}";
                 break;
         }
-        switchWebView.On = (bool)Configuration.ExtraConfigs.GetValueOrDefault("webview", false);
-        animationSwitch.On = (bool)Configuration.ExtraConfigs.GetValueOrDefault("autoscrollanimation", true);
-        separatorEntry.Text = ((string)Configuration.ExtraConfigs.GetValueOrDefault("separator", "\n"))
+        switchWebView.On = Configuration.UsesWebview;
+        animationSwitch.On = Configuration.HasAutoscrollAnimation;
+        separatorEntry.Text = Configuration.Separator
             .Replace(Environment.NewLine, @"\n")
             .Replace("\t", @"\t");
-        headlessSwitch.On = (bool)Configuration.ExtraConfigs.GetValueOrDefault("headless", false);
+        headlessSwitch.On = Configuration.UsesHeadless;
     }
 
 
@@ -76,12 +76,12 @@ public partial class GeneralizedConfigDetailPage : BaseConfigDetailPage<Generali
     protected async void ImportCommand(object sender, EventArgs e)
     {
         await base.Import(sender, e);
-        switchWebView.On = (bool)Configuration.ExtraConfigs.GetValueOrDefault("webview", false);
-        animationSwitch.On = (bool)Configuration.ExtraConfigs.GetValueOrDefault("autoscrollanimation", true);
-        separatorEntry.Text = ((string)Configuration.ExtraConfigs.GetValueOrDefault("separator", "\n"))
+        switchWebView.On = Configuration.UsesWebview;
+        animationSwitch.On = Configuration.HasAutoscrollAnimation;
+        separatorEntry.Text = Configuration.Separator
             .Replace(Environment.NewLine, @"\n")
             .Replace("\t", @"\t");
-        headlessSwitch.On = (bool)Configuration.ExtraConfigs.GetValueOrDefault("headless", false);
+        headlessSwitch.On = Configuration.UsesHeadless;
     }
 
     #endregion

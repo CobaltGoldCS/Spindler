@@ -168,11 +168,11 @@ namespace Spindler.ViewModels
             var config = await Config.FindValidConfig(selection.Url);
 
             string pageName = nameof(StandardReaderPage);
-            if ((bool?)config?.ExtraConfigs.GetValueOrDefault("webview", false) ?? false)
+            if (config?.UsesWebview ?? false)
             {
                 pageName = nameof(WebviewReaderPage);
             }
-            if ((bool?)config?.ExtraConfigs.GetValueOrDefault("headless", false) ?? false)
+            if (config?.UsesHeadless ?? false)
             {
                 pageName = nameof(HeadlessReaderPage);
             }
