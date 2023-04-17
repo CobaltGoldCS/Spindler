@@ -3,12 +3,16 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="Spindler.Views.HeadlessReaderPage"
              xmlns:controls="clr-namespace:Spindler.CustomControls"
+             xmlns:vm="clr-namespace:Spindler.ViewModels"
+             x:DataType="vm:HeadlessReaderViewModel"
              Shell.TabBarIsVisible="False"
              Shell.BackgroundColor="{AppThemeBinding Dark={StaticResource DarkCardBackground}, Light={StaticResource White}}"
-             x:Name="Headless"
-             Title="{Binding Source={x:Reference Headless}, Path = LoadedData.Title}">
+             Title="{Binding LoadedData.Title}">
+    <ContentPage.BindingContext>
+        <vm:HeadlessReaderViewModel/>
+    </ContentPage.BindingContext>
     <ContentPage.ToolbarItems>
-        <ToolbarItem Command="{Binding Source={x:Reference Headless}, Path = BookmarkCommand}" x:Name="BookmarkItem" IconImageSource="bookmark.svg"/>
+        <ToolbarItem Command="{Binding BookmarkCommand}" x:Name="BookmarkItem" IconImageSource="bookmark.svg"/>
     </ContentPage.ToolbarItems>
     <ScrollView 
         x:Name="ReadingLayout" 
@@ -21,13 +25,13 @@
               RowDefinitions="auto,0"
               CompressedLayout.IsHeadless="True">
             <!-- The actual setup -->
-            <controls:Reader Text="{Binding Source={x:Reference Headless}, Path = LoadedData.Text}"
-                         Title="{Binding Source={x:Reference Headless}, Path = LoadedData.Title}"
-                         Loading="{Binding Source={x:Reference Headless}, Path = IsLoading}"
-                         NextVisible="{Binding Source={x:Reference Headless}, Path = NextVisible}"
-                         PrevVisible="{Binding Source={x:Reference Headless}, Path = PrevVisible}"
-                         PreviousCommand="{Binding Source={x:Reference Headless}, Path = PrevButtonCommand}"
-                         NextCommand="{Binding Source={x:Reference Headless}, Path = NextButtonCommand}"/>
+            <controls:Reader Text="{Binding LoadedData.Text}"
+                         Title="{Binding LoadedData.Title}"
+                         Loading="{Binding IsLoading}"
+                         NextVisible="{Binding NextVisible}"
+                         PrevVisible="{Binding PrevVisible}"
+                         PreviousCommand="{Binding PrevButtonCommand}"
+                         NextCommand="{Binding NextButtonCommand}"/>
             <controls:WebScraperBrowser x:Name="HeadlessBrowser" Visible="False" Grid.Row="1"/>
         </Grid>
     </ScrollView>
