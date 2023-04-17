@@ -16,7 +16,6 @@ public class ConfigService
     public Path nextpath;
     public Path previouspath;
     public Path imageUrlPath;
-    public Dictionary<string, object> extraconfigs;
 
     public int configId;
 
@@ -34,7 +33,6 @@ public class ConfigService
         nextpath = new Path(config.NextUrlPath);
         previouspath = new Path(config.PrevUrlPath);
         imageUrlPath = new Path(config.ImageUrlPath);
-        extraconfigs = config.ExtraConfigs;
     }
 
     public enum SelectorType
@@ -107,8 +105,6 @@ public class ConfigService
                 throw new NotImplementedException("Selector not implemented (ConfigService.GetPath)");
         }
     }
-
-    public Dictionary<string, object> GetExtraConfigs() => extraconfigs;
 
     #region Selectors using Paths
 

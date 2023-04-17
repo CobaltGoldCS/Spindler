@@ -79,7 +79,7 @@ public partial class ReaderDataService
         }
         if (!WebUtilities.HasBaseUrl())
         {
-            if (!Uri.TryCreate(url, UriKind.Absolute, out Uri? uri)) return null;
+            if (!Uri.TryCreate(url, UriKind.Absolute, out Uri? uri)) return new Result<LoadedData, string>.Error($"'{url}' is not a valid");
             WebUtilities.SetBaseUrl(new Uri(uri.GetLeftPart(UriPartial.Authority) + "/", UriKind.Absolute));
         }
         url = WebUtilities.MakeAbsoluteUrl(url).ToString();
