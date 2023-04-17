@@ -61,7 +61,8 @@ public partial class ErrorPage : ContentPage
             return;
         }
         Config.UsesHeadless = HeadlessMode.On;
-        await App.Database.SaveItemAsync(Config!);
+        if (Config.Id > -1)
+            await App.Database.SaveItemAsync(Config!);
     }
 
     private async void ReloadClicked(object sender, EventArgs e)
