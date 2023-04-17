@@ -66,10 +66,31 @@ namespace Spindler.ViewModels
             Database = database;
         }
 
-        public void SetBookList(BookList list)
+        public async Task SetBookListAndProperties(BookList list)
         {
             Id = list.Id;
             Title = list.Name;
+
+            // Set up pinned books
+            CurrentList = await Database.GetBooksByBooklistIdAsync(Id);
+            foreach (var book in CurrentList.Where(book => book.Pinned))
+            {
+                PinnedBooks.Add(book);
+            }
+            PinnedBooksAreVisible = PinnedBooks.Count > 0;
+
+            // Set up normal books
+            LoaderHeightRequest = 20;
+            IsExpanding = true;
+            foreach (Book book in CurrentList!
+                                    .Where(book => book.Name.Contains(FilterText))
+                                    .Skip(DisplayedBooks.Count)
+                                    .Take(NUM_ITEMS_ADDED_TO_LIST))
+            {
+                DisplayedBooks!.Add(book);
+            }
+            IsExpanding = false;
+            LoaderHeightRequest = 0;
         }
 
         ImageButton? AddButton;
@@ -189,24 +210,21 @@ namespace Spindler.ViewModels
         [RelayCommand]
         public async Task Load()
         {
-            await Task.Run(async () =>
+            IsLoading = true;
+            CurrentList = new(await Database.GetBooksByBooklistIdAsync(Id));
+            DisplayedBooks.Clear();
+            PinnedBooks.Clear();
+            foreach(var book in CurrentList.Take(NUM_ITEMS_ADDED_TO_LIST))
             {
-                IsLoading = true;
-                CurrentList = new(await Database.GetBooksByBooklistIdAsync(Id));
-                DisplayedBooks.Clear();
-                PinnedBooks.Clear();
-                foreach(var book in CurrentList.Take(NUM_ITEMS_ADDED_TO_LIST))
-                {
-                    DisplayedBooks.Add(book);
-                }
+                DisplayedBooks.Add(book);
+            }
 
-                foreach (var book in CurrentList.Where(book => book.Pinned))
-                {
-                    PinnedBooks.Add(book);
-                }
-                PinnedBooksAreVisible = PinnedBooks.Count > 0;
-                IsLoading = false;
-            });
+            foreach (var book in CurrentList.Where(book => book.Pinned))
+            {
+                PinnedBooks.Add(book);
+            }
+            PinnedBooksAreVisible = PinnedBooks.Count > 0;
+            IsLoading = false;
         }
 
         const int NUM_ITEMS_ADDED_TO_LIST = 7;
@@ -214,34 +232,25 @@ namespace Spindler.ViewModels
         /// Method called when the user reaches the end of the displayed books
         /// </summary>
         [RelayCommand]
-        public async void EndOfListReached()
+        public void EndOfListReached()
         {
-            await Task.Run(async () =>
+            // First time load
+            if (DisplayedBooks.Count < NUM_ITEMS_ADDED_TO_LIST)
             {
-                // First time load
-                if (DisplayedBooks.Count == 0)
-                {
-                    await Task.Delay(300);
-                    CurrentList = await Database.GetBooksByBooklistIdAsync(Id);
-                    foreach (var book in CurrentList.Where(book => book.Pinned))
-                    {
-                        PinnedBooks.Add(book);
-                    }
-                    PinnedBooksAreVisible = PinnedBooks.Count > 0;
-                }
+                return;
+            }
 
-                LoaderHeightRequest = 20;
-                IsExpanding = true;
-                foreach (Book book in CurrentList!
-                                        .Where(book => book.Name.Contains(FilterText))
-                                        .Skip(DisplayedBooks.Count)
-                                        .Take(NUM_ITEMS_ADDED_TO_LIST))
-                {
-                    DisplayedBooks!.Add(book);
-                }
-                IsExpanding = false;
-                LoaderHeightRequest = 0;
-            });
+            LoaderHeightRequest = 20;
+            IsExpanding = true;
+            foreach (Book book in CurrentList!
+                                    .Where(book => book.Name.Contains(FilterText))
+                                    .Skip(DisplayedBooks.Count)
+                                    .Take(NUM_ITEMS_ADDED_TO_LIST))
+            {
+                DisplayedBooks!.Add(book);
+            }
+            IsExpanding = false;
+            LoaderHeightRequest = 0;
         }
     }
 }

@@ -6,20 +6,17 @@ using System.Collections.Generic;
 
 public partial class BookListPage : ContentPage, IQueryAttributable
 {
-    BookListViewModel viewmodel;
     public async void ApplyQueryAttributes(IDictionary<string, object> query)
     {
         BookList? bookList = query["booklist"]! as BookList;
-        await bookList!.UpdateAccessTimeToNow();
-
-        viewmodel.SetBookList(bookList);
-        viewmodel.AddUiReferences(AddToolBarItem);
-        BindingContext = viewmodel;
+        await bookList!.UpdateAccessTimeToNow().ConfigureAwait(false);
+        ((BookListViewModel)BindingContext).AddUiReferences(AddToolBarItem);
+        await ((BookListViewModel)BindingContext).SetBookListAndProperties(bookList);
     }
     public BookListPage(BookListViewModel viewmodel)
     {
         InitializeComponent();
-        this.viewmodel = viewmodel;
+        BindingContext = viewmodel;
         BooksList.Unfocus();
     }
 }

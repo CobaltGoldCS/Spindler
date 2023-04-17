@@ -59,7 +59,7 @@ public partial class HeadlessReaderViewModel : ObservableObject, IReader
         await App.Database.SaveItemAsync<Book>(new()
         {
             BookListId = Book!.BookListId,
-            Title = "Bookmark: " + LoadedData!.Title,
+            Title = "Bookmark: " + LoadedData.Title,
             Url = LoadedData.currentUrl!,
             Position = ReadingLayout!.ScrollY,
         });
