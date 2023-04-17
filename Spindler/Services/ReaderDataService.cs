@@ -1,14 +1,16 @@
 ﻿using HtmlAgilityPack;
 using HtmlAgilityPack.CssSelectors.NetCore;
+using Java.Lang;
 using Spindler.Models;
 using Spindler.Utilities;
+using System.Text.RegularExpressions;
 using System.Web;
 using HtmlOrError = Spindler.Utilities.Result<string, string>;
 using Path = Spindler.Models.Path;
 
 namespace Spindler.Services;
 
-public class ReaderDataService
+public partial class ReaderDataService
 {
     // This is so other things can access lower level APIs
     /// <summary>
@@ -110,10 +112,10 @@ public class ReaderDataService
             WebUtilities.SetBaseUrl(new Uri(uri.GetLeftPart(UriPartial.Authority) + "/", UriKind.Absolute));
         }
 
-        Task<string> text = Task.Run(() => { return GetContent(doc); });
+        string text = GetContent(doc);
         LoadedData data = new()
         {
-            Text = await text,
+            Text = text,
             nextUrl = ConfigService.PrettyWrapSelector(html, ConfigService.Selector.NextUrl, type: ConfigService.SelectorType.Link),
             prevUrl = ConfigService.PrettyWrapSelector(html, ConfigService.Selector.PrevUrl, type: ConfigService.SelectorType.Link),
             Title = GetTitle(html),
@@ -123,6 +125,11 @@ public class ReaderDataService
         return new Result<LoadedData, string>.Ok(data);
     }
 
+    /// <summary>
+    /// Smart Get Content that matches given content path using <see cref="Path"/>
+    /// </summary>
+    /// <param name="nav">The HtmlDocument to evaluate for matches</param>
+    /// <returns>A String containing the text of the content matched by contentpath</returns>
     public string GetContent(HtmlDocument nav)
     {
         Path contentPath = ConfigService.GetPath(ConfigService.Selector.Content);
@@ -133,25 +140,29 @@ public class ReaderDataService
             _ => throw new NotImplementedException("This path type has not been implemented {ConfigService.GetContent}"),
         };
 
+        string separator = (string)ConfigService.GetExtraConfigs()!.GetValueOrDefault("separator", "\n");
         if (node == null) return string.Empty;
         if (!node.HasChildNodes)
         {
-            return HttpUtility.HtmlDecode(node.InnerText);
+            return HttpUtility.HtmlDecode(node.InnerText).Replace("\n", separator);
         }
 
         // Node contains child nodes, so we must get the text of each
         StringWriter stringWriter = new();
-        string separator = (string)ConfigService.GetExtraConfigs()!.GetValueOrDefault("separator", "\n");
 
         foreach (HtmlNode child in node.ChildNodes)
         {
-            if (child.OriginalName == "br")
+            string innerText = matchWhitespaceOnly().Replace(HttpUtility.HtmlDecode(child.InnerText), string.Empty);
+            if (innerText.Length == 0)
             {
-                if (child.NextSibling?.OriginalName != "br")
+                if (child.OriginalName == "br" && child.NextSibling?.OriginalName != "br")
+                {
                     stringWriter.Write("\n");
+                }
                 continue;
             }
-            stringWriter.WriteLine($"\t\t{HttpUtility.HtmlDecode(child.InnerText)}{separator}");
+            stringWriter.Write($"\t\t{HttpUtility.HtmlDecode(child.InnerText).Replace("\n", separator)}");
+            stringWriter.Write(separator);
         }
         return stringWriter.ToString();
     }
@@ -167,15 +178,6 @@ public class ReaderDataService
         return HttpUtility.HtmlDecode(ConfigService.PrettyWrapSelector(html, ConfigService.Selector.Title, type: ConfigService.SelectorType.Text));
     }
 
-
-    /// <summary>
-    /// Make an error output with an optional message
-    /// </summary>
-    /// <param name="message">An optional error message</param>
-    /// <returns>LoadedData in error form</returns>
-    private LoadedData MakeError(string message = "") => new LoadedData()
-    {
-        Title = "afb-4893",
-        Text = message,
-    };
+    [GeneratedRegex("^\\s+$", RegexOptions.Multiline, "en-US")]
+    private static partial Regex matchWhitespaceOnly();
 }

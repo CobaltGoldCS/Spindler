@@ -213,46 +213,5 @@ public class ConfigService
             value = Regex.Match(value, "((?:https?:/)?/[-a-zA-Z0-9+&@#/%?=~_|!:, .;]*[-a-zA-Z0-9+&@#/%=~_|])").Value;
         return value;
     }
-
-    /// <summary>
-    /// Smart Get Content that matches given content path using xpath
-    /// </summary>
-    /// <param name="nav">The HtmlDocument to evaluate for matches</param>
-    /// <returns>A String containing the text of the content matched by contentpath</returns>
-    public string GetContent(HtmlDocument nav)
-    {
-        HtmlNode node = contentpath!.type switch
-        {
-            Path.Type.Css => nav.QuerySelector(contentpath.path),
-            Path.Type.XPath => nav.DocumentNode.SelectSingleNode(contentpath.path),
-            _ => throw new NotImplementedException("This path type has not been implemented {ConfigService.GetContent}"),
-        };
-
-        if (node == null) return string.Empty;
-        if (!node.HasChildNodes)
-        {
-            return HttpUtility.HtmlDecode(node.InnerText);
-        }
-
-        // Node contains child nodes, so we must get the text of each
-        StringWriter stringWriter = new();
-        string separator = (string)extraconfigs!.GetValueOrDefault("separator", "\n");
-        foreach (HtmlNode child in node.ChildNodes)
-        {
-            if (child.InnerText.Length == 0)
-            {
-                if (child.OriginalName == "br" && child.NextSibling?.OriginalName != "br")
-                {
-                     stringWriter.Write("\n");
-                }
-                continue;
-            }
-            stringWriter.WriteLine($"\t\t{HttpUtility.HtmlDecode(child.InnerText)}{separator}");
-        }
-        return stringWriter.ToString();
-    }
-
-
-
     #endregion
 }
