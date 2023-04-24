@@ -22,13 +22,14 @@ namespace Spindler.Services
 
             WebScraperBrowser.Source = url;
 
+
             // Attempt to bypass cloudflare
 
             Models.Path cloudflareDetectPath = new Models.Path("body.no-js > div.main-wrapper > div.main-content > h2#challenge-running");
             var cloudflareString = ConfigService.PrettyWrapSelector(html, cloudflareDetectPath, ConfigService.SelectorType.Text);
             Stopwatch timer = Stopwatch.StartNew();
             
-            while (!string.IsNullOrEmpty(cloudflareString) || string.IsNullOrEmpty(html))
+            while (!string.IsNullOrEmpty(cloudflareString) || html.Length < 300)
             {
                 await Task.Delay(TimeSpan.FromSeconds(2));
                 if (cloudflareString == null)
