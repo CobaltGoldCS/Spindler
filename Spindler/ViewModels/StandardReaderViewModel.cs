@@ -223,7 +223,7 @@ namespace Spindler.ViewModels
                 { "errormessage", message },
                 { "config", ReaderService.Config }
             };
-            await Shell.Current.GoToAsync($"../{nameof(ErrorPage)}", parameters);
+            await Shell.Current.GoToAsync($"/{nameof(ErrorPage)}", parameters);
             return false;
         }
 
