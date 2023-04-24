@@ -72,9 +72,10 @@ namespace Spindler.ViewModels
         [RelayCommand]
         public async void ReadClicked()
         {
-            Dictionary<string, object> parameters = new()
+            Dictionary<string, object?> parameters = new()
             {
-                { "book", book! }
+                { "book", book! },
+                { "config", config }
             };
 
             string pageName = nameof(StandardReaderPage);
@@ -86,7 +87,6 @@ namespace Spindler.ViewModels
             {
                 pageName = nameof(HeadlessReaderPage);
             }
-            // TODO: Give Reader Pages the ability to take configs as a parameter
             await Shell.Current.GoToAsync($"../{pageName}", parameters);
             return;
         }

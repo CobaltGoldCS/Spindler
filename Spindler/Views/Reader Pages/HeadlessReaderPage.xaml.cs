@@ -20,12 +20,19 @@ public partial class HeadlessReaderPage : ContentPage, INotifyPropertyChanged, I
     public async void ApplyQueryAttributes(IDictionary<string, object> query)
     {
         Book book = (query["book"] as Book)!;
+        ReaderDataService readerService;
 
-        ReaderDataService readerService = new ReaderDataService(new Config(), new HeadlessWebService(HeadlessBrowser));
 
-
-        if (!await SafeAssert(await readerService.setConfigFromUrl(book.Url), "Could not get configuration information from website"))
-            return;
+        if (query.TryGetValue("config", out object? config))
+        {
+            readerService = new((Config)config, new HeadlessWebService(HeadlessBrowser));
+        }
+        else
+        {
+            readerService = new(new(), new HeadlessWebService(HeadlessBrowser));
+            if (!await SafeAssert(await readerService.setConfigFromUrl(book.Url), "Could not get configuration information from website"))
+                return;
+        }
 
         ((HeadlessReaderViewModel)BindingContext).SetProperties(book, readerService, ReadingLayout);
         await ((HeadlessReaderViewModel)BindingContext).Run();
