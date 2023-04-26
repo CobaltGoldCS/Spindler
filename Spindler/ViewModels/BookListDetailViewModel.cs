@@ -17,25 +17,25 @@ namespace Spindler.ViewModels
         [ObservableProperty]
         public static IList<ChooseColor> colorList = new List<ChooseColor>()
         {
-            new ChooseColor(Colors.Black),
-            new ChooseColor(Colors.White),
-            new ChooseColor(Colors.Wheat ),
-            new ChooseColor(Colors.Thistle ),
-            new ChooseColor(Colors.AliceBlue ),
-            new ChooseColor(Colors.Aqua ),
-            new ChooseColor(Colors.Aquamarine ),
-            new ChooseColor(Colors.Blue ),
-            new ChooseColor(Colors.Green ),
-            new ChooseColor(Colors.ForestGreen ),
-            new ChooseColor(Colors.LawnGreen ),
-            new ChooseColor(Colors.LightSeaGreen ),
-            new ChooseColor(Colors.Orange ),
-            new ChooseColor(Colors.Yellow ),
-            new ChooseColor(Colors.Turquoise ),
-            new ChooseColor(Colors.Tomato ),
-            new ChooseColor(Colors.Red ),
-            new ChooseColor(Colors.Purple ),
-            new ChooseColor(Colors.Pink ),
+            new (Colors.Black),
+            new (Colors.White),
+            new (Colors.Wheat ),
+            new (Colors.Thistle ),
+            new (Colors.AliceBlue ),
+            new (Colors.Aqua ),
+            new (Colors.Aquamarine ),
+            new (Colors.Blue ),
+            new (Colors.Green ),
+            new (Colors.ForestGreen ),
+            new (Colors.LawnGreen ),
+            new (Colors.LightSeaGreen ),
+            new (Colors.Orange ),
+            new (Colors.Yellow ),
+            new (Colors.Turquoise ),
+            new (Colors.Tomato ),
+            new (Colors.Red ),
+            new (Colors.Purple ),
+            new (Colors.Pink ),
         };
         BookList booklist;
         public BookList Booklist
@@ -52,8 +52,8 @@ namespace Spindler.ViewModels
             this.Booklist = Booklist;
             booklist = Booklist;
 
-            chosenColor1 = new ChooseColor(Booklist.Color1);
-            chosenColor2 = new ChooseColor(Booklist.Color2);
+            chosenColor1 = new (Booklist.Color1);
+            chosenColor2 = new (Booklist.Color2);
         }
 
         private static async Task Close()
