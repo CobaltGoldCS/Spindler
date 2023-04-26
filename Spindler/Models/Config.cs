@@ -145,7 +145,7 @@ public class Config : IIndexedModel
                 Timeout = new TimeSpan(0, 0, 10)
             };
             HtmlDocument doc = new();
-            doc.LoadHtml(html is not null ? html : await client.GetStringAsync(url));
+            doc.LoadHtml(html ?? await client.GetStringAsync(url));
 
             // Parallel index through all generalized configs
             Config? selectedConfig = null;
