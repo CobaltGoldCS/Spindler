@@ -7,32 +7,29 @@ using System.Xml.XPath;
 
 namespace Spindler.Services;
 
-using Path = Models.Path;
-public class ConfigService
+using SelectorPath = Models.Path;
+public partial class ConfigService
 {
 
-    public Path titlepath;
-    public Path contentpath;
-    public Path nextpath;
-    public Path previouspath;
-    public Path imageUrlPath;
+    private SelectorPath titlepath;
+    private SelectorPath contentpath;
+    private SelectorPath nextpath;
+    private SelectorPath previouspath;
+    private SelectorPath imageUrlPath;
 
-    public int configId;
-
-    public bool IsNull = false;
+    #region Public Apis
 
     public ConfigService(Config config)
     {
-        configId = config.Id;
         if (string.IsNullOrEmpty(config.TitlePath))
         {
             config.TitlePath = "//title";
         }
-        titlepath = new Path(config.TitlePath);
-        contentpath = new Path(config.ContentPath);
-        nextpath = new Path(config.NextUrlPath);
-        previouspath = new Path(config.PrevUrlPath);
-        imageUrlPath = new Path(config.ImageUrlPath);
+        titlepath = new(config.TitlePath);
+        contentpath = new(config.ContentPath);
+        nextpath = new(config.NextUrlPath);
+        previouspath = new(config.PrevUrlPath);
+        imageUrlPath = new(config.ImageUrlPath);
     }
 
     public enum SelectorType
@@ -49,10 +46,25 @@ public class ConfigService
 
     public enum Selector
     {
+        /// <summary>
+        /// Title Path
+        /// </summary>
         Title,
+        /// <summary>
+        /// Content Path
+        /// </summary>
         Content,
+        /// <summary>
+        /// Next Url Path
+        /// </summary>
         NextUrl,
+        /// <summary>
+        /// Previous Url Path
+        /// </summary>
         PrevUrl,
+        /// <summary>
+        /// Image Url Path
+        /// </summary>
         ImageUrl,
     }
 
@@ -63,15 +75,15 @@ public class ConfigService
     /// <returns>If the selector is valid or not</returns>
     public static bool IsValidSelector(string path)
     {
-        if (path == null) return false;
+        if (path is null) return false;
         HtmlDocument nav = new HtmlDocument();
-        var temppath = new Path(path);
+        var temppath = new SelectorPath(path);
         try
         {
             bool _ = temppath.type switch
             {
-                Path.Type.Css => CssElementHandler(nav, path, SelectorType.Text) != null,
-                Path.Type.XPath => XPathHandler(nav, path, SelectorType.Text) != null,
+                SelectorPath.Type.Css => CssElementHandler(nav, path, SelectorType.Text) != null,
+                SelectorPath.Type.XPath => XPathHandler(nav, path, SelectorType.Text) != null,
                 _ => throw new NotImplementedException("This path type has not been implemented")
             };
             return true;
@@ -87,26 +99,16 @@ public class ConfigService
         }
     }
 
-    public Path GetPath(Selector selector)
+    public SelectorPath GetPath(Selector selector)
+    => selector switch
     {
-        switch (selector)
-        {
-            case Selector.Title:
-                return titlepath;
-            case Selector.Content:
-                return contentpath;
-            case Selector.PrevUrl:
-                return previouspath;
-            case Selector.NextUrl:
-                return nextpath;
-            case Selector.ImageUrl:
-                return imageUrlPath;
-            default:
-                throw new NotImplementedException("Selector not implemented (ConfigService.GetPath)");
-        }
-    }
-
-    #region Selectors using Paths
+        Selector.Title => titlepath,
+        Selector.Content => contentpath,
+        Selector.PrevUrl => previouspath,
+        Selector.NextUrl => nextpath,
+        Selector.ImageUrl => imageUrlPath,
+        _ => throw new NotImplementedException("Selector not implemented (ConfigService.GetPath)")
+    };
 
     public string PrettyWrapSelector(string html, Selector selector, SelectorType type)
     {
@@ -119,7 +121,7 @@ public class ConfigService
     /// <param name="path">A string representation of the target's css or x path</param>
     /// <returns cref="string">A string containing the target text, or an empty string if nothing is found</returns>
     /// <exception cref="XPathException">If there is any error in the path</exception>
-    public static string PrettyWrapSelector(string html, Path path, SelectorType type)
+    public static string PrettyWrapSelector(string html, SelectorPath path, SelectorType type)
     {
         HtmlDocument doc = new();
         doc.LoadHtml(html);
@@ -134,14 +136,14 @@ public class ConfigService
     /// <param name="path">A string representation of the target's css or x path</param>
     /// <returns cref="string">A string containing the target text, or an empty string if nothing is found</returns>
     /// <exception cref="XPathException">If there is any error in the path</exception>
-    public static string PrettyWrapSelector(HtmlDocument nav, Path path, SelectorType type)
+    public static string PrettyWrapSelector(HtmlDocument nav, SelectorPath path, SelectorType type)
     {
         try
         {
             string? value = path.type switch
             {
-                Path.Type.XPath => XPathHandler(nav, path.path, type),
-                Path.Type.Css => CssElementHandler(nav, path.path, type),
+                SelectorPath.Type.XPath => XPathHandler(nav, path.path, type),
+                SelectorPath.Type.Css => CssElementHandler(nav, path.path, type),
                 _ => throw new NotImplementedException("This type is not implemented (PrettyWrapSelector)"),
             };
             return HttpUtility.HtmlDecode(value) ?? string.Empty;
@@ -152,6 +154,10 @@ public class ConfigService
         }
     }
 
+
+    #endregion
+
+    #region Selectors using Paths
     /// <summary>
     /// Select string from <paramref name="nav"/> using a csspath
     /// </summary>
@@ -160,7 +166,7 @@ public class ConfigService
     /// <param name="type">The specific type to prioritize</param>
     /// <returns>A string based on the css syntax used</returns>
     /// <exception cref="NotImplementedException">If they selector type has not been implemented</exception>
-    public static string? CssElementHandler(HtmlDocument nav, string path, SelectorType type)
+    private static string? CssElementHandler(HtmlDocument nav, string path, SelectorType type)
     {
         // Custom $ Syntax
         MatchCollection attributes = Regex.Matches(path, "(.+) \\$(.+)");
@@ -176,7 +182,7 @@ public class ConfigService
             var value = node?.GetAttributeValue(modifier, null);
             if (type == SelectorType.Link && modifier != "href" && value != null)
             {
-                value = Regex.Match(value, "((?:https?:/)?/[-a-zA-Z0-9+&@#/%?=~_|!:, .;]*[-a-zA-Z0-9+&@#/%=~_|])").Value;
+                value = CleanLinkRegex().Match(value).Value;
             }
             return value;
         }
@@ -195,7 +201,7 @@ public class ConfigService
     /// <param name="path">The xpath to use</param>
     /// <param name="type">The specific type to prioritize</param>
     /// <returns>A string based on the xpath syntax used</returns>
-    public static string? XPathHandler(HtmlDocument nav, string path, SelectorType type)
+    private static string? XPathHandler(HtmlDocument nav, string path, SelectorType type)
     {
         // Custom $ Syntax
         MatchCollection attributes = Regex.Matches(path, "(.+) \\$(.+)");
@@ -213,8 +219,12 @@ public class ConfigService
         var value = nav.DocumentNode.SelectSingleNode(path)?.CreateNavigator().Value;
         if (value is null) return value;
         if (type == SelectorType.Link)
-            value = Regex.Match(value, "((?:https?:/)?/[-a-zA-Z0-9+&@#/%?=~_|!:, .;]*[-a-zA-Z0-9+&@#/%=~_|])").Value;
+            value = CleanLinkRegex().Match(value).Value;
         return value;
     }
+
     #endregion
+
+    [GeneratedRegex("((?:https?:/)?/[-a-zA-Z0-9+&@#/%?=~_|!:, .;]*[-a-zA-Z0-9+&@#/%=~_|])")]
+    private static partial Regex CleanLinkRegex();
 }
