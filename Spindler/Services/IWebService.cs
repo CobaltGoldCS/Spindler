@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Spindler.Utilities;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,6 +9,6 @@ namespace Spindler.Services
 {
     public interface IWebService
     {
-        public Task<Utilities.Result<string, string>> GetHtmlFromUrl(string url);
+        public Task<IResult<string>> GetHtmlFromUrl(string url);
     }
 }

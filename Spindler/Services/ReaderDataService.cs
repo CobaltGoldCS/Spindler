@@ -4,7 +4,6 @@ using Spindler.Models;
 using Spindler.Utilities;
 using System.Text.RegularExpressions;
 using System.Web;
-using HtmlOrError = Spindler.Utilities.Result<string, string>;
 using Path = Spindler.Models.Path;
 
 namespace Spindler.Services;
@@ -36,12 +35,12 @@ public partial class ReaderDataService
 
     public async Task<bool> setConfigFromUrl(string url)
     {
-        HtmlOrError html = await WebService.GetHtmlFromUrl(url);
+        var html = await WebService.GetHtmlFromUrl(url);
 
-        if (Result.IsError(html))
+        if (html is Invalid<string>)
             return false;
 
-        var config = await Config.FindValidConfig(url, html.AsOk().Value);
+        var config = await Config.FindValidConfig(url, (html as Ok<string>)!.Value);
 
         if (config is null)
             return false;
@@ -58,7 +57,7 @@ public partial class ReaderDataService
     /// <param name="prevUrl">The previous url (will be loaded into index 0)</param>
     /// <param name="nextUrl">The next url (will be loaded into index 1)</param>
     /// <returns>A Task containing a LoadedData array of length 2 [prevdata, nextdata]</returns>
-    public async Task<Result<LoadedData, string>[]> LoadData(string prevUrl, string nextUrl)
+    public async Task<IResult<LoadedData>[]> LoadData(string prevUrl, string nextUrl)
     {
         var prevTask = LoadUrl(WebUtilities.MakeAbsoluteUrl(prevUrl).ToString());
         var nextTask = LoadUrl(WebUtilities.MakeAbsoluteUrl(nextUrl).ToString());
@@ -71,25 +70,25 @@ public partial class ReaderDataService
     /// </summary>
     /// <param name="url">The url to obtain data from</param>
     /// <returns>A LoadedData task holding either a null LoadedData, or a LoadedData with valid values</returns>
-    public async Task<Result<LoadedData, string>> LoadUrl(string url)
+    public async Task<IResult<LoadedData>> LoadUrl(string url)
     {
         if (!WebUtilities.IsUrl(url))
         {
-            return new Result<LoadedData, string>.Error($"'{url}' is not a valid");
+            return new Invalid<LoadedData>(new Error($"'{url}' is not a valid"));
         }
         if (!WebUtilities.HasBaseUrl())
         {
-            if (!Uri.TryCreate(url, UriKind.Absolute, out Uri? uri)) return new Result<LoadedData, string>.Error($"'{url}' is not a valid");
+            if (!Uri.TryCreate(url, UriKind.Absolute, out Uri? uri)) return new Invalid<LoadedData>(new Error($"'{url}' is not a valid"));
             WebUtilities.SetBaseUrl(new Uri(uri.GetLeftPart(UriPartial.Authority) + "/", UriKind.Absolute));
         }
         url = WebUtilities.MakeAbsoluteUrl(url).ToString();
 
-        HtmlOrError html = await WebService.GetHtmlFromUrl(url);
-        if (html is HtmlOrError.Error error)
+        var html = await WebService.GetHtmlFromUrl(url);
+        if (html is Invalid<string> error)
         {
-            return new Result<LoadedData, string>.Error(error.Value);
+            return new Invalid<LoadedData>(error.value);
         }
-        return await LoadReaderData(url, html.AsOk().Value);
+        return await LoadReaderData(url, (html as Ok<string>)!.Value);
     }
 
     /// <summary>
@@ -98,7 +97,7 @@ public partial class ReaderDataService
     /// <param name="url">The url used to obtain the reader data (this is not processed in this function)</param>
     /// <param name="html">The html to search for relevant data</param>
     /// <returns>A loaded data object containing the required data from the target website</returns>
-    public async Task<Result<LoadedData, string>> LoadReaderData(string url, string html)
+    public async Task<IResult<LoadedData>> LoadReaderData(string url, string html)
     {
 
         HtmlDocument doc = new();
@@ -107,7 +106,7 @@ public partial class ReaderDataService
         if (!WebUtilities.HasBaseUrl())
         {
             if (!Uri.TryCreate(url, UriKind.Absolute, out Uri? uri))
-                return new Result<LoadedData, string>.Error($"'{url}' is not a valid url");
+                return new Invalid<LoadedData>(new Error($"'{url}' is not a valid url"));
             WebUtilities.SetBaseUrl(new Uri(uri.GetLeftPart(UriPartial.Authority) + "/", UriKind.Absolute));
         }
 
@@ -127,7 +126,7 @@ public partial class ReaderDataService
             currentUrl = url
         };
 
-        return new Result<LoadedData, string>.Ok(data);
+        return new Ok<LoadedData>(data);
     }
 
     /// <summary>

@@ -22,7 +22,7 @@ namespace Spindler.ViewModels
         /// <summary>
         /// Task that should hold an array of length 2 containing (previous chapter, next chapter) in that order
         /// </summary>
-        private Task<Result<LoadedData, string>[]>? PreloadDataTask;
+        private Task<IResult<LoadedData>[]>? PreloadDataTask;
 
         #region Bindable Properties
 
@@ -77,14 +77,14 @@ namespace Spindler.ViewModels
         public async void NextClick()
         {
             var nextdata = (await PreloadDataTask!)![1];
-            if (Result.IsError(nextdata))
+            if (nextdata is Invalid<LoadedData> error)
             {
-                await SafeAssert(false, nextdata.AsError().Value);
+                await SafeAssert(false, error.Value.getMessage());
                 return;
             }
             await ReadingLayout!.ScrollToAsync(ReadingLayout.ScrollX, 0, false);
             IsLoading = true;
-            CurrentData = nextdata.AsOk().Value;
+            CurrentData = (nextdata as Ok<LoadedData>)!.Value;
             DataChanged();
         }
 
@@ -93,14 +93,14 @@ namespace Spindler.ViewModels
         {
             var prevdata = (await PreloadDataTask!)![0];
             
-            if (Result.IsError(prevdata))
+            if (prevdata is Invalid<LoadedData> error)
             {
-                await SafeAssert(false, prevdata.AsError().Value);
+                await SafeAssert(false, error.Value.getMessage());
                 return;
             }
             await ReadingLayout!.ScrollToAsync(ReadingLayout.ScrollX, 0, false);
             IsLoading = true;
-            CurrentData = prevdata.AsOk().Value;
+            CurrentData = (prevdata as Ok<LoadedData>)!.Value;
             DataChanged();
         }
 
@@ -134,24 +134,27 @@ namespace Spindler.ViewModels
         public async Task StartLoad()
         {
 
-            Result<LoadedData, string> data = await ReaderService.LoadUrl(CurrentBook!.Url);
-
-            if (Result.IsError(data))
+            var data = await ReaderService.LoadUrl(CurrentBook!.Url);
+            
+            switch (data)
             {
-                await SafeAssert(false, data.AsError().Value);
-                return;
-            }
+                case Invalid<LoadedData> error:
+                    await SafeAssert(false, error.Value.getMessage());
+                    return;
+                case Ok<LoadedData> value:
+                    CurrentData = value!.Value;
+                    break;
+            };
 
-            CurrentData = data.AsOk().Value;
             // Get image url from load
             if (string.IsNullOrEmpty(CurrentBook!.ImageUrl) || CurrentBook!.ImageUrl == "no_image.jpg")
             {
                 var html = await ReaderService.WebService.GetHtmlFromUrl(CurrentBook.Url);
 
-                if (Result.IsError(html)) return;
+                if (html is Invalid<string>) return;
 
                 CurrentBook.ImageUrl = ReaderService.ConfigService.PrettyWrapSelector(
-                    html.AsOk().Value, ConfigService.Selector.ImageUrl, ConfigService.SelectorType.Link);
+                    (html as Ok<string>)!.Value, ConfigService.Selector.ImageUrl, ConfigService.SelectorType.Link);
             }
             DataChanged();
             await DelayScroll();

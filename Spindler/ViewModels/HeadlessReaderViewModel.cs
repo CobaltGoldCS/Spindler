@@ -112,15 +112,15 @@ public partial class HeadlessReaderViewModel : ObservableObject, IReader
     /// </summary>
     private async Task GetContentAsLoadedData(string url)
     {
-        Result<LoadedData, string> resultContent = await ReaderService!.LoadUrl(url);
+        IResult<LoadedData> resultContent = await ReaderService!.LoadUrl(url);
 
-        if (Result.IsError(resultContent))
+        if (resultContent is Invalid<LoadedData> error)
         {
-            await SafeAssert(false, resultContent.AsError().Value);
+            await SafeAssert(false, error.Value.getMessage());
             return;
         }
 
-        LoadedData = resultContent.AsOk().Value;
+        LoadedData = (resultContent as Ok<LoadedData>)!.Value;
 
         if (!await SafeAssert(!string.IsNullOrEmpty(LoadedData.Text), "Content path unable to match html"))
             return;
