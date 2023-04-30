@@ -17,15 +17,7 @@ public partial class App : Application
             return database;
         }
     }
-    private static Shared? shared;
-    public static Shared SharedValues
-    {
-        get
-        {
-            shared ??= new Shared();
-            return shared;
-        }
-    }
+
     public App(AppShell shell)
     {
         InitializeComponent();
