@@ -152,94 +152,94 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Compile Update="Views\Book List Page\HomePage.xaml.cs">
+	  <Compile Update="View Pages\Book List Page\HomePage.xaml.cs">
 	    <DependentUpon>HomePage.xaml</DependentUpon>
 	  </Compile>
-	  <Compile Update="Views\Book List Page\BookListPage.xaml.cs">
+	  <Compile Update="View Pages\Book List Page\BookListPage.xaml.cs">
 	    <DependentUpon>BookListPage.xaml</DependentUpon>
 	  </Compile>
-	  <Compile Update="Views\Book Pages\BookPage.xaml.cs">
+	  <Compile Update="View Pages\Book Pages\BookPage.xaml.cs">
 	    <DependentUpon>BookPage.xaml</DependentUpon>
 	  </Compile>
-	  <Compile Update="Views\Configuration Pages\GeneralizedConfigDetailPage.xaml.cs">
+	  <Compile Update="View Pages\Configuration Pages\GeneralizedConfigDetailPage.xaml.cs">
 	    <DependentUpon>GeneralizedConfigDetailPage.xaml</DependentUpon>
 	  </Compile>
-	  <Compile Update="Views\CustomControls\Items\PinnedBookItem.xaml.cs">
+	  <Compile Update="Views\Items\PinnedBookItem.xaml.cs">
 	    <DependentUpon>PinnedBookItem.xaml</DependentUpon>
 	  </Compile>
-	  <Compile Update="Views\Reader Pages\StandardReaderPage.xaml.cs">
+	  <Compile Update="View Pages\Reader Pages\StandardReaderPage.xaml.cs">
 	    <DependentUpon>StandardReaderPage.xaml</DependentUpon>
 	  </Compile>
 	</ItemGroup>
 
 	<ItemGroup>
-	  <MauiXaml Update="Views\CustomControls\AddButtonGroup.xaml">
+	  <MauiXaml Update="Views\AddButtonGroup.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
-	  <MauiXaml Update="Views\CustomControls\CustomSwitchCell.xaml">
+	  <MauiXaml Update="Views\CustomSwitchCell.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
-	  <MauiXaml Update="Views\CustomControls\DetailTextCell.xaml">
+	  <MauiXaml Update="Views\DetailTextCell.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
-	  <MauiXaml Update="Views\CustomControls\Items\BookItem.xaml">
+	  <MauiXaml Update="Views\Items\BookItem.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
-	  <MauiXaml Update="Views\CustomControls\Items\ConfigItem.xaml">
+	  <MauiXaml Update="Views\Items\ConfigItem.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
-	  <MauiXaml Update="Views\CustomControls\Items\PinnedBookItem.xaml">
+	  <MauiXaml Update="Views\Items\PinnedBookItem.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
-	  <MauiXaml Update="Views\CustomControls\PickerPopup.xaml">
+	  <MauiXaml Update="Views\PickerPopup.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
-	  <MauiXaml Update="Views\CustomControls\Reader.xaml">
+	  <MauiXaml Update="Views\Reader.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
-	  <MauiXaml Update="Views\CustomControls\WebScraperBrowser.xaml">
+	  <MauiXaml Update="Views\WebScraperBrowser.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
-	  <MauiXaml Update="Views\Book Pages\BookDetailPage.xaml">
+	  <MauiXaml Update="View Pages\Book Pages\BookDetailPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
-	  <MauiXaml Update="Views\Book List Page\BookListDetailPage.xaml">
+	  <MauiXaml Update="View Pages\Book List Page\BookListDetailPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
-	  <MauiXaml Update="Views\Book List Page\HomePage.xaml">
+	  <MauiXaml Update="View Pages\Book List Page\HomePage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
-	  <MauiXaml Update="Views\Book Pages\BookPage.xaml">
+	  <MauiXaml Update="View Pages\Book Pages\BookPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
-	  <MauiXaml Update="Views\Book List Page\BookListPage.xaml">
+	  <MauiXaml Update="View Pages\Book List Page\BookListPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
-	  <MauiXaml Update="Views\Configuration Pages\GeneralizedConfigDetailPage.xaml">
+	  <MauiXaml Update="View Pages\Configuration Pages\GeneralizedConfigDetailPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
-	  <MauiXaml Update="Views\Configuration Pages\ConfigDetailPage.xaml">
+	  <MauiXaml Update="View Pages\Configuration Pages\ConfigDetailPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
-	  <MauiXaml Update="Views\Configuration Pages\ConfigPage.xaml">
+	  <MauiXaml Update="View Pages\Configuration Pages\ConfigPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
-	  <MauiXaml Update="Views\Configuration Pages\GeneralizedConfigPage.xaml">
+	  <MauiXaml Update="View Pages\Configuration Pages\GeneralizedConfigPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
-	  <MauiXaml Update="Views\Reader Pages\ErrorPage.xaml">
+	  <MauiXaml Update="View Pages\Reader Pages\ErrorPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
-	  <MauiXaml Update="Views\Reader Pages\HeadlessReaderPage.xaml">
+	  <MauiXaml Update="View Pages\Reader Pages\HeadlessReaderPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
-	  <MauiXaml Update="Views\Reader Pages\StandardReaderPage.xaml">
+	  <MauiXaml Update="View Pages\Reader Pages\StandardReaderPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
-	  <MauiXaml Update="Views\SettingsPage.xaml">
+	  <MauiXaml Update="View Pages\SettingsPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
-	  <MauiXaml Update="Views\Reader Pages\WebviewReaderPage.xaml">
+	  <MauiXaml Update="View Pages\Reader Pages\WebviewReaderPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	</ItemGroup>
