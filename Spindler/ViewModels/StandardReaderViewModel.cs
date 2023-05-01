@@ -135,7 +135,6 @@ namespace Spindler.ViewModels
         {
 
             var data = await ReaderService.LoadUrl(CurrentBook!.Url);
-            
             switch (data)
             {
                 case Invalid<LoadedData> error:
@@ -226,7 +225,7 @@ namespace Spindler.ViewModels
                 { "errormessage", message },
                 { "config", ReaderService.Config }
             };
-            await Shell.Current.GoToAsync($"/{nameof(ErrorPage)}", parameters);
+            await Shell.Current.GoToAsync($"{nameof(ErrorPage)}", parameters);
             return false;
         }
 

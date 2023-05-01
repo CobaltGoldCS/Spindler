@@ -39,12 +39,6 @@ public partial class ErrorPage : ContentPage
 
     private async void Navigating(object? sender, ShellNavigatingEventArgs e)
     {
-        // Hopefully Prevent Duplicate Error Pages from being created at the same time
-        if (e.Target.Location.OriginalString.Contains(nameof(ErrorPage)))
-        {
-            e.Cancel();
-            return;
-        }
         // Redirect to BookPage If Normal Back Navigation button is pressed
         if (e.Target.Location.OriginalString == ".." && !ShouldReload)
         {
