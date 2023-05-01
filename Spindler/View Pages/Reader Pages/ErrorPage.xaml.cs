@@ -1,4 +1,6 @@
+using CommunityToolkit.Mvvm.Input;
 using Spindler.Models;
+using System.Runtime.CompilerServices;
 
 namespace Spindler.Views;
 
@@ -34,18 +36,6 @@ public partial class ErrorPage : ContentPage
     public ErrorPage()
     {
         InitializeComponent();
-        Shell.Current.Navigating += Navigating;
-    }
-
-    private async void Navigating(object? sender, ShellNavigatingEventArgs e)
-    {
-        // Redirect to BookPage If Normal Back Navigation button is pressed
-        if (e.Target.Location.OriginalString == ".." && !ShouldReload)
-        {
-            e.Cancel();
-            await Shell.Current.GoToAsync("../..");
-        }
-        Shell.Current.Navigating -= Navigating;
     }
 
     private async void HeadlessMode_OnChanged(object sender, ToggledEventArgs e)
@@ -63,5 +53,11 @@ public partial class ErrorPage : ContentPage
     {
         ShouldReload = true;
         await Shell.Current.GoToAsync("..");
+    }
+
+    [RelayCommand]
+    public async Task BackButton()
+    {
+        await Shell.Current.GoToAsync("../..");
     }
 }
