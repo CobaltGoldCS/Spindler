@@ -2,6 +2,7 @@
 using Spindler.Services;
 using Spindler.ViewModels;
 using Spindler.Views;
+using Spindler.Views.Book_Pages;
 
 #if ANDROID
 using Spindler.Platforms.Android;
@@ -10,6 +11,7 @@ using Spindler.Platforms.Android;
 namespace Spindler;
 public static class MauiProgram
 {
+    public static IMauiContext? mauiContext;
     public static MauiApp CreateMauiApp()
     {
         var builder = MauiApp.CreateBuilder();
@@ -31,9 +33,13 @@ public static class MauiProgram
         builder.Services
             .AddShellRoutes()
             .AddSingleton<IDataService, DataService>()
+            .AddSingleton<HttpClient>()
             .AddSingleton<AppShell>();
-        
-        return builder.Build();
+
+        var mauiapp = builder.Build();
+
+        mauiContext = new MauiContext(mauiapp.Services);
+        return mauiapp;
     }
 
 

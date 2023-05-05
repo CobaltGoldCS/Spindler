@@ -45,8 +45,8 @@ public class BookList : IIndexedModel
     /// <returns>The random placeholder image url as a string</returns>
     public static string GetRandomPlaceholderImageUrl()
     {
-        Random rand = new Random();
-        List<string> images = new List<string>
+        Random rand = new();
+        List<string> images = new()
         {
             "https://images.unsplash.com/photo-1553532434-5ab5b6b84993?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1074&q=80",
             "https://images.unsplash.com/flagged/photo-1579268351234-073f85929562?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1074&q=80",
