@@ -31,14 +31,19 @@
     
     <ScrollView>
         <Grid>
-            <Image x:Name="BackgroundImage" Source="{Binding ImageUrl, Mode=OneWay}" Background="{Binding Background, Mode=OneWay}" Aspect="AspectFill" Margin="1" />
+            <Image x:Name="BackgroundImage" Source="{Binding ImageUrl, Mode=OneWay}" Background="{Binding Background, Mode=OneWay}" Aspect="AspectFill"/>
             <Grid RowDefinitions="auto, auto, auto, *"
                 Padding="0,0,0,0" Background="transparent">
                 <Image  Source="{Binding ImageUrl, Mode=OneWay}"
                         Aspect="AspectFill"
+                        Margin="0,5,0,0"
                         WidthRequest="106"
                         HeightRequest="138"
-                        HorizontalOptions="Center"/>
+                        HorizontalOptions="Center">
+                    <Image.Shadow>
+                        <Shadow Brush="Black"/>
+                    </Image.Shadow>
+                </Image>
                 <Label  x:Name="TitleView"
                         Text="{Binding Title, Mode=OneWay}"
                         Grid.Row="1"

@@ -3,7 +3,6 @@ using Android.Graphics.Drawables;
 using Android.Widget;
 using Spindler.Utilities;
 using System.Diagnostics;
-using System.Linq;
 using Color = Microsoft.Maui.Graphics.Color;
 
 namespace Spindler.Platforms.Android;
@@ -29,7 +28,6 @@ public partial class PrimaryColorsBehavior : PlatformBehavior<Image, ImageView>
             timer.Stop();
             if (timer.Elapsed > TimeSpan.FromSeconds(10))
                 return;
-
             var colorData = GetColorData(drawable);
             var colors = ColorUtilities.KMeansCluster(colorData, DOMINANT_COLOR_NUMBER);
 
