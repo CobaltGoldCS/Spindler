@@ -6,6 +6,7 @@
              xmlns:ViewModel="clr-namespace:Spindler.ViewModels"
              xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
              xmlns:controls="clr-namespace:Spindler.CustomControls"
+             xmlns:services="clr-namespace:Spindler.Services"
              Title="{Binding CurrentData.Title}"
              Shell.BackgroundColor="{AppThemeBinding Dark={StaticResource DarkCardBackground}, Light={StaticResource White}}"
              Shell.TabBarIsVisible="False">
@@ -47,7 +48,9 @@
                          Loading="{Binding IsLoading}"
                          NextVisible="{Binding NextButtonIsVisible}"
                          PrevVisible="{Binding PrevButtonIsVisible}"
-                         PreviousCommand="{Binding PrevClickCommand}"
-                         NextCommand="{Binding NextClickCommand}"/>
+                         PreviousCommand="{Binding ChangeChapterCommand}"
+                         PreviousCommandParameter="{x:Static services:ConfigService+Selector.PrevUrl}"
+                         NextCommand="{Binding ChangeChapterCommand}"
+                         NextCommandParameter="{x:Static services:ConfigService+Selector.NextUrl}"/>
     </ScrollView>
 </ContentPage>

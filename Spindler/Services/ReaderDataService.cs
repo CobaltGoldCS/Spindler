@@ -26,6 +26,12 @@ public partial class ReaderDataService
 
     private WebUtilities WebUtilities = new();
 
+    private Task<IResult<LoadedData>>[] LoadingDataTask = new Task<IResult<LoadedData>>[] 
+    { 
+        Task.FromResult((IResult<LoadedData>)new Invalid<LoadedData>(new Error("Uninitialized Data"))),
+        Task.FromResult((IResult<LoadedData>)new Invalid<LoadedData>(new Error("Uninitialized Data")))
+    };
+
     public ReaderDataService(Config config, IWebService webService)
     {
         Config = config;
@@ -63,6 +69,61 @@ public partial class ReaderDataService
         var nextTask = LoadUrl(WebUtilities.MakeAbsoluteUrl(nextUrl).ToString());
         var loaded = await Task.WhenAll(prevTask, nextTask);
         return loaded;
+    }
+
+    public async Task<IResult<LoadedData>> GetLoadedData(ConfigService.Selector urlType, LoadedData currentData)
+    {
+        string urlToLoad;
+        byte targetIndex;
+        
+        switch(urlType)
+        {
+            case ConfigService.Selector.NextUrl:
+                urlToLoad = currentData.nextUrl;
+                targetIndex = 1;
+                break;
+            case ConfigService.Selector.PrevUrl:
+                urlToLoad = currentData.prevUrl;
+                targetIndex = 0;
+                break;
+            default:
+                throw new InvalidDataException("SelectorType must be Next Url or Previous Url");
+        };
+
+        var targetData = await LoadingDataTask[targetIndex];
+
+        // Attempt to reload the return data if it fails the first time
+        IResult<LoadedData> returnData = targetData switch
+        {
+            Ok<LoadedData> => targetData,
+            Invalid<LoadedData> => await LoadUrl(urlToLoad),
+            _ => throw new NotImplementedException("Result must be ok or invalid")
+        };
+
+        if (returnData is Invalid<LoadedData>)
+        {
+            return returnData;
+        }
+
+        var data = (returnData as Ok<LoadedData>)!.Value;
+
+        switch (targetIndex)
+        {
+            case 0:
+                // Next chapter data is now the previously loaded data because we went to the previous chapter
+                LoadingDataTask[1] = Task.FromResult(new Ok<LoadedData>(currentData) as IResult<LoadedData>);
+                LoadingDataTask[targetIndex] = LoadUrl(data.prevUrl);
+                break;
+            case 1:
+                // Previous chapter data is now the previously loaded data because we went to the next chapter
+                LoadingDataTask[0] = Task.FromResult(new Ok<LoadedData>(currentData) as IResult<LoadedData>);
+                LoadingDataTask[targetIndex] = LoadUrl(data.nextUrl);
+                break;
+            default:
+                throw new InvalidDataException("Invalid Target index");
+        };
+
+        return returnData;
     }
 
     /// <summary>

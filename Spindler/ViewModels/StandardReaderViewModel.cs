@@ -74,33 +74,23 @@ namespace Spindler.ViewModels
         #region Command Definitions
 
         [RelayCommand]
-        public async void NextClick()
+        private async void ChangeChapter(ConfigService.Selector selector)
         {
-            var nextdata = (await PreloadDataTask!)![1];
-            if (nextdata is Invalid<LoadedData> error)
+            IsLoading = true;
+            await ReadingLayout!.ScrollToAsync(ReadingLayout.ScrollX, 0, false);
+            CurrentBook.Url = selector switch
+            {
+                ConfigService.Selector.NextUrl => CurrentData!.nextUrl,
+                ConfigService.Selector.PrevUrl => CurrentData!.prevUrl,
+                _ => throw new InvalidDataException("Invalid value for selector; selector must be prev or next url")
+            };
+            var dataResult = await ReaderService.GetLoadedData(selector, CurrentData!);
+            if(dataResult is Invalid<LoadedData> error)
             {
                 await SafeAssert(false, error.Value.getMessage());
                 return;
             }
-            await ReadingLayout!.ScrollToAsync(ReadingLayout.ScrollX, 0, false);
-            IsLoading = true;
-            CurrentData = (nextdata as Ok<LoadedData>)!.Value;
-            DataChanged();
-        }
-
-        [RelayCommand]
-        public async void PrevClick()
-        {
-            var prevdata = (await PreloadDataTask!)![0];
-            
-            if (prevdata is Invalid<LoadedData> error)
-            {
-                await SafeAssert(false, error.Value.getMessage());
-                return;
-            }
-            await ReadingLayout!.ScrollToAsync(ReadingLayout.ScrollX, 0, false);
-            IsLoading = true;
-            CurrentData = (prevdata as Ok<LoadedData>)!.Value;
+            CurrentData = (dataResult as Ok<LoadedData>)!.Value;
             DataChanged();
         }
 

@@ -66,26 +66,19 @@ public partial class HeadlessReaderViewModel : ObservableObject, IReader
     }
 
     [RelayCommand]
-    private async void PrevButton()
+    private async void ChangeChapter(ConfigService.Selector selector)
     {
         IsLoading = true;
-        Book!.Url = LoadedData.prevUrl!;
-        PrevVisible = false;
         NextVisible = false;
-        await ReadingLayout.ScrollToAsync(ReadingLayout.ScrollX, 0, false);
-        await GetContentAsLoadedData(Book.Url);
-        await UpdateUiUsingLoadedData();
-    }
-
-    [RelayCommand]
-    private async void NextButton()
-    {
-        IsLoading = true;
         PrevVisible = false;
-        NextVisible = false;
-        Book!.Url = LoadedData.nextUrl!;
         await ReadingLayout.ScrollToAsync(ReadingLayout.ScrollX, 0, false);
-        await GetContentAsLoadedData(Book.Url);
+        Book.Url = selector switch
+        {
+            ConfigService.Selector.NextUrl => LoadedData.nextUrl,
+            ConfigService.Selector.PrevUrl => LoadedData.prevUrl,
+            _ => throw new InvalidDataException("Invalid value for selector; selector must be prev or next url")
+        };
+        await GetResultAsLoadedDataOrFail(await ReaderService.GetLoadedData(selector, LoadedData));
         await UpdateUiUsingLoadedData();
     }
 
@@ -113,14 +106,18 @@ public partial class HeadlessReaderViewModel : ObservableObject, IReader
     private async Task GetContentAsLoadedData(string url)
     {
         IResult<LoadedData> resultContent = await ReaderService!.LoadUrl(url);
+        await GetResultAsLoadedDataOrFail(resultContent);
+    }
 
-        if (resultContent is Invalid<LoadedData> error)
+    private async Task GetResultAsLoadedDataOrFail(IResult<LoadedData> data)
+    {
+        if (data is Invalid<LoadedData> error)
         {
             await SafeAssert(false, error.Value.getMessage());
             return;
         }
 
-        LoadedData = (resultContent as Ok<LoadedData>)!.Value;
+        LoadedData = (data as Ok<LoadedData>)!.Value;
 
         if (!await SafeAssert(!string.IsNullOrEmpty(LoadedData.Text), "Content path unable to match html"))
             return;
@@ -137,8 +134,8 @@ public partial class HeadlessReaderViewModel : ObservableObject, IReader
 
         // Turn relative urls into absolutes
         var baseUri = new Uri(LoadedData.currentUrl!);
-        LoadedData.prevUrl = new Uri(baseUri, LoadedData.prevUrl).ToString();
-        LoadedData.nextUrl = new Uri(baseUri, LoadedData.nextUrl).ToString();
+        LoadedData.prevUrl = new Uri(baseUri: baseUri, LoadedData.prevUrl).ToString();
+        LoadedData.nextUrl = new Uri(baseUri: baseUri, LoadedData.nextUrl).ToString();
 
 
         await ScrollToLastReadPositionIfApplicable();

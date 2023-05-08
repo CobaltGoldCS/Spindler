@@ -67,6 +67,15 @@ public partial class Reader : Grid
         set { SetValue(PreviousCommandProperty, value); }
     }
 
+    public static readonly BindableProperty PreviousCommandParameterProperty =
+                BindableProperty.Create(nameof(PreviousCommandParameter), typeof(object), typeof(Grid));
+
+    public object PreviousCommandParameter
+    {
+        get => GetValue(PreviousCommandParameterProperty);
+        set { SetValue(PreviousCommandParameterProperty, value); }
+    }
+
     public static readonly BindableProperty NextCommandProperty =
                 BindableProperty.Create(nameof(NextCommand), typeof(ICommand), typeof(Grid));
 
@@ -74,6 +83,15 @@ public partial class Reader : Grid
     {
         get => (ICommand)GetValue(NextCommandProperty);
         set { SetValue(NextCommandProperty, value); }
+    }
+
+    public static readonly BindableProperty NextCommandParameterProperty =
+                BindableProperty.Create(nameof(NextCommandParameter), typeof(object), typeof(Grid));
+
+    public object NextCommandParameter
+    {
+        get => GetValue(NextCommandParameterProperty);
+        set { SetValue(NextCommandParameterProperty, value); }
     }
 
     public event EventHandler? PrevClicked;
