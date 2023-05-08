@@ -4,22 +4,35 @@ using Spindler.ViewModels;
 
 namespace Spindler;
 
-public partial class StandardReaderPage : ContentPage, IQueryAttributable
+public partial class ReaderPage : ContentPage, IQueryAttributable
 {
+    public enum ReaderType
+    {
+        Standard,
+        Headless
+    }
     public async void ApplyQueryAttributes(IDictionary<string, object> query)
     {
         Book book = (query["book"] as Book)!;
+        
+        ReaderType type = (ReaderType)query["type"];
         if (!query.TryGetValue("config", out object? config))
         {
             config = await Config.FindValidConfig(book.Url);
         }
 
-        var viewmodel = new StandardReaderViewModel();
+        var viewmodel = new ReaderViewModel();
         
         // Attach required information to View Model
         if (config is not null)
         {
-            viewmodel.SetRequiredInfo(new((Config)config, new StandardWebService()));
+
+            viewmodel.SetRequiredInfo(new((Config)config, type switch
+            {
+                ReaderType.Headless => new HeadlessWebService(HeadlessBrowser),
+                ReaderType.Standard => new StandardWebService(),
+                _ => throw new NotImplementedException("This service has not been implemented")
+            }));
         }
         viewmodel.SetReferencesToUI(ReadingLayout, BookmarkItem);
         viewmodel.SetCurrentBook(book);
@@ -29,7 +42,7 @@ public partial class StandardReaderPage : ContentPage, IQueryAttributable
         await viewmodel.StartLoad();
     }
 
-    public StandardReaderPage()
+    public ReaderPage()
     {
         InitializeComponent();
     }

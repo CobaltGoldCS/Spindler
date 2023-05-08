@@ -168,8 +168,8 @@
 	  <Compile Update="Views\Items\PinnedBookItem.xaml.cs">
 	    <DependentUpon>PinnedBookItem.xaml</DependentUpon>
 	  </Compile>
-	  <Compile Update="View Pages\Reader Pages\StandardReaderPage.xaml.cs">
-	    <DependentUpon>StandardReaderPage.xaml</DependentUpon>
+	  <Compile Update="View Pages\Reader Pages\ReaderPage.xaml.cs">
+	    <DependentUpon>ReaderPage.xaml</DependentUpon>
 	  </Compile>
 	</ItemGroup>
 
@@ -231,10 +231,7 @@
 	  <MauiXaml Update="View Pages\Reader Pages\ErrorPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
-	  <MauiXaml Update="View Pages\Reader Pages\HeadlessReaderPage.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </MauiXaml>
-	  <MauiXaml Update="View Pages\Reader Pages\StandardReaderPage.xaml">
+	  <MauiXaml Update="View Pages\Reader Pages\ReaderPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="View Pages\SettingsPage.xaml">

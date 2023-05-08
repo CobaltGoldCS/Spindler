@@ -8,21 +8,16 @@ using Spindler.Views;
 using Spindler.Views.Reader_Pages;
 namespace Spindler.ViewModels
 {
-    public partial class StandardReaderViewModel : ObservableObject, IReader
+    public partial class ReaderViewModel : ObservableObject, IReader
     {
         #region Class Attributes
-        CancellationTokenSource tokenRegistration = new CancellationTokenSource();
-        public ReaderDataService ReaderService = new ReaderDataService(new Config(), new StandardWebService());
+        public ReaderDataService ReaderService = new(new(), new StandardWebService());
 
         public Book CurrentBook = new() { Title = "Loading" };
+        public CancellationTokenRegistration nextChapterToken = new();
 
         private ImageButton? BookmarkButton;
         private ScrollView? ReadingLayout;
-
-        /// <summary>
-        /// Task that should hold an array of length 2 containing (previous chapter, next chapter) in that order
-        /// </summary>
-        private Task<IResult<LoadedData>[]>? PreloadDataTask;
 
         #region Bindable Properties
 
@@ -78,6 +73,7 @@ namespace Spindler.ViewModels
         {
             IsLoading = true;
             await ReadingLayout!.ScrollToAsync(ReadingLayout.ScrollX, 0, false);
+            CurrentBook.Position = 0;
             CurrentBook.Url = selector switch
             {
                 ConfigService.Selector.NextUrl => CurrentData!.nextUrl,
@@ -109,7 +105,7 @@ namespace Spindler.ViewModels
         #endregion
 
         #region Initialization Functions
-        public StandardReaderViewModel()
+        public ReaderViewModel()
         {
             IsLoading = true;
         }
@@ -123,6 +119,14 @@ namespace Spindler.ViewModels
         }
         public async Task StartLoad()
         {
+            NextChapterService chapterService = new();
+            await CurrentBook.UpdateViewTimeAndSave();
+            IDispatcher? dispatcher = Dispatcher.GetForCurrentThread();
+            await Task.Run(async () =>
+            {
+                IEnumerable<Book> updateQueue = await chapterService.CheckChaptersInBookList(CurrentBook, nextChapterToken.Token);
+                await dispatcher!.DispatchAsync(async () => await App.Database.SaveItemsAsync(updateQueue));
+            });
 
             var data = await ReaderService.LoadUrl(CurrentBook!.Url);
             switch (data)
@@ -146,7 +150,6 @@ namespace Spindler.ViewModels
                     (html as Ok<string>)!.Value, ConfigService.Selector.ImageUrl, ConfigService.SelectorType.Link);
             }
             DataChanged();
-            await DelayScroll();
         }
         public void SetReferencesToUI(ScrollView readingLayout, ImageButton bookmarkButton)
         {
@@ -163,7 +166,6 @@ namespace Spindler.ViewModels
                 CurrentBook.HasNextChapter = NextButtonIsVisible;
                 await App.Database.SaveItemAsync(CurrentBook);
             }
-            tokenRegistration.Cancel();
             Shell.Current.Navigating -= OnShellNavigated;
         }
 
@@ -175,33 +177,25 @@ namespace Spindler.ViewModels
             CurrentBook!.Url = CurrentData!.currentUrl!;
             await CurrentBook.UpdateViewTimeAndSave();
 
+            // Turn relative uris into absolutes
+            var baseUri = new Uri(CurrentData.currentUrl!);
+            CurrentData.prevUrl = new Uri(baseUri: baseUri, CurrentData.prevUrl).ToString();
+            CurrentData.nextUrl = new Uri(baseUri: baseUri, CurrentData.nextUrl).ToString();
+
             OnPropertyChanged(nameof(NextButtonIsVisible));
             OnPropertyChanged(nameof(PrevButtonIsVisible));
 
-            PreloadDataTask = ReaderService.LoadData(CurrentData.prevUrl, CurrentData.nextUrl);
             IsLoading = false;
-        }
-
-
-        private async Task DelayScroll()
-        {
-            await Task.Run(async () =>
+            
+            if (CurrentBook.Position > 0)
             {
-                if (CurrentBook.Position <= 0)
-                    return;
-
-                await Task.Delay(100);
-
-                MainThread.BeginInvokeOnMainThread(async () =>
-                {
-                    await (ReadingLayout?.ScrollToAsync(
+                await (ReadingLayout?.ScrollToAsync(
                         0,
                         CurrentBook.Position,
                         ReaderService.Config.HasAutoscrollAnimation) ?? Task.CompletedTask);
-                });
-
-            });
+            }
         }
+
 
         #region Error Handlers
 

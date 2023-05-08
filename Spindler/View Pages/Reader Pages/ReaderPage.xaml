@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="Spindler.StandardReaderPage"
+             x:Class="Spindler.ReaderPage"
              xmlns:Model="clr-namespace:Spindler.Models"
              xmlns:ViewModel="clr-namespace:Spindler.ViewModels"
              xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
@@ -12,7 +12,7 @@
              Shell.TabBarIsVisible="False">
 
     <ContentPage.BindingContext>
-        <ViewModel:StandardReaderViewModel/>
+        <ViewModel:ReaderViewModel/>
     </ContentPage.BindingContext>
 
     <Shell.TitleView>
@@ -43,7 +43,10 @@
         </Grid>
     </Shell.TitleView>
     <ScrollView x:Name="ReadingLayout" Orientation="Vertical" IsEnabled="True" VerticalScrollBarVisibility="Always" CompressedLayout.IsHeadless="True">
-        <controls:Reader Text="{Binding CurrentData.Text}"
+        <Grid RowDefinitions="*, 0"
+              CompressedLayout.IsHeadless="True"
+              VerticalOptions="FillAndExpand">
+            <controls:Reader Text="{Binding CurrentData.Text}"
                          Title="{Binding CurrentData.Title}"
                          Loading="{Binding IsLoading}"
                          NextVisible="{Binding NextButtonIsVisible}"
@@ -51,6 +54,9 @@
                          PreviousCommand="{Binding ChangeChapterCommand}"
                          PreviousCommandParameter="{x:Static services:ConfigService+Selector.PrevUrl}"
                          NextCommand="{Binding ChangeChapterCommand}"
-                         NextCommandParameter="{x:Static services:ConfigService+Selector.NextUrl}"/>
+                         NextCommandParameter="{x:Static services:ConfigService+Selector.NextUrl}"
+                         Grid.Row="0"/>
+            <controls:WebScraperBrowser x:Name="HeadlessBrowser" Visible="False" Grid.Row="1"/>
+        </Grid>
     </ScrollView>
 </ContentPage>

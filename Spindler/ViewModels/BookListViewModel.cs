@@ -164,21 +164,18 @@ namespace Spindler.ViewModels
             if (Executing)
                 return;
             Executing = true;
-            var parameters = new Dictionary<string, object>()
-            {
-                { "book", selection}
-            };
-
             var config = await Config.FindValidConfig(selection.Url);
 
-            string pageName = nameof(StandardReaderPage);
+            var parameters = new Dictionary<string, object>()
+            {
+                { "book", selection},
+                { "type", config?.UsesHeadless ?? false ? ReaderPage.ReaderType.Headless : ReaderPage.ReaderType.Standard }
+            };
+
+            string pageName = nameof(ReaderPage);
             if (config?.UsesWebview ?? false)
             {
                 pageName = nameof(WebviewReaderPage);
-            }
-            if (config?.UsesHeadless ?? false)
-            {
-                pageName = nameof(HeadlessReaderPage);
             }
 
             await Shell.Current.GoToAsync($"{pageName}", parameters);

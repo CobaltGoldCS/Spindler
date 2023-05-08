@@ -81,19 +81,16 @@ public partial class BookViewModel : ObservableObject
     public async void ReadClicked()
     {
         Dictionary<string, object?> parameters = new()
-    {
-        { "book", book! },
-        { "config", config }
-    };
+        {
+            { "book", book! },
+            { "config", config },
+            { "type", config!.UsesHeadless ? ReaderPage.ReaderType.Headless : ReaderPage.ReaderType.Standard }
+        };
 
-        string pageName = nameof(StandardReaderPage);
+        string pageName = nameof(ReaderPage);
         if (config!.UsesWebview)
         {
             pageName = nameof(WebviewReaderPage);
-        }
-        if (config.UsesHeadless)
-        {
-            pageName = nameof(HeadlessReaderPage);
         }
         await Shell.Current.GoToAsync($"../{pageName}", parameters);
         return;

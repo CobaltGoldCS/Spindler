@@ -39,38 +39,6 @@ public partial class ReaderDataService
         WebService = webService;
     }
 
-    public async Task<bool> setConfigFromUrl(string url)
-    {
-        var html = await WebService.GetHtmlFromUrl(url);
-
-        if (html is Invalid<string>)
-            return false;
-
-        var config = await Config.FindValidConfig(url, (html as Ok<string>)!.Value);
-
-        if (config is null)
-            return false;
-
-        Config = config;
-        ConfigService = new(Config);
-
-        return true;
-    }
-
-    /// <summary>
-    /// Preload the next and previous urls with valid values into LoadedData
-    /// </summary>
-    /// <param name="prevUrl">The previous url (will be loaded into index 0)</param>
-    /// <param name="nextUrl">The next url (will be loaded into index 1)</param>
-    /// <returns>A Task containing a LoadedData array of length 2 [prevdata, nextdata]</returns>
-    public async Task<IResult<LoadedData>[]> LoadData(string prevUrl, string nextUrl)
-    {
-        var prevTask = LoadUrl(WebUtilities.MakeAbsoluteUrl(prevUrl).ToString());
-        var nextTask = LoadUrl(WebUtilities.MakeAbsoluteUrl(nextUrl).ToString());
-        var loaded = await Task.WhenAll(prevTask, nextTask);
-        return loaded;
-    }
-
     public async Task<IResult<LoadedData>> GetLoadedData(ConfigService.Selector urlType, LoadedData currentData)
     {
         string urlToLoad;
