@@ -28,27 +28,10 @@ namespace Spindler.ViewModels
         private bool isLoading;
 
 
-        readonly bool defaultvisible = false;
-        public bool PrevButtonIsVisible
-        {
-            get
-            {
-                if (CurrentData is not null)
-                    return WebUtilities.IsUrl(CurrentData.prevUrl);
-                else
-                    return defaultvisible;
-            }
-        }
-        public bool NextButtonIsVisible
-        {
-            get
-            {
-                if (CurrentData is not null)
-                    return WebUtilities.IsUrl(CurrentData.nextUrl);
-                else
-                    return defaultvisible;
-            }
-        }
+        [ObservableProperty]
+        public bool prevButtonIsVisible = false;
+        [ObservableProperty]
+        public bool nextButtonIsVisible = false;
 
         double ReaderScrollPosition = 0;
 
@@ -71,15 +54,22 @@ namespace Spindler.ViewModels
         [RelayCommand]
         private async void ChangeChapter(ConfigService.Selector selector)
         {
+            if (IsLoading)
+                return;
+            
             IsLoading = true;
+            PrevButtonIsVisible = false;
+            NextButtonIsVisible = false;
             await ReadingLayout!.ScrollToAsync(ReadingLayout.ScrollX, 0, false);
             CurrentBook.Position = 0;
+
             CurrentBook.Url = selector switch
             {
                 ConfigService.Selector.NextUrl => CurrentData!.nextUrl,
                 ConfigService.Selector.PrevUrl => CurrentData!.prevUrl,
                 _ => throw new InvalidDataException("Invalid value for selector; selector must be prev or next url")
             };
+
             var dataResult = await ReaderService.GetLoadedData(selector, CurrentData!);
             if(dataResult is Invalid<LoadedData> error)
             {
@@ -177,13 +167,13 @@ namespace Spindler.ViewModels
             CurrentBook!.Url = CurrentData!.currentUrl!;
             await CurrentBook.UpdateViewTimeAndSave();
 
+            NextButtonIsVisible = WebUtilities.IsUrl(CurrentData.nextUrl);
+            PrevButtonIsVisible = WebUtilities.IsUrl(CurrentData.prevUrl);
+
             // Turn relative uris into absolutes
             var baseUri = new Uri(CurrentData.currentUrl!);
             CurrentData.prevUrl = new Uri(baseUri: baseUri, CurrentData.prevUrl).ToString();
             CurrentData.nextUrl = new Uri(baseUri: baseUri, CurrentData.nextUrl).ToString();
-
-            OnPropertyChanged(nameof(NextButtonIsVisible));
-            OnPropertyChanged(nameof(PrevButtonIsVisible));
 
             IsLoading = false;
             
