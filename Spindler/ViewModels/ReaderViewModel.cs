@@ -52,7 +52,7 @@ namespace Spindler.ViewModels
         #region Command Definitions
 
         [RelayCommand]
-        private async void ChangeChapter(ConfigService.Selector selector)
+        private async void ChangeChapter(ReaderDataService.UrlType selector)
         {
             if (IsLoading)
                 return;
@@ -65,8 +65,8 @@ namespace Spindler.ViewModels
 
             CurrentBook.Url = selector switch
             {
-                ConfigService.Selector.NextUrl => CurrentData!.nextUrl,
-                ConfigService.Selector.PrevUrl => CurrentData!.prevUrl,
+                ReaderDataService.UrlType.Next => CurrentData!.nextUrl,
+                ReaderDataService.UrlType.Previous => CurrentData!.prevUrl,
                 _ => throw new InvalidDataException("Invalid value for selector; selector must be prev or next url")
             };
 

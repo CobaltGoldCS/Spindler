@@ -52,9 +52,9 @@
                          NextVisible="{Binding NextButtonIsVisible}"
                          PrevVisible="{Binding PrevButtonIsVisible}"
                          PreviousCommand="{Binding ChangeChapterCommand}"
-                         PreviousCommandParameter="{x:Static services:ConfigService+Selector.PrevUrl}"
+                         PreviousCommandParameter="{x:Static services:ReaderDataService+UrlType.Previous}"
                          NextCommand="{Binding ChangeChapterCommand}"
-                         NextCommandParameter="{x:Static services:ConfigService+Selector.NextUrl}"
+                         NextCommandParameter="{x:Static services:ReaderDataService+UrlType.Next}"
                          Grid.Row="0"/>
             <controls:WebScraperBrowser x:Name="HeadlessBrowser" Visible="False" Grid.Row="1"/>
         </Grid>
