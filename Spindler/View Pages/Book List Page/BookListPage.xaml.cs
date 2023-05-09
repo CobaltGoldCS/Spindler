@@ -11,7 +11,7 @@ public partial class BookListPage : ContentPage, IQueryAttributable
         BookList? bookList = query["booklist"]! as BookList;
         await bookList!.UpdateAccessTimeToNow().ConfigureAwait(false);
         ((BookListViewModel)BindingContext).AddUiReferences(AddToolBarItem);
-        await ((BookListViewModel)BindingContext).SetBookListAndProperties(bookList);
+        ((BookListViewModel)BindingContext).SetBookListAndProperties(bookList);
     }
     public BookListPage(BookListViewModel viewmodel)
     {

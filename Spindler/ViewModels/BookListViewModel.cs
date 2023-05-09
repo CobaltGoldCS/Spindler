@@ -69,7 +69,7 @@ namespace Spindler.ViewModels
             Database = database;
         }
 
-        public async Task SetBookListAndProperties(BookList list)
+        public void SetBookListAndProperties(BookList list)
         {
             Id = list.Id;
             Title = list.Name;
