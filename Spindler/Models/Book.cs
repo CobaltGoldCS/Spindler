@@ -5,7 +5,7 @@ namespace Spindler.Models;
 /// <summary>
 /// A Model representing configurations between the sqlite database and the backend code
 /// </summary>
-public class Book : IIndexedModel
+public record Book : IIndexedModel
 {
     /// <summary>
     /// UID of this Book

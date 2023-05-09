@@ -84,12 +84,12 @@ namespace Spindler.ViewModels
         public async void Bookmark()
         {
             await BookmarkButton!.RelRotateTo(360, 250, Easing.CubicIn);
-            await App.Database.SaveItemAsync<Book>(new()
+            await App.Database.SaveItemAsync(CurrentBook with
             {
-                BookListId = CurrentBook!.BookListId,
                 Title = "Bookmark: " + CurrentData!.Title,
-                Url = CurrentData.currentUrl!,
-                Position = ReadingLayout!.ScrollY / ReadingLayout.ContentSize.Height,
+                Id = -1,
+                LastViewed = DateTime.UtcNow,
+                Pinned = false
             });
         }
         #endregion
