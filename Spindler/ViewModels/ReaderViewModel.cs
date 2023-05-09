@@ -98,6 +98,7 @@ namespace Spindler.ViewModels
         public ReaderViewModel()
         {
             IsLoading = true;
+            Shell.Current.Navigating += OnShellNavigating;
         }
         public void SetRequiredInfo(ReaderDataService readerService)
         {
@@ -148,7 +149,7 @@ namespace Spindler.ViewModels
         }
         #endregion
 
-        public async void OnShellNavigated(object? sender,
+        public async void OnShellNavigating(object? sender,
                            ShellNavigatingEventArgs e)
         {
             if (e.Target.Location.OriginalString == "..")
@@ -156,7 +157,7 @@ namespace Spindler.ViewModels
                 CurrentBook.HasNextChapter = NextButtonIsVisible;
                 await App.Database.SaveItemAsync(CurrentBook);
             }
-            Shell.Current.Navigating -= OnShellNavigated;
+            Shell.Current.Navigating -= OnShellNavigating;
         }
 
         #region Helperfunctions

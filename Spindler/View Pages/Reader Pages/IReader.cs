@@ -23,7 +23,7 @@
         /// </summary>
         /// <param name="sender">The view that triggered the navigation</param>
         /// <param name="e">The navigating arguments</param>
-        protected void OnShellNavigated(object? sender,
+        protected void OnShellNavigating(object? sender,
                            ShellNavigatingEventArgs e);
     }
 }
