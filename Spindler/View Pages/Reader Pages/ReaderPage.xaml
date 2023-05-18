@@ -43,10 +43,23 @@
         </Grid>
     </Shell.TitleView>
     <ScrollView x:Name="ReadingLayout" Orientation="Vertical" IsEnabled="True" VerticalScrollBarVisibility="Always" CompressedLayout.IsHeadless="True">
-        <Grid RowDefinitions="*, 0"
+        <Grid CompressedLayout.IsHeadless="True">
+            <Button 
+                CornerRadius="20"
+                Text="↓" 
+                Command="{Binding ScrollBottomCommand}" 
+                HorizontalOptions="End"
+                VerticalOptions="Start"
+                Margin="0,15,25,0"
+                Padding="0,0,0,7"
+                ZIndex="1"
+                HeightRequest="35"
+                WidthRequest="35"
+                FontSize="23"/>
+            <Grid RowDefinitions="*, 0"
               CompressedLayout.IsHeadless="True"
               VerticalOptions="FillAndExpand">
-            <controls:Reader Text="{Binding CurrentData.Text}"
+                <controls:Reader Text="{Binding CurrentData.Text}"
                          Title="{Binding CurrentData.Title}"
                          Loading="{Binding IsLoading}"
                          NextVisible="{Binding NextButtonIsVisible}"
@@ -56,7 +69,8 @@
                          NextCommand="{Binding ChangeChapterCommand}"
                          NextCommandParameter="{x:Static services:ReaderDataService+UrlType.Next}"
                          Grid.Row="0"/>
-            <controls:WebScraperBrowser x:Name="HeadlessBrowser" Visible="False" Grid.Row="1"/>
+                <controls:WebScraperBrowser x:Name="HeadlessBrowser" Visible="False" Grid.Row="1"/>
+            </Grid>
         </Grid>
     </ScrollView>
 </ContentPage>

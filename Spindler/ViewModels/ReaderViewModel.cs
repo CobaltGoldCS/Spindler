@@ -92,6 +92,12 @@ namespace Spindler.ViewModels
                 Pinned = false
             });
         }
+
+        [RelayCommand]
+        public async void ScrollBottom()
+        {
+            await ReadingLayout!.ScrollToAsync(ReadingLayout.ScrollX, ReadingLayout.Content.Height - ReadingLayout.Bounds.Bottom, true);
+        }
         #endregion
 
         #region Initialization Functions
