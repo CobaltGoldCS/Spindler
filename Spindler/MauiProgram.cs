@@ -29,6 +29,13 @@ public static class MauiProgram
                 fonts.AddFont("SignikaNegative-Bold.ttf", "Signika (Bold)");
                 fonts.AddFont("SignikaNegative-Regular.ttf", "Signika");
             })
+            .ConfigureMauiHandlers(handlers =>
+            {
+                // THIS IS A TEMPORARY WORKAROUND TO FIX 'Collectionview not defined' ERRORS
+#if ANDROID
+                handlers.AddHandler<CollectionView, CustomCollectionViewHandler>();
+#endif
+            })
         ;
         builder.Services
             .AddShellRoutes()
