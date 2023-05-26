@@ -57,8 +57,10 @@
                 WidthRequest="35"
                 FontSize="23"/>
             <Grid RowDefinitions="*, 0"
-              CompressedLayout.IsHeadless="True"
-              VerticalOptions="FillAndExpand">
+                  CompressedLayout.IsHeadless="True"
+                  VerticalOptions="FillAndExpand"
+                  Padding="0,40,0,0"
+                  BackgroundColor="{AppThemeBinding Dark={StaticResource DarkCardBackground}, Light={StaticResource White}}">
                 <controls:Reader Text="{Binding CurrentData.Text}"
                          Title="{Binding CurrentData.Title}"
                          Loading="{Binding IsLoading}"
