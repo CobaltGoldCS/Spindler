@@ -2,8 +2,51 @@
 <Application xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:local="clr-namespace:Spindler"
+             xmlns:views="clr-namespace:Spindler.Views"
              x:Class="Spindler.App">
     <Application.Resources>
         <ResourceDictionary Source="Resources/Styles.xaml" />
     </Application.Resources>
+
+    <Application.MainPage>
+        <Shell xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+               xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+               Shell.FlyoutBehavior="Disabled">
+            <TabBar>
+                <Tab Icon="book.svg">
+                    <ShellContent
+                                ContentTemplate="{DataTemplate local:HomePage}"
+                                Route="HomePage" />
+                </Tab>
+                <Tab Icon="gear.svg">
+                    <ShellContent
+                                Title="Website Configurations"
+                                Icon="gear.svg"
+                                ContentTemplate="{DataTemplate local:ConfigPage}"
+                                Route="Config" />
+                    <ShellContent
+                                Title="General Configurations"
+                                Icon="multiple_gears.svg"
+                                ContentTemplate="{DataTemplate views:GeneralizedConfigPage}"
+                                Route="GeneralConfig"/>
+                </Tab>
+
+                <Tab Icon="profile_gear.svg">
+                    <ShellContent
+                                ContentTemplate="{DataTemplate local:SettingsPage}"
+                                Route="Settings" />
+                </Tab>
+            </TabBar>
+            <Shell.ItemTemplate>
+                <DataTemplate>
+                    <Grid RowDefinitions="68" HeightRequest="68">
+                        <Image Source="{Binding FlyoutIcon}"
+                               VerticalOptions="Center"
+                               HorizontalOptions="Center"
+                               />
+                    </Grid>
+                </DataTemplate>
+            </Shell.ItemTemplate>
+        </Shell>
+    </Application.MainPage>
 </Application>

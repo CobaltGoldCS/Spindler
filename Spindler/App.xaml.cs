@@ -18,15 +18,13 @@ public partial class App : Application
         }
     }
 
-    public App(AppShell shell)
+    public App()
     {
         InitializeComponent();
         Batteries.Init();
-        MainPage = shell;
         Routing.RegisterRoute($"{nameof(HomePage)}/{nameof(BookDetailPage)}", typeof(BookDetailPage));
         Routing.RegisterRoute($"{nameof(HomePage)}/{nameof(BookDetailPage)}/{nameof(BookSearcherPage)}", typeof(BookSearcherPage));
 
-        //Routing.RegisterRoute($"{nameof(HomePage)}/{nameof(BookListPage)}", typeof(BookListPage));
         Routing.RegisterRoute($"{nameof(HomePage)}/{nameof(BookPage)}", typeof(BookPage));
 
         Routing.RegisterRoute($"{nameof(HomePage)}/{nameof(ReaderPage)}", typeof(ReaderPage));
