@@ -2,7 +2,6 @@
 using Spindler.Services;
 using Spindler.ViewModels;
 using Spindler.Views;
-using Spindler.Views.Book_Pages;
 
 #if ANDROID
 using Spindler.Platforms.Android;
@@ -31,17 +30,17 @@ public static class MauiProgram
             })
             .ConfigureMauiHandlers(handlers =>
             {
-                // THIS IS A TEMPORARY WORKAROUND TO FIX 'Collectionview not defined' ERRORS
 #if ANDROID
+                // THIS IS A TEMPORARY WORKAROUND TO FIX 'Collectionview not defined' ERRORS
                 handlers.AddHandler<CollectionView, CustomCollectionViewHandler>();
+                handlers.AddHandler<Shell, ShellHandler>();
 #endif
             })
         ;
         builder.Services
             .AddShellRoutes()
             .AddSingleton<IDataService, DataService>()
-            .AddSingleton<HttpClient>()
-            .AddSingleton<AppShell>();
+            .AddSingleton<HttpClient>();
 
         var mauiapp = builder.Build();
 
