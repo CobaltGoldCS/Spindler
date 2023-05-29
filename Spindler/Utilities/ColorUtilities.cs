@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CommunityToolkit.Maui.Core.Extensions;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -103,4 +104,19 @@ public static class ColorUtilities
 
         return sumLuminosity / totalInstances;
     }
+
+    public static Color MaxLuminosityWhilePreservingRatios(Color color)
+    {
+        var divisor = new byte[] { color.GetByteRed(), color.GetByteGreen(), color.GetByteBlue() }.Max();
+        return Color.FromRgb(
+            255 * (color.GetByteRed() / divisor),
+            255 * (color.GetByteGreen() / divisor),
+            255 * (color.GetByteBlue() / divisor));
+    }
+
+    /// <summary>
+    /// Determines whether <paramref name="color"/> is too close to yellow
+    /// </summary>
+    /// <returns>If the color is within an invalid range</returns>
+    public static bool WithinInvalidRange(Color color) => EuclidianDistance(color, Colors.Yellow) < 1;
 }

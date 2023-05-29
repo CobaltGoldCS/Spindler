@@ -46,7 +46,7 @@ public partial class BookViewModel : ObservableObject
     string nextSelectorType = "Unknown";
 
     [ObservableProperty]
-    string method = "Normal Reader";
+    string method = "Read With Normal Reader";
 
     Config? config;
 
@@ -69,8 +69,8 @@ public partial class BookViewModel : ObservableObject
             return;
         }
 
-        if (config!.UsesHeadless) Method = "Headless Reader";
-        if (config!.UsesWebview) Method = "Web View Reader";
+        if (config!.UsesHeadless) Method = "Read With Headless Reader";
+        if (config!.UsesWebview) Method = "Read With Web View Reader";
 
         TitleSelectorType = GetPathAsString(config.TitlePath);
         ContentSelectorType = GetPathAsString(config.ContentPath);

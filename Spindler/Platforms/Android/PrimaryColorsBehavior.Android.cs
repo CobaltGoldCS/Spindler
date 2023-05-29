@@ -10,7 +10,7 @@ namespace Spindler.Platforms.Android;
 public partial class PrimaryColorsBehavior : PlatformBehavior<Image, ImageView>
 {
     ImageView? imageView;
-    readonly byte DOMINANT_COLOR_NUMBER = 7;
+    readonly byte DOMINANT_COLOR_NUMBER = 10;
     protected override void OnAttachedTo(Image bindable, ImageView platformView)
     {
         imageView = platformView;
@@ -37,7 +37,10 @@ public partial class PrimaryColorsBehavior : PlatformBehavior<Image, ImageView>
             {
                 dominantColors[i] = colors[i].OrderByDescending(pair => pair.Value).Select(pair => pair.Key).FirstOrDefault(Colors.Black);
             }
-            var values = dominantColors.Where(color => color is not null && color.GetLuminosity() > .1).OrderByDescending(color => color.GetSaturation()).ToList();
+
+            var values = dominantColors.Where(color => color is not null)
+            .OrderByDescending(color => color.GetSaturation() * 
+                (ColorUtilities.WithinInvalidRange(color.WithLuminosity((float)ColorUtilities.AverageLuminosity(colorData))) ? .5 : 1)).ToList();
 
             if (values.Count == 0)
                 return;
@@ -51,7 +54,7 @@ public partial class PrimaryColorsBehavior : PlatformBehavior<Image, ImageView>
             };
             Dispatcher.Dispatch(() =>
             {
-                bindable.Background = new LinearGradientBrush(gradientStops, new(0.0, 0.0), new(1.0, 1.0));
+                bindable.Background = new LinearGradientBrush(gradientStops, new(0.0, 0.0), new(.5, .5));
                 bindable.Source = null;
             });
         });

@@ -32,8 +32,7 @@
     <ScrollView>
         <Grid>
             <Image x:Name="BackgroundImage" Source="{Binding ImageUrl, Mode=OneWay}" Background="{Binding Background, Mode=OneWay}" Aspect="AspectFill"/>
-            <Grid RowDefinitions="auto, auto, auto, *"
-                Padding="0,0,0,0" Background="transparent">
+            <Grid RowDefinitions="auto, auto, auto, *" Background="transparent">
                 <Image  Source="{Binding ImageUrl, Mode=OneWay}"
                         Aspect="AspectFill"
                         Margin="0,5,0,0"
@@ -47,6 +46,7 @@
                 <Label  x:Name="TitleView"
                         Text="{Binding Title, Mode=OneWay}"
                         Grid.Row="1"
+                        TextColor="White"
                         BackgroundColor="Transparent"
                         VerticalTextAlignment="Center"
                         HorizontalTextAlignment="Center"
@@ -59,14 +59,15 @@
                 </Label>
                 <Button x:Name="ReadButton"
                         ZIndex="1"
-                        WidthRequest="150"
+                        WidthRequest="275"
                         Margin="0,0,0,-20"
                         CornerRadius="10"
                         Grid.Row="2"
-                        Text="{Binding Path=Method, Mode=OneWay, StringFormat='Read with \n{}'}"
+                        Text="{Binding Path=Method, Mode=OneWay, StringFormat='Read with \n{}{0}'}"
                         Command="{Binding ReadClickedCommand}"
-                />      
-                <Border Padding="0,20,0,0" HorizontalOptions="Fill"
+                />
+
+                <Border Padding="0,20,0,0"
                         Grid.Row="3"
                         BackgroundColor="{AppThemeBinding Dark={StaticResource SpaceCadet}, Light={StaticResource LightBackground}}"
                         StrokeThickness="0">
