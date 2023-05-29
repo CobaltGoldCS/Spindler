@@ -38,7 +38,7 @@ class CustomTabBarAppearanceTracker : ShellBottomNavViewAppearanceTracker
         }
 
         // Update Tab Size
-        bottomView.ItemIconSize = 100;
+        bottomView.ItemIconSize = 80;
         bottomView.ItemPaddingTop = 28;
     }
 
