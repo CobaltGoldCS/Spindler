@@ -7,10 +7,6 @@
              x:Class="Spindler.HomePage"
              x:DataType="viewmodels:HomeViewModel">
 
-    <ContentPage.Behaviors>
-        <toolkit:StatusBarBehavior StatusBarColor="{StaticResource Primary}"/>
-    </ContentPage.Behaviors>
-
     <ContentPage.Resources>
         <Style TargetType="Border">
             <Setter Property="VisualStateManager.VisualStateGroups">
@@ -44,7 +40,7 @@
                    FontSize="Large"
                    VerticalOptions="Center"
                    HorizontalOptions="FillAndExpand"
-                   TextColor="{StaticResource Primary}"/>
+                   TextColor="{DynamicResource Primary}"/>
             <StackLayout Grid.Column="1"
                          HorizontalOptions="EndAndExpand"
                          Orientation="Horizontal"
@@ -55,7 +51,7 @@
                              Source="plus.svg"
                              Command="{Binding AddToolBarItemCommand}">
                     <ImageButton.Behaviors>
-                        <toolkit:IconTintColorBehavior TintColor="{AppThemeBinding Dark={StaticResource White}, Light={StaticResource Black}}"/>
+                        <toolkit:IconTintColorBehavior TintColor="{StaticResource TextColor}"/>
                     </ImageButton.Behaviors>
                 </ImageButton>
             </StackLayout>
@@ -79,7 +75,7 @@
             <CollectionView.ItemTemplate>
                 <DataTemplate x:DataType="models:BookList">
                     <Border 
-                            Stroke="{AppThemeBinding Dark={StaticResource White}, Light={StaticResource Black}}"
+                            Stroke="{DynamicResource TextColor}"
                             Background="{Binding Background}"
                             Padding="10"
                             StrokeShape="RoundRectangle 16,16,16,16">
@@ -102,8 +98,7 @@
                                     VerticalTextAlignment="Center" 
                                     FontSize="Large" 
                                     x:Name="TitleLabel" 
-                                    Text="{Binding Name}"
-                                    TextColor="{StaticResource White}"/>
+                                    Text="{Binding Name}"/>
                             <ImageButton  Source="kebab.svg" 
                                               WidthRequest="20"
                                               Aspect="AspectFill"

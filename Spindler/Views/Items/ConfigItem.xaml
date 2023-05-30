@@ -4,7 +4,11 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
         x:Class="Spindler.Views.CustomControls.Items.ConfigItem"
         CompressedLayout.IsHeadless="True"
+        BackgroundColor="{DynamicResource Background}"
         x:Name="this">
+    <Border.Shadow>
+        <Shadow Radius="2"/>
+    </Border.Shadow>
     <Grid RowDefinitions="50"
           CompressedLayout.IsHeadless="True">
         <Label  Margin="10,0,0,0" 

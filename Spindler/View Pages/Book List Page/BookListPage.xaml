@@ -23,7 +23,7 @@
                    FontSize="Large"
                    VerticalOptions="Start"
                    HorizontalOptions="FillAndExpand"
-                   TextColor="{AppThemeBinding Dark={StaticResource White}, Light={StaticResource Black}}"/>
+                   TextColor="{AppThemeBinding Dark={DynamicResource DarkTextColor}, Light={DynamicResource LightTextColor}}"/>
             <StackLayout Grid.Column="1"
                          HorizontalOptions="EndAndExpand"
                          Orientation="Horizontal"
@@ -33,9 +33,10 @@
                              HeightRequest="25"
                              WidthRequest="25"
                              Source="plus.svg"
+                             Padding="25,0,0,0"
                              Command="{Binding AddToolBarItemCommand, Mode=OneWay}">
                     <ImageButton.Behaviors>
-                        <toolkit:IconTintColorBehavior TintColor="{AppThemeBinding Dark={StaticResource White}, Light={StaticResource Black}}"/>
+                        <toolkit:IconTintColorBehavior TintColor="{StaticResource Primary}"/>
                     </ImageButton.Behaviors>
                 </ImageButton>
             </StackLayout>
@@ -46,7 +47,7 @@
         <Border
             StrokeShape="RoundRectangle 10,10,10,10"
             StrokeThickness="0"
-            Background="{AppThemeBinding Dark={StaticResource LightSpaceCadet}, Light={StaticResource LightGray}}"
+            Background="{DynamicResource CardBackground}"
             Margin="5,0"
             IsVisible="{Binding PinnedBooksAreVisible}"
             CompressedLayout.IsHeadless="True">
@@ -57,11 +58,11 @@
                     <Grid ColumnDefinitions="20, *, 25"
                           Padding="0,7,0,0"
                           CompressedLayout.IsHeadless="True"
-                          BackgroundColor="{AppThemeBinding Dark={StaticResource LightSpaceCadet}, Light={StaticResource LightGray}}">
+                          BackgroundColor="{DynamicResource CardBackground}">
                         <Image Source="pin.svg" Margin="8,3,0,5">
                             <Image.Behaviors>
                                 <toolkit:IconTintColorBehavior 
-                                            TintColor="{AppThemeBinding Dark={StaticResource White}, Light={StaticResource LightSpaceCadet}}"/>
+                                            TintColor="{StaticResource White}"/>
                             </Image.Behaviors>
                         </Image>
                         <Label Text="Pinned Books"
@@ -82,7 +83,7 @@
                                 ItemsSource="{Binding PinnedBooks, Mode=OneTime}"
                                 SelectionMode="Single"
                                 ItemSizingStrategy="MeasureFirstItem"
-                                BackgroundColor="{AppThemeBinding Dark={StaticResource LightSpaceCadet}, Light={StaticResource LightGray}}"
+                                BackgroundColor="{AppThemeBinding Dark={DynamicResource DarkBackground}, Light={DynamicResource LightBackground}}"
                             >
                     <CollectionView.ItemsLayout>
                         <LinearItemsLayout ItemSpacing="5" Orientation="Horizontal"/>

@@ -5,7 +5,7 @@
              xmlns:vms="clr-namespace:Spindler.ViewModels"
              xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
              x:DataType="vms:BookViewModel">
-    
+
     <Shell.TitleView>
         <Grid ColumnDefinitions="*, auto">
             <Label Text="{Binding Title, Mode=OneWay}"
@@ -13,7 +13,7 @@
                    FontSize="Large"
                    VerticalOptions="Center"
                    HorizontalOptions="FillAndExpand"
-                   TextColor="{StaticResource Primary}"
+                   TextColor="{DynamicResource Primary}"
                    MaxLines="2"/>
             <StackLayout Grid.Column="1" HorizontalOptions="EndAndExpand" Orientation="Horizontal" VerticalOptions="Center" Margin="0,0,10,0">
                 <ImageButton x:Name="AddToolBarItem"
@@ -22,28 +22,26 @@
                              Source="kebab.svg"
                              Command="{Binding ModifyClickedCommand}">
                     <ImageButton.Behaviors>
-                        <toolkit:IconTintColorBehavior TintColor="{AppThemeBinding Dark={StaticResource White}, Light={StaticResource Black}}"/>
+                        <toolkit:IconTintColorBehavior TintColor="{StaticResource TextColor}"/>
                     </ImageButton.Behaviors>
                 </ImageButton>
             </StackLayout>
         </Grid>
     </Shell.TitleView>
-    
-    <ScrollView>
-        <Grid>
-            <Image x:Name="BackgroundImage" Source="{Binding ImageUrl, Mode=OneWay}" Background="{Binding Background, Mode=OneWay}" Aspect="AspectFill"/>
-            <Grid RowDefinitions="auto, auto, auto, *" Background="transparent">
-                <Image  Source="{Binding ImageUrl, Mode=OneWay}"
+    <Grid>
+        <Image x:Name="BackgroundImage" Source="{Binding ImageUrl, Mode=OneWay}" Background="{Binding Background, Mode=OneWay}" Aspect="AspectFill"/>
+        <Grid RowDefinitions="auto, auto, auto, *" Background="transparent">
+            <Image  Source="{Binding ImageUrl, Mode=OneWay}"
                         Aspect="AspectFill"
                         Margin="0,5,0,0"
                         WidthRequest="106"
                         HeightRequest="138"
                         HorizontalOptions="Center">
-                    <Image.Shadow>
-                        <Shadow Brush="Black"/>
-                    </Image.Shadow>
-                </Image>
-                <Label  x:Name="TitleView"
+                <Image.Shadow>
+                    <Shadow Brush="Black"/>
+                </Image.Shadow>
+            </Image>
+            <Label  x:Name="TitleView"
                         Text="{Binding Title, Mode=OneWay}"
                         Grid.Row="1"
                         TextColor="White"
@@ -53,37 +51,37 @@
                         FontAttributes="Bold"
                         FontSize="Title"
                         Padding="5,15,5,25">
-                    <Label.Shadow>
-                        <Shadow Offset="10,10" Brush="Black" Radius="30" Opacity="1"/>
-                    </Label.Shadow>
-                </Label>
-                <Button x:Name="ReadButton"
+                <Label.Shadow>
+                    <Shadow Offset="10,10" Brush="Black" Radius="30" Opacity="1"/>
+                </Label.Shadow>
+            </Label>
+            <Button x:Name="ReadButton"
                         ZIndex="1"
                         WidthRequest="275"
                         Margin="0,0,0,-20"
                         CornerRadius="10"
                         Grid.Row="2"
-                        Text="{Binding Path=Method, Mode=OneWay, StringFormat='Read with \n{}{0}'}"
+                        Text="{Binding Path=Method, Mode=OneWay}"
                         Command="{Binding ReadClickedCommand}"
                 />
 
-                <Border Padding="0,20,0,0"
+            <Border Padding="0,20,0,0"
                         Grid.Row="3"
-                        BackgroundColor="{AppThemeBinding Dark={StaticResource SpaceCadet}, Light={StaticResource LightBackground}}"
+                        BackgroundColor="{DynamicResource Background}"
+                        WidthRequest="400"
                         StrokeThickness="0">
-                    <TableView>
-                        <TableRoot>
-                            <TableSection Title="Selector Information" TextColor="{StaticResource Primary}">
-                                <TextCell Text="Domain Name" Detail="{Binding Domain, Mode=OneWay}" TextColor="{StaticResource Primary}"/>
-                                <TextCell Text="Title Selector" Detail="{Binding TitleSelectorType, Mode=OneWay}" TextColor="{StaticResource Primary}"/>
-                                <TextCell Text="Content Selector" Detail="{Binding ContentSelectorType, Mode=OneWay}" TextColor="{StaticResource Primary}"/>
-                                <TextCell Text="Previous Selector" Detail="{Binding PreviousSelectorType, Mode=OneWay}" TextColor="{StaticResource Primary}"/>
-                                <TextCell Text="Next Selector" Detail="{Binding NextSelectorType, Mode=OneWay}" TextColor="{StaticResource Primary}"/>
-                            </TableSection>
-                        </TableRoot>
-                    </TableView>
-                </Border>
-            </Grid>
+                <TableView>
+                    <TableRoot>
+                        <TableSection Title="Selector Information" TextColor="{DynamicResource Primary}">
+                            <TextCell Text="Domain Name" Detail="{Binding Domain, Mode=OneWay}" TextColor="{DynamicResource Primary}"/>
+                            <TextCell Text="Title Selector" Detail="{Binding TitleSelectorType, Mode=OneWay}" TextColor="{DynamicResource Primary}"/>
+                            <TextCell Text="Content Selector" Detail="{Binding ContentSelectorType, Mode=OneWay}" TextColor="{DynamicResource Primary}"/>
+                            <TextCell Text="Previous Selector" Detail="{Binding PreviousSelectorType, Mode=OneWay}" TextColor="{DynamicResource Primary}"/>
+                            <TextCell Text="Next Selector" Detail="{Binding NextSelectorType, Mode=OneWay}" TextColor="{DynamicResource Primary}"/>
+                        </TableSection>
+                    </TableRoot>
+                </TableView>
+            </Border>
         </Grid>
-    </ScrollView>
+    </Grid>
 </ContentPage>

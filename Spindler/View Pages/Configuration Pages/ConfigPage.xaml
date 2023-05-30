@@ -14,15 +14,15 @@
     </ContentPage.BindingContext>
     <Grid RowDefinitions="65, *" CompressedLayout.IsHeadless="True">
         <!-- Top Button Area-->
-        <Border StrokeShape="RoundRectangle 10,10,10,10" Margin="10,5,10,0" Stroke="{StaticResource DarkPrimary}">
+        <Border StrokeShape="RoundRectangle 10,10,10,10" Margin="10,5,10,0" Stroke="{DynamicResource CardBackground}">
             <Border.GestureRecognizers>
                 <TapGestureRecognizer Command="{Binding AddCommand, Mode=OneTime}"/>
             </Border.GestureRecognizers>
-            <Grid ColumnDefinitions="*, 100" Margin="0,0,0,0" BackgroundColor="{StaticResource DarkPrimary}" CompressedLayout.IsHeadless="True">
-                <Label Text="Add a Configuration" Grid.Row="0" VerticalTextAlignment="Center" FontSize="26" Margin="20,0,0,0" TextColor="{StaticResource White}"/>
+            <Grid ColumnDefinitions="*, 100" Margin="0,0,0,0" BackgroundColor="{DynamicResource CardBackground}" CompressedLayout.IsHeadless="True">
+                <Label Text="Add a Configuration" Grid.Row="0" VerticalTextAlignment="Center" FontSize="26" Margin="20,0,0,0" TextColor="{DynamicResource White}"/>
                 <Image Source="plus.svg" Grid.Column="1"  WidthRequest="50" Margin="10,10,3,10" HorizontalOptions="End">
                     <Image.Behaviors>
-                        <toolkit:IconTintColorBehavior TintColor="{StaticResource White}"/>
+                        <toolkit:IconTintColorBehavior TintColor="{StaticResource TextColor}"/>
                     </Image.Behaviors>
                 </Image>
             </Grid>
@@ -50,7 +50,7 @@
                     <Grid RowDefinitions="*, 60, 35" CompressedLayout.IsHeadless="True">
                         <Image Source="gear.svg" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand" Aspect="AspectFit">
                             <Image.Behaviors>
-                                <toolkit:IconTintColorBehavior TintColor="{AppThemeBinding Dark={StaticResource White}, Light={StaticResource Black}}"/>
+                                <toolkit:IconTintColorBehavior TintColor="{StaticResource TextColor}"/>
                             </Image.Behaviors>
                         </Image>
                         <Label Grid.Row="1" Text="No items available" FontSize="44" HorizontalTextAlignment="Center" HorizontalOptions="CenterAndExpand" VerticalOptions="Center"/>

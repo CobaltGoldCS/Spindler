@@ -19,7 +19,7 @@ public partial class BookViewModel : ObservableObject
     Book? book;
 
     [ObservableProperty]
-    Brush background = new SolidColorBrush(Application.Current?.Resources["DarkPrimary"] as Color ?? Colors.CadetBlue);
+    Brush background = new SolidColorBrush(Application.Current?.Resources["CardBackground"] as Color ?? Colors.CadetBlue);
 
     [ObservableProperty]
     string imageUrl = "";

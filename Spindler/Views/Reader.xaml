@@ -5,11 +5,11 @@
       RowDefinitions="auto, 25, auto, *, 40"
       x:Name="this"
       CompressedLayout.IsHeadless="True"
-      BackgroundColor="{AppThemeBinding Dark={StaticResource DarkCardBackground}, Light={StaticResource White}}"
+      BackgroundColor="{DynamicResource CardBackground}"
       >
     <Label x:Name="TitleView"
            Text="{Binding Source = {x:Reference this}, Path = Title}"
-           BackgroundColor="{AppThemeBinding Dark={StaticResource DarkCardBackground}, Light={StaticResource White}}"
+           BackgroundColor="{DynamicResource CardBackground}"
            VerticalTextAlignment="Center"
            HorizontalTextAlignment="Center"
            FontAttributes="Bold"
@@ -40,7 +40,7 @@
         StrokeShape="RoundRectangle 40,40,40,40"
         Padding="0,30,0,0"
         Grid.Row="3"
-        BackgroundColor="{AppThemeBinding Dark={StaticResource SpaceCadet}, Light={StaticResource LightBackground}}"
+        BackgroundColor="{DynamicResource Background}"
         StrokeThickness="0">
         <Label  x:Name="TextView" Grid.Row="3"
                     Padding="30,10"
@@ -51,7 +51,7 @@
     <ContentView 
         Grid.Row="4"
         Padding="0,0,0,40"
-        BackgroundColor="{AppThemeBinding Dark={StaticResource DarkCardBackground}, Light={StaticResource White}}"
+        BackgroundColor="{DynamicResource CardBackground}"
         CompressedLayout.IsHeadless="True">
         <Button x:Name="NextButton"
             IsVisible="{Binding Source = {x:Reference this}, Path = NextVisible}"

@@ -1,6 +1,7 @@
 ﻿using Spindler.Services;
 using Spindler.Utilities;
 using Spindler.Views;
+using Spindler.Resources;
 using Spindler.Views.Book_Pages;
 using SQLitePCL;
 
@@ -18,9 +19,16 @@ public partial class App : Application
         }
     }
 
+    enum Themes
+    {
+        Default,
+        Dracula
+    }
+
     public App()
     {
         InitializeComponent();
+        SetTheme();
         Batteries.Init();
         Routing.RegisterRoute($"{nameof(HomePage)}/{nameof(BookDetailPage)}", typeof(BookDetailPage));
         Routing.RegisterRoute($"{nameof(HomePage)}/{nameof(BookDetailPage)}/{nameof(BookSearcherPage)}", typeof(BookSearcherPage));
@@ -34,5 +42,20 @@ public partial class App : Application
         Routing.RegisterRoute($"{nameof(HomePage)}/{nameof(BookListDetailPage)}", typeof(BookListDetailPage));
         Routing.RegisterRoute("Config/" + nameof(ConfigDetailPage), typeof(ConfigDetailPage));
         Routing.RegisterRoute("GeneralConfig/" + nameof(GeneralizedConfigDetailPage), typeof(GeneralizedConfigDetailPage));
+    }
+
+
+    public void SetTheme()
+    {
+        Current?.Resources.MergedDictionaries.Clear();
+        Themes? defaultTheme = (Themes)Preferences.Get("theme", (int)Themes.Default);
+        ResourceDictionary theme = defaultTheme switch
+        {
+            Themes.Default => new Resources.Styles.Default(),
+            Themes.Dracula => new Resources.Styles.Dracula(),
+            _ => throw new NotImplementedException("HOW")
+        };
+        Current?.Resources.MergedDictionaries.Add(theme);
+        Current?.Resources.MergedDictionaries.Add(new Resources.Setters());
     }
 }

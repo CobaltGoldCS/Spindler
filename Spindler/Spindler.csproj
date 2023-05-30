@@ -153,6 +153,9 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <Compile Update="Resources\Setters.xaml.cs">
+	    <DependentUpon>Setters.xaml</DependentUpon>
+	  </Compile>
 	  <Compile Update="View Pages\Book List Page\HomePage.xaml.cs">
 	    <DependentUpon>HomePage.xaml</DependentUpon>
 	  </Compile>
@@ -174,6 +177,12 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <MauiXaml Update="Resources\Styles\Default.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Resources\Styles\Dracula.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
 	  <MauiXaml Update="Views\AddButtonGroup.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>

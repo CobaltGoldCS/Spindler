@@ -45,6 +45,6 @@ class CustomTabBarAppearanceTracker : ShellBottomNavViewAppearanceTracker
     protected override void SetBackgroundColor(BottomNavigationView bottomView, Color color)
     {
         base.SetBackgroundColor(bottomView, color);
-        bottomView.RootView?.SetBackgroundColor(shellContext.Shell.CurrentPage.BackgroundColor.ToPlatform());
+        bottomView.RootView?.SetBackgroundColor(color.ToPlatform());
     }
 }

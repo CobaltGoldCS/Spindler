@@ -8,7 +8,7 @@
              xmlns:controls="clr-namespace:Spindler.CustomControls"
              xmlns:services="clr-namespace:Spindler.Services"
              Title="{Binding CurrentData.Title}"
-             Shell.BackgroundColor="{AppThemeBinding Dark={StaticResource DarkCardBackground}, Light={StaticResource White}}"
+             Shell.BackgroundColor="{DynamicResource CardBackground}"
              Shell.TabBarIsVisible="False">
 
     <ContentPage.BindingContext>
@@ -17,7 +17,7 @@
 
     <Shell.TitleView>
         <Grid ColumnDefinitions="*, auto"
-              BackgroundColor="{AppThemeBinding Dark={StaticResource DarkCardBackground}, Light={StaticResource White}}"
+              BackgroundColor="{DynamicResource CardBackground}"
               CompressedLayout.IsHeadless="True">
 
             <Label Text="{Binding CurrentData.Title}"
@@ -26,7 +26,7 @@
                    VerticalOptions="Center"
                    HorizontalOptions="FillAndExpand"
                    MaxLines="2"
-                   TextColor="{StaticResource Primary}"/>
+                   TextColor="{DynamicResource Primary}"/>
             <StackLayout Grid.Column="1"
                          CompressedLayout.IsHeadless="True"
                          HorizontalOptions="EndAndExpand"
@@ -38,6 +38,9 @@
                              WidthRequest="25"
                              Source="bookmark.svg"
                              Command="{Binding BookmarkCommand}">
+                    <ImageButton.Behaviors>
+                        <toolkit:IconTintColorBehavior TintColor="{StaticResource Primary}"/>
+                    </ImageButton.Behaviors>
                 </ImageButton>
             </StackLayout>
         </Grid>
@@ -60,7 +63,7 @@
                   CompressedLayout.IsHeadless="True"
                   VerticalOptions="FillAndExpand"
                   Padding="0,40,0,0"
-                  BackgroundColor="{AppThemeBinding Dark={StaticResource DarkCardBackground}, Light={StaticResource White}}">
+                  BackgroundColor="{DynamicResource CardBackground}">
                 <controls:Reader Text="{Binding CurrentData.Text}"
                          Title="{Binding CurrentData.Title}"
                          Loading="{Binding IsLoading}"

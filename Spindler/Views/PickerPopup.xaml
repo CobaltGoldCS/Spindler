@@ -23,7 +23,7 @@
             <CollectionView.ItemTemplate>
                 <DataTemplate x:DataType="Models:IIndexedModel">
                     <Grid RowDefinitions="50" ColumnDefinitions="335" HorizontalOptions="FillAndExpand">
-                        <Border Margin="8,0" HorizontalOptions="Fill" BackgroundColor="{AppThemeBinding Dark={StaticResource SpaceCadet}, Light={StaticResource LightBackground}}">
+                        <Border Margin="8,0" HorizontalOptions="Fill" BackgroundColor="{AppThemeBinding Dark={DynamicResource DarkBackground}, Light={DynamicResource LightBackground}}">
                             <Label VerticalTextAlignment="Center" HorizontalTextAlignment="Center"
                                        FontSize="Large" Text="{Binding Name}"/>
                         </Border>

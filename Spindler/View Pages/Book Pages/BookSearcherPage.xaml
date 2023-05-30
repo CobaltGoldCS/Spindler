@@ -24,7 +24,7 @@
                      Margin="0,0,4,0"
                      Grid.Column="1">
             <ImageButton.Behaviors>
-                <toolkit:IconTintColorBehavior TintColor="{AppThemeBinding Dark={StaticResource White}, Light={StaticResource Black}}"/>
+                <toolkit:IconTintColorBehavior TintColor="{DynamicResource TextColor}"/>
             </ImageButton.Behaviors>
         </ImageButton>
         <ProgressBar x:Name="SearchProgress" Grid.Row="1" Grid.ColumnSpan="2" ProgressColor="{StaticResource Primary}"/>
