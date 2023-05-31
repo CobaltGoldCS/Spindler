@@ -41,6 +41,7 @@
         Padding="0,30,0,0"
         Grid.Row="3"
         BackgroundColor="{DynamicResource Background}"
+        InputTransparent="True"
         StrokeThickness="0">
         <Label  x:Name="TextView" Grid.Row="3"
                     Padding="30,10"

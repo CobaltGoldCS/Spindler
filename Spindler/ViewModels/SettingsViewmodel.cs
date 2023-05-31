@@ -1,4 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Messaging;
+using Spindler.Models;
+using Spindler.Utilities;
 
 namespace Spindler.ViewModels;
 
@@ -39,6 +42,26 @@ public partial class SettingsViewmodel : ObservableObject
 
     [ObservableProperty]
     private bool isBusy = false;
+
+    private Theme selectedTheme = Theme.FromThemeType((Themes)Preferences.Get("theme", (int)Themes.Default));
+
+    public Theme SelectedTheme
+    {
+        get => selectedTheme;
+        set
+        {
+            if (selectedTheme == value)
+                return;
+            SetProperty(ref selectedTheme, value);
+            Preferences.Set("theme", (int)value.theme);
+            WeakReferenceMessenger.Default.Send(new ThemeChangedMessage(value));
+        }
+    }
+
+    [ObservableProperty]
+    public Theme[] possibleThemes = ((Themes[])Enum.GetValues(typeof(Themes)))
+        .Select(themes => Theme.FromThemeType(themes))
+        .ToArray();
 
     public SettingsViewmodel()
     {

@@ -4,6 +4,8 @@ using Spindler.Views;
 using Spindler.Resources;
 using Spindler.Views.Book_Pages;
 using SQLitePCL;
+using CommunityToolkit.Mvvm.Messaging;
+using Spindler.Models;
 
 namespace Spindler;
 
@@ -14,15 +16,9 @@ public partial class App : Application
     {
         get
         {
-            database ??= new DataService(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Spindler.db"));
+            database ??= new DataService(System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Spindler.db"));
             return database;
         }
-    }
-
-    enum Themes
-    {
-        Default,
-        Dracula
     }
 
     public App()
@@ -42,20 +38,28 @@ public partial class App : Application
         Routing.RegisterRoute($"{nameof(HomePage)}/{nameof(BookListDetailPage)}", typeof(BookListDetailPage));
         Routing.RegisterRoute("Config/" + nameof(ConfigDetailPage), typeof(ConfigDetailPage));
         Routing.RegisterRoute("GeneralConfig/" + nameof(GeneralizedConfigDetailPage), typeof(GeneralizedConfigDetailPage));
+
+        WeakReferenceMessenger.Default.Register<ThemeChangedMessage>(this, (theme, message) => {
+            SetTheme(message.Value);
+        });
     }
 
 
-    public void SetTheme()
+    public void SetTheme(Theme? theme = null)
     {
         Current?.Resources.MergedDictionaries.Clear();
-        Themes? defaultTheme = (Themes)Preferences.Get("theme", (int)Themes.Default);
-        ResourceDictionary theme = defaultTheme switch
+        if (theme is null)
+        {
+            var themeType = Preferences.Get("theme", (int)Themes.Default);
+            theme = Theme.FromThemeType((Themes)themeType);
+        }
+        ResourceDictionary resourceDictionary = theme.theme switch
         {
             Themes.Default => new Resources.Styles.Default(),
             Themes.Dracula => new Resources.Styles.Dracula(),
             _ => throw new NotImplementedException("HOW")
         };
-        Current?.Resources.MergedDictionaries.Add(theme);
+        Current?.Resources.MergedDictionaries.Add(resourceDictionary);
         Current?.Resources.MergedDictionaries.Add(new Resources.Setters());
     }
 }

@@ -1,4 +1,5 @@
-﻿using Android.Graphics.Drawables;
+﻿using Android.Graphics;
+using Android.Graphics.Drawables;
 using Android.Views;
 using Android.Widget;
 using Google.Android.Material.BottomNavigation;
@@ -6,6 +7,7 @@ using Google.Android.Material.Internal;
 using Microsoft.Maui.Controls.Platform;
 using Microsoft.Maui.Controls.Platform.Compatibility;
 using Microsoft.Maui.Platform;
+using Color = Microsoft.Maui.Graphics.Color;
 
 namespace Spindler.Platforms.Android;
 
@@ -24,7 +26,7 @@ class CustomTabBarAppearanceTracker : ShellBottomNavViewAppearanceTracker
         var backgroundDrawable = new GradientDrawable();
         backgroundDrawable.SetShape(ShapeType.Rectangle);
         backgroundDrawable.SetCornerRadius(30);
-        backgroundDrawable.SetColor(appearance.EffectiveTabBarBackgroundColor.ToPlatform());
+        backgroundDrawable.SetColor(appearance.EffectiveTabBarBackgroundColor?.ToPlatform() ?? ((Color)App.Current!.Resources.MergedDictionaries.First()["Background"]).ToPlatform());
         bottomView.SetBackground(backgroundDrawable);
 
         var layoutParams = bottomView.LayoutParameters;
@@ -45,6 +47,6 @@ class CustomTabBarAppearanceTracker : ShellBottomNavViewAppearanceTracker
     protected override void SetBackgroundColor(BottomNavigationView bottomView, Color color)
     {
         base.SetBackgroundColor(bottomView, color);
-        bottomView.RootView?.SetBackgroundColor(color.ToPlatform());
+        bottomView.RootView?.SetBackgroundColor(color?.ToPlatform() ?? ((Color)App.Current!.Resources.MergedDictionaries.First()["Background"]).ToPlatform());
     }
 }
