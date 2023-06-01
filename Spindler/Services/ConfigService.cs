@@ -186,12 +186,22 @@ public partial class ConfigService
             }
             return value;
         }
-        return type switch
+
+        HtmlNode? targetNode = nav.QuerySelector(path);
+        switch (type)
         {
-            SelectorType.Text => nav.QuerySelector(path)?.CreateNavigator().Value,
-            SelectorType.Link => nav.QuerySelector(path)?.GetAttributeValue("href", null),
-            _ => throw new NotImplementedException($"This selector type: {type} is not implemented (CssElementHandler)"),
-        };
+            case SelectorType.Text:
+                return targetNode?.CreateNavigator().Value;
+            case SelectorType.Link:
+                return targetNode.OriginalName switch
+                {
+                    "a" => targetNode.GetAttributeValue("href", null),
+                    "img" => targetNode.GetAttributeValue("src", null),
+                    _ => targetNode.CreateNavigator().Value,
+                };
+            default:
+                throw new NotImplementedException($"This selector type: {type} is not implemented (CssElementHandler)");
+        }
     }
 
     /// <summary>
