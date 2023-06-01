@@ -15,7 +15,8 @@
     <Button Text="Delete" Margin="5,0,5,0"
             Grid.Column="1"
             FontSize="Large"
-            Clicked="Button_Clicked" BackgroundColor="OrangeRed"
+            Clicked="Button_Clicked"
+            Style="{DynamicResource DeleteButton}"
             Command="{Binding Source = {x:Reference this}, Path = DeleteCommand}"/>
     <Button x:Name="okButton" Margin="5,0,5,0"
             Text="{Binding Source = {x:Reference this}, Path = OkText}"

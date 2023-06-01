@@ -8,31 +8,38 @@
     <ContentPage.BindingContext>
         <models:Book/>
     </ContentPage.BindingContext>
-    <Grid RowDefinitions="auto, auto, auto, auto, auto, auto, *, auto" ColumnDefinitions="auto, *" VerticalOptions="FillAndExpand">
-        <Button Text="Add a book using the browser" Clicked="Search_clicked" CornerRadius="0" Grid.ColumnSpan="2"/>
-        <Label Grid.Row="1" Text="Name:" Padding="0,17,5,0"/>
-        <Entry Grid.Row="1" Grid.Column="1" x:Name="nameEntry" HorizontalOptions="FillAndExpand" Margin="0,5,0,0"
+    <Grid Padding="5,0,5,0" RowDefinitions="auto, auto, auto, auto, auto, *, auto" ColumnDefinitions="auto, *" VerticalOptions="FillAndExpand">
+        <Label Text="Name:" Padding="0,17,5,0"/>
+        <Entry Grid.Column="1" x:Name="nameEntry" HorizontalOptions="FillAndExpand" Margin="0,5,0,0"
                                Placeholder="The name of the book" Text="{Binding Title}"/>
-        <Label Text="Url:" Padding="0,17,5,0" Grid.Row="2"/>
-        <Entry x:Name="urlEntry" HorizontalOptions="FillAndExpand" Margin="0,5,0,0" Grid.Row="2" Grid.Column="1"
+        <Label Text="Url:" Padding="0,17,5,0" Grid.Row="1"/>
+        <Entry x:Name="urlEntry" HorizontalOptions="FillAndExpand" Margin="0,5,0,0" Grid.Row="1" Grid.Column="1"
                                Placeholder="Url where book content is found" Text="{Binding Url}"/>
 
-        <Label Text="Image Url:" Padding="0,17,5,0" Grid.Row="3"/>
-        <Entry x:Name="imageUrlEntry" HorizontalOptions="FillAndExpand" Margin="0,5,0,0" Grid.Row="3" Grid.Column="1"
+        <Label Text="Image Url:" Padding="0,17,5,0" Grid.Row="2"/>
+        <Entry x:Name="imageUrlEntry" HorizontalOptions="FillAndExpand" Margin="0,5,0,0" Grid.Row="2" Grid.Column="1"
                                Placeholder="Url where book content is found" Text="{Binding ImageUrl}"/>
 
-        <TableView Grid.Row="4" Grid.ColumnSpan="2">
-            <TableSection>
-                <SwitchCell Text="Pin this Book" On="{Binding Pinned}" />
-            </TableSection>
-        </TableView>
+        <HorizontalStackLayout Grid.Row="3" Grid.ColumnSpan="2" HorizontalOptions="Center">
+            <Label Text="Pin this Book" Padding="0,10,80,0" FontSize="Medium"/>
+            <Switch IsToggled="{Binding Pinned}"/>
+        </HorizontalStackLayout>
 
-        <Button Grid.Row="5" Grid.ColumnSpan="2" Text="Change book list" CornerRadius="0" Clicked="SwitchBookList_Clicked"/>
+        <HorizontalStackLayout Grid.Row="4" Grid.ColumnSpan="2" HorizontalOptions="Center" Spacing="40" Margin="5,0,5,0">
+            <HorizontalStackLayout.Resources>
+                <Style TargetType="Button">
+                    <Setter Property="BackgroundColor" Value="{DynamicResource Primary}"/>
+                    <Setter Property="FontSize" Value="Medium"/>
+                    <Setter Property="CornerRadius" Value="20"/>
+                </Style>
+            </HorizontalStackLayout.Resources>
+            <Button Text="Use Browser" Clicked="Search_clicked"/>
+            <Button Text="Change book list" Clicked="SwitchBookList_Clicked"/>
+        </HorizontalStackLayout>
 
-        <Label Text="{Binding LastViewed}" Grid.ColumnSpan="2" Grid.Row="6" HeightRequest="200" HorizontalTextAlignment="Center" VerticalOptions="StartAndExpand"/>
-
+        <Label Text="{Binding LastViewed}" Grid.ColumnSpan="2" Grid.Row="5" HeightRequest="200" HorizontalTextAlignment="Center" VerticalOptions="StartAndExpand"/>
         <controls:AddButtonGroup x:Name="AddButtonGroup"
-                                 Grid.Row="7"
+                                 Grid.Row="6"
                                  Grid.ColumnSpan="2"
                                  DeleteClicked="DeleteButton_clicked"
                                  CancelClicked="Cancel_Clicked"

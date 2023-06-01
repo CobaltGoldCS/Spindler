@@ -133,6 +133,29 @@
         </Setter>
     </Style>
 
+    <Style TargetType="Switch">
+        <Setter Property="OnColor" Value="{DynamicResource Primary}"/>
+        <Setter Property="ThumbColor" Value="{DynamicResource Primary}"/>
+        <Setter Property="VisualStateManager.VisualStateGroups">
+            <VisualStateGroupList>
+                <VisualStateGroup x:Name="CommonStates">
+                    <VisualState Name="On">
+                        <VisualState.Setters>
+                            <Setter Property="OnColor" Value="{DynamicResource Primary}"/>
+                            <Setter Property="ThumbColor" Value="{DynamicResource Primary}"/>
+                        </VisualState.Setters>
+                    </VisualState>
+                    <VisualState Name="Off">
+                        <VisualState.Setters>
+                            <Setter Property="OnColor" Value="{DynamicResource Primary}"/>
+                            <Setter Property="ThumbColor" Value="{DynamicResource Primary}"/>
+                        </VisualState.Setters>
+                    </VisualState>
+                </VisualStateGroup>
+            </VisualStateGroupList>
+        </Setter>
+    </Style>
+
     <Style TargetType="ProgressBar">
         <Setter Property="ProgressColor" Value="{DynamicResource Primary}" />
         <Setter Property="VisualStateManager.VisualStateGroups">

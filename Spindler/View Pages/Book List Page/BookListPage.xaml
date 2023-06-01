@@ -42,70 +42,14 @@
             </StackLayout>
         </Grid>
     </Shell.TitleView>
-    <!---Pinned Books-->
-    <Grid RowDefinitions="auto, *" CompressedLayout.IsHeadless="True">
-        <Border
-            StrokeShape="RoundRectangle 10,10,10,10"
-            StrokeThickness="0"
-            Background="{DynamicResource CardBackground}"
-            Margin="5,0"
-            IsVisible="{Binding PinnedBooksAreVisible}"
-            CompressedLayout.IsHeadless="True">
-            <toolkit:Expander x:Name="PinView"
-                              Padding="7,-1,8,5"
-                              CompressedLayout.IsHeadless="True">
-                <toolkit:Expander.Header>
-                    <Grid ColumnDefinitions="20, *, 25"
-                          Padding="0,7,0,0"
-                          CompressedLayout.IsHeadless="True"
-                          BackgroundColor="{DynamicResource CardBackground}">
-                        <Image Source="pin.svg" Margin="8,3,0,5">
-                            <Image.Behaviors>
-                                <toolkit:IconTintColorBehavior 
-                                            TintColor="{StaticResource White}"/>
-                            </Image.Behaviors>
-                        </Image>
-                        <Label Text="Pinned Books"
-                               Grid.Column="1"
-                               Padding="10, -2, 0, 0"
-                               FontSize="Large"
-                               FontFamily="OpenSans (Semibold)"
-                               VerticalOptions="Center"/>
-                        <Label Text="{Binding Source={x:Reference PinView}, Path=IsExpanded, Converter={StaticResource ExpanderIconConverter}, Mode=OneWay}"
-                           Grid.Column="2"
-                           FontSize="Large"
-                           Padding="2,-2,0,0"
-                           VerticalOptions="Center"
-                           FontFamily="OpenSans (Semibold)"/>
-                    </Grid>
-                </toolkit:Expander.Header>
-                <CollectionView x:Name="PinnedBooksList"
-                                ItemsSource="{Binding PinnedBooks, Mode=OneTime}"
-                                SelectionMode="Single"
-                                ItemSizingStrategy="MeasureFirstItem"
-                                BackgroundColor="{AppThemeBinding Dark={DynamicResource DarkBackground}, Light={DynamicResource LightBackground}}"
-                            >
-                    <CollectionView.ItemsLayout>
-                        <LinearItemsLayout ItemSpacing="5" Orientation="Horizontal"/>
-                    </CollectionView.ItemsLayout>
-                    <CollectionView.ItemTemplate>
-                        <DataTemplate x:DataType="models:Book">
-                            <items:PinnedBookItem 
-                                BookParameter="{Binding Path=., Mode=OneTime}"
-                                SelectionCommand="{Binding Source={x:RelativeSource AncestorType={x:Type viewmodels:BookListViewModel}}, Path=SelectionCommand, Mode=OneTime}"
-                                DoubleTappedCommand="{Binding Source={x:RelativeSource AncestorType={x:Type viewmodels:BookListViewModel}}, Path=DoubleTappedCommand, Mode=OneTime}" />
-                        </DataTemplate>
-                    </CollectionView.ItemTemplate>
-                </CollectionView>
-            </toolkit:Expander>
-        </Border>
 
-        <RefreshView IsRefreshing="{Binding IsLoading}" 
+
+    <RefreshView IsRefreshing="{Binding IsLoading}" 
                      Command="{Binding LoadCommand}"
                      Margin="5"
                      Grid.Row="1">
-            <!--Standard book list-->
-            <CollectionView x:Name="BooksList"
+        <!--Standard book list-->
+        <CollectionView x:Name="BooksList"
                         ItemsSource="{Binding DisplayedBooks, Mode=OneTime}"
                         RemainingItemsThreshold="5"
                         RemainingItemsThresholdReachedCommand="{Binding EndOfListReachedCommand, Mode=OneTime}"
@@ -113,28 +57,85 @@
                         ItemSizingStrategy="MeasureFirstItem"
                         VerticalScrollBarVisibility="Always"
                         >
-                <CollectionView.ItemsLayout>
-                    <LinearItemsLayout ItemSpacing="5" Orientation="Vertical"/>
-                </CollectionView.ItemsLayout>
-                <CollectionView.ItemTemplate>
-                    <DataTemplate x:DataType="models:Book">
-                        <items:BookItem 
+            <CollectionView.ItemsLayout>
+                <LinearItemsLayout ItemSpacing="5" Orientation="Vertical"/>
+            </CollectionView.ItemsLayout>
+
+            <CollectionView.Header>
+                    <!---Pinned Books-->
+                <Border
+                            StrokeShape="RoundRectangle 10,10,10,10"
+                            StrokeThickness="0"
+                            Background="{DynamicResource CardBackground}"
+                            Margin="5,0"
+                            IsVisible="{Binding PinnedBooksAreVisible}"
+                            CompressedLayout.IsHeadless="True">
+                    <toolkit:Expander x:Name="PinView"
+                              Padding="7,-1,8,5"
+                              CompressedLayout.IsHeadless="True">
+                        <toolkit:Expander.Header>
+                            <Grid ColumnDefinitions="20, *, 25"
+                                      Padding="0,7,0,0"
+                                      CompressedLayout.IsHeadless="True"
+                                      BackgroundColor="{DynamicResource CardBackground}">
+                                <Image Source="pin.svg" Margin="8,3,0,5">
+                                    <Image.Behaviors>
+                                        <toolkit:IconTintColorBehavior 
+                                            TintColor="{StaticResource White}"/>
+                                    </Image.Behaviors>
+                                </Image>
+                                <Label Text="Pinned Books"
+                                           Grid.Column="1"
+                                           Padding="10, -2, 0, 0"
+                                           FontSize="Large"
+                                           FontFamily="OpenSans (Semibold)"
+                                           VerticalOptions="Center"/>
+                                <Label Text="{Binding Source={x:Reference PinView}, Path=IsExpanded, Converter={StaticResource ExpanderIconConverter}, Mode=OneWay}"
+                                           Grid.Column="2"
+                                           FontSize="Large"
+                                           Padding="2,-2,0,0"
+                                           VerticalOptions="Center"
+                                           FontFamily="OpenSans (Semibold)"/>
+                            </Grid>
+                        </toolkit:Expander.Header>
+                        <CollectionView x:Name="PinnedBooksList"
+                                            ItemsSource="{Binding PinnedBooks, Mode=OneTime}"
+                                            SelectionMode="Single"
+                                            ItemSizingStrategy="MeasureFirstItem"
+                                            BackgroundColor="{AppThemeBinding Dark={DynamicResource DarkBackground}, Light={DynamicResource LightBackground}}">
+                            <CollectionView.ItemsLayout>
+                                <LinearItemsLayout ItemSpacing="5" Orientation="Horizontal"/>
+                            </CollectionView.ItemsLayout>
+                            <CollectionView.ItemTemplate>
+                                <DataTemplate x:DataType="models:Book">
+                                    <items:PinnedBookItem 
+                                                BookParameter="{Binding Path=., Mode=OneTime}"
+                                                SelectionCommand="{Binding Source={x:RelativeSource AncestorType={x:Type viewmodels:BookListViewModel}}, Path=SelectionCommand, Mode=OneTime}"
+                                                DoubleTappedCommand="{Binding Source={x:RelativeSource AncestorType={x:Type viewmodels:BookListViewModel}}, Path=DoubleTappedCommand, Mode=OneTime}" />
+                                </DataTemplate>
+                            </CollectionView.ItemTemplate>
+                        </CollectionView>
+                    </toolkit:Expander>
+                </Border>
+            </CollectionView.Header>
+            <CollectionView.ItemTemplate>
+                <DataTemplate x:DataType="models:Book">
+                    <items:BookItem 
                         BookParameter="{Binding Path=., Mode=OneTime}"
                         SelectionCommand="{Binding Source={x:RelativeSource AncestorType={x:Type viewmodels:BookListViewModel}}, Path=SelectionCommand, Mode=OneTime}"
                         DoubleTappedCommand="{Binding Source={x:RelativeSource AncestorType={x:Type viewmodels:BookListViewModel}}, Path=DoubleTappedCommand, Mode=OneTime}"/>
 
-                    </DataTemplate>
-                </CollectionView.ItemTemplate>
-                <CollectionView.EmptyView>
-                    <ActivityIndicator IsRunning="True" Color="{StaticResource Primary}"/>
-                </CollectionView.EmptyView>
-                <CollectionView.Footer>
-                    <ActivityIndicator 
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+            <CollectionView.EmptyView>
+                <ActivityIndicator IsRunning="True" Color="{StaticResource Primary}"/>
+            </CollectionView.EmptyView>
+            <CollectionView.Footer>
+                <ActivityIndicator 
                     IsRunning="{Binding IsExpanding, Mode=OneWay}"
                     HeightRequest="{Binding LoaderHeightRequest, Mode=OneWay}"
                     Color="{StaticResource Primary}"/>
-                </CollectionView.Footer>
-            </CollectionView>
-        </RefreshView>
-    </Grid>
+            </CollectionView.Footer>
+        </CollectionView>
+    </RefreshView>
 </ContentPage>
