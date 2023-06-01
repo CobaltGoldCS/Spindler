@@ -6,7 +6,7 @@
         CompressedLayout.IsHeadless="True"
         x:Name="this">
     <Border.Shadow>
-        <Shadow Offset="10,10" Brush="Black" Radius="30" Opacity="1"/>
+        <Shadow Brush="Black" Offset="10,10" Radius="100"/>
     </Border.Shadow>
     <Border.GestureRecognizers>
         <TapGestureRecognizer 

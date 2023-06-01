@@ -3,7 +3,9 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:models="clr-namespace:Spindler.Models"
              xmlns:viewmodels="clr-namespace:Spindler.ViewModels"
+             xmlns:utils="clr-namespace:Spindler.Utilities"
              xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             x:Name="this"
              x:Class="Spindler.HomePage"
              x:DataType="viewmodels:HomeViewModel">
 
@@ -51,7 +53,7 @@
                              Source="plus.svg"
                              Command="{Binding AddToolBarItemCommand}">
                     <ImageButton.Behaviors>
-                        <toolkit:IconTintColorBehavior TintColor="{StaticResource TextColor}"/>
+                        <toolkit:IconTintColorBehavior BindingContext="{x:Reference this}" TintColor="{StaticResource Primary}" />
                     </ImageButton.Behaviors>
                 </ImageButton>
             </StackLayout>
@@ -98,6 +100,7 @@
                                     VerticalTextAlignment="Center" 
                                     FontSize="Large" 
                                     x:Name="TitleLabel" 
+                                    TextColor="White"
                                     Text="{Binding Name}"/>
                             <ImageButton  Source="kebab.svg" 
                                               WidthRequest="20"

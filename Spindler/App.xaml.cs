@@ -57,9 +57,13 @@ public partial class App : Application
         {
             Themes.Default => new Resources.Styles.Default(),
             Themes.Dracula => new Resources.Styles.Dracula(),
-            _ => throw new NotImplementedException("HOW")
+            Themes.Seasalt => new Resources.Styles.Seasalt(),
+            Themes.TeaRose => new Resources.Styles.Tearose(),
+            _ => throw new NotImplementedException()
         };
         Current?.Resources.MergedDictionaries.Add(resourceDictionary);
         Current?.Resources.MergedDictionaries.Add(new Resources.Setters());
+
+        WeakReferenceMessenger.Default.Send(new ResourceDictionaryUpdatedMessage(resourceDictionary));
     }
 }

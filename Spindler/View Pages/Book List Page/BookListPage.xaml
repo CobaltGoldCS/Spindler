@@ -23,17 +23,17 @@
                    FontSize="Large"
                    VerticalOptions="Start"
                    HorizontalOptions="FillAndExpand"
-                   TextColor="{AppThemeBinding Dark={DynamicResource DarkTextColor}, Light={DynamicResource LightTextColor}}"/>
+                   TextColor="{DynamicResource TextColor}"/>
             <StackLayout Grid.Column="1"
                          HorizontalOptions="EndAndExpand"
                          Orientation="Horizontal"
                          VerticalOptions="Center"
-                         Margin="0,0,10,0">
+                         Margin="0,0,15,0">
                 <ImageButton x:Name="AddToolBarItem"
                              HeightRequest="25"
                              WidthRequest="25"
                              Source="plus.svg"
-                             Padding="25,0,0,0"
+                             Margin="30,0,0,0"
                              Command="{Binding AddToolBarItemCommand, Mode=OneWay}">
                     <ImageButton.Behaviors>
                         <toolkit:IconTintColorBehavior TintColor="{StaticResource Primary}"/>

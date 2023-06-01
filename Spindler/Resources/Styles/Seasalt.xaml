@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ResourceDictionary xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Spindler.Resources.Styles.Seasalt">
+    <Color x:Key="Primary">#49AB96</Color>
+    <Color x:Key="Warning">#E65A0F</Color>
+    <Color x:Key="Background">#FAF9F9</Color>
+    <Color x:Key="TextColor">#040404</Color>
+    <Color x:Key="PlaceholderColor">#89B0AE</Color>
+    <Color x:Key="DisabledTextColor">#4E4E4E</Color>
+    <Color x:Key="CardBackground">#F8B18B</Color>
+    <Color x:Key="BorderColor">#F9BE9F</Color>
+</ResourceDictionary>

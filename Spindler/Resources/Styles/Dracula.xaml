@@ -9,4 +9,5 @@
     <Color x:Key="PlaceholderColor">#969696</Color>
     <Color x:Key="DisabledTextColor">#A5A5A5</Color>
     <Color x:Key="CardBackground">#1B2137</Color>
+    <Color x:Key="BorderColor">Black</Color>
 </ResourceDictionary>

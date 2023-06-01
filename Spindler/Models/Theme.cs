@@ -4,6 +4,8 @@ public enum Themes
 {
     Default,
     Dracula,
+    Seasalt,
+    TeaRose
 }
 public class Theme
 {

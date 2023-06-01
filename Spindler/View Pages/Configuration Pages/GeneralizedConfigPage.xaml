@@ -22,7 +22,7 @@
                 <TapGestureRecognizer Command="{Binding AddCommand, Mode=OneTime}"/>
             </Border.GestureRecognizers>
             <Grid ColumnDefinitions="*, 100" 
-                  BackgroundColor="{StaticResource CardBackground}"
+                  BackgroundColor="{DynamicResource CardBackground}"
                   CompressedLayout.IsHeadless="True">
                 <Label Text="Add a Configuration" Grid.Row="0" VerticalTextAlignment="Center" FontSize="26" Margin="20,0,0,0" TextColor="{DynamicResource TextColor}"/>
                 <Image Source="plus.svg" Grid.Column="1"  WidthRequest="50" Margin="10,10,3,10" HorizontalOptions="End">
