@@ -214,17 +214,29 @@ public partial class ConfigService
             if (node is null) return null;
             return node.GetAttributeValue(modifier, null);
         }
-        if (type == SelectorType.Link && !path.Contains('@'))
-            path += path.EndsWith("/") ? "@href" : "/@href";
-        var value = nav.DocumentNode.SelectSingleNode(path)?.CreateNavigator().Value;
-        if (value is null) return value;
-        if (type == SelectorType.Link)
-            value = CleanLinkRegex().Match(value).Value;
-        return value;
+
+        HtmlNode? targetNode = nav.DocumentNode.SelectSingleNode(path);
+        if (targetNode is null) 
+            return null;
+
+        // Select proper attributes from links
+        if (type == SelectorType.Link && !XPathSelectsValue().Matches(path).Any())
+        {
+            return targetNode.OriginalName switch
+            {
+                "a" => targetNode.GetAttributeValue("href", null),
+                "img" => targetNode.GetAttributeValue("src", null),
+                _ => targetNode.CreateNavigator().Value,
+            };
+        }
+        return targetNode.CreateNavigator().Value;
     }
 
     #endregion
 
     [GeneratedRegex("((?:https?:/)?/[-a-zA-Z0-9+&@#/%?=~_|!:, .;]*[-a-zA-Z0-9+&@#/%=~_|])")]
     private static partial Regex CleanLinkRegex();
+
+    [GeneratedRegex("^.+/@.+$")]
+    private static partial Regex XPathSelectsValue();
 }
