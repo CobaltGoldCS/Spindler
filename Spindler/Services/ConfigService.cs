@@ -188,16 +188,18 @@ public partial class ConfigService
         }
 
         HtmlNode? targetNode = nav.QuerySelector(path);
+        if (targetNode is null)
+            return null;
         switch (type)
         {
             case SelectorType.Text:
                 return targetNode?.CreateNavigator().Value;
             case SelectorType.Link:
-                return targetNode.OriginalName switch
+                return targetNode?.OriginalName switch
                 {
-                    "a" => targetNode.GetAttributeValue("href", null),
-                    "img" => targetNode.GetAttributeValue("src", null),
-                    _ => targetNode.CreateNavigator().Value,
+                    "a" => targetNode?.GetAttributeValue("href", null),
+                    "img" => targetNode?.GetAttributeValue("src", null),
+                    _ => targetNode?.CreateNavigator().Value,
                 };
             default:
                 throw new NotImplementedException($"This selector type: {type} is not implemented (CssElementHandler)");
