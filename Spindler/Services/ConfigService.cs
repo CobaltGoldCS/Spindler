@@ -188,10 +188,12 @@ public partial class ConfigService
         }
 
         HtmlNode? targetNode = nav.QuerySelector(path);
+        if (targetNode is null)
+            return null;
         switch (type)
         {
             case SelectorType.Text:
-                return targetNode?.CreateNavigator().Value;
+                return targetNode.CreateNavigator().Value;
             case SelectorType.Link:
                 return targetNode.OriginalName switch
                 {
