@@ -10,4 +10,8 @@
     <Color x:Key="DisabledTextColor">#959DB1</Color>
     <Color x:Key="CardBackground">#353A47</Color>
     <Color x:Key="BorderColor">Black</Color>
+
+    <Style x:Key="CardLayout" TargetType="Grid">
+        <Setter Property="Background" Value="{StaticResource Background}"/>
+    </Style>
 </ResourceDictionary>

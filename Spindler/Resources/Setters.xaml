@@ -212,4 +212,8 @@
         <Setter Property="Shell.TabBarUnselectedColor" Value="{DynamicResource DisabledTextColor}" />
     </Style>
     <Style BasedOn="{StaticResource BaseStyle}" TargetType="ShellItem" ApplyToDerivedTypes="True" />
+
+    <Style TargetType="Grid" x:Key="CardLayout">
+        <Setter Property="Background" Value="{DynamicResource CardBackground}"/>
+    </Style>
 </ResourceDictionary>

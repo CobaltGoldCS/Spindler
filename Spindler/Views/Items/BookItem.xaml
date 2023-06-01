@@ -21,9 +21,9 @@
     </Border.GestureRecognizers>
     <Grid
         x:DataType="models:Book"
-        Background="{DynamicResource CardBackground}"
         ColumnDefinitions="85, *"
         RowDefinitions="65, 45"
+        Style="{DynamicResource CardLayout}"
         >
         <Image Source="{Binding Source={x:Reference this}, Path=BookParameter.ImageUrl, Mode=OneWay}"
                Aspect="AspectFill"

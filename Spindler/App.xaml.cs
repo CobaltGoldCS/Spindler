@@ -61,8 +61,9 @@ public partial class App : Application
             Themes.TeaRose => new Resources.Styles.Tearose(),
             _ => throw new NotImplementedException()
         };
-        Current?.Resources.MergedDictionaries.Add(resourceDictionary);
         Current?.Resources.MergedDictionaries.Add(new Resources.Setters());
+        Current?.Resources.MergedDictionaries.Add(resourceDictionary);
+        
 
         WeakReferenceMessenger.Default.Send(new ResourceDictionaryUpdatedMessage(resourceDictionary));
     }
