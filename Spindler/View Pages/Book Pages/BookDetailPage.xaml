@@ -27,14 +27,14 @@
 
         <HorizontalStackLayout Grid.Row="4" Grid.ColumnSpan="2" HorizontalOptions="Center" Spacing="40" Margin="5,0,5,0">
             <HorizontalStackLayout.Resources>
-                <Style TargetType="Button">
+                <Style x:Key="ChipButton" TargetType="Button">
                     <Setter Property="BackgroundColor" Value="{DynamicResource Primary}"/>
                     <Setter Property="FontSize" Value="Medium"/>
                     <Setter Property="CornerRadius" Value="20"/>
                 </Style>
             </HorizontalStackLayout.Resources>
-            <Button Text="Use Browser" Clicked="Search_clicked"/>
-            <Button Text="Change book list" Clicked="SwitchBookList_Clicked"/>
+            <Button Text="Use Browser" Clicked="Search_clicked" Style="{DynamicResource ChipButton}"/>
+            <Button Text="Change book list" Clicked="SwitchBookList_Clicked" Style="{DynamicResource ChipButton}"/>
         </HorizontalStackLayout>
 
         <Label Text="{Binding LastViewed}" Grid.ColumnSpan="2" Grid.Row="5" HeightRequest="200" HorizontalTextAlignment="Center" VerticalOptions="StartAndExpand"/>
