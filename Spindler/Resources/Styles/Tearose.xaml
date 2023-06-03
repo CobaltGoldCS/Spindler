@@ -5,7 +5,7 @@
     <Color x:Key="Primary">#A9C8A7</Color>
     <Color x:Key="Warning">#DC136C</Color>
     <Color x:Key="Background">#885A5A</Color>
-    <Color x:Key="TextColor">#FBDEDA</Color>
+    <Color x:Key="TextColor">#FDEFED</Color>
     <Color x:Key="PlaceholderColor">#F5ADA3</Color>
     <Color x:Key="DisabledTextColor">#353A47</Color>
     <Color x:Key="CardBackground">#353A47</Color>
