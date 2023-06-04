@@ -20,10 +20,6 @@ public partial class BookPage : ContentPage, IQueryAttributable
         ViewModel = new BookViewModel();
         BindingContext = ViewModel;
 
-#if ANDROID || IOS
-        BackgroundImage.Behaviors.Add(new PrimaryColorsBehavior());
-#endif
-
     }
 
 
