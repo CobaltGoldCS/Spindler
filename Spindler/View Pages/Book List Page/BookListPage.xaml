@@ -38,8 +38,6 @@
             </StackLayout>
         </Grid>
     </Shell.TitleView>
-
-
     <RefreshView IsRefreshing="{Binding IsLoading}" 
                      Command="{Binding LoadCommand}"
                      Margin="5"
@@ -51,14 +49,13 @@
                         RemainingItemsThresholdReachedCommand="{Binding EndOfListReachedCommand, Mode=OneTime}"
                         SelectionMode="Single"
                         ItemSizingStrategy="MeasureFirstItem"
-                        VerticalScrollBarVisibility="Always"
-                        >
+                        VerticalScrollBarVisibility="Always">
             <CollectionView.ItemsLayout>
                 <LinearItemsLayout ItemSpacing="5" Orientation="Vertical"/>
             </CollectionView.ItemsLayout>
 
             <CollectionView.Header>
-                    <!---Pinned Books-->
+                <!---Pinned Books-->
                 <Border
                             StrokeShape="RoundRectangle 10,10,10,10"
                             StrokeThickness="0"

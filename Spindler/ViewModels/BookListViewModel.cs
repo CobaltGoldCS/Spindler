@@ -217,7 +217,6 @@ namespace Spindler.ViewModels
             // First time load
             if (DisplayedBooks.Count == 0)
             {
-                await Task.Delay(175);
                 // Set up pinned books
                 CurrentList = await Database.GetBooksByBooklistIdAsync(Id);
                 foreach (var book in CurrentList.Where(book => book.Pinned))
@@ -227,6 +226,7 @@ namespace Spindler.ViewModels
                 PinnedBooksAreVisible = PinnedBooks.Count > 0;
 
                 LoaderHeightRequest = 0;
+                await Task.Delay(TimeSpan.FromMilliseconds(200));
             }
 
             LoaderHeightRequest = 20;
