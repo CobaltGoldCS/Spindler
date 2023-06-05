@@ -1,11 +1,6 @@
 using Spindler.Models;
 using Spindler.ViewModels;
 
-#if ANDROID
-using Spindler.Platforms.Android;
-#elif IOS
-using Spindler.Platforms.iOS;
-#endif
 
 namespace Spindler.Views.Book_Pages;
 
@@ -13,11 +8,11 @@ public partial class BookPage : ContentPage, IQueryAttributable
 {
     public BookViewModel ViewModel { get; set; }
 
-    public BookPage()
+    public BookPage(HttpClient client)
     {
         // TODO: Implement gaussian blur on image background
         InitializeComponent();
-        ViewModel = new BookViewModel();
+        ViewModel = new BookViewModel(client);
         BindingContext = ViewModel;
 
     }

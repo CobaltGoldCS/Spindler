@@ -12,11 +12,15 @@ namespace Spindler.ViewModels;
 
 public partial class BookViewModel : ObservableObject
 {
-    public BookViewModel()
-    {
-    }
+    HttpClient client;
 
     Book? book;
+    Config? config;
+
+    public BookViewModel(HttpClient client)
+    {
+        this.client = client;
+    }
 
     [ObservableProperty]
     Brush background = new SolidColorBrush(Application.Current?.Resources["CardBackground"] as Color ?? Colors.CadetBlue);
@@ -48,15 +52,13 @@ public partial class BookViewModel : ObservableObject
     [ObservableProperty]
     string method = "Read With Normal Reader";
 
-    Config? config;
-
 
     public async Task Load(Image view, Book book)
     {
         this.book = book;
         Domain = new UriBuilder(book.Url).Host;
 
-        config = await Config.FindValidConfig(book.Url);
+        config = await Config.FindValidConfig(client, book.Url);
 
         Title = book.Title;
         ImageUrl = book.ImageUrl;

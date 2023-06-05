@@ -128,22 +128,26 @@ public class Config : IIndexedModel
         PathType = pathType;
     }
 
+    public static async Task<Config?> FindValidConfig(string url, string? html = null)
+    {
+        HttpClient client = new()
+        {
+            Timeout = TimeSpan.FromSeconds(10)
+        };
+        return await FindValidConfig(client, url, html);
+    }
     /// <summary>
     /// Find a valid website configuration based on <paramref name="url"/>
     /// </summary>
     /// <param name="url">The url of the targeted website (handles http/https)</param>
     /// <returns>A valid configuration, or null if no valid configuration was found</returns>
-    public static async Task<Config?> FindValidConfig(string url, string? html = null)
+    public static async Task<Config?> FindValidConfig(HttpClient client, string url, string? html = null)
     {
         Config c = await App.Database.GetConfigByDomainNameAsync(new UriBuilder(url).Host);
 
         if (c != null) return c;
         try
         {
-            HttpClient client = new()
-            {
-                Timeout = new TimeSpan(0, 0, 10)
-            };
             HtmlDocument doc = new();
             doc.LoadHtml(html ?? await client.GetStringAsync(url));
 

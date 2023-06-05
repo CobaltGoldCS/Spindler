@@ -23,9 +23,18 @@ public class StandardWebService : IWebService
 
     #endregion
 
-    public StandardWebService() { }
+    public StandardWebService(HttpClient? client = null)
+    {
+        if (client is null)
+            return;
+        if (!client.DefaultRequestHeaders.TryGetValues("User-Agent", out _))
+        {
+            client.DefaultRequestHeaders.Add("User-Agent", GetUserAgent());
+        }
+        this.client = client;
+    }
 
-    
+
 
     /// <summary>
     /// Attempt to obtain html from a url

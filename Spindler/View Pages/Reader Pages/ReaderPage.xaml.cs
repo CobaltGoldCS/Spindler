@@ -6,6 +6,7 @@ namespace Spindler;
 
 public partial class ReaderPage : ContentPage, IQueryAttributable
 {
+    HttpClient Client { get; set; }
     public enum ReaderType
     {
         Standard,
@@ -21,28 +22,27 @@ public partial class ReaderPage : ContentPage, IQueryAttributable
             config = await Config.FindValidConfig(book.Url);
         }
 
-        var viewmodel = new ReaderViewModel();
-        
+        var ViewModel = new ReaderViewModel();
         // Attach required information to View Model
         if (config is not null)
         {
 
-            viewmodel.SetRequiredInfo(new((Config)config, type switch
+            ViewModel.SetRequiredInfo(new((Config)config, type switch
             {
                 ReaderType.Headless => new HeadlessWebService(HeadlessBrowser),
-                ReaderType.Standard => new StandardWebService(),
+                ReaderType.Standard => new StandardWebService(Client),
                 _ => throw new NotImplementedException("This service has not been implemented")
             }));
         }
-        viewmodel.SetReferencesToUI(ReadingLayout, BookmarkItem);
-        viewmodel.SetCurrentBook(book);
-        ReadingLayout.Scrolled += viewmodel.Scrolled;
+        ViewModel.SetReferencesToUI(ReadingLayout, BookmarkItem);
+        ViewModel.SetCurrentBook(book);
+        ReadingLayout.Scrolled += ViewModel.Scrolled;
 
-        BindingContext = viewmodel;
-        await viewmodel.StartLoad();
+        BindingContext = ViewModel;
+        await ViewModel.StartLoad();
     }
 
-    public ReaderPage()
+    public ReaderPage(HttpClient client)
     {
         InitializeComponent();
     }

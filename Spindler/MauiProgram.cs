@@ -2,6 +2,7 @@
 using Spindler.Services;
 using Spindler.ViewModels;
 using Spindler.Views;
+using Spindler.Views.Book_Pages;
 
 #if ANDROID
 using Spindler.Platforms.Android;
@@ -54,6 +55,9 @@ public static class MauiProgram
         // These cannot be defined with a Shell Route because they are already 
         // Present within the AppShell As Tab Pages
         service.AddSingleton<HomePage>();
+        service.AddSingleton<ReaderPage>();
+        service.AddSingleton<BookPage>();
+
         service.AddSingleton<HomeViewModel>();
 
         service.AddTransientWithShellRoute<BookListPage, BookListViewModel>($"{nameof(HomePage)}/{nameof(BookListPage)}");
