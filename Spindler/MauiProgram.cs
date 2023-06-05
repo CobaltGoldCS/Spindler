@@ -56,8 +56,8 @@ public static class MauiProgram
         // These cannot be defined with a Shell Route because they are already 
         // Present within the AppShell As Tab Pages
         service.AddSingleton<HomePage>();
-        service.AddSingleton<ReaderPage>();
-        service.AddSingleton<BookPage>();
+        service.AddTransient<ReaderPage>();
+        service.AddTransient<BookPage>();
 
         service.AddSingleton<HomeViewModel>();
 
