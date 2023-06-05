@@ -6,6 +6,8 @@ using Spindler.Services;
 using Spindler.Utilities;
 using Spindler.Views;
 using Spindler.Views.Reader_Pages;
+using System.Xml.XPath;
+
 namespace Spindler.ViewModels
 {
     public partial class ReaderViewModel : ObservableObject, IReader
@@ -144,8 +146,12 @@ namespace Spindler.ViewModels
 
                 if (html is Invalid<string>) return;
 
-                CurrentBook.ImageUrl = ReaderService.ConfigService.PrettyWrapSelector(
-                    (html as Ok<string>)!.Value, ConfigService.Selector.ImageUrl, ConfigService.SelectorType.Link);
+                try
+                {
+                    CurrentBook.ImageUrl = ReaderService.ConfigService.PrettyWrapSelector(
+                                        (html as Ok<string>)!.Value, ConfigService.Selector.ImageUrl, ConfigService.SelectorType.Link);
+                }
+                catch (XPathException) { }
             }
             DataChanged();
         }

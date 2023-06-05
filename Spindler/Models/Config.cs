@@ -2,6 +2,7 @@
 using Newtonsoft.Json;
 using Spindler.Services;
 using SQLite;
+using System.Xml.XPath;
 
 namespace Spindler.Models;
 
@@ -155,11 +156,15 @@ public class Config : IIndexedModel
             Config? selectedConfig = null;
             Parallel.ForEach(await App.Database.GetAllItemsAsync<GeneralizedConfig>(), (GeneralizedConfig config, ParallelLoopState state) =>
             {
-                if (ConfigService.PrettyWrapSelector(doc, new Path(config.MatchPath), ConfigService.SelectorType.Text) != string.Empty)
+                try
                 {
-                    selectedConfig = config;
-                    state.Stop();
+                    if (ConfigService.PrettyWrapSelector(doc, new Path(config.MatchPath), ConfigService.SelectorType.Text) != string.Empty)
+                    {
+                        selectedConfig = config;
+                        state.Stop();
+                    }
                 }
+                catch (XPathException) { }
             });
             return selectedConfig;
         }

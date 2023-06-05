@@ -10,11 +10,9 @@ public partial class BookPage : ContentPage, IQueryAttributable
 
     public BookPage(HttpClient client)
     {
-        // TODO: Implement gaussian blur on image background
         InitializeComponent();
         ViewModel = new BookViewModel(client);
         BindingContext = ViewModel;
-
     }
 
 

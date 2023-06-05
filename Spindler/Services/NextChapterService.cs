@@ -1,5 +1,6 @@
 ﻿using Knyaz.Optimus;
 using Spindler.Models;
+using System.Xml.XPath;
 
 namespace Spindler.Services
 {
@@ -45,9 +46,12 @@ namespace Spindler.Services
                 if (config is null || config.UsesWebview)
                     continue;
 
-                var nextUrl = ConfigService.PrettyWrapSelector(html, new(config.NextUrlPath), ConfigService.SelectorType.Link);
-
-                book.HasNextChapter = nextUrl.Length > 0;
+                string nextUrl;
+                try
+                {
+                    nextUrl = ConfigService.PrettyWrapSelector(html, new(config.NextUrlPath), ConfigService.SelectorType.Link);
+                    book.HasNextChapter = nextUrl.Length > 0;
+                } catch (XPathException) { }
                 verifiedbooks.Add(book);
             }
             return verifiedbooks;

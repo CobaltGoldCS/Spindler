@@ -138,20 +138,13 @@ public partial class ConfigService
     /// <exception cref="XPathException">If there is any error in the path</exception>
     public static string PrettyWrapSelector(HtmlDocument nav, SelectorPath path, SelectorType type)
     {
-        try
+        string? value = path.type switch
         {
-            string? value = path.type switch
-            {
-                SelectorPath.Type.XPath => XPathHandler(nav, path.path, type),
-                SelectorPath.Type.Css => CssElementHandler(nav, path.path, type),
-                _ => throw new NotImplementedException("This type is not implemented (PrettyWrapSelector)"),
-            };
-            return HttpUtility.HtmlDecode(value) ?? string.Empty;
-        }
-        catch (XPathException e)
-        {
-            throw new XPathException($"Error on path {path}: {e}");
-        }
+            SelectorPath.Type.XPath => XPathHandler(nav, path.path, type),
+            SelectorPath.Type.Css => CssElementHandler(nav, path.path, type),
+            _ => throw new NotImplementedException("This type is not implemented (PrettyWrapSelector)"),
+        };
+        return HttpUtility.HtmlDecode(value) ?? string.Empty;
     }
 
 
@@ -190,20 +183,18 @@ public partial class ConfigService
         HtmlNode? targetNode = nav.QuerySelector(path);
         if (targetNode is null)
             return null;
-        switch (type)
+        
+        return type switch
         {
-            case SelectorType.Text:
-                return targetNode.CreateNavigator().Value;
-            case SelectorType.Link:
-                return targetNode?.OriginalName switch
-                {
-                    "a" => targetNode?.GetAttributeValue("href", null),
-                    "img" => targetNode?.GetAttributeValue("src", null),
-                    _ => targetNode?.CreateNavigator().Value,
-                };
-            default:
-                throw new NotImplementedException($"This selector type: {type} is not implemented (CssElementHandler)");
-        }
+            SelectorType.Text => targetNode.CreateNavigator().Value,
+            SelectorType.Link => targetNode?.OriginalName switch
+            {
+                "a" => targetNode?.GetAttributeValue("href", null),
+                "img" => targetNode?.GetAttributeValue("src", null),
+                _ => targetNode?.CreateNavigator().Value,
+            },
+            _ => throw new NotImplementedException($"This selector type: {type} is not implemented (CssElementHandler)"),
+        };
     }
 
     /// <summary>
@@ -228,7 +219,7 @@ public partial class ConfigService
         }
 
         HtmlNode? targetNode = nav.DocumentNode.SelectSingleNode(path);
-        if (targetNode is null) 
+        if (targetNode is null)
             return null;
 
         // Select proper attributes from links

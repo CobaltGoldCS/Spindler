@@ -1,6 +1,7 @@
 ﻿using Spindler.CustomControls;
 using Spindler.Utilities;
 using System.Diagnostics;
+using System.Xml.XPath;
 
 namespace Spindler.Services
 {
@@ -24,27 +25,31 @@ namespace Spindler.Services
 
 
             // Attempt to bypass cloudflare
-
             Models.Path cloudflareDetectPath = new Models.Path("body.no-js > div.main-wrapper > div.main-content > h2#challenge-running");
-            var cloudflareString = ConfigService.PrettyWrapSelector(html, cloudflareDetectPath, ConfigService.SelectorType.Text);
-            Stopwatch timer = Stopwatch.StartNew();
-            
-            while (!string.IsNullOrEmpty(cloudflareString) || html.Length < 300)
+            try
             {
-                await Task.Delay(TimeSpan.FromSeconds(2));
-                if (cloudflareString == null)
-                    break;
+                var cloudflareString = ConfigService.PrettyWrapSelector(html, cloudflareDetectPath, ConfigService.SelectorType.Text);
+                Stopwatch timer = Stopwatch.StartNew();
 
-                cloudflareString = ConfigService.PrettyWrapSelector(html, cloudflareDetectPath, ConfigService.SelectorType.Text);
-                if (timer.Elapsed >= TimeSpan.FromSeconds(20))
+                while (!string.IsNullOrEmpty(cloudflareString) || html.Length < 300)
                 {
-                    return new Invalid<string>(new Error("Cloudlflare bypass timed out"));
+                    await Task.Delay(TimeSpan.FromSeconds(2));
+                    if (cloudflareString == null)
+                        break;
+
+                    cloudflareString = ConfigService.PrettyWrapSelector(html, cloudflareDetectPath, ConfigService.SelectorType.Text);
+                    if (timer.Elapsed >= TimeSpan.FromSeconds(20))
+                    {
+                        return new Invalid<string>(new Error("Cloudlflare bypass timed out"));
+                    }
                 }
             }
-
+            catch (XPathException)
+            {
+                return new Invalid<string>(new("X Path is invalid"));
+            }
 
             ReturnResult = new Ok<string>(html);
-
             html = string.Empty;
             return ReturnResult;
         }

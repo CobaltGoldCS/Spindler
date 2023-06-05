@@ -4,6 +4,7 @@ using Spindler.Models;
 using Spindler.Utilities;
 using System.Text.RegularExpressions;
 using System.Web;
+using System.Xml.XPath;
 using Path = Spindler.Models.Path;
 
 namespace Spindler.Services;
@@ -116,23 +117,30 @@ public partial class ReaderDataService
             WebUtilities.SetBaseUrl(new Uri(uri.GetLeftPart(UriPartial.Authority) + "/", UriKind.Absolute));
         }
 
-        Task<string>[] selections = new Task<string>[4];
-        selections[0] = Task.Run(() => GetContent(doc));
-        selections[1] = Task.Run(() => GetTitle(html));
-        selections[2] = Task.Run(() => ConfigService.PrettyWrapSelector(html, ConfigService.Selector.NextUrl, type: ConfigService.SelectorType.Link));
-        selections[3] = Task.Run(() => ConfigService.PrettyWrapSelector(html, ConfigService.Selector.PrevUrl, type: ConfigService.SelectorType.Link));
-        string[] content = await Task.WhenAll(selections);
-
-        LoadedData data = new()
+        try
         {
-            Text = content[0],
-            Title = content[1],
-            nextUrl = content[2],
-            prevUrl = content[3],
-            currentUrl = url
-        };
+            Task<string>[] selections = new Task<string>[4];
+            selections[0] = Task.Run(() => GetContent(doc));
+            selections[1] = Task.Run(() => GetTitle(html));
+            selections[2] = Task.Run(() => ConfigService.PrettyWrapSelector(html, ConfigService.Selector.NextUrl, type: ConfigService.SelectorType.Link));
+            selections[3] = Task.Run(() => ConfigService.PrettyWrapSelector(html, ConfigService.Selector.PrevUrl, type: ConfigService.SelectorType.Link));
+            string[] content = await Task.WhenAll(selections);
 
-        return new Ok<LoadedData>(data);
+            LoadedData data = new()
+            {
+                Text = content[0],
+                Title = content[1],
+                nextUrl = content[2],
+                prevUrl = content[3],
+                currentUrl = url
+            };
+
+            return new Ok<LoadedData>(data);
+        }
+        catch (XPathException)
+        {
+            return new Invalid<LoadedData>(new("Invalid XPath"));
+        }
     }
 
     /// <summary>
