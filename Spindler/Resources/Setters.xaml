@@ -18,6 +18,13 @@
         <Setter Property="BackgroundColor" Value="{DynamicResource Warning}"/>
     </Style>
 
+    <Style x:Key="IconButton" TargetType="Button">
+        <Setter Property="BackgroundColor" Value="Transparent"/>
+        <Setter Property="TextColor" Value="{DynamicResource Primary}"/>
+        <Setter Property="FontSize" Value="Large"/>
+        <Setter Property="FontFamily" Value="SPIcon"/>
+    </Style>
+
     <Style TargetType="Border">
         <Setter Property="Stroke" Value="{DynamicResource DisabledTextColor}" />
         <Setter Property="StrokeShape" Value="Rectangle"/>

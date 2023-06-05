@@ -24,23 +24,20 @@
     <Grid
         CompressedLayout.IsHeadless="True"
         BackgroundColor="{DynamicResource Background}"
-        ColumnDefinitions="200, 30"
-        RowDefinitions="65, 30">
+        RowDefinitions="65, 40" ColumnDefinitions="200">
         <Label
             FontSize="Body"
             x:Name="TitleLabel"
             Text="{Binding Source={x:Reference this}, Path=BookParameter.Title}"
             MaxLines="4"
             Padding="15,10,15,0"/>
-        <Image Grid.Row="1"
-            Source="pin.svg"
-            Aspect="AspectFit"
-            Margin="10,5,0,10"
-            IsVisible="{Binding Source={x:Reference this}, Path=BookParameter.HasNextChapter}"
-            HorizontalOptions="Start">
-            <Image.Behaviors>
-                <toolkit:IconTintColorBehavior TintColor="{StaticResource Warning}"/>
-            </Image.Behaviors>
-        </Image>
+        <Label  FontFamily="SPIcon"
+                FontSize="Medium"
+                TextColor="{DynamicResource Warning}"
+                IsVisible="{Binding Source={x:Reference this}, Path=BookParameter.HasNextChapter}"
+                Text="&#xE804;"
+                Margin="10,5,0,10"
+                Grid.Row="1"
+                HorizontalOptions="Start"/>
     </Grid>
 </Border>

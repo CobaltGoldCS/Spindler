@@ -18,7 +18,7 @@ namespace Spindler.ViewModels
         public Book CurrentBook = new() { Title = "Loading" };
         public CancellationTokenRegistration nextChapterToken = new();
 
-        private ImageButton? BookmarkButton;
+        private Button? BookmarkButton;
         private ScrollView? ReadingLayout;
 
         #region Bindable Properties
@@ -155,7 +155,7 @@ namespace Spindler.ViewModels
             }
             DataChanged();
         }
-        public void SetReferencesToUI(ScrollView readingLayout, ImageButton bookmarkButton)
+        public void SetReferencesToUI(ScrollView readingLayout, Button bookmarkButton)
         {
             ReadingLayout = readingLayout;
             BookmarkButton = bookmarkButton;

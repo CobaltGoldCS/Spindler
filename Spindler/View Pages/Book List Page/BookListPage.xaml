@@ -29,16 +29,12 @@
                          Orientation="Horizontal"
                          VerticalOptions="Center"
                          Margin="0,0,15,0">
-                <ImageButton x:Name="AddToolBarItem"
-                             HeightRequest="25"
-                             WidthRequest="25"
-                             Source="plus.svg"
+                <Button x:Name="AddToolBarItem"
+                        Style="{DynamicResource IconButton}"
+                             Text="&#xE805;"
                              Margin="30,0,0,0"
-                             Command="{Binding AddToolBarItemCommand, Mode=OneWay}">
-                    <ImageButton.Behaviors>
-                        <toolkit:IconTintColorBehavior TintColor="{StaticResource Primary}"/>
-                    </ImageButton.Behaviors>
-                </ImageButton>
+                             Command="{Binding AddToolBarItemCommand, Mode=OneWay}"/>
+
             </StackLayout>
         </Grid>
     </Shell.TitleView>
@@ -74,16 +70,16 @@
                               Padding="7,-1,8,5"
                               CompressedLayout.IsHeadless="True">
                         <toolkit:Expander.Header>
-                            <Grid ColumnDefinitions="20, *, 25"
+                            <Grid ColumnDefinitions="50, *, 25"
                                       Padding="0,7,0,0"
                                       CompressedLayout.IsHeadless="True"
                                       BackgroundColor="{DynamicResource CardBackground}">
-                                <Image Source="pin.svg" Margin="8,3,0,5">
-                                    <Image.Behaviors>
-                                        <toolkit:IconTintColorBehavior 
-                                            TintColor="{StaticResource White}"/>
-                                    </Image.Behaviors>
-                                </Image>
+                                <Label  TextColor="{StaticResource White}"
+                                        FontFamily="SPIcon"
+                                        FontSize="Large"
+                                        Text="&#xE804;"
+                                        Margin="8,3,0,5"/>
+
                                 <Label Text="Pinned Books"
                                            Grid.Column="1"
                                            Padding="10, -2, 0, 0"

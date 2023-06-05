@@ -76,12 +76,12 @@ namespace Spindler.ViewModels
 
         }
 
-        ImageButton? AddButton;
+        Button? AddButton;
         /// <summary>
         /// Add references to BookPage Elements 
         /// </summary>
         /// <param name="addToolBarItem">The ImageButton Plus in the toolbar </param>
-        public void AddUiReferences(ImageButton addToolBarItem)
+        public void AddUiReferences(Button addToolBarItem)
         {
             AddButton = addToolBarItem;
         }

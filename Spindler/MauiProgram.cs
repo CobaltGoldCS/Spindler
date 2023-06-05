@@ -28,6 +28,7 @@ public static class MauiProgram
                 fonts.AddFont("Merriweather-Bold.ttf", "Merriweather (Bold)");
                 fonts.AddFont("SignikaNegative-Bold.ttf", "Signika (Bold)");
                 fonts.AddFont("SignikaNegative-Regular.ttf", "Signika");
+                fonts.AddFont("spindler_icons.ttf", "SPIcon");
             })
             .ConfigureMauiHandlers(handlers =>
             {

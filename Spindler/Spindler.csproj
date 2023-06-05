@@ -129,6 +129,7 @@
 	  <None Remove="Resources\Fonts\gear.svg" />
 	  <None Remove="Resources\Fonts\multiple-gears.svg" />
 	  <None Remove="Resources\Fonts\profile-gear.svg" />
+	  <None Remove="Resources\Fonts\spindler_icons.ttf" />
 	  <None Remove="Resources\Images\bookmark.svg" />
 	  <None Remove="Resources\Images\kebab.svg" />
 	</ItemGroup>

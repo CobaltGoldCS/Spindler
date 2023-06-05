@@ -25,6 +25,7 @@
                    FontSize="Large"
                    VerticalOptions="Center"
                    HorizontalOptions="FillAndExpand"
+                   LineBreakMode="TailTruncation"
                    MaxLines="2"
                    TextColor="{DynamicResource Primary}"/>
             <StackLayout Grid.Column="1"
@@ -33,15 +34,11 @@
                          Orientation="Horizontal"
                          VerticalOptions="Center"
                          Margin="0,0,10,0">
-                <ImageButton x:Name="BookmarkItem"
-                             HeightRequest="25"
-                             WidthRequest="25"
-                             Source="bookmark.svg"
-                             Command="{Binding BookmarkCommand}">
-                    <ImageButton.Behaviors>
-                        <toolkit:IconTintColorBehavior TintColor="{StaticResource Primary}"/>
-                    </ImageButton.Behaviors>
-                </ImageButton>
+                <Button x:Name="BookmarkItem"
+                        Style="{DynamicResource IconButton}"
+                        Text="&#xE801;"
+                        Command="{Binding BookmarkCommand}">
+                </Button>
             </StackLayout>
         </Grid>
     </Shell.TitleView>
@@ -49,16 +46,17 @@
         <Grid CompressedLayout.IsHeadless="True">
             <Button 
                 CornerRadius="20"
-                Text="↓" 
+                Text="&#xF175;" 
+                FontFamily="SPIcon"
                 Command="{Binding ScrollBottomCommand}" 
                 HorizontalOptions="End"
                 VerticalOptions="Start"
-                Margin="0,15,25,0"
-                Padding="0,0,0,7"
+                Margin="0,10,25,0"
+                Padding="0,6,0,7"
                 ZIndex="1"
                 HeightRequest="35"
                 WidthRequest="35"
-                FontSize="23"/>
+                FontSize="20"/>
             <Grid RowDefinitions="*, 0"
                   CompressedLayout.IsHeadless="True"
                   VerticalOptions="FillAndExpand"

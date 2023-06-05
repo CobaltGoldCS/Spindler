@@ -48,20 +48,17 @@
                          Orientation="Horizontal"
                          VerticalOptions="Center"
                          Margin="0,0,10,0">
-                <ImageButton HeightRequest="25"
-                             WidthRequest="25"
-                             Source="plus.svg"
-                             Command="{Binding AddToolBarItemCommand}">
-                    <ImageButton.Behaviors>
-                        <toolkit:IconTintColorBehavior BindingContext="{x:Reference this}" TintColor="{StaticResource Primary}" />
-                    </ImageButton.Behaviors>
-                </ImageButton>
+                <Button Style="{DynamicResource IconButton}"
+                        Text="&#xE805;"
+                        Command="{Binding AddToolBarItemCommand}">
+                </Button>
             </StackLayout>
         </Grid>
     </Shell.TitleView>
     <RefreshView IsRefreshing="{Binding IsLoading}" Command="{Binding LoadCommand}">
         <CollectionView x:Name="list"
               Margin="5, 0"
+              ItemSizingStrategy="MeasureAllItems"
               ItemsSource="{Binding DisplayedBooklists, Mode=OneWay}"
               SelectionChangedCommand="{Binding SelectionCommand}"
               SelectionMode="Single"
@@ -85,36 +82,35 @@
                         <Border.BindingContext>
                             <models:BookList/>
                         </Border.BindingContext>
-                        <Grid RowDefinitions="*, auto, 40" BackgroundColor="Transparent">
+                        <Grid RowDefinitions="*, auto, 35" BackgroundColor="Transparent">
                             <Image 
                                     x:Name="backgroundImage" 
                                     Aspect="AspectFit" 
-                                    Margin="10">
+                                    Margin="10"
+                                    Grid.ColumnSpan="2">
                                 <Image.Source>
                                     <UriImageSource Uri="{Binding ImageUrl}" CacheValidity="365:00:00:00" />
                                 </Image.Source>
                             </Image>
                             <Label  
                                     HorizontalTextAlignment="Center"
-                                    Grid.Row="1" 
                                     VerticalTextAlignment="Center" 
-                                    FontSize="Large" 
+                                    FontSize="Large"
+                                    Grid.Row="1"
                                     x:Name="TitleLabel" 
                                     TextColor="White"
                                     Text="{Binding Name}"/>
-                            <ImageButton  Source="kebab.svg" 
-                                              WidthRequest="20"
-                                              Aspect="AspectFill"
-                                              VerticalOptions="FillAndExpand"
-                                              HorizontalOptions="EndAndExpand"
-                                              Grid.Row="2"
-                                              Padding ="0,3,5,3" x:Name="ConfigButton"
-                                              CommandParameter="{Binding Id}"
-                                              Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:HomeViewModel}}, Path=ConfigButtonCommand}">
-                                <ImageButton.Behaviors>
-                                    <toolkit:IconTintColorBehavior TintColor="{StaticResource White}"/>
-                                </ImageButton.Behaviors>
-                            </ImageButton>
+                            <Button  Style="{DynamicResource IconButton}"
+                                     Text="&#xF142;"
+                                     VerticalOptions="EndAndExpand"
+                                     HorizontalOptions="EndAndExpand"
+                                     Grid.Row="2"
+                                     Padding ="0,3,5,3"
+                                     TextColor="White"
+                                     FontSize="30"
+                                     CommandParameter="{Binding Id}"
+                                     Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:HomeViewModel}}, Path=ConfigButtonCommand}"/>
+
                         </Grid>
                     </Border>
                 </DataTemplate>
