@@ -46,7 +46,7 @@ public partial class BlurBehavior : PlatformBehavior<Image, ImageView>
                 return;
 
             // Create bitmap from drawable
-            Bitmap bitmap = Bitmap.CreateBitmap(150, 150, Bitmap.Config.Argb8888!)!;
+            Bitmap bitmap = Bitmap.CreateBitmap(drawable!.IntrinsicWidth / 5, drawable.IntrinsicHeight / 5, Bitmap.Config.Argb8888!)!;
             Canvas canvas = new(bitmap);
             drawable!.SetBounds(0, 0, canvas.Width, canvas.Height);
             drawable.Draw(canvas);
