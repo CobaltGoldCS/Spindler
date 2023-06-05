@@ -5,7 +5,7 @@
              x:Class="Spindler.CustomControls.PickerPopup"
              xmlns:Models="clr-namespace:Spindler.Models"
              x:Name="_this">
-    <Grid RowDefinitions="40, *" HorizontalOptions="Fill" VerticalOptions="Fill">
+    <Grid RowDefinitions="40, *" HorizontalOptions="Fill" VerticalOptions="Fill" Background="{DynamicResource Background}">
         <Label Text="{Binding Source={x:Reference _this}, Path=Title}" HorizontalTextAlignment="Center" Padding="0,10,0,0"/>
         <CollectionView
             x:Name="PickerView"
@@ -23,7 +23,7 @@
             <CollectionView.ItemTemplate>
                 <DataTemplate x:DataType="Models:IIndexedModel">
                     <Grid RowDefinitions="50" ColumnDefinitions="335" HorizontalOptions="FillAndExpand">
-                        <Border Margin="8,0" HorizontalOptions="Fill" BackgroundColor="{AppThemeBinding Dark={DynamicResource DarkBackground}, Light={DynamicResource LightBackground}}">
+                        <Border Margin="8,0" HorizontalOptions="Fill" BackgroundColor="{DynamicResource CardBackground}">
                             <Label VerticalTextAlignment="Center" HorizontalTextAlignment="Center"
                                        FontSize="Large" Text="{Binding Name}"/>
                         </Border>
