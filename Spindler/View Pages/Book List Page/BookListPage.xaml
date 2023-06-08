@@ -56,13 +56,12 @@
 
             <CollectionView.Header>
                 <!---Pinned Books-->
-                <Border
-                            StrokeShape="RoundRectangle 10,10,10,10"
-                            StrokeThickness="0"
-                            Background="{DynamicResource CardBackground}"
-                            Margin="5,0"
-                            IsVisible="{Binding PinnedBooksAreVisible}"
-                            CompressedLayout.IsHeadless="True">
+                <Border StrokeShape="RoundRectangle 10,10,10,10"
+                        StrokeThickness="0"
+                        Background="{DynamicResource CardBackground}"
+                        Margin="5,0"
+                        IsVisible="{Binding PinnedBooksAreVisible}"
+                        CompressedLayout.IsHeadless="True">
                     <toolkit:Expander x:Name="PinView"
                               Padding="7,-1,8,5"
                               CompressedLayout.IsHeadless="True">
@@ -102,7 +101,7 @@
                             <CollectionView.ItemTemplate>
                                 <DataTemplate x:DataType="models:Book">
                                     <items:PinnedBookItem 
-                                                BookParameter="{Binding Path=., Mode=OneTime}"
+                                                BookParameter="{Binding Path=.}"
                                                 SelectionCommand="{Binding Source={x:RelativeSource AncestorType={x:Type viewmodels:BookListViewModel}}, Path=SelectionCommand, Mode=OneTime}"
                                                 DoubleTappedCommand="{Binding Source={x:RelativeSource AncestorType={x:Type viewmodels:BookListViewModel}}, Path=DoubleTappedCommand, Mode=OneTime}" />
                                 </DataTemplate>

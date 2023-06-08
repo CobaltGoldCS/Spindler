@@ -167,7 +167,7 @@ namespace Spindler.ViewModels
         {
             if (e.Target.Location.OriginalString == "..")
             {
-                CurrentBook.HasNextChapter = WebUtilities.IsUrl(CurrentData!.nextUrl);
+                CurrentBook.HasNextChapter = NextButtonIsVisible;
                 await App.Database.SaveItemAsync(CurrentBook);
             }
             Shell.Current.Navigating -= OnShellNavigating;
