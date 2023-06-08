@@ -108,6 +108,8 @@
                                      Padding ="0,3,5,3"
                                      TextColor="White"
                                      FontSize="30"
+                                     WidthRequest="50"
+                                     Margin="5,0,-15,0"
                                      CommandParameter="{Binding Id}"
                                      Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:HomeViewModel}}, Path=ConfigButtonCommand}"/>
 
