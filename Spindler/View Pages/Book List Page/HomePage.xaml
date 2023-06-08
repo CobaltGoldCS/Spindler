@@ -50,6 +50,7 @@
                          Margin="0,0,10,0">
                 <Button Style="{DynamicResource IconButton}"
                         Text="&#xE805;"
+                        FontSize="30"
                         Command="{Binding AddToolBarItemCommand}">
                 </Button>
             </StackLayout>

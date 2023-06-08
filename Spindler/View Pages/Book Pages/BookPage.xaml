@@ -19,7 +19,7 @@
             <Button x:Name="AddToolBarItem"
                     Grid.Column="1" 
                     VerticalOptions="Center"
-                    FontSize="25"
+                    FontSize="30"
                     Style="{DynamicResource IconButton}"
                     Text="&#xF142;"
                     Command="{Binding ModifyClickedCommand}"/>
