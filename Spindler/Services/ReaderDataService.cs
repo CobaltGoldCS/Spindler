@@ -81,11 +81,11 @@ public partial class ReaderDataService
     {
         if (!WebUtilities.IsUrl(url))
         {
-            return new Invalid<LoadedData>(new Error($"'{url}' is not a valid"));
+            return new Invalid<LoadedData>(new Error($"'{url}' is not a valid url"));
         }
         if (!WebUtilities.HasBaseUrl())
         {
-            if (!Uri.TryCreate(url, UriKind.Absolute, out Uri? uri)) return new Invalid<LoadedData>(new Error($"'{url}' is not a valid"));
+            if (!Uri.TryCreate(url, UriKind.Absolute, out Uri? uri)) return new Invalid<LoadedData>(new Error($"'{url}' is not a valid url"));
             WebUtilities.SetBaseUrl(new Uri(uri.GetLeftPart(UriPartial.Authority) + "/", UriKind.Absolute));
         }
         url = WebUtilities.MakeAbsoluteUrl(url).ToString();
@@ -161,7 +161,7 @@ public partial class ReaderDataService
         if (node == null) return string.Empty;
         if (!node.HasChildNodes)
         {
-            return HttpUtility.HtmlDecode(node.InnerText).Replace("\n", Config.Separator);
+            return HttpUtility.HtmlDecode(node.InnerText).Replace("\n", Config.Separator).Trim();
         }
 
         // Node contains child nodes, so we must get the text of each
@@ -169,7 +169,7 @@ public partial class ReaderDataService
 
         foreach (HtmlNode child in node.ChildNodes)
         {
-            string innerText = whiteSpaceOnly.Replace(HttpUtility.HtmlDecode(child.InnerText), string.Empty);
+            string innerText = WhitespaceOnlyRegex().Replace(HttpUtility.HtmlDecode(child.InnerText), string.Empty);
             if (innerText.Length == 0)
             {
                 if (child.OriginalName == "br" && child.NextSibling?.OriginalName != "br")
@@ -181,7 +181,7 @@ public partial class ReaderDataService
             stringWriter.Write($"\t\t{HttpUtility.HtmlDecode(child.InnerText).Replace("\n", Config.Separator)}");
             stringWriter.Write(Config.Separator);
         }
-        return stringWriter.ToString();
+        return stringWriter.ToString().Trim();
     }
 
 
@@ -192,8 +192,10 @@ public partial class ReaderDataService
     /// <returns>A title determined by the title selector</returns>
     public string GetTitle(string html)
     {
-        return HttpUtility.HtmlDecode(ConfigService.PrettyWrapSelector(html, ConfigService.Selector.Title, type: ConfigService.SelectorType.Text));
+        return HttpUtility.HtmlDecode(ConfigService.PrettyWrapSelector(html, ConfigService.Selector.Title, type: ConfigService.SelectorType.Text)).Trim();
     }
 
-    private static readonly Regex whiteSpaceOnly = new("^\\s+$", RegexOptions.Multiline);
+
+    [GeneratedRegex("^\\s+$", RegexOptions.Multiline)]
+    private static partial Regex WhitespaceOnlyRegex();
 }
