@@ -8,9 +8,14 @@
         <Viewmodels:SettingsViewmodel/>
     </ContentPage.BindingContext>
     <ScrollView x:Name="Scroll" Orientation="Vertical" IsEnabled="True" Margin="10,0">
-        <Grid ColumnDefinitions="*, 70, 70" RowDefinitions="100, 50, auto, auto" VerticalOptions="FillAndExpand" CompressedLayout.IsHeadless="True">
+        <Grid ColumnDefinitions="*, 70, 70" RowDefinitions="auto, 50, auto, auto" VerticalOptions="FillAndExpand" CompressedLayout.IsHeadless="True">
             <FlexLayout Grid.ColumnSpan="3">
-                <Label Text="The quick brown fox jumps over the lazy dog" FontSize="{Binding FontSize}" FontFamily="{Binding Font}" LineHeight="{Binding FontSpacing}" MaxLines="2"/>
+                <Label Text="The quick brown fox jumps over the lazy dog"
+                       FontSize="{Binding FontSize}" 
+                       FontFamily="{Binding Font}" 
+                       LineHeight="{Binding FontSpacing}"
+                       FontAutoScalingEnabled="False"
+                       MaxLines="2"/>
             </FlexLayout>
             <Picker Title="Select a Font" SelectedItem="{Binding Font}" Grid.Row="1" Grid.ColumnSpan="2">
                 <Picker.Items>

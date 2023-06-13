@@ -9,9 +9,9 @@
     <Border.Shadow>
         <Shadow Radius="2"/>
     </Border.Shadow>
-    <Grid RowDefinitions="50"
+    <Grid RowDefinitions="auto"
           CompressedLayout.IsHeadless="True">
-        <Label  Margin="10,0,0,0" 
+        <Label  Margin="10" 
                 VerticalTextAlignment="Center" 
                 FontSize="Large"
                 x:Name="DomainNameLabel"

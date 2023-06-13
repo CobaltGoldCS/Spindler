@@ -13,7 +13,6 @@ public partial class BlurBehavior
         get => (float)GetValue(RadiusProperty);
         set => SetValue(RadiusProperty, value);
     }
-
     static void OnRadiusChanged(BindableObject bindable, object oldValue, object newValue)
     {
         var behavior = (BlurBehavior)bindable;

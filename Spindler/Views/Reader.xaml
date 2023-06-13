@@ -25,6 +25,7 @@
             FontSize="Large"
             Text="Previous"
             Clicked="Prev_Clicked"
+            FontAutoScalingEnabled="False"
             Command="{Binding Source = {x:Reference this}, Path = PreviousCommand}"
             CommandParameter="{Binding Source = {x:Reference this}, Path=PreviousCommandParameter}"
             />
@@ -44,8 +45,9 @@
         InputTransparent="True"
         StrokeThickness="0">
         <Label  x:Name="TextView" Grid.Row="3"
-                    Padding="30,30,30,50"
-                    Text="{Binding Source = {x:Reference this}, Path = Text}"
+                Padding="30,30,30,50"
+                FontAutoScalingEnabled="False"
+                Text="{Binding Source = {x:Reference this}, Path = Text}"
             />
     </Border>
     
@@ -63,6 +65,7 @@
             Text="Next"
             FontSize="Large"
             Clicked="Next_Clicked"
+            FontAutoScalingEnabled="False"
             Command="{Binding Source = {x:Reference this}, Path = NextCommand}"
             CommandParameter="{Binding Source = {x:Reference this}, Path=NextCommandParameter}"/>
     </ContentView>

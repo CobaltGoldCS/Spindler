@@ -37,23 +37,26 @@
               VerticalOptions="Start"
               Margin="0,0,0,0"
               IsVisible="{Binding Source={x:Reference this}, Path=BookParameter.HasNextChapter, Mode=OneWay}"/>
-        <Label 
-            VerticalTextAlignment="Center"
-            HorizontalTextAlignment="Center"
-            Grid.Column="1"
-            Padding="5,0"
-            FontSize="18"
-            x:Name="TitleLabel"
-            Text="{Binding Source={x:Reference this}, Path=BookParameter.Title, Mode=OneWay}"
-            MaxLines="2"/>
+        <Label VerticalTextAlignment="Center"
+               HorizontalTextAlignment="Center"
+               Grid.Column="1"
+               Padding="5,0"
+               FontSize="18"
+               x:Name="TitleLabel"
+               Text="{Binding Source={x:Reference this}, Path=BookParameter.Title, Mode=OneWay}"
+               MaxLines="2"
+               FontAutoScalingEnabled="False"
+               LineBreakMode="WordWrap"/>
         <Label x:Name="UrlLabel"
-            Text="{Binding Source={x:Reference this}, Path=BookParameter.Url, Mode=OneWay}"
-            MaxLines="2"
-            FontSize="Small"
-            Grid.Column="1"
-            Grid.Row="1"
-            VerticalOptions="Fill"
-            Padding="10,5,10,0"
-            TextColor="{DynamicResource DisabledTextColor}" />
+               Text="{Binding Source={x:Reference this}, Path=BookParameter.Url, Mode=OneWay}"
+               MaxLines="2"
+               FontSize="Small"
+               Grid.Column="1"
+               Grid.Row="1"
+               VerticalOptions="Fill"
+               Padding="10,5,10,0"
+               FontAutoScalingEnabled="False"
+               LineBreakMode="WordWrap"
+               TextColor="{DynamicResource DisabledTextColor}" />
     </Grid>
 </Border>

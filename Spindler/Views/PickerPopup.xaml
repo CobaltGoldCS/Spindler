@@ -22,9 +22,9 @@
             </CollectionView.ItemsLayout>
             <CollectionView.ItemTemplate>
                 <DataTemplate x:DataType="Models:IIndexedModel">
-                    <Grid RowDefinitions="50" ColumnDefinitions="335" HorizontalOptions="FillAndExpand">
-                        <Border Margin="8,0" HorizontalOptions="Fill" BackgroundColor="{DynamicResource CardBackground}">
-                            <Label VerticalTextAlignment="Center" HorizontalTextAlignment="Center"
+                    <Grid RowDefinitions="50" HorizontalOptions="FillAndExpand">
+                        <Border Margin="8,0" HorizontalOptions="FillAndExpand" BackgroundColor="{DynamicResource CardBackground}">
+                            <Label VerticalTextAlignment="Center" HorizontalTextAlignment="Center" FontAutoScalingEnabled="False"
                                        FontSize="Large" Text="{Binding Name}"/>
                         </Border>
                     </Grid>

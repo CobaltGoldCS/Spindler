@@ -29,7 +29,8 @@
             <HorizontalStackLayout.Resources>
                 <Style x:Key="ChipButton" TargetType="Button">
                     <Setter Property="BackgroundColor" Value="{DynamicResource Primary}"/>
-                    <Setter Property="FontSize" Value="Medium"/>
+                    <Setter Property="FontSize" Value="Small"/>
+                    <Setter Property="FontAutoScalingEnabled" Value="False"/>
                     <Setter Property="CornerRadius" Value="20"/>
                 </Style>
             </HorizontalStackLayout.Resources>

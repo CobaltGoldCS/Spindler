@@ -8,20 +8,23 @@
       CompressedLayout.IsHeadless="True"
              >
     <Button x:Name="Cancel" Margin="5,0,5,0"
-            FontSize="Large"
+            FontSize="Medium"
             Text="Cancel" 
             Clicked="Cancel_Clicked"
+            FontAutoScalingEnabled="False"
             Command="{Binding Source = {x:Reference this}, Path = CancelCommand}"/>
     <Button Text="Delete" Margin="5,0,5,0"
             Grid.Column="1"
-            FontSize="Large"
+            FontSize="Medium"
             Clicked="Button_Clicked"
+            FontAutoScalingEnabled="False"
             Style="{DynamicResource DeleteButton}"
             Command="{Binding Source = {x:Reference this}, Path = DeleteCommand}"/>
     <Button x:Name="okButton" Margin="5,0,5,0"
             Text="{Binding Source = {x:Reference this}, Path = OkText}"
-            FontSize="Large"
+            FontSize="Medium"
             Clicked="okButton_Clicked"
+            FontAutoScalingEnabled="False"
             Command="{Binding Source = {x:Reference this}, Path = OkCommand}"
             Grid.Column="2"/>
 </Grid>

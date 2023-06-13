@@ -22,7 +22,7 @@
 
             <Label Text="{Binding CurrentData.Title}"
                    Grid.Column="0"
-                   FontSize="Large"
+                   FontSize="Title"
                    VerticalOptions="Center"
                    HorizontalOptions="FillAndExpand"
                    LineBreakMode="TailTruncation"
@@ -37,6 +37,8 @@
                 <Button x:Name="BookmarkItem"
                         Style="{DynamicResource IconButton}"
                         Text="&#xE801;"
+                        FontSize="30"
+                        FontAutoScalingEnabled="False"
                         Command="{Binding BookmarkCommand}">
                 </Button>
             </StackLayout>
@@ -56,6 +58,7 @@
                 ZIndex="1"
                 HeightRequest="35"
                 WidthRequest="35"
+                FontAutoScalingEnabled="False"
                 FontSize="20"/>
             <Grid RowDefinitions="*, 0"
                   CompressedLayout.IsHeadless="True"

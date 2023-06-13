@@ -21,8 +21,9 @@
                    Text="{Binding FilterText}"
                    Grid.Column="0"
                    FontSize="Large"
-                   VerticalOptions="Start"
+                   VerticalOptions="Center"
                    HorizontalOptions="FillAndExpand"
+                   FontAutoScalingEnabled="False"
                    TextColor="{DynamicResource TextColor}"/>
             <StackLayout Grid.Column="1"
                          HorizontalOptions="EndAndExpand"
@@ -31,9 +32,11 @@
                          Margin="0,0,15,0">
                 <Button x:Name="AddToolBarItem"
                         Style="{DynamicResource IconButton}"
-                             Text="&#xE805;"
-                             Margin="30,0,0,0"
-                             Command="{Binding AddToolBarItemCommand, Mode=OneWay}"/>
+                        Text="&#xE805;"
+                        Margin="30,0,0,0"
+                        FontAutoScalingEnabled="False"
+                        FontSize="27"
+                        Command="{Binding AddToolBarItemCommand, Mode=OneWay}"/>
 
             </StackLayout>
         </Grid>
@@ -74,20 +77,23 @@
                                         FontFamily="SPIcon"
                                         FontSize="Large"
                                         Text="&#xE804;"
-                                        Margin="8,3,0,5"/>
+                                        Margin="8,8,0,5"
+                                        FontAutoScalingEnabled="False"/>
 
                                 <Label Text="Pinned Books"
-                                           Grid.Column="1"
-                                           Padding="10, -2, 0, 0"
-                                           FontSize="Large"
-                                           FontFamily="OpenSans (Semibold)"
-                                           VerticalOptions="Center"/>
+                                        Grid.Column="1"
+                                        Padding="10, -2, 0, 0"
+                                        FontSize="Large"
+                                        FontFamily="OpenSans (Semibold)"
+                                        VerticalOptions="Center"
+                                       FontAutoScalingEnabled="False"/>
                                 <Label Text="{Binding Source={x:Reference PinView}, Path=IsExpanded, Converter={StaticResource ExpanderIconConverter}, Mode=OneWay}"
-                                           Grid.Column="2"
-                                           FontSize="Large"
-                                           Padding="2,-2,0,0"
-                                           VerticalOptions="Center"
-                                           FontFamily="OpenSans (Semibold)"/>
+                                       Grid.Column="2"
+                                       FontSize="Large"
+                                       Padding="2,-2,0,0"
+                                       VerticalOptions="Center"
+                                       FontAutoScalingEnabled="False"
+                                       FontFamily="OpenSans (Semibold)"/>
                             </Grid>
                         </toolkit:Expander.Header>
                         <CollectionView x:Name="PinnedBooksList"

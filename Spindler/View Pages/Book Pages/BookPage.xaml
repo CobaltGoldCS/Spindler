@@ -19,9 +19,10 @@
             <Button x:Name="AddToolBarItem"
                     Grid.Column="1" 
                     VerticalOptions="Center"
-                    FontSize="30"
+                    FontSize="27"
                     Style="{DynamicResource IconButton}"
                     Text="&#xF142;"
+                    FontAutoScalingEnabled="False"
                     Command="{Binding ModifyClickedCommand}"/>
         </Grid>
     </Shell.TitleView>
@@ -69,7 +70,6 @@
             <Border Padding="0,20,0,0"
                         Grid.Row="3"
                         BackgroundColor="{DynamicResource Background}"
-                        WidthRequest="400"
                         StrokeThickness="0">
                 <TableView>
                     <TableRoot>
