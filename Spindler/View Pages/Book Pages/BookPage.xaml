@@ -29,7 +29,7 @@
     <Grid>
         <Image x:Name="BackgroundImage" Source="{Binding ImageUrl, Mode=OneWay}" Background="{Binding Background, Mode=OneWay}" Aspect="AspectFill" HeightRequest="400" VerticalOptions="StartAndExpand">
             <Image.Behaviors>
-                <behaviors:BlurBehavior Radius="3"/>
+                <behaviors:BlurBehavior Radius="15"/>
             </Image.Behaviors>
         </Image>
         <Grid RowDefinitions="auto, auto, auto, *" Background="transparent">

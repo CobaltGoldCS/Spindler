@@ -32,7 +32,7 @@ public partial class BlurBehavior : PlatformBehavior<Image, ImageView>
         else if (OperatingSystem.IsAndroidVersionAtLeast(21))
         {
             Drawable? drawable = null;
-
+            Radius = 20 - Radius;
             // Wait until drawable is not null, because it can be null at this moment
             Stopwatch timer = new();
             timer.Start();
