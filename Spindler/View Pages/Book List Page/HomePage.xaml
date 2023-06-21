@@ -43,18 +43,14 @@
                    VerticalOptions="Center"
                    HorizontalOptions="FillAndExpand"
                    TextColor="{DynamicResource Primary}"/>
-            <StackLayout Grid.Column="1"
-                         HorizontalOptions="EndAndExpand"
-                         Orientation="Horizontal"
-                         VerticalOptions="Center"
-                         Margin="0,0,10,0">
-                <Button Style="{DynamicResource IconButton}"
-                        Text="&#xE805;"
-                        FontSize="Title"
-                        FontAutoScalingEnabled="False"
-                        Command="{Binding AddToolBarItemCommand}">
-                </Button>
-            </StackLayout>
+            <Button Style="{DynamicResource IconButton}"
+                    Grid.Column="1"
+                    Text="&#xE805;"
+                    FontSize="Title"
+                    VerticalOptions="Center"
+                    FontAutoScalingEnabled="False"
+                    Command="{Binding AddToolBarItemCommand}"/>
+
         </Grid>
     </Shell.TitleView>
     <RefreshView IsRefreshing="{Binding IsLoading}" Command="{Binding LoadCommand}">
