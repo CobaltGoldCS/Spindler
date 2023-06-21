@@ -13,7 +13,8 @@ namespace Spindler.ViewModels
     public partial class ReaderViewModel : ObservableObject, IReader
     {
         #region Class Attributes
-        public ReaderDataService ReaderService;
+        // This should be set in ReaderPage.xaml.cs
+        public ReaderDataService ReaderService = new(new Config(), new StandardWebService(new()));
 
         public Book CurrentBook = new() { Title = "Loading" };
         public CancellationTokenRegistration nextChapterToken = new();
@@ -107,7 +108,6 @@ namespace Spindler.ViewModels
         {
             IsLoading = true;
             Shell.Current.Navigating += OnShellNavigating;
-            ReaderService = new(new(), new StandardWebService());
         }
         public void SetRequiredInfo(ReaderDataService readerService)
         {

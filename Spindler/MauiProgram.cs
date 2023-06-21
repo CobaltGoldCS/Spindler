@@ -42,7 +42,7 @@ public static class MauiProgram
         builder.Services
             .AddShellRoutes()
             .AddSingleton<IDataService, DataService>()
-            .AddSingleton<HttpClient>();
+            .AddSingleton<HttpClientHandler>();
 
         var mauiapp = builder.Build();
 
