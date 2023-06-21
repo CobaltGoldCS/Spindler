@@ -30,7 +30,7 @@
         {
         }
 
-
+#pragma warning  disable CS8601
         /// <summary>
         /// Check if <paramref name="url"/> is in a valid http or https format
         /// </summary>
@@ -41,6 +41,7 @@
             bool created = Uri.TryCreate(url, UriKind.RelativeOrAbsolute, out Uri _);
             return created && (url!.StartsWith("http") || url.StartsWith('/'));
         }
+#pragma warning restore CS8601
 
         public Uri MakeAbsoluteUrl(Uri url)
         {

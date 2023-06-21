@@ -45,5 +45,6 @@ public partial class ReaderPage : ContentPage, IQueryAttributable
     public ReaderPage(HttpClient client)
     {
         InitializeComponent();
+        Client = client;
     }
 }
