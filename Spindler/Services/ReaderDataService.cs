@@ -91,9 +91,13 @@ public partial class ReaderDataService
         url = WebUtilities.MakeAbsoluteUrl(url).ToString();
 
         var html = await WebService.GetHtmlFromUrl(url);
+        // Format the html of a failed request
         if (html is Invalid<string> error)
         {
-            return new Invalid<LoadedData>(error.value);
+            HtmlDocument invalidHtml = new HtmlDocument();
+            invalidHtml.LoadHtml(error.value.getMessage());
+            string innerText = invalidHtml.DocumentNode.InnerText.Trim();
+            return new Invalid<LoadedData>(new Error(MatchNewlines().Replace(innerText, Environment.NewLine)));
         }
         return await LoadReaderData(url, (html as Ok<string>)!.Value);
     }
@@ -198,4 +202,7 @@ public partial class ReaderDataService
 
     [GeneratedRegex("^\\s+$", RegexOptions.Multiline)]
     private static partial Regex WhitespaceOnlyRegex();
+
+    [GeneratedRegex("[\\s]{2,}")]
+    private static partial Regex MatchNewlines();
 }
