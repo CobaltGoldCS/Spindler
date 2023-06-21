@@ -43,18 +43,14 @@
                    VerticalOptions="Center"
                    HorizontalOptions="FillAndExpand"
                    TextColor="{DynamicResource Primary}"/>
-            <StackLayout Grid.Column="1"
-                         HorizontalOptions="EndAndExpand"
-                         Orientation="Horizontal"
-                         VerticalOptions="Center"
-                         Margin="0,0,10,0">
-                <Button Style="{DynamicResource IconButton}"
-                        Text="&#xE805;"
-                        FontSize="Title"
-                        FontAutoScalingEnabled="False"
-                        Command="{Binding AddToolBarItemCommand}">
-                </Button>
-            </StackLayout>
+            <Button Style="{DynamicResource IconButton}"
+                    Grid.Column="1"
+                    Text="&#xE805;"
+                    FontSize="Title"
+                    VerticalOptions="Center"
+                    FontAutoScalingEnabled="False"
+                    Command="{Binding AddToolBarItemCommand}"/>
+
         </Grid>
     </Shell.TitleView>
     <RefreshView IsRefreshing="{Binding IsLoading}" Command="{Binding LoadCommand}">
@@ -112,8 +108,7 @@
                                      TextColor="White"
                                      FontSize="30"
                                      FontAutoScalingEnabled="False"
-                                     WidthRequest="50"
-                                     Margin="5,0,-15,0"
+                                     WidthRequest="20"
                                      CommandParameter="{Binding Id}"
                                      Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:HomeViewModel}}, Path=ConfigButtonCommand}"/>
 

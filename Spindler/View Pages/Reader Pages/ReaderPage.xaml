@@ -37,7 +37,7 @@
                 <Button x:Name="BookmarkItem"
                         Style="{DynamicResource IconButton}"
                         Text="&#xE801;"
-                        FontSize="30"
+                        FontSize="24"
                         FontAutoScalingEnabled="False"
                         Command="{Binding BookmarkCommand}">
                 </Button>
