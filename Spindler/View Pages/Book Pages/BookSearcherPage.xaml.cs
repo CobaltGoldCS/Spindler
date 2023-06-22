@@ -243,7 +243,7 @@ public partial class BookSearcherPage : ContentPage
     [RelayCommand]
     public void Return()
     {
-        if (IsLoading) return;
+        if (IsLoading || Source is null) return;
         if (!Source.StartsWith("http"))
             Source = "https://" + Source;
         SearchBrowser.Source = source;

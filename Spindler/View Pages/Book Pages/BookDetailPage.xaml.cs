@@ -71,15 +71,20 @@ public partial class BookDetailPage : ContentPage, IQueryAttributable
         await Close();
     }
 
+    bool canRespond = true;
     private async void Search_clicked(object sender, EventArgs e)
     {
-        Dictionary<string, object> parameters = new()
+        if (!canRespond)
+            return;
+        canRespond = false;
+        Dictionary<string, object?> parameters = new()
         {
             { "bookListId", Book!.BookListId },
-            { "source", string.IsNullOrEmpty(Book.Url) ? "https://example.com" : Book.Url }
+            { "source", string.IsNullOrEmpty(Book.Url) ? null : Book.Url }
 
         };
         await Shell.Current.GoToAsync(nameof(BookSearcherPage), parameters: parameters);
+        canRespond = true;
     }
 
     private async void SwitchBookList_Clicked(object sender, EventArgs e)
