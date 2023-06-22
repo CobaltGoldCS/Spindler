@@ -42,7 +42,7 @@ public static class MauiProgram
         builder.Services
             .AddShellRoutes()
             .AddSingleton<IDataService, DataService>()
-            .AddSingleton<HttpClientHandler>();
+            .AddHttpClient();
 
         var mauiapp = builder.Build();
 
@@ -64,5 +64,17 @@ public static class MauiProgram
         service.AddTransientWithShellRoute<BookListPage, BookListViewModel>($"{nameof(HomePage)}/{nameof(BookListPage)}");
 
         return service;
+    }
+
+    private static void AddHttpClient(this  IServiceCollection service)
+    {
+        HttpClientHandler handler = new()
+        {
+            AllowAutoRedirect = true,
+            MaxAutomaticRedirections = 2,
+            PreAuthenticate = true,
+            UseDefaultCredentials = true,
+        };
+        service.AddSingleton(new HttpClient(handler));
     }
 }

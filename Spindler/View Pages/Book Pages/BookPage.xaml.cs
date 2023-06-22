@@ -8,10 +8,10 @@ public partial class BookPage : ContentPage, IQueryAttributable
 {
     public BookViewModel ViewModel { get; set; }
 
-    public BookPage(HttpClientHandler handler)
+    public BookPage(HttpClient client)
     {
         InitializeComponent();
-        ViewModel = new BookViewModel(new(handler));
+        ViewModel = new BookViewModel(client);
         BindingContext = ViewModel;
     }
 
