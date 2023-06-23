@@ -34,7 +34,7 @@ public partial class BookSearcherPage : ContentPage
     public bool IsLoading = false;
 
 
-    private string source = "https://example.com";
+    private string source = string.Empty;
     /// <summary>
     /// The Source value as shown in the <see cref="addressBar"/>
     /// </summary>
@@ -105,8 +105,12 @@ public partial class BookSearcherPage : ContentPage
     /// 
     private async void PageLoaded(object? _, WebNavigatedEventArgs e)
     {
-        if (e.Result != WebNavigationResult.Success) return;
-        await SearchProgress.ProgressTo(.5, 500, Easing.BounceOut);
+        if (e.Result != WebNavigationResult.Success)
+        {
+            IsLoading = false;
+            return;
+        }
+        await SearchProgress.ProgressTo(.5, 500, Easing.CubicOut);
         await CheckCompatible(e.Url != "about:blank" ? e.Url : "");
     }
 
@@ -124,7 +128,7 @@ public partial class BookSearcherPage : ContentPage
         }
         Source = e.Url;
         SwitchUiBasedOnState(State.BookNotFound);
-        await SearchProgress.ProgressTo(0, 0, Easing.BounceOut);
+        await SearchProgress.ProgressTo(0, 0, Easing.CubicOut);
     }
     #endregion
 
@@ -140,7 +144,11 @@ public partial class BookSearcherPage : ContentPage
         string html = await SearchBrowser.GetHtml();
 
         Config = await Config.FindValidConfig(!string.IsNullOrEmpty(url) ? url : SearchBrowser.GetUrl(), html);
-        if (Config is null) return;
+        if (Config is null)
+        {
+            IsLoading = false;
+            return;
+        }
 
         HtmlDocument doc = new();
         doc.LoadHtml(html);
@@ -245,10 +253,10 @@ public partial class BookSearcherPage : ContentPage
     [RelayCommand]
     public void Return()
     {
-        if (IsLoading || Source is null) return;
+        if (IsLoading || string.IsNullOrEmpty(Source)) return;
         if (!Source.StartsWith("http"))
             Source = "https://" + Source;
-        SearchBrowser.Source = source;
+        SearchBrowser.Source = Source;
         IsLoading = true;
     }
     #endregion

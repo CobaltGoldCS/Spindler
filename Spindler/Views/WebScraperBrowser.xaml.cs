@@ -89,7 +89,13 @@ public partial class WebScraperBrowser : WebView
     /// Gets the url of the browser
     /// </summary>
     /// <returns>The url in string format</returns>
-    public string GetUrl() => ((UrlWebViewSource)Source).Url;
+    public string GetUrl()
+    {
+        if (Source is null)
+            return string.Empty;
+
+        return ((UrlWebViewSource)Source).Url;
+    }
 
     /// <summary>
     /// Compares the WebScraper url to the <paramref name="lastKnownUrl"/>

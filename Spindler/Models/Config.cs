@@ -144,11 +144,12 @@ public class Config : IIndexedModel
     /// <returns>A valid configuration, or null if no valid configuration was found</returns>
     public static async Task<Config?> FindValidConfig(HttpClient client, string url, string? html = null)
     {
-        Config c = await App.Database.GetConfigByDomainNameAsync(new UriBuilder(url).Host);
-
-        if (c != null) return c;
         try
         {
+            Config c = await App.Database.GetConfigByDomainNameAsync(new UriBuilder(url).Host);
+
+            if (c != null) return c;
+
             HtmlDocument doc = new();
             doc.LoadHtml(html ?? await client.GetStringAsync(url));
 
@@ -172,6 +173,7 @@ public class Config : IIndexedModel
         e is IOException ||
         e is TaskCanceledException ||
         e is HttpRequestException ||
+        e is UriFormatException ||
         e is System.Net.WebException)
         {
             return null;

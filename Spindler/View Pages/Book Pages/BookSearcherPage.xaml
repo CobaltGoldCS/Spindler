@@ -28,7 +28,6 @@
         </Button>
         <ProgressBar x:Name="SearchProgress" Grid.Row="1" Grid.ColumnSpan="2" ProgressColor="{StaticResource Primary}"/>
         <controls:WebScraperBrowser x:Name="SearchBrowser"
-                 Source="https://example.com"
                  Navigated="PageLoaded"
                  Navigating="PageLoading"
                  Grid.Row="2"
