@@ -8,7 +8,6 @@ using Spindler.Services;
 
 namespace Spindler.Views.Book_Pages;
 
-[QueryProperty(nameof(BooklistId), "bookListId")]
 [QueryProperty(nameof(InitialSource), "source")]
 public partial class BookSearcherPage : ContentPage
 {
@@ -23,11 +22,6 @@ public partial class BookSearcherPage : ContentPage
         BookNotFound,
         BookSaved
     }
-
-    /// <summary>
-    /// The book list id to attach to any books created in Book Searcher Page
-    /// </summary>
-    public int BooklistId { get; set; } = new();
 
     /// <summary>
     /// The currently used configuration for detecting books
@@ -172,7 +166,7 @@ public partial class BookSearcherPage : ContentPage
     /// new Book  
     /// {  
     ///     Id: -1, // Denotes a new book 
-    ///     BookListId: <see cref="BooklistId"/>,  
+    ///     BookListId: Result of popup
     ///     Title: <see cref="Config.TitlePath"/> or ""  
     ///     Url: <see cref="Source"/>   
     /// }  
@@ -183,6 +177,14 @@ public partial class BookSearcherPage : ContentPage
     {
         string html = await SearchBrowser.GetHtml();
 
+        PickerPopup bookListPopup = new("Choose Book List of Book", await App.Database.GetAllItemsAsync<BookList>());
+        var result = await this.ShowPopupAsync(bookListPopup);
+
+        if (result is not BookList)
+        {
+            return;
+        }
+
         HtmlDocument doc = new();
         doc.LoadHtml(html);
 
@@ -190,9 +192,9 @@ public partial class BookSearcherPage : ContentPage
         await App.Database.SaveItemAsync(
             new Book
             {
-                BookListId = BooklistId,
+                BookListId = ((BookList)result).Id,
                 Title = title,
-                Url = Source
+                Url = Source,
             }
         );
         SwitchUiBasedOnState(State.BookSaved);
