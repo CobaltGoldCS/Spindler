@@ -193,12 +193,12 @@ namespace Spindler.ViewModels
 
             IsLoading = false;
             
-            if (CurrentBook.Position > 0)
+            if (CurrentBook.Position > 0 && ReadingLayout is not null)
             {
-                await (ReadingLayout?.ScrollToAsync(
+                await ReadingLayout!.ScrollToAsync(
                         0,
                         CurrentBook.Position,
-                        ReaderService.Config.HasAutoscrollAnimation) ?? Task.CompletedTask);
+                        ReaderService.Config.HasAutoscrollAnimation);
             }
         }
 
