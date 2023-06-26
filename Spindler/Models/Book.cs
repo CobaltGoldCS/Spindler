@@ -1,4 +1,7 @@
-﻿using SQLite;
+﻿using Newtonsoft.Json;
+using Spindler.Services;
+using SQLite;
+using System.Collections.ObjectModel;
 
 namespace Spindler.Models;
 
@@ -35,7 +38,19 @@ public record Book : IIndexedModel
     /// </summary>
     public string ImageUrl { get; set; } = string.Empty;
 
+    /// <summary>
+    /// The Pinned state of the book; whether it should show up in the pinned books view
+    /// </summary>
     public bool Pinned { get; set; } = false;
+
+    [Ignore]
+    public IList<Bookmark> Bookmarks
+    {
+        get => JsonConvert.DeserializeObject<IList<Bookmark>>(BookmarksBlobbed)!;
+        set => JsonConvert.SerializeObject(value); 
+    }
+
+    public string BookmarksBlobbed { get; set; } = string.Empty;
 
     /// <summary>
     /// A date time representing when this book was last opened
@@ -55,4 +70,25 @@ public record Book : IIndexedModel
         LastViewed = DateTime.UtcNow;
         await App.Database.SaveItemAsync(this);
     }
+}
+
+
+public record Bookmark : IIndexedModel
+{
+    public Bookmark(int id, string name, float position, string url)
+    {
+        Id = id;
+        Name = name;
+        Position = position;
+        Url = url;
+    }
+
+    [PrimaryKey, AutoIncrement]
+    public int Id { get; set; } = -1;
+
+    public string Name { get; set; } = string.Empty;
+    public string Url { get; set; } = string.Empty;
+    public float Position { get; set; } = 0;
+
+    public int GetId() => Id;
 }
