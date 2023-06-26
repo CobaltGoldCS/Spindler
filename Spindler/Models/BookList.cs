@@ -1,4 +1,5 @@
 ﻿using SQLite;
+using System.Text.Json.Serialization;
 
 namespace Spindler.Models;
 
@@ -73,6 +74,7 @@ public class BookList : IIndexedModel
     /// </summary>
     /// <returns>A linear gradient based on color1 and color2</returns>
     [Ignore]
+    [JsonIgnore]
     public Brush Background
     {
         get
@@ -93,6 +95,7 @@ public class BookList : IIndexedModel
     }
 
     [Ignore]
+    [JsonIgnore]
     public Color Color1
     {
         get => Color.FromArgb(ColorString1);
@@ -100,6 +103,7 @@ public class BookList : IIndexedModel
     }
 
     [Ignore]
+    [JsonIgnore]
     public Color Color2
     {
         get => Color.FromArgb(ColorString2);

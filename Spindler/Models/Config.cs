@@ -50,13 +50,6 @@ public class Config : IIndexedModel
     /// </summary>
     public string ImageUrlPath { get; set; } = "";
 
-
-    private string _pathType = "";
-    /// <summary>
-    /// The type of path that is denoted in the configuration (usually xpath)
-    /// </summary>
-    public string PathType { get => _pathType; private set => _pathType = value; }
-
     /// <summary>
     /// The extra configs in string form. Use <see ref="ExtraConfigs"/> instead
     /// </summary>
@@ -66,6 +59,7 @@ public class Config : IIndexedModel
     /// A dictionary containing extra configuration settings
     /// </summary>
     [Ignore]
+    [JsonIgnore]
     public Dictionary<string, object> ExtraConfigs
     {
         get => JsonConvert.DeserializeObject<Dictionary<string, object>>(ExtraConfigsBlobbed) ?? new();
@@ -76,6 +70,7 @@ public class Config : IIndexedModel
     }
 
     [Ignore]
+    [JsonIgnore]
     public string Separator
     {
         get => (string)ExtraConfigs.GetValueOrDefault("separator", "\n");
@@ -88,6 +83,7 @@ public class Config : IIndexedModel
     }
 
     [Ignore]
+    [JsonIgnore]
     public bool UsesWebview
     {
         get => (bool)ExtraConfigs.GetValueOrDefault("webview", false);
@@ -100,6 +96,7 @@ public class Config : IIndexedModel
     }
 
     [Ignore]
+    [JsonIgnore]
     public bool UsesHeadless
     {
         get => (bool)ExtraConfigs.GetValueOrDefault("headless", false);
@@ -112,6 +109,7 @@ public class Config : IIndexedModel
     }
 
     [Ignore]
+    [JsonIgnore]
     public bool HasAutoscrollAnimation
     {
         get => (bool)ExtraConfigs.GetValueOrDefault("autoscrollanimation", true);
@@ -121,12 +119,6 @@ public class Config : IIndexedModel
             tempExtraConfigs["autoscrollanimation"] = value;
             ExtraConfigs = tempExtraConfigs;
         }
-    }
-
-
-    public void SetPathType(string pathType)
-    {
-        PathType = pathType;
     }
 
     public static async Task<Config?> FindValidConfig(string url, string? html = null)
