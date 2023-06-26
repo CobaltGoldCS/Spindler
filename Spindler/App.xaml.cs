@@ -72,3 +72,35 @@ public partial class App : Application
         WeakReferenceMessenger.Default.Send(new ResourceDictionaryUpdatedMessage(resourceDictionary));
     }
 }
+
+
+public enum Themes
+{
+    Default,
+    Dracula,
+    Seasalt,
+    TeaRose
+}
+
+public class Theme
+{
+    public string safeName;
+    public Themes theme;
+
+    public Theme(string safeName, Themes theme)
+    {
+        this.safeName = safeName;
+        this.theme = theme;
+    }
+
+    public override string ToString()
+    {
+        return safeName;
+    }
+
+    public static Theme FromThemeType(Themes theme)
+    {
+        return new Theme(Enum.GetName(typeof(Themes), theme)!, theme);
+    }
+}
+
