@@ -7,6 +7,7 @@ namespace Spindler;
 public partial class ReaderPage : ContentPage, IQueryAttributable
 {
     HttpClient Client { get; set; }
+    IDataService DataService { get; set; }
     public enum ReaderType
     {
         Standard,
@@ -22,7 +23,7 @@ public partial class ReaderPage : ContentPage, IQueryAttributable
             config = await Config.FindValidConfig(book.Url);
         }
 
-        var ViewModel = new ReaderViewModel();
+        var ViewModel = new ReaderViewModel(DataService);
         // Attach required information to View Model
         if (config is not null)
         {
@@ -41,9 +42,10 @@ public partial class ReaderPage : ContentPage, IQueryAttributable
         await ViewModel.StartLoad();
     }
 
-    public ReaderPage(HttpClient client)
+    public ReaderPage(HttpClient client, IDataService dataService)
     {
         InitializeComponent();
         Client = client;
+        DataService = dataService;
     }
 }

@@ -1,4 +1,5 @@
 using Spindler.Models;
+using Spindler.Services;
 using Spindler.Views.Reader_Pages;
 
 namespace Spindler.Views;
@@ -7,18 +8,20 @@ public partial class WebviewReaderPage : ContentPage, IQueryAttributable, IReade
 {
     public Book? Book = new Book { Id = -1 };
 
+    private IDataService DataService;
+
     public async void ApplyQueryAttributes(IDictionary<string, object> query)
     {
         Book = (query["book"] as Book)!;
         BindingContext = Book;
         ReaderBrowser.Source = Book.Url;
-        await Book.UpdateViewTimeAndSave();
+        await Book.UpdateViewTimeAndSave(DataService);
     }
 
-    public WebviewReaderPage()
+    public WebviewReaderPage(IDataService dataService)
     {
         InitializeComponent();
-
+        DataService = dataService;
         Shell.Current.Navigating += OnShellNavigating;
     }
 

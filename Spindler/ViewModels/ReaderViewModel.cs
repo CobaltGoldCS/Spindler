@@ -15,6 +15,7 @@ namespace Spindler.ViewModels
         #region Class Attributes
         // This should be set in ReaderPage.xaml.cs
         public ReaderDataService ReaderService = new(new Config(), new StandardWebService(new()));
+        public IDataService Database;
 
         public Book CurrentBook = new() { Title = "Loading" };
         public CancellationTokenRegistration nextChapterToken = new();
@@ -104,10 +105,11 @@ namespace Spindler.ViewModels
         #endregion
 
         #region Initialization Functions
-        public ReaderViewModel()
+        public ReaderViewModel(IDataService database)
         {
             IsLoading = true;
             Shell.Current.Navigating += OnShellNavigating;
+            Database = database;
         }
         public void SetRequiredInfo(ReaderDataService readerService)
         {
@@ -120,7 +122,7 @@ namespace Spindler.ViewModels
         public async Task StartLoad()
         {
             NextChapterService chapterService = new();
-            await CurrentBook.UpdateViewTimeAndSave();
+            await CurrentBook.UpdateViewTimeAndSave(Database);
             IDispatcher? dispatcher = Dispatcher.GetForCurrentThread();
             await Task.Run(async () =>
             {
@@ -179,7 +181,7 @@ namespace Spindler.ViewModels
         {
             // Database updates
             CurrentBook!.Url = CurrentData!.currentUrl!;
-            await CurrentBook.UpdateViewTimeAndSave();
+            await CurrentBook.UpdateViewTimeAndSave(Database);
 
             NextButtonIsVisible = WebUtilities.IsUrl(CurrentData.nextUrl);
             PrevButtonIsVisible = WebUtilities.IsUrl(CurrentData.prevUrl);

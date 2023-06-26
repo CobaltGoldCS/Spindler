@@ -65,10 +65,10 @@ public record Book : IIndexedModel
     /// Updates <see cref="LastViewed"/> to the current time, and saves booklist in the database.
     /// </summary>
     /// <returns>An awaitable <see cref="Task"/></returns>
-    public async Task UpdateViewTimeAndSave()
+    public async Task UpdateViewTimeAndSave(IDataService service)
     {
         LastViewed = DateTime.UtcNow;
-        await App.Database.SaveItemAsync(this);
+        await service.SaveItemAsync(this);
     }
 }
 

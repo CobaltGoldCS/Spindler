@@ -2,6 +2,7 @@ using CommunityToolkit.Maui.Views;
 using Spindler.Behaviors;
 using Spindler.CustomControls;
 using Spindler.Models;
+using Spindler.Services;
 using System.Text.RegularExpressions;
 
 namespace Spindler.Views.Book_Pages;
@@ -26,9 +27,11 @@ public partial class BookDetailPage : ContentPage, IQueryAttributable
     }
     #endregion
 
-    public BookDetailPage()
+    IDataService DataService;
+    public BookDetailPage(IDataService dataService)
     {
         InitializeComponent();
+        DataService = dataService;
         urlEntry.Behaviors.Add(new TextValidationBehavior((string text) =>
         {
             return Uri.TryCreate(text, UriKind.Absolute, out Uri? uriresult) && (uriresult.Scheme == Uri.UriSchemeHttp || uriresult.Scheme == Uri.UriSchemeHttps);
@@ -52,7 +55,7 @@ public partial class BookDetailPage : ContentPage, IQueryAttributable
             // Convert the book's title to title case
             Book.Title = TitleCaseRegex().Replace(nameEntry.Text, m => m.Value.ToUpper());
             Book.ImageUrl = imageUrlEntry.Text;
-            await Book.UpdateViewTimeAndSave();
+            await Book.UpdateViewTimeAndSave(DataService);
         }
         await Close();
     }
