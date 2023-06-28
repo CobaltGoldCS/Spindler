@@ -90,7 +90,7 @@ namespace Spindler.ViewModels
         [RelayCommand]
         public void Bookmark()
         {
-            if (CurrentData is null)
+            if (CurrentData is null || IsLoading)
                 return;
             Popup view = new BookmarkDialog(
                 Database, 
@@ -101,8 +101,10 @@ namespace Spindler.ViewModels
                 },
                 itemClickedHandler: async (Bookmark bookmark) =>
                 {
-                    var data = await ReaderService.LoadUrl(bookmark!.Url);
                     IsLoading = true;
+                    ReaderService.InvalidatePreloadedData();
+                    await ReadingLayout!.ScrollToAsync(ReadingLayout.ScrollX, 0, false);
+                    var data = await ReaderService.LoadUrl(bookmark!.Url);
                     switch (data)
                     {
                         case Invalid<LoadedData> error:
@@ -114,12 +116,14 @@ namespace Spindler.ViewModels
                     };
                     IsLoading = false;
                     DataChanged();
-                    await ReadingLayout!.ScrollToAsync(ReadingLayout.ScrollX, bookmark.Position, ReaderService.Config.HasAutoscrollAnimation);
+                    if (bookmark.Position > 0)
+                        await ReadingLayout!.ScrollToAsync(ReadingLayout.ScrollX, bookmark.Position, false);
                 });
             
             async void BottomSheetClosed(object? sender, CommunityToolkit.Maui.Core.PopupClosedEventArgs e)
             {
                 CurrentBook = await Database.GetItemByIdAsync<Book>(CurrentBook.Id);
+                view.Closed -= BottomSheetClosed;
             }
 
             view.Closed += BottomSheetClosed;

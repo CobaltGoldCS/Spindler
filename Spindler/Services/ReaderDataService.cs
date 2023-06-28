@@ -46,6 +46,12 @@ public partial class ReaderDataService
         WebService = webService;
     }
 
+    public void InvalidatePreloadedData()
+    {
+        LoadingDataTask[0] = Task.FromResult((IResult<LoadedData>)new Invalid<LoadedData>(new Error("Uninitialized Data")));
+        LoadingDataTask[1] = Task.FromResult((IResult<LoadedData>)new Invalid<LoadedData>(new Error("Uninitialized Data")));
+    }
+
     public async Task<IResult<LoadedData>> GetLoadedData(UrlType urlType, LoadedData currentData)
     {
 
