@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<toolkit:Popup xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+               xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+               xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+               x:Class="Spindler.Views.BookmarkDialog"
+               x:Name="_this"
+               VerticalOptions="End"
+               xmlns:models="clr-namespace:Spindler.Models">
+    <Grid RowDefinitions="auto, auto"
+          HorizontalOptions="Fill"
+          VerticalOptions="Fill"
+          ColumnDefinitions="*, 100">
+        <Label Text="Bookmarks"
+               FontSize="30"
+               FontAutoScalingEnabled="False"
+               FontFamily="DroidSans (Bold)"
+               Padding="10"/>
+        <Button Style="{DynamicResource IconButton}"
+                Grid.Column="1"
+                Text="&#xE805;"
+                FontSize="30"
+                Command="{Binding Source={Reference _this}, Path=AddCommand}"/>
+        <CollectionView Margin="5,0,5,50"
+                        Grid.Row="1"
+                        Grid.ColumnSpan="2"
+                        SelectionMode="Single"
+                        SelectedItem="{Binding Source={Reference _this}, Path=SelectedBookmark}"
+                        SelectionChangedCommand="{Binding Source={Reference _this}, Path=ItemClickedCommand}"
+                        ItemsSource="{Binding Source={Reference _this}, Path=Bookmarks}"
+                        x:Name="bookmarkView">
+            <CollectionView.ItemsLayout>
+                <LinearItemsLayout ItemSpacing="10" Orientation="Vertical"/>
+            </CollectionView.ItemsLayout>
+            <CollectionView.ItemTemplate>
+                <DataTemplate x:DataType="models:Bookmark">
+                    <Grid HorizontalOptions="Fill" 
+                               VerticalOptions="Fill"
+                               BackgroundColor="{DynamicResource CardBackground}" 
+                               ColumnDefinitions="*, 50"
+                               
+                               WidthRequest="{Binding Source={Reference _this}, Path=Width}">
+                        
+                        <Label FontSize="24" FontAutoScalingEnabled="False" Text="{Binding Name}" Padding="5"/>
+                        <Button Text="&#xF1F8;"
+                                Grid.Column="1"
+                                CornerRadius="0"
+                                Padding="10"
+                                FontFamily="SPIcon"
+                                FontSize="25"
+                                FontAutoScalingEnabled="False"
+                                TextColor="White"
+                                BackgroundColor="{DynamicResource Warning}"
+                                Clicked="DeleteItem_Clicked"/>
+                    </Grid>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+            <CollectionView.Footer>
+                <Label HeightRequest="40"/>
+            </CollectionView.Footer>
+        </CollectionView>
+    </Grid>
+</toolkit:Popup>

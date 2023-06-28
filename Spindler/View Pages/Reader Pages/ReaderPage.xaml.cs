@@ -52,5 +52,10 @@ public partial class ReaderPage : ContentPage, IQueryAttributable
         InitializeComponent();
         Client = client;
         DataService = dataService;
+
+        WeakReferenceMessenger.Default.Register<CreateBottomSheetMessage>(this, (object targetView, CreateBottomSheetMessage message) =>
+        {
+            this.ShowPopup(message.Value);
+        });
     }
 }
