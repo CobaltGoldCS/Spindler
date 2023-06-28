@@ -1,5 +1,9 @@
+using CommunityToolkit.Maui.Views;
+using CommunityToolkit.Mvvm.Messaging;
+using Spindler.CustomControls;
 using Spindler.Models;
 using Spindler.Services;
+using Spindler.Utilities;
 using Spindler.ViewModels;
 
 namespace Spindler;
@@ -24,6 +28,7 @@ public partial class ReaderPage : ContentPage, IQueryAttributable
         }
 
         var ViewModel = new ReaderViewModel(DataService);
+        BindingContext = ViewModel;
         // Attach required information to View Model
         if (config is not null)
         {

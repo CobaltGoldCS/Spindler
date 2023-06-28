@@ -1,4 +1,6 @@
-﻿using CommunityToolkit.Mvvm.Messaging.Messages;
+﻿using CommunityToolkit.Maui.Views;
+using CommunityToolkit.Mvvm.Messaging.Messages;
+using Spindler.Models;
 
 namespace Spindler.Utilities;
 

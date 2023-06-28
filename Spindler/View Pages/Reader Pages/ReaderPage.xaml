@@ -11,10 +11,6 @@
              Shell.BackgroundColor="{DynamicResource CardBackground}"
              Shell.TabBarIsVisible="False">
 
-    <ContentPage.BindingContext>
-        <ViewModel:ReaderViewModel/>
-    </ContentPage.BindingContext>
-
     <Shell.TitleView>
         <Grid ColumnDefinitions="*, auto"
               BackgroundColor="{DynamicResource CardBackground}"

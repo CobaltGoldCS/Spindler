@@ -1,12 +1,7 @@
 ﻿using Microsoft.Maui.Platform;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using UIKit;
 
-namespace Spindler.Utilities.PageExtensions;
+namespace Spindler.Utilities;
 
 // https://vladislavantonyuk.github.io/articles/Creating-a-bottom-sheet-using-.NET-MAUI/
 public static partial class PageExtensions

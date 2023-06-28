@@ -1,6 +1,9 @@
 ﻿using CommunityToolkit.Maui.Core.Extensions;
+using CommunityToolkit.Maui.Views;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using CommunityToolkit.Mvvm.Messaging;
+using Spindler.CustomControls;
 using Spindler.Models;
 using Spindler.Services;
 using Spindler.Utilities;
@@ -85,16 +88,42 @@ namespace Spindler.ViewModels
         }
 
         [RelayCommand]
-        public async void Bookmark()
+        public void Bookmark()
         {
-            await BookmarkButton!.RelRotateTo(360, 250, Easing.CubicIn);
-            await App.Database.SaveItemAsync(CurrentBook with
+            if (CurrentData is null)
+                return;
+            Popup view = new BookmarkDialog(
+                Database, 
+                CurrentBook, 
+                getBookmark: () =>
+                {
+                    return new Bookmark(CurrentData.Title!, ReaderScrollPosition, CurrentData.currentUrl!);
+                },
+                itemClickedHandler: async (Bookmark bookmark) =>
+                {
+                    var data = await ReaderService.LoadUrl(bookmark!.Url);
+                    IsLoading = true;
+                    switch (data)
+                    {
+                        case Invalid<LoadedData> error:
+                            await SafeAssert(false, error.Value.getMessage());
+                            return;
+                        case Ok<LoadedData> value:
+                            CurrentData = value!.Value;
+                            break;
+                    };
+                    IsLoading = false;
+                    DataChanged();
+                    await ReadingLayout!.ScrollToAsync(ReadingLayout.ScrollX, bookmark.Position, ReaderService.Config.HasAutoscrollAnimation);
+                });
+            
+            async void BottomSheetClosed(object? sender, CommunityToolkit.Maui.Core.PopupClosedEventArgs e)
             {
-                Title = "Bookmark: " + CurrentData!.Title,
-                Id = -1,
-                LastViewed = DateTime.UtcNow,
-                Pinned = false
-            });
+                CurrentBook = await Database.GetItemByIdAsync<Book>(CurrentBook.Id);
+            }
+
+            view.Closed += BottomSheetClosed;
+            WeakReferenceMessenger.Default.Send(new CreateBottomSheetMessage(view));
         }
 
         [RelayCommand]
