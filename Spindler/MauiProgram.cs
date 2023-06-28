@@ -40,7 +40,7 @@ public static class MauiProgram
             })
         ;
         builder.Services
-            .AddShellRoutes()
+            .AddPages()
             .AddSingleton<IDataService, DataService>()
             .AddHttpClient();
 
@@ -51,15 +51,15 @@ public static class MauiProgram
     }
 
 
-    private static IServiceCollection AddShellRoutes(this IServiceCollection service)
+    private static IServiceCollection AddPages(this IServiceCollection service)
     {
         // These cannot be defined with a Shell Route because they are already 
         // Present within the AppShell As Tab Pages
         service.AddSingleton<HomePage>();
+        service.AddSingleton<HomeViewModel>();
         service.AddTransient<ReaderPage>();
         service.AddTransient<BookPage>();
-
-        service.AddSingleton<HomeViewModel>();
+        service.AddTransient<BookDetailPage>();
 
         service.AddTransientWithShellRoute<BookListPage, BookListViewModel>($"{nameof(HomePage)}/{nameof(BookListPage)}");
 
