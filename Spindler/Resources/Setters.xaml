@@ -3,6 +3,7 @@
 <ResourceDictionary 
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
     x:Class="Spindler.Resources.Setters">
 
     <Color x:Key="White">#FFFFFF</Color>
@@ -242,8 +243,9 @@
         <Setter Property="Shell.TabBarUnselectedColor" Value="{DynamicResource DisabledTextColor}" />
     </Style>
     <Style BasedOn="{StaticResource BaseStyle}" TargetType="ShellItem" ApplyToDerivedTypes="True" />
-
+    
     <Style TargetType="Grid" x:Key="CardLayout">
         <Setter Property="Background" Value="{DynamicResource CardBackground}"/>
     </Style>
+   
 </ResourceDictionary>

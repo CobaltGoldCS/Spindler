@@ -6,6 +6,7 @@
                x:Class="Spindler.Views.BookmarkDialog"
                x:Name="_this"
                VerticalOptions="End"
+               Color="{DynamicResource Background}"
                xmlns:models="clr-namespace:Spindler.Models">
     <Grid RowDefinitions="auto, auto"
           HorizontalOptions="Fill"
