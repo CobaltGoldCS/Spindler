@@ -86,11 +86,11 @@ public partial class BookViewModel : ObservableObject
         {
             { "book", book! },
             { "config", config },
-            { "type", config!.UsesHeadless ? ReaderPage.ReaderType.Headless : ReaderPage.ReaderType.Standard }
+            { "type", config?.UsesHeadless ?? true ? ReaderPage.ReaderType.Headless : ReaderPage.ReaderType.Standard }
         };
 
         string pageName = nameof(ReaderPage);
-        if (config!.UsesWebview)
+        if (config?.UsesWebview ?? false)
         {
             pageName = nameof(WebviewReaderPage);
         }

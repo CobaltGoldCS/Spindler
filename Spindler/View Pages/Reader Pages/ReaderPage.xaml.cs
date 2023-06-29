@@ -1,3 +1,4 @@
+using CommunityToolkit.Maui.Alerts;
 using CommunityToolkit.Maui.Views;
 using CommunityToolkit.Mvvm.Messaging;
 using Spindler.CustomControls;
@@ -5,6 +6,7 @@ using Spindler.Models;
 using Spindler.Services;
 using Spindler.Utilities;
 using Spindler.ViewModels;
+using Spindler.Views;
 
 namespace Spindler;
 
@@ -22,25 +24,30 @@ public partial class ReaderPage : ContentPage, IQueryAttributable
         Book book = (query["book"] as Book)!;
         
         ReaderType type = (ReaderType)query["type"];
-        if (!query.TryGetValue("config", out object? config))
+        if (!query.TryGetValue("config", out object? configObject))
         {
-            config = await Config.FindValidConfig(book.Url);
+            configObject = await Config.FindValidConfig(Client, book.Url);
         }
 
-        var ViewModel = new ReaderViewModel(DataService);
-        BindingContext = ViewModel;
-        // Attach required information to View Model
-        if (config is not null)
+        var ViewModel = new ReaderViewModel(DataService, Client);
+        
+        if (configObject is not Config config)
         {
-            ViewModel.SetRequiredInfo(new((Config)config, type switch
-            {
-                ReaderType.Headless => new HeadlessWebService(HeadlessBrowser),
-                ReaderType.Standard => new StandardWebService(Client),
-                _ => throw new NotImplementedException("This service has not been implemented")
-            }));
+            Toast.Make("Error: Couldn't find configuration");
+            await Shell.Current.GoToAsync("..");
+            return;
         }
-        ViewModel.SetReferencesToUI(ReadingLayout, BookmarkItem);
-        ViewModel.SetCurrentBook(book);
+
+        // Attach required information to View Model
+        ViewModel.SetRequiredInfo(new(config, type switch
+        {
+            ReaderType.Headless => new HeadlessWebService(HeadlessBrowser),
+            ReaderType.Standard => new StandardWebService(Client),
+            _ => throw new NotImplementedException("This service has not been implemented")
+        }))
+        .SetReferencesToUI(ReadingLayout, BookmarkItem)
+        .SetCurrentBook(book);
+
         ReadingLayout.Scrolled += ViewModel.Scrolled;
 
         BindingContext = ViewModel;
@@ -53,9 +60,10 @@ public partial class ReaderPage : ContentPage, IQueryAttributable
         Client = client;
         DataService = dataService;
 
-        WeakReferenceMessenger.Default.Register<CreateBottomSheetMessage>(this, (object targetView, CreateBottomSheetMessage message) =>
+        WeakReferenceMessenger.Default.Register(this, async (object targetView, CreateBottomSheetMessage message) =>
         {
-            this.ShowPopup(message.Value);
+            var bookmark = await this.ShowPopupAsync(message.Value) as Bookmark;
+            WeakReferenceMessenger.Default.Send(new BookmarkClickedMessage(bookmark!));
         });
     }
 }

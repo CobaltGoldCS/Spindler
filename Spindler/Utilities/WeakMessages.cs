@@ -13,8 +13,3 @@ public class ResourceDictionaryUpdatedMessage : ValueChangedMessage<ResourceDict
 {
     public ResourceDictionaryUpdatedMessage(ResourceDictionary dictionary) : base(dictionary) { }
 }
-
-public class CreateBottomSheetMessage : ValueChangedMessage<Popup>
-{
-    public CreateBottomSheetMessage(Popup view) : base(view) { }
-}

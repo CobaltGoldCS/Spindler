@@ -13,13 +13,14 @@ using System.Xml.XPath;
 
 namespace Spindler.ViewModels
 {
-    public partial class ReaderViewModel : ObservableObject, IReader
+    public partial class ReaderViewModel : ObservableObject, IReader, IRecipient<BookmarkClickedMessage>
     {
         #region Class Attributes
         // This should be set in ReaderPage.xaml.cs
         public ReaderDataService ReaderService = new(new Config(), new StandardWebService(new()));
         public IDataService Database;
 
+        HttpClient Client;
         public Book CurrentBook = new() { Title = "Loading" };
         public CancellationTokenRegistration nextChapterToken = new();
 
@@ -95,39 +96,43 @@ namespace Spindler.ViewModels
             Popup view = new BookmarkDialog(
                 Database, 
                 CurrentBook, 
-                getBookmark: () =>
-                {
-                    return new Bookmark(CurrentData.Title!, ReaderScrollPosition, CurrentData.currentUrl!);
-                },
-                itemClickedHandler: async (Bookmark bookmark) =>
-                {
-                    IsLoading = true;
-                    ReaderService.InvalidatePreloadedData();
-                    await ReadingLayout!.ScrollToAsync(ReadingLayout.ScrollX, 0, false);
-                    var data = await ReaderService.LoadUrl(bookmark!.Url);
-                    switch (data)
-                    {
-                        case Invalid<LoadedData> error:
-                            await SafeAssert(false, error.Value.getMessage());
-                            return;
-                        case Ok<LoadedData> value:
-                            CurrentData = value!.Value;
-                            break;
-                    };
-                    IsLoading = false;
-                    DataChanged();
-                    if (bookmark.Position > 0)
-                        await ReadingLayout!.ScrollToAsync(ReadingLayout.ScrollX, bookmark.Position, false);
-                });
-            
-            async void BottomSheetClosed(object? sender, CommunityToolkit.Maui.Core.PopupClosedEventArgs e)
-            {
-                CurrentBook = await Database.GetItemByIdAsync<Book>(CurrentBook.Id);
-                view.Closed -= BottomSheetClosed;
-            }
+                getNewBookmark: () => new Bookmark(CurrentData.Title!, ReaderScrollPosition, CurrentData.currentUrl!)
+            );
 
-            view.Closed += BottomSheetClosed;
             WeakReferenceMessenger.Default.Send(new CreateBottomSheetMessage(view));
+        }
+
+        public async void Receive(BookmarkClickedMessage message)
+        {
+            if (message.Value is null)
+                return;
+            var bookmark = message.Value;
+            // UI Changes
+            IsLoading = true;
+            PrevButtonIsVisible = false;
+            NextButtonIsVisible = false;
+
+            // Preloaded Data is no longer valid for the bookmark
+            ReaderService.InvalidatePreloadedData();
+
+            await ReadingLayout!.ScrollToAsync(ReadingLayout.ScrollX, 0, false);
+            var data = await ReaderService.LoadUrl(bookmark!.Url);
+            switch (data)
+            {
+                case Invalid<LoadedData> error:
+                    await SafeAssert(false, error.Value.getMessage());
+                    return;
+                case Ok<LoadedData> value:
+                    CurrentData = value!.Value;
+                    break;
+            };
+
+            // Cleanup 
+            IsLoading = false;
+            DataChanged();
+            if (bookmark.Position > 0)
+                await ReadingLayout!.ScrollToAsync(ReadingLayout.ScrollX, bookmark.Position, false);
+            CurrentBook = await Database.GetItemByIdAsync<Book>(CurrentBook.Id);
         }
 
         [RelayCommand]
@@ -138,23 +143,30 @@ namespace Spindler.ViewModels
         #endregion
 
         #region Initialization Functions
-        public ReaderViewModel(IDataService database)
+        public ReaderViewModel(IDataService database, HttpClient client)
         {
             IsLoading = true;
             Shell.Current.Navigating += OnShellNavigating;
             Database = database;
+            RegisterMessageHandlers();
+            Client = client;
         }
-        public void SetRequiredInfo(ReaderDataService readerService)
+
+        public ReaderViewModel SetRequiredInfo(ReaderDataService readerService)
         {
             ReaderService = readerService;
+            return this;
         }
-        public void SetCurrentBook(Book book)
+
+        public ReaderViewModel SetCurrentBook(Book book)
         {
             CurrentBook = book;
+            return this;
         }
+
         public async Task StartLoad()
         {
-            NextChapterService chapterService = new();
+            NextChapterService chapterService = new(Client);
             await CurrentBook.UpdateViewTimeAndSave(Database);
             IDispatcher? dispatcher = Dispatcher.GetForCurrentThread();
             await Task.Run(async () =>
@@ -190,10 +202,16 @@ namespace Spindler.ViewModels
             }
             DataChanged();
         }
-        public void SetReferencesToUI(ScrollView readingLayout, Button bookmarkButton)
+        public ReaderViewModel SetReferencesToUI(ScrollView readingLayout, Button bookmarkButton)
         {
             ReadingLayout = readingLayout;
             BookmarkButton = bookmarkButton;
+            return this;
+        }
+
+        private void RegisterMessageHandlers()
+        {
+            WeakReferenceMessenger.Default.Register(this);
         }
         #endregion
 
@@ -234,7 +252,6 @@ namespace Spindler.ViewModels
                         ReaderService.Config.HasAutoscrollAnimation);
             }
         }
-
 
         #region Error Handlers
 

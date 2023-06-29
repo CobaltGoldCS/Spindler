@@ -1,6 +1,7 @@
 using CommunityToolkit.Maui.Views;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using CommunityToolkit.Mvvm.Messaging.Messages;
 using Spindler.Models;
 using Spindler.Services;
 using System;
@@ -9,10 +10,19 @@ using System.Windows.Input;
 
 namespace Spindler.Views;
 
+public class CreateBottomSheetMessage : ValueChangedMessage<Popup>
+{
+    public CreateBottomSheetMessage(Popup view) : base(view) { }
+}
+
+public class BookmarkClickedMessage : ValueChangedMessage<Bookmark>
+{
+    public BookmarkClickedMessage(Bookmark value) : base(value) { }
+}
+
 public partial class BookmarkDialog : Popup
 {
 	private readonly IDataService Database;
-    private readonly Action<Bookmark> ItemClickedHandler;
     private readonly Func<Bookmark> GetNewBookmark;
 
 	public double Width = DeviceDisplay.MainDisplayInfo.Width / DeviceDisplay.MainDisplayInfo.Density - 20;
@@ -52,14 +62,13 @@ public partial class BookmarkDialog : Popup
 		set => SetValue(BookProperty, value);
 	}
 
-	public BookmarkDialog(IDataService service, Book book, Func<Bookmark> getBookmark, Action<Bookmark> itemClickedHandler)
+	public BookmarkDialog(IDataService service, Book book, Func<Bookmark> getNewBookmark)
 	{
 		InitializeComponent();
 		Database = service;
 		Book = book;
 		Bookmarks = new (Book.Bookmarks);
-		ItemClickedHandler = itemClickedHandler;
-		GetNewBookmark = getBookmark;
+		GetNewBookmark = getNewBookmark;
 		var width = DeviceDisplay.MainDisplayInfo.Width / DeviceDisplay.MainDisplayInfo.Density;
         var height = .5 * (DeviceDisplay.MainDisplayInfo.Height / DeviceDisplay.MainDisplayInfo.Density);
 		Size = new(width, height);
@@ -77,8 +86,7 @@ public partial class BookmarkDialog : Popup
 	[RelayCommand]
 	private void ItemClicked()
 	{
-		Close();
-        ItemClickedHandler?.Invoke(SelectedBookmark);
+		Close(SelectedBookmark);
 	}
 
     private async void DeleteItem_Clicked(object sender, EventArgs e)

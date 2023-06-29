@@ -12,6 +12,8 @@ namespace Spindler.ViewModels
     public partial class BookListViewModel : ObservableObject
     {
         private readonly IDataService Database;
+        private readonly HttpClient Client;
+        
         #region Bindings
         [ObservableProperty]
         public string title = "Book List";
@@ -164,7 +166,7 @@ namespace Spindler.ViewModels
             if (Executing)
                 return;
             Executing = true;
-            var config = await Config.FindValidConfig(selection.Url);
+            var config = await Config.FindValidConfig(Client, selection.Url);
 
             var parameters = new Dictionary<string, object>()
             {

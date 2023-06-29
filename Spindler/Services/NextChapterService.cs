@@ -6,8 +6,10 @@ namespace Spindler.Services
 {
     public class NextChapterService
     {
-        public NextChapterService()
+        HttpClient Client;
+        public NextChapterService(HttpClient client)
         {
+            Client = client;
         }
 
         /// <summary>
@@ -42,7 +44,7 @@ namespace Spindler.Services
 
                 var document = await engine.OpenUrl(book.Url);
                 string html = document.Document.InnerHTML;
-                Config? config = await Config.FindValidConfig(book.Url, html);
+                Config? config = await Config.FindValidConfig(Client, book.Url, html);
                 if (config is null || config.UsesWebview)
                     continue;
 

@@ -121,14 +121,6 @@ public class Config : IIndexedModel
         }
     }
 
-    public static async Task<Config?> FindValidConfig(string url, string? html = null)
-    {
-        HttpClient client = new()
-        {
-            Timeout = TimeSpan.FromSeconds(10)
-        };
-        return await FindValidConfig(client, url, html);
-    }
     /// <summary>
     /// Find a valid website configuration based on <paramref name="url"/>
     /// </summary>

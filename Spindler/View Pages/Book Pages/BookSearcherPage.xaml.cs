@@ -28,6 +28,8 @@ public partial class BookSearcherPage : ContentPage
     /// </summary>
     public Config? Config { get; set; } = null;
 
+    public HttpClient Client;
+
     /// <summary>
     /// Whether <see cref="SearchBrowser"/> is busy loading and checking a page or not
     /// </summary>
@@ -63,10 +65,11 @@ public partial class BookSearcherPage : ContentPage
     }
 
 
-    public BookSearcherPage()
+    public BookSearcherPage(HttpClient client)
     {
         InitializeComponent();
         SwitchUiBasedOnState(State.BookNotFound);
+        Client = client;
     }
 
     /// <summary>
@@ -143,7 +146,7 @@ public partial class BookSearcherPage : ContentPage
     {
         string html = await SearchBrowser.GetHtml();
 
-        Config = await Config.FindValidConfig(!string.IsNullOrEmpty(url) ? url : SearchBrowser.GetUrl(), html);
+        Config = await Config.FindValidConfig(Client, !string.IsNullOrEmpty(url) ? url : SearchBrowser.GetUrl(), html);
         if (Config is null)
         {
             IsLoading = false;
