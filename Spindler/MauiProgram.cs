@@ -60,6 +60,7 @@ public static class MauiProgram
         service.AddTransient<ReaderPage>();
         service.AddTransient<BookPage>();
         service.AddTransient<BookDetailPage>();
+        service.AddTransient<BookSearcherPage>();
 
         service.AddTransientWithShellRoute<BookListPage, BookListViewModel>($"{nameof(HomePage)}/{nameof(BookListPage)}");
 
