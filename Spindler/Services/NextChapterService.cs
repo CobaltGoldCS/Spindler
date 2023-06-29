@@ -1,4 +1,5 @@
-﻿using Knyaz.Optimus;
+﻿using CommunityToolkit.Maui.Alerts;
+using Knyaz.Optimus;
 using Spindler.Models;
 using System.Xml.XPath;
 
@@ -42,7 +43,16 @@ namespace Spindler.Services
             {
                 if (token.IsCancellationRequested) return verifiedbooks;
 
-                var document = await engine.OpenUrl(book.Url);
+                Knyaz.Optimus.Page document;
+                try
+                {
+                    document = await engine.OpenUrl(book.Url);
+                }
+                catch (System.Net.WebException)
+                {
+                    await Toast.Make($"Could not search for {book.Url} (Next Chapter Detector)").Show(token);
+                    continue;
+                }
                 string html = document.Document.InnerHTML;
                 Config? config = await Config.FindValidConfig(Client, book.Url, html);
                 if (config is null || config.UsesWebview)

@@ -14,11 +14,13 @@ public partial class ReaderPage : ContentPage, IQueryAttributable
 {
     HttpClient Client { get; set; }
     IDataService DataService { get; set; }
+
     public enum ReaderType
     {
         Standard,
         Headless
     }
+
     public async void ApplyQueryAttributes(IDictionary<string, object> query)
     {
         Book book = (query["book"] as Book)!;
