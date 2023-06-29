@@ -16,33 +16,76 @@ namespace Spindler.ViewModels
     public partial class ReaderViewModel : ObservableObject, IReader, IRecipient<BookmarkClickedMessage>
     {
         #region Class Attributes
-        // This should be set in ReaderPage.xaml.cs
+        /// <summary>
+        /// The Service managing reader data
+        /// </summary>
         public ReaderDataService ReaderService = new(new Config(), new StandardWebService(new()));
+        /// <summary>
+        /// The reference to the underlying database
+        /// </summary>
         public IDataService Database;
 
+        /// <summary>
+        /// The HttpClient used for Loading book information and/or Determining the correct config
+        /// </summary>
         HttpClient Client;
+
+        /// <summary>
+        /// The Book to load ReaderPage information from
+        /// </summary>
         public Book CurrentBook = new() { Title = "Loading" };
+
+        /// <summary>
+        /// A cancellation token for the next chapter background service
+        /// </summary>
         public CancellationTokenRegistration nextChapterToken = new();
 
+        /// <summary>
+        /// The button to open the Bookmark menu
+        /// </summary>
         private Button? BookmarkButton;
+        /// <summary>
+        /// The Scroll View that manages the reader
+        /// </summary>
         private ScrollView? ReadingLayout;
 
         #region Bindable Properties
 
+        /// <summary>
+        /// The Current Data the User interface uses to populate various UI elements
+        /// </summary>
         [ObservableProperty]
         public LoadedData? currentData = new() { Title = "Loading" };
 
+        /// <summary>
+        /// Flag for whether the View Model is loading book data
+        /// </summary>
         [ObservableProperty]
         private bool isLoading;
 
 
+        /// <summary>
+        /// Visibility of the 'Previous' Button
+        /// </summary>
         [ObservableProperty]
         public bool prevButtonIsVisible = false;
+
+        /// <summary>
+        /// Visibility of the 'Next' Button
+        /// </summary>
         [ObservableProperty]
         public bool nextButtonIsVisible = false;
 
+        /// <summary>
+        /// The current Scroll position of the <see cref="ReadingLayout"/>
+        /// </summary>
         double ReaderScrollPosition = 0;
 
+        /// <summary>
+        /// An event to update the <see cref="ReaderScrollPosition"/> whenever <see cref="ReadingLayout"/> is scrolled
+        /// </summary>
+        /// <param name="sender"><see cref="ReadingLayout"/></param>
+        /// <param name="e">The events sent by the Scroll view</param>
         public async void Scrolled(object? sender, ScrolledEventArgs e)
         {
             await Task.Run(() =>
@@ -59,6 +102,11 @@ namespace Spindler.ViewModels
 
         #region Command Definitions
 
+        /// <summary>
+        /// A command to change the chapter, activated by the next and previous buttons
+        /// </summary>
+        /// <param name="selector">Whether the target chapter is the next or previous chapter</param>
+        /// <exception cref="InvalidDataException">If Somehow another invalid selector type was used</exception>
         [RelayCommand]
         private async void ChangeChapter(ReaderDataService.UrlType selector)
         {
@@ -88,6 +136,9 @@ namespace Spindler.ViewModels
             DataChanged();
         }
 
+        /// <summary>
+        /// The Click event handler for the <see cref="BookmarkButton"/>
+        /// </summary>
         [RelayCommand]
         public void Bookmark()
         {
@@ -102,6 +153,10 @@ namespace Spindler.ViewModels
             WeakReferenceMessenger.Default.Send(new CreateBottomSheetMessage(view));
         }
 
+        /// <summary>
+        /// Receives and manages <see cref="BookmarkClickedMessage"/>
+        /// </summary>
+        /// <param name="message">The message to manage</param>
         public async void Receive(BookmarkClickedMessage message)
         {
             if (message.Value is null)
@@ -135,6 +190,9 @@ namespace Spindler.ViewModels
             CurrentBook = await Database.GetItemByIdAsync<Book>(CurrentBook.Id);
         }
 
+        /// <summary>
+        /// Scrolls to the bottom of the <see cref="ReadingLayout"/>
+        /// </summary>
         [RelayCommand]
         public async void ScrollBottom()
         {
@@ -152,24 +210,38 @@ namespace Spindler.ViewModels
             Client = client;
         }
 
+        /// <summary>
+        /// Sets the data service that is in charge of managing data
+        /// </summary>
+        /// <param name="readerService">The service in charge of data management</param>
+        /// <returns>The Reader View Model</returns>
         public ReaderViewModel SetRequiredInfo(ReaderDataService readerService)
         {
             ReaderService = readerService;
             return this;
         }
 
+        /// <summary>
+        /// Sets relevant book information for the ViewModel
+        /// </summary>
+        /// <param name="book">The book to reference</param>
+        /// <returns>The Reader view model</returns>
         public ReaderViewModel SetCurrentBook(Book book)
         {
             CurrentBook = book;
             return this;
         }
 
+        /// <summary>
+        /// Starts initalizing information from CurrentBook
+        /// </summary>
+        /// <returns>A task indicating the state of the inital load</returns>
         public async Task StartLoad()
         {
             NextChapterService chapterService = new(Client);
             await CurrentBook.UpdateViewTimeAndSave(Database);
             IDispatcher? dispatcher = Dispatcher.GetForCurrentThread();
-            await Task.Run(async () =>
+            _ = Task.Run(async () =>
             {
                 IEnumerable<Book> updateQueue = await chapterService.CheckChaptersInBookList(CurrentBook, nextChapterToken.Token);
                 await dispatcher!.DispatchAsync(async () => await App.Database.SaveItemsAsync(updateQueue));
@@ -202,6 +274,13 @@ namespace Spindler.ViewModels
             }
             DataChanged();
         }
+
+        /// <summary>
+        /// Sets references to important Views
+        /// </summary>
+        /// <param name="readingLayout">The Scroll View of the UI</param>
+        /// <param name="bookmarkButton">The bookmarking button</param>
+        /// <returns>Itself</returns>
         public ReaderViewModel SetReferencesToUI(ScrollView readingLayout, Button bookmarkButton)
         {
             ReadingLayout = readingLayout;
@@ -209,12 +288,20 @@ namespace Spindler.ViewModels
             return this;
         }
 
+        /// <summary>
+        /// Registers important message Handlers
+        /// </summary>
         private void RegisterMessageHandlers()
         {
             WeakReferenceMessenger.Default.Register(this);
         }
         #endregion
 
+        /// <summary>
+        /// Overrides navigation methods
+        /// </summary>
+        /// <param name="sender">The sender of the navigation events</param>
+        /// <param name="e">The navigation events</param>
         public async void OnShellNavigating(object? sender,
                            ShellNavigatingEventArgs e)
         {
@@ -228,6 +315,9 @@ namespace Spindler.ViewModels
 
         #region Helperfunctions
 
+        /// <summary>
+        /// Updates the UI with current information from <see cref="CurrentData"/>
+        /// </summary>
         private async void DataChanged()
         {
             // Database updates

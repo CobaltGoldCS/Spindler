@@ -66,9 +66,10 @@ namespace Spindler.ViewModels
 
         #endregion
 
-        public BookListViewModel(IDataService database) 
+        public BookListViewModel(IDataService database, HttpClient client)
         {
             Database = database;
+            Client = client;
         }
 
         public void SetBookListAndProperties(BookList list)
