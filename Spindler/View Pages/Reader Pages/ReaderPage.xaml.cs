@@ -32,16 +32,21 @@ public partial class ReaderPage : ContentPage, IQueryAttributable
         }
 
         var ViewModel = new ReaderViewModel(DataService, Client);
-        
-        if (configObject is not Config config)
+        BindingContext = ViewModel;
+
+        if (configObject is null)
         {
-            Toast.Make("Error: Couldn't find configuration");
-            await Shell.Current.GoToAsync("..");
+            await Toast.Make("Error: Couldn't find configuration").Show();
+            _ = Task.Run(async () =>
+            {
+                await Task.Delay(2000);
+                MainThread.BeginInvokeOnMainThread(async () => await Shell.Current.GoToAsync(".."));
+            });
             return;
         }
 
         // Attach required information to View Model
-        ViewModel.SetRequiredInfo(new(config, type switch
+        ViewModel.SetRequiredInfo(new((Config)configObject, type switch
         {
             ReaderType.Headless => new HeadlessWebService(HeadlessBrowser),
             ReaderType.Standard => new StandardWebService(Client),
@@ -51,8 +56,6 @@ public partial class ReaderPage : ContentPage, IQueryAttributable
         .SetCurrentBook(book);
 
         ReadingLayout.Scrolled += ViewModel.Scrolled;
-
-        BindingContext = ViewModel;
         await ViewModel.StartLoad();
     }
 
