@@ -31,8 +31,7 @@ public partial class ReaderPage : ContentPage, IQueryAttributable
             configObject = await Config.FindValidConfig(Client, book.Url);
         }
 
-        var ViewModel = new ReaderViewModel(DataService, Client);
-        BindingContext = ViewModel;
+        
 
         if (configObject is null)
         {
@@ -44,17 +43,18 @@ public partial class ReaderPage : ContentPage, IQueryAttributable
             });
             return;
         }
+        var ViewModel = new ReaderViewModelBuilder(DataService, Client)
+            .SetRequiredInfo(new((Config)configObject, type switch
+            {
+                ReaderType.Headless => new HeadlessWebService(HeadlessBrowser),
+                ReaderType.Standard => new StandardWebService(Client),
+                _ => throw new NotImplementedException("This service has not been implemented")
+            }))
+            .SetReferencesToUI(ReadingLayout, BookmarkItem)
+            .SetCurrentBook(book)
+            .Build();
 
-        // Attach required information to View Model
-        ViewModel.SetRequiredInfo(new((Config)configObject, type switch
-        {
-            ReaderType.Headless => new HeadlessWebService(HeadlessBrowser),
-            ReaderType.Standard => new StandardWebService(Client),
-            _ => throw new NotImplementedException("This service has not been implemented")
-        }))
-        .SetReferencesToUI(ReadingLayout, BookmarkItem)
-        .SetCurrentBook(book);
-
+        BindingContext = ViewModel;
         ReadingLayout.Scrolled += ViewModel.Scrolled;
         await ViewModel.StartLoad();
     }
