@@ -61,16 +61,17 @@
                   VerticalOptions="FillAndExpand"
                   Padding="0,40,0,0"
                   BackgroundColor="{DynamicResource CardBackground}">
-                <controls:Reader Text="{Binding CurrentData.Text}"
-                         Title="{Binding CurrentData.Title}"
-                         Loading="{Binding IsLoading}"
-                         NextVisible="{Binding NextButtonIsVisible}"
-                         PrevVisible="{Binding PrevButtonIsVisible}"
-                         PreviousCommand="{Binding ChangeChapterCommand}"
-                         PreviousCommandParameter="{x:Static services:ReaderDataService+UrlType.Previous}"
-                         NextCommand="{Binding ChangeChapterCommand}"
-                         NextCommandParameter="{x:Static services:ReaderDataService+UrlType.Next}"
-                         Grid.Row="0"/>
+                <controls:Reader x:Name="ReaderView"
+                                 Text="{Binding CurrentData.Text}"
+                                 Title="{Binding CurrentData.Title}"
+                                 Loading="{Binding IsLoading}"
+                                 NextVisible="{Binding NextButtonIsVisible}"
+                                 PrevVisible="{Binding PrevButtonIsVisible}"
+                                 PreviousCommand="{Binding ChangeChapterCommand}"
+                                 PreviousCommandParameter="{x:Static services:ReaderDataService+UrlType.Previous}"
+                                 NextCommand="{Binding ChangeChapterCommand}"
+                                 NextCommandParameter="{x:Static services:ReaderDataService+UrlType.Next}"
+                                 Grid.Row="0"/>
                 <controls:WebScraperBrowser x:Name="HeadlessBrowser" Visible="False" Grid.Row="1"/>
             </Grid>
         </Grid>

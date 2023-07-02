@@ -1,4 +1,6 @@
 using CommunityToolkit.Maui.Alerts;
+using CommunityToolkit.Maui.Animations;
+using CommunityToolkit.Maui.Behaviors;
 using CommunityToolkit.Maui.Views;
 using CommunityToolkit.Mvvm.Messaging;
 using Spindler.CustomControls;
@@ -7,13 +9,15 @@ using Spindler.Services;
 using Spindler.Utilities;
 using Spindler.ViewModels;
 using Spindler.Views;
+using System.ComponentModel;
 
 namespace Spindler;
 
-public partial class ReaderPage : ContentPage, IQueryAttributable
+public partial class ReaderPage : ContentPage, IQueryAttributable, IRecipient<CreateBottomSheetMessage>, IRecipient<ChangeScrollMessage>, IDisposable
 {
     HttpClient Client { get; set; }
     IDataService DataService { get; set; }
+    WeakEventManager EventManager { get; set; }
 
     public enum ReaderType
     {
@@ -50,25 +54,70 @@ public partial class ReaderPage : ContentPage, IQueryAttributable
                 ReaderType.Standard => new StandardWebService(Client),
                 _ => throw new NotImplementedException("This service has not been implemented")
             }))
-            .SetReferencesToUI(ReadingLayout, BookmarkItem)
             .SetCurrentBook(book)
             .Build();
 
         BindingContext = ViewModel;
-        ReadingLayout.Scrolled += ViewModel.Scrolled;
+
+        BookmarkItem.Behaviors.Add(new AnimationBehavior
+        {
+            AnimationType = new RotationAnimation(),
+            Command = ViewModel.BookmarkCommand
+        });
+
         await ViewModel.StartLoad();
     }
+
+    async void IRecipient<CreateBottomSheetMessage>.Receive(CreateBottomSheetMessage message)
+    {
+        var bookmark = await this.ShowPopupAsync(message.Value) as Bookmark;
+        WeakReferenceMessenger.Default.Send(new BookmarkClickedMessage(bookmark!));
+    }
+
+    /// <summary>
+    /// In charge of scrolling to positions. NOTE: Negative values scroll to bottom
+    /// </summary>
+    /// <param name="message">A message containing position (double) and isAnimated (bool)</param>
+    async void IRecipient<ChangeScrollMessage>.Receive(ChangeScrollMessage message)
+    {
+        if (message.Value.Item1 < 0)
+        {
+            await ReadingLayout.ScrollToAsync(ReaderView, ScrollToPosition.End, message.Value.Item2);
+        } else
+        {
+            await ReadingLayout.ScrollToAsync(ReadingLayout.ScrollX, message.Value.Item1, message.Value.Item2);
+        }
+    }
+
+
 
     public ReaderPage(HttpClient client, IDataService dataService)
     {
         InitializeComponent();
+        EventManager = new WeakEventManager();
         Client = client;
         DataService = dataService;
+        WeakReferenceMessenger.Default.Register<CreateBottomSheetMessage>(this);
+        WeakReferenceMessenger.Default.Register<ChangeScrollMessage>(this);
+        EventManager.AddEventHandler(ReadingLayoutScrolled, nameof(ReadingLayout.Scrolled));
+    }
 
-        WeakReferenceMessenger.Default.Register(this, async (object targetView, CreateBottomSheetMessage message) =>
-        {
-            var bookmark = await this.ShowPopupAsync(message.Value) as Bookmark;
-            WeakReferenceMessenger.Default.Send(new BookmarkClickedMessage(bookmark!));
-        });
+    public void Dispose() 
+    {
+        EventManager.RemoveEventHandler(ReadingLayoutScrolled, nameof(ReadingLayout.Scrolled));
+        GC.SuppressFinalize(this);
+    }
+
+    private void ReadingLayoutScrolled(object? sender, ScrolledEventArgs e)
+    {
+        WeakReferenceMessenger.Default.Send(new ScrollUpdatedMessage(ReadingLayout.ScrollY));
+    }
+}
+
+class RotationAnimation : BaseAnimation
+{
+    public async override Task Animate(VisualElement view)
+    {
+        await view.RelRotateTo(360, easing: Easing.CubicIn);
     }
 }

@@ -3,6 +3,7 @@ using CommunityToolkit.Maui.Views;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
+using CommunityToolkit.Mvvm.Messaging.Messages;
 using Spindler.Models;
 using Spindler.Services;
 using Spindler.Utilities;
@@ -13,7 +14,7 @@ using System.Xml.XPath;
 
 namespace Spindler.ViewModels;
 
-public partial class ReaderViewModel : ObservableObject, IReader, IRecipient<BookmarkClickedMessage>
+public partial class ReaderViewModel : ObservableObject, IReader, IRecipient<BookmarkClickedMessage>, IRecipient<ScrollUpdatedMessage>
 {
     #region Class Attributes
     /// <summary>
@@ -39,15 +40,6 @@ public partial class ReaderViewModel : ObservableObject, IReader, IRecipient<Boo
     /// A cancellation token for the next chapter background service
     /// </summary>
     public CancellationTokenRegistration nextChapterToken = new();
-
-    /// <summary>
-    /// The button to open the Bookmark menu
-    /// </summary>
-    public Button BookmarkButton = default!;
-    /// <summary>
-    /// The Scroll View that manages the reader
-    /// </summary>
-    public ScrollView ReadingLayout = default!;
 
     #region Bindable Properties
 
@@ -77,20 +69,19 @@ public partial class ReaderViewModel : ObservableObject, IReader, IRecipient<Boo
     public bool nextButtonIsVisible = false;
 
     /// <summary>
-    /// The current Scroll position of the <see cref="ReadingLayout"/>
+    /// The current Scroll position of the view
     /// </summary>
     double ReaderScrollPosition = 0;
 
     /// <summary>
-    /// An event to update the <see cref="ReaderScrollPosition"/> whenever <see cref="ReadingLayout"/> is scrolled
+    /// An event to update the <see cref="ReaderScrollPosition"/> the view is scrolled
     /// </summary>
-    /// <param name="sender"><see cref="ReadingLayout"/></param>
-    /// <param name="e">The events sent by the Scroll view</param>
-    public async void Scrolled(object? sender, ScrolledEventArgs e)
+    /// <param name="message">Contains the current scroll position</param>
+    async void IRecipient<ScrollUpdatedMessage>.Receive(ScrollUpdatedMessage message)
     {
         await Task.Run(() =>
         {
-            ReaderScrollPosition = e.ScrollY;
+            ReaderScrollPosition = message.Value;
             if (ReaderScrollPosition.IsZeroOrNaN())
                 return;
 
@@ -110,7 +101,8 @@ public partial class ReaderViewModel : ObservableObject, IReader, IRecipient<Boo
         Database = database;
         Client = client;
         Shell.Current.Navigating += OnShellNavigating;
-        WeakReferenceMessenger.Default.Register(this);
+        WeakReferenceMessenger.Default.Register<BookmarkClickedMessage>(this);
+        WeakReferenceMessenger.Default.Register<ScrollUpdatedMessage>(this);
     }
 
 
@@ -175,7 +167,7 @@ public partial class ReaderViewModel : ObservableObject, IReader, IRecipient<Boo
         IsLoading = true;
         PrevButtonIsVisible = false;
         NextButtonIsVisible = false;
-        await ReadingLayout.ScrollToAsync(ReadingLayout.ScrollX, 0, false);
+        WeakReferenceMessenger.Default.Send(new ChangeScrollMessage((0, false)));
         CurrentBook.Position = 0;
 
         CurrentBook.Url = selector switch
@@ -196,7 +188,7 @@ public partial class ReaderViewModel : ObservableObject, IReader, IRecipient<Boo
     }
 
     /// <summary>
-    /// The Click event handler for the <see cref="BookmarkButton"/>
+    /// The Click event handler for the Bookmark Button
     /// </summary>
     [RelayCommand]
     public void Bookmark()
@@ -225,7 +217,7 @@ public partial class ReaderViewModel : ObservableObject, IReader, IRecipient<Boo
         // Preloaded Data is no longer valid for the bookmark
         ReaderService.InvalidatePreloadedData();
 
-        await ReadingLayout.ScrollToAsync(ReadingLayout.ScrollX, 0, false);
+        WeakReferenceMessenger.Default.Send(new ChangeScrollMessage((0, false)));
         var data = await ReaderService.LoadUrl(bookmark!.Url);
         switch (data)
         {
@@ -241,17 +233,17 @@ public partial class ReaderViewModel : ObservableObject, IReader, IRecipient<Boo
         IsLoading = false;
         DataChanged();
         if (bookmark.Position > 0)
-            await ReadingLayout.ScrollToAsync(ReadingLayout.ScrollX, bookmark.Position, false);
+            WeakReferenceMessenger.Default.Send(new ChangeScrollMessage((bookmark.Position, false)));
         CurrentBook = await Database.GetItemByIdAsync<Book>(CurrentBook.Id);
     }
 
     /// <summary>
-    /// Scrolls to the bottom of the <see cref="ReadingLayout"/>
+    /// Scrolls to the bottom of the view
     /// </summary>
     [RelayCommand]
-    public async void ScrollBottom()
+    public void ScrollBottom()
     {
-        await ReadingLayout.ScrollToAsync(ReadingLayout.ScrollX, ReadingLayout.Content.Height - ReadingLayout.Bounds.Bottom, true);
+        WeakReferenceMessenger.Default.Send(new ChangeScrollMessage((-1, true)));
     }
     #endregion
 
@@ -270,7 +262,6 @@ public partial class ReaderViewModel : ObservableObject, IReader, IRecipient<Boo
             CurrentBook.HasNextChapter = NextButtonIsVisible;
             await App.Database.SaveItemAsync(CurrentBook);
         }
-        ReadingLayout.Scrolled -= Scrolled;
         Shell.Current.Navigating -= OnShellNavigating;
     }
 
@@ -297,10 +288,7 @@ public partial class ReaderViewModel : ObservableObject, IReader, IRecipient<Boo
         
         if (CurrentBook.Position > 0)
         {
-            await ReadingLayout.ScrollToAsync(
-                    0,
-                    CurrentBook.Position,
-                    ReaderService.Config.HasAutoscrollAnimation);
+            WeakReferenceMessenger.Default.Send(new ChangeScrollMessage((CurrentBook.Position, ReaderService.Config.HasAutoscrollAnimation)));
         }
     }
 
@@ -319,6 +307,8 @@ public partial class ReaderViewModel : ObservableObject, IReader, IRecipient<Boo
         await Shell.Current.GoToAsync($"{nameof(ErrorPage)}", parameters);
         return false;
     }
+
+
 
     #endregion
     #endregion
@@ -360,28 +350,31 @@ public class ReaderViewModelBuilder
     }
 
     /// <summary>
-    /// Sets references to important Views
-    /// </summary>
-    /// <param name="readingLayout">The Scroll View of the UI</param>
-    /// <param name="bookmarkButton">The bookmarking button</param>
-    /// <returns>Itself</returns>
-    public ReaderViewModelBuilder SetReferencesToUI(ScrollView readingLayout, Button bookmarkButton)
-    {
-        Target.ReadingLayout = readingLayout;
-        Target.BookmarkButton = bookmarkButton;
-        return this;
-    }
-
-    /// <summary>
     /// Builds the ReaderViewModel
     /// </summary>
     /// <returns>The Fully assembled ReaderViewModel</returns>
     public ReaderViewModel Build()
     {
-        Debug.Assert(Target.ReadingLayout is not null);
-        Debug.Assert(Target.BookmarkButton is not null);
         Debug.Assert(Target.CurrentBook is not null);
         Debug.Assert(Target.ReaderService is not null);
         return Target;
     }
+}
+
+/// <summary>
+/// A message containing position (double) and isAnimated (bool)
+/// </summary>
+class ChangeScrollMessage : ValueChangedMessage<(double, bool)>
+{
+    /// <summary>
+    /// Create a new ScrollChangedMessage
+    /// </summary>
+    /// <param name="value">position (double) and isAnimated (bool)</param>
+    public ChangeScrollMessage((double, bool) value) : base(value) { }
+}
+
+
+class ScrollUpdatedMessage : ValueChangedMessage<double>
+{
+    public ScrollUpdatedMessage(double value) : base(value) { }
 }
