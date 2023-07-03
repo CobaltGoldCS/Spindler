@@ -14,7 +14,7 @@ using System.Xml.XPath;
 
 namespace Spindler.ViewModels;
 
-public partial class ReaderViewModel : ObservableObject, IReader, IRecipient<BookmarkClickedMessage>, IRecipient<ScrollUpdatedMessage>
+public partial class ReaderViewModel : ObservableObject, IReader, IRecipient<BookmarkClickedMessage>
 {
     #region Class Attributes
     /// <summary>
@@ -71,23 +71,9 @@ public partial class ReaderViewModel : ObservableObject, IReader, IRecipient<Boo
     /// <summary>
     /// The current Scroll position of the view
     /// </summary>
-    double ReaderScrollPosition = 0;
+    [ObservableProperty]
+    double readerScrollPosition = 0;
 
-    /// <summary>
-    /// An event to update the <see cref="ReaderScrollPosition"/> the view is scrolled
-    /// </summary>
-    /// <param name="message">Contains the current scroll position</param>
-    async void IRecipient<ScrollUpdatedMessage>.Receive(ScrollUpdatedMessage message)
-    {
-        await Task.Run(() =>
-        {
-            ReaderScrollPosition = message.Value;
-            if (ReaderScrollPosition.IsZeroOrNaN())
-                return;
-
-            CurrentBook.Position = ReaderScrollPosition;
-        });
-    }
     #endregion
     #endregion
 
@@ -101,8 +87,7 @@ public partial class ReaderViewModel : ObservableObject, IReader, IRecipient<Boo
         Database = database;
         Client = client;
         Shell.Current.Navigating += OnShellNavigating;
-        WeakReferenceMessenger.Default.Register<BookmarkClickedMessage>(this);
-        WeakReferenceMessenger.Default.Register<ScrollUpdatedMessage>(this);
+        WeakReferenceMessenger.Default.Register(this);
     }
 
 
@@ -259,6 +244,7 @@ public partial class ReaderViewModel : ObservableObject, IReader, IRecipient<Boo
     {
         if (e.Target.Location.OriginalString == "..")
         {
+            CurrentBook.Position = ReaderScrollPosition;
             CurrentBook.HasNextChapter = NextButtonIsVisible;
             await App.Database.SaveItemAsync(CurrentBook);
         }
@@ -371,10 +357,4 @@ class ChangeScrollMessage : ValueChangedMessage<(double, bool)>
     /// </summary>
     /// <param name="value">position (double) and isAnimated (bool)</param>
     public ChangeScrollMessage((double, bool) value) : base(value) { }
-}
-
-
-class ScrollUpdatedMessage : ValueChangedMessage<double>
-{
-    public ScrollUpdatedMessage(double value) : base(value) { }
 }

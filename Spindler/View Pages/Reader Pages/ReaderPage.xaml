@@ -40,7 +40,12 @@
             </StackLayout>
         </Grid>
     </Shell.TitleView>
-    <ScrollView x:Name="ReadingLayout" Orientation="Vertical" IsEnabled="True" VerticalScrollBarVisibility="Always" CompressedLayout.IsHeadless="True">
+    <ScrollView x:Name="ReadingLayout"
+                Orientation="Vertical"
+                ScrollY="{Binding ReaderScrollPosition}"
+                IsEnabled="True"
+                VerticalScrollBarVisibility="Always"
+                CompressedLayout.IsHeadless="True">
         <Grid CompressedLayout.IsHeadless="True">
             <Button 
                 CornerRadius="20"

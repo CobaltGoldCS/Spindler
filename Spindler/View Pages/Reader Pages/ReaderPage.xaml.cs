@@ -13,11 +13,10 @@ using System.ComponentModel;
 
 namespace Spindler;
 
-public partial class ReaderPage : ContentPage, IQueryAttributable, IRecipient<CreateBottomSheetMessage>, IRecipient<ChangeScrollMessage>, IDisposable
+public partial class ReaderPage : ContentPage, IQueryAttributable, IRecipient<CreateBottomSheetMessage>, IRecipient<ChangeScrollMessage>
 {
     HttpClient Client { get; set; }
     IDataService DataService { get; set; }
-    WeakEventManager EventManager { get; set; }
 
     public enum ReaderType
     {
@@ -94,23 +93,10 @@ public partial class ReaderPage : ContentPage, IQueryAttributable, IRecipient<Cr
     public ReaderPage(HttpClient client, IDataService dataService)
     {
         InitializeComponent();
-        EventManager = new WeakEventManager();
         Client = client;
         DataService = dataService;
         WeakReferenceMessenger.Default.Register<CreateBottomSheetMessage>(this);
         WeakReferenceMessenger.Default.Register<ChangeScrollMessage>(this);
-        EventManager.AddEventHandler(ReadingLayoutScrolled, nameof(ReadingLayout.Scrolled));
-    }
-
-    public void Dispose() 
-    {
-        EventManager.RemoveEventHandler(ReadingLayoutScrolled, nameof(ReadingLayout.Scrolled));
-        GC.SuppressFinalize(this);
-    }
-
-    private void ReadingLayoutScrolled(object? sender, ScrolledEventArgs e)
-    {
-        WeakReferenceMessenger.Default.Send(new ScrollUpdatedMessage(ReadingLayout.ScrollY));
     }
 }
 
