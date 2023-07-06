@@ -8,7 +8,7 @@
         <Viewmodels:SettingsViewmodel/>
     </ContentPage.BindingContext>
     <ScrollView x:Name="Scroll" Orientation="Vertical" IsEnabled="True" Margin="10,0">
-        <Grid ColumnDefinitions="*, 70, 70" RowDefinitions="auto, 50, auto, auto" VerticalOptions="FillAndExpand" CompressedLayout.IsHeadless="True">
+        <Grid ColumnDefinitions="*, 70, 70" RowDefinitions="auto, 50, auto, auto,auto" VerticalOptions="FillAndExpand" CompressedLayout.IsHeadless="True">
             <FlexLayout Grid.ColumnSpan="3">
                 <Label Text="The quick brown fox jumps over the lazy dog"
                        FontSize="{Binding FontSize}" 
@@ -32,6 +32,7 @@
             <Entry x:Name="FontSizeEntry" Text="{Binding FontSize}" Keyboard="Numeric" Grid.Row="1" Grid.Column="2"/>
             <Stepper x:Name="FontSpacingStepper"  Value="{Binding FontSpacing}"  Maximum="5.0" Minimum="1.0" Increment="0.2" Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="2"/>
             <Picker x:Name="ThemePicker" ItemsSource="{Binding PossibleThemes}" SelectedItem="{Binding SelectedTheme}" Title="Current Theme" Grid.ColumnSpan="3" Grid.Row="3"/>
+            <Picker x:Name="BooklistLayoutPicker" ItemsSource="{Binding LayoutList}" SelectedItem="{Binding SelectedLayout}" Title="Book List Layout" Grid.Row="4" Grid.ColumnSpan="3"/>
         </Grid>
     </ScrollView>
 </ContentPage>

@@ -2,6 +2,7 @@
 using CommunityToolkit.Mvvm.Messaging;
 using Spindler.Models;
 using Spindler.Utilities;
+using Spindler.Views;
 
 namespace Spindler.ViewModels;
 
@@ -37,6 +38,20 @@ public partial class SettingsViewmodel : ObservableObject
         {
             SetProperty(ref fontSpacing, value);
             Preferences.Set("line_spacing", value);
+        }
+    }
+
+    [ObservableProperty]
+    public string[] layoutList = { "List", "Grid" };
+
+    private string selectedLayout = Preferences.Default.Get("book list layout", "List"); // Default is LayoutType.List
+    public string SelectedLayout
+    {
+        get => selectedLayout;
+        set
+        {
+            SetProperty(ref selectedLayout, value);
+            Preferences.Set("book list layout", value);
         }
     }
 

@@ -16,6 +16,15 @@ public partial class BookListPage : ContentPage, IQueryAttributable
     public BookListPage(BookListViewModel viewmodel)
     {
         InitializeComponent();
+
+        string layoutType = Preferences.Default.Get("book list layout", "List");
+
+        DataTemplate bookLayout = (DataTemplate)Resources[layoutType + "Layout"];
+        ItemsLayout itemsLayout = (ItemsLayout)Resources[layoutType + "ItemsLayout"];
+        
+        BooksList.ItemTemplate = bookLayout;
+        BooksList.ItemsLayout = itemsLayout;
+
         BindingContext = viewmodel;
         BooksList.Unfocus();
     }
