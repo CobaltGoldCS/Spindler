@@ -70,13 +70,6 @@ namespace Spindler.ViewModels
         {
             Database = database;
             Client = client;
-            var layoutType = Preferences.Default.Get("book list layout", "List");
-            NUM_ITEMS_ADDED_TO_LIST = layoutType switch
-            {
-                "List" => 7,
-                "Grid" => int.MaxValue,
-                _ => throw new NotImplementedException("This layout type is not supported")
-            };
         }
 
         public void SetBookListAndProperties(BookList list)
