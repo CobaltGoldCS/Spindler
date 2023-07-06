@@ -25,6 +25,12 @@ public partial class BookListPage : ContentPage, IQueryAttributable
         BooksList.ItemTemplate = bookLayout;
         BooksList.ItemsLayout = itemsLayout;
 
+        BooksList.ItemSizingStrategy = layoutType switch
+        {
+            "List" => ItemSizingStrategy.MeasureFirstItem,
+            _ => ItemSizingStrategy.MeasureAllItems
+        };
+
         BindingContext = viewmodel;
         BooksList.Unfocus();
     }

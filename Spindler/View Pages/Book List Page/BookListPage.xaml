@@ -31,11 +31,22 @@
                                           Command="{Binding Source={x:RelativeSource AncestorType={x:Type viewmodels:BookListViewModel}}, Path=DoubleTappedCommand, Mode=OneTime}"
                                           CommandParameter="{Binding Path=., Mode=OneTime}"/>
                 </Grid.GestureRecognizers>
-                <Image Source="{Binding Path=ImageUrl, Mode=OneTime}" Aspect="AspectFill">
+                <Image Source="{Binding Path=ImageUrl, Mode=OneTime}" 
+                       Aspect="AspectFill"
+                       Grid.ColumnSpan="2"
+                       BackgroundColor="{DynamicResource CardBackground}">
                     <Image.Shadow>
-                        <Shadow Offset="20,20" Brush="Black" Radius="30" Opacity="1"/>
+                        <Shadow Offset="15,10" Brush="Black" Opacity="0.8"/>
                     </Image.Shadow>
                 </Image>
+                <Path Fill="{DynamicResource Warning}"
+                              Data="M 0,0 L 0, 10 L 10, 0Z"
+                              HeightRequest="10"
+                              WidthRequest="10"
+                              HorizontalOptions="Start"
+                              VerticalOptions="Start"
+                              Margin="-2,-2,0,0"
+                              IsVisible="{Binding Path=HasNextChapter, Mode=OneWay}"/>
                 <Label Grid.Row="1"
                        Text="{Binding Title}"
                        FontSize="Small"
@@ -43,7 +54,7 @@
                        MaxLines="2"/>
             </Grid>
         </DataTemplate>
-        <GridItemsLayout x:Key="GridItemsLayout" Orientation="Vertical" HorizontalItemSpacing="5" VerticalItemSpacing="5" Span="3"/>
+        <GridItemsLayout x:Key="GridItemsLayout" Orientation="Vertical" Span="3"/>
     </ContentPage.Resources>
 
 
@@ -71,15 +82,13 @@
     </Shell.TitleView>
     <RefreshView IsRefreshing="{Binding IsLoading}" 
                      Command="{Binding LoadCommand}"
-                     Margin="5"
-                     Grid.Row="1">
+                     Margin="5">
         <!--Standard book list-->
         <CollectionView x:Name="BooksList"
                         ItemsSource="{Binding DisplayedBooks, Mode=OneTime}"
                         RemainingItemsThreshold="5"
                         RemainingItemsThresholdReachedCommand="{Binding EndOfListReachedCommand, Mode=OneTime}"
                         SelectionMode="Single"
-                        ItemSizingStrategy="MeasureFirstItem"
                         VerticalScrollBarVisibility="Always">
             <CollectionView.Header>
                 <!---Pinned Books-->
