@@ -72,12 +72,14 @@ public partial class App : Application
 
         var statusBarColor = (Color)resourceDictionary["CardBackground"];
         StatusBarStyle bestContrast = (statusBarColor.GetByteRed() * 0.299 + statusBarColor.GetByteGreen() * 0.587 + statusBarColor.GetByteBlue() * 0.114) > 186 ? StatusBarStyle.DarkContent : StatusBarStyle.LightContent;
-        
+
+#if !MACCATALYST
         MainPage.Behaviors.Add(new StatusBarBehavior
         {
             StatusBarColor = statusBarColor,
             StatusBarStyle = bestContrast
         });
+#endif
 
         // These are necessary in order to prevent crashing while allowing themes to override styles
         // Add a resource dictionary with lower priority, then remove the one with top priority
