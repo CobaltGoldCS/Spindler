@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:util="clr-namespace:Spindler.Utilities"
              xmlns:viewmodels="clr-namespace:Spindler.ViewModels"
              xmlns:models="clr-namespace:Spindler.Models"
              xmlns:items="clr-namespace:Spindler.Views.CustomControls.Items"
@@ -11,6 +12,7 @@
 
     <ContentPage.Resources>
         <toolkit:BoolToObjectConverter x:Key="ExpanderIconConverter" FalseObject="&#xF175;" TrueObject="&#xF176;"/>
+        <Color x:Key="BorderColor">#55FFFFFF</Color>
         <DataTemplate x:Key="ListLayout" x:DataType="models:Book">
             <items:BookItem 
                         BookParameter="{Binding Path=., Mode=OneTime}"
@@ -20,9 +22,10 @@
         <LinearItemsLayout x:Key="ListItemsLayout" ItemSpacing="5" Orientation="Vertical"/>
         
         <DataTemplate x:Key="GridLayout" x:DataType="models:Book">
-            <Grid RowDefinitions="140,50"
-                  HeightRequest="190"
-                  WidthRequest="100">
+            <Grid RowDefinitions="160,50"
+                  HeightRequest="210"
+                  WidthRequest="120"
+                  CompressedLayout.IsHeadless="True">
                 <Grid.GestureRecognizers>
                     <TapGestureRecognizer NumberOfTapsRequired="1" 
                                           Command="{Binding Source={x:RelativeSource AncestorType={x:Type viewmodels:BookListViewModel}}, Path=SelectionCommand, Mode=OneTime}"
@@ -31,27 +34,37 @@
                                           Command="{Binding Source={x:RelativeSource AncestorType={x:Type viewmodels:BookListViewModel}}, Path=DoubleTappedCommand, Mode=OneTime}"
                                           CommandParameter="{Binding Path=., Mode=OneTime}"/>
                 </Grid.GestureRecognizers>
-                <Image Source="{Binding Path=ImageUrl, Mode=OneTime}" 
-                       Aspect="AspectFill"
-                       Grid.ColumnSpan="2"
-                       BackgroundColor="{DynamicResource CardBackground}">
-                    <Image.Shadow>
-                        <Shadow Offset="15,10" Brush="Black" Opacity="0.8"/>
-                    </Image.Shadow>
-                </Image>
-                <Path Fill="{DynamicResource Warning}"
-                              Data="M 0,0 L 0, 10 L 10, 0Z"
-                              HeightRequest="10"
-                              WidthRequest="10"
+                <Border Grid.ColumnSpan="2"
+                        WidthRequest="100"
+                        HeightRequest="150"
+                        StrokeShape="RoundRectangle 3,3,3,3"
+                        Stroke="{StaticResource BorderColor}"
+                        CompressedLayout.IsHeadless="True"
+                        >
+                    <Grid>
+                        <Image Source="{Binding Path=ImageUrl, Mode=OneTime, TargetNullValue=spindler_icon.svg}" 
+                           Aspect="AspectFill" />
+                        <Path Fill="{DynamicResource Warning}"
+                              Data="M 0,0 L 0, 15 L 15, 0Z"
+                              HeightRequest="20"
+                              WidthRequest="20"
                               HorizontalOptions="Start"
                               VerticalOptions="Start"
-                              Margin="-2,-2,0,0"
+                              Margin="-2,0,7,0"
                               IsVisible="{Binding Path=HasNextChapter, Mode=OneWay}"/>
+                    </Grid>
+                    <Border.Shadow>
+                        <Shadow Offset="15,10" Brush="Black" Opacity="0.8"/>
+                    </Border.Shadow>
+                </Border>
+                
+                
                 <Label Grid.Row="1"
                        Text="{Binding Title}"
-                       FontSize="Small"
+                       FontSize="13"
                        FontAutoScalingEnabled="False"
-                       MaxLines="2"/>
+                       Margin="15,0,0,0"
+                       MaxLines="3"/>
             </Grid>
         </DataTemplate>
         <GridItemsLayout x:Key="GridItemsLayout" Orientation="Vertical" Span="3"/>
@@ -64,20 +77,30 @@
             <Entry Placeholder="{Binding Title}"
                    Text="{Binding FilterText}"
                    Grid.Column="0"
-                   FontSize="22"
+                   FontSize="20"
                    VerticalOptions="Center"
                    HorizontalOptions="FillAndExpand"
                    FontAutoScalingEnabled="False"
+                   FontFamily="OpenSans (Semibold)"
+                   Margin="0,0,30,0"
                    TextColor="{DynamicResource TextColor}"/>
-            <Button x:Name="AddToolBarItem"
-                    Grid.Column="1"   
-                    Style="{DynamicResource IconButton}"
+            <Label x:Name="AddToolBarItem"
+                    Grid.Column="1" 
+                    TextColor="{DynamicResource Primary}"
+                    FontFamily="SPIcon"
                     Text="&#xE805;"
-                    HorizontalOptions="End"
+                    Margin="0,0,15,0"
                     VerticalOptions="Center"
                     FontAutoScalingEnabled="False"
-                    FontSize="27"
-                    Command="{Binding AddToolBarItemCommand, Mode=OneWay}"/>
+                    FontSize="27">
+                <Label.Behaviors>
+                    <toolkit:AnimationBehavior Command="{Binding AddToolBarItemCommand, Mode=OneWay}">
+                        <toolkit:AnimationBehavior.AnimationType>
+                            <util:RotationAnimation/>
+                        </toolkit:AnimationBehavior.AnimationType>
+                    </toolkit:AnimationBehavior>
+                </Label.Behaviors>
+            </Label>
         </Grid>
     </Shell.TitleView>
     <RefreshView IsRefreshing="{Binding IsLoading}" 

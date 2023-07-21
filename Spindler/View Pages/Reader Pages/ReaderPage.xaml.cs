@@ -99,11 +99,3 @@ public partial class ReaderPage : ContentPage, IQueryAttributable, IRecipient<Cr
         WeakReferenceMessenger.Default.Register<ChangeScrollMessage>(this);
     }
 }
-
-class RotationAnimation : BaseAnimation
-{
-    public async override Task Animate(VisualElement view)
-    {
-        await view.RelRotateTo(360, easing: Easing.CubicIn);
-    }
-}

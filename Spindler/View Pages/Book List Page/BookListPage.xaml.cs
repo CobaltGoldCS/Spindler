@@ -1,5 +1,6 @@
 namespace Spindler.Views;
 
+using CommunityToolkit.Maui.Animations;
 using Spindler.Models;
 using Spindler.ViewModels;
 using System.Collections.Generic;
@@ -10,7 +11,6 @@ public partial class BookListPage : ContentPage, IQueryAttributable
     {
         BookList? bookList = query["booklist"]! as BookList;
         await bookList!.UpdateAccessTimeToNow().ConfigureAwait(false);
-        ((BookListViewModel)BindingContext).AddUiReferences(AddToolBarItem);
         ((BookListViewModel)BindingContext).SetBookListAndProperties(bookList);
     }
     public BookListPage(BookListViewModel viewmodel)

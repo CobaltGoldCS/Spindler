@@ -79,16 +79,6 @@ namespace Spindler.ViewModels
 
         }
 
-        Button? AddButton;
-        /// <summary>
-        /// Add references to BookPage Elements 
-        /// </summary>
-        /// <param name="addToolBarItem">The ImageButton Plus in the toolbar </param>
-        public void AddUiReferences(Button addToolBarItem)
-        {
-            AddButton = addToolBarItem;
-        }
-
         /// <summary>
         /// Method called when one of the config buttons in the book list is selected
         /// </summary>
@@ -109,7 +99,6 @@ namespace Spindler.ViewModels
         [RelayCommand]
         private async void AddToolBarItem()
         {
-            await AddButton!.RelRotateTo(360, 250, Easing.CubicIn);
             Dictionary<string, object> parameters = new()
             {
                 {
