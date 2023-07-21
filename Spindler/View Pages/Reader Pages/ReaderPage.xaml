@@ -21,11 +21,11 @@
 
             <ScrollView Grid.Column="0" 
                         Orientation="Horizontal"
+                        Margin="0,0,30,0"
                         VerticalOptions="Center">
                 <Label Text="{Binding CurrentData.Title}"
                        FontSize="Title"
                        HeightRequest="50"
-                       Margin="30,0"
                        VerticalTextAlignment="Center"
                        HorizontalOptions="FillAndExpand"
                        TextColor="{DynamicResource Primary}"/>

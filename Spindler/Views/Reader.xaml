@@ -14,7 +14,7 @@
            HorizontalTextAlignment="Start"
            FontAttributes="Bold"
            FontSize="Title"
-           Padding="5,20,5,25"/>
+           Padding="30,20,30,25"/>
     <Button x:Name="PrevButton"
             IsVisible="{Binding Source = {x:Reference this}, Path = PrevVisible}"
             ZIndex="1"
