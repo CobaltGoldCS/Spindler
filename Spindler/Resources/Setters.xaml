@@ -118,7 +118,7 @@
 
     <Style TargetType="Picker">
         <Setter Property="TextColor" Value="{DynamicResource TextColor}" />
-        <Setter Property="TitleColor" Value="{DynamicResource DisabledTextColor}" />
+        <Setter Property="TitleColor" Value="{DynamicResource TextColor}" />
         <Setter Property="FontFamily" Value="OpenSansRegular"/>
         <Setter Property="FontSize" Value="14"/>
         <Setter Property="VisualStateManager.VisualStateGroups">
