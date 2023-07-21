@@ -11,7 +11,7 @@
     <Grid RowDefinitions="auto, auto"
           HorizontalOptions="Fill"
           VerticalOptions="Fill"
-          ColumnDefinitions="*, 100">
+          ColumnDefinitions="*, 50">
         <Label Text="Bookmarks"
                FontSize="30"
                FontAutoScalingEnabled="False"

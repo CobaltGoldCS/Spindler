@@ -58,19 +58,16 @@ public partial class ReaderPage : ContentPage, IQueryAttributable, IRecipient<Cr
 
         BindingContext = ViewModel;
 
-        BookmarkItem.Behaviors.Add(new AnimationBehavior
-        {
-            AnimationType = new RotationAnimation(),
-            Command = ViewModel.BookmarkCommand
-        });
-
         await ViewModel.StartLoad();
     }
 
     async void IRecipient<CreateBottomSheetMessage>.Receive(CreateBottomSheetMessage message)
     {
-        var bookmark = await this.ShowPopupAsync(message.Value) as Bookmark;
-        WeakReferenceMessenger.Default.Send(new BookmarkClickedMessage(bookmark!));
+        if (await this.ShowPopupAsync(message.Value) is not Bookmark bookmark)
+        {
+            return;
+        }
+        WeakReferenceMessenger.Default.Send(new BookmarkClickedMessage(bookmark));
     }
 
     /// <summary>

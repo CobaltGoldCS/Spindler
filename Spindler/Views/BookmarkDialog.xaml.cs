@@ -6,6 +6,7 @@ using Spindler.Models;
 using Spindler.Services;
 using System;
 using System.Collections.ObjectModel;
+using System.Runtime.CompilerServices;
 using System.Windows.Input;
 
 namespace Spindler.Views;
@@ -74,7 +75,7 @@ public partial class BookmarkDialog : Popup
 		Size = new(width, height);
     }
 
-	[RelayCommand]
+    [RelayCommand]
 	private async void Add()
 	{
 		Bookmark bookmark = GetNewBookmark.Invoke();

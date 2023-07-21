@@ -2,6 +2,7 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="Spindler.ReaderPage"
+             xmlns:utils="clr-namespace:Spindler.Utilities"
              xmlns:Model="clr-namespace:Spindler.Models"
              xmlns:ViewModel="clr-namespace:Spindler.ViewModels"
              xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
@@ -22,11 +23,12 @@
                         Orientation="Horizontal"
                         VerticalOptions="Center">
                 <Label Text="{Binding CurrentData.Title}"
-                   FontSize="Title"
-                   HeightRequest="50"
-                   VerticalTextAlignment="Center"
-                   HorizontalOptions="FillAndExpand"
-                   TextColor="{DynamicResource Primary}"/>
+                       FontSize="Title"
+                       HeightRequest="50"
+                       Margin="30,0"
+                       VerticalTextAlignment="Center"
+                       HorizontalOptions="FillAndExpand"
+                       TextColor="{DynamicResource Primary}"/>
             </ScrollView>
             <StackLayout Grid.Column="1"
                          CompressedLayout.IsHeadless="True"
@@ -40,6 +42,13 @@
                         FontSize="24"
                         FontAutoScalingEnabled="False"
                         Command="{Binding BookmarkCommand}">
+                    <Button.Behaviors>
+                        <toolkit:AnimationBehavior Command="{Binding BookmarkCommand}">
+                            <toolkit:AnimationBehavior.AnimationType>
+                                <utils:RotationAnimation/>
+                            </toolkit:AnimationBehavior.AnimationType>
+                        </toolkit:AnimationBehavior>
+                    </Button.Behaviors>
                 </Button>
             </StackLayout>
         </Grid>

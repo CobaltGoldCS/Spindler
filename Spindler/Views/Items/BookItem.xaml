@@ -10,12 +10,10 @@
     </Border.Shadow>
     <Border.GestureRecognizers>
         <TapGestureRecognizer 
-            Tapped="Tapped"
             Command="{Binding Source={x:Reference this}, Path=DoubleTappedCommand, Mode=OneWay}"
             CommandParameter="{Binding Source={x:Reference this}, Path=BookParameter, Mode=OneWay}"
             NumberOfTapsRequired="2"/>
         <TapGestureRecognizer 
-            Tapped="Tapped"
             Command="{Binding Source={x:Reference this}, Path=SelectionCommand, Mode=OneWay}"
             CommandParameter="{Binding Source={x:Reference this}, Path=BookParameter, Mode=OneWay}"/>
     </Border.GestureRecognizers>
