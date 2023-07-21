@@ -11,7 +11,7 @@
            Text="{Binding Source = {x:Reference this}, Path = Title}"
            BackgroundColor="{DynamicResource CardBackground}"
            VerticalTextAlignment="Center"
-           HorizontalTextAlignment="Center"
+           HorizontalTextAlignment="Start"
            FontAttributes="Bold"
            FontSize="Title"
            Padding="5,20,5,25"/>
@@ -38,7 +38,7 @@
     <Border
         CompressedLayout.IsHeadless="True"
         x:Name="TextContainer"
-        StrokeShape="RoundRectangle 40,40,40,40"
+        StrokeShape="RoundRectangle 20,20,20,20"
         Padding="0,30,0,0"
         Grid.Row="3"
         BackgroundColor="{DynamicResource Background}"
