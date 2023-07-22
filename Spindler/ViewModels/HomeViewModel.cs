@@ -20,7 +20,7 @@ public partial class HomeViewModel : ObservableObject
     public ObservableCollection<BookList> displayedBooklists = new();
 
     [ObservableProperty]
-    public bool isLoading = false;
+    public bool isLoading = true;
 
     readonly IDataService Database;
     public List<BookList>? BookLists;
