@@ -74,7 +74,7 @@ public partial class HomeViewModel : ObservableObject
         BookLists.Insert(0, CurrentSelection!);
 
         OnPropertyChanged(nameof(BookLists));
-        await Shell.Current.GoToAsync($"{nameof(BookListPage)}", parameters);
+        await Shell.Current.GoToAsync($"{nameof(BookListPage)}", false, parameters);
 
         CurrentSelection = null;
     }

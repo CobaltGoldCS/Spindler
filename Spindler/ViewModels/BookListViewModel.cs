@@ -219,7 +219,6 @@ namespace Spindler.ViewModels
 
                 LoaderHeightRequest = 0;
                 IsLoading = false;
-                await Task.Delay(TimeSpan.FromMilliseconds(200));
             }
 
             LoaderHeightRequest = 20;
