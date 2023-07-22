@@ -30,7 +30,7 @@ namespace Spindler.ViewModels
         ObservableCollection<Book> pinnedBooks = new();
 
         [ObservableProperty]
-        bool isLoading = false;
+        bool isLoading = true;
 
         [ObservableProperty]
         bool isExpanding = false;
@@ -218,6 +218,7 @@ namespace Spindler.ViewModels
                 PinnedBooksAreVisible = PinnedBooks.Count > 0;
 
                 LoaderHeightRequest = 0;
+                IsLoading = false;
                 await Task.Delay(TimeSpan.FromMilliseconds(200));
             }
 
