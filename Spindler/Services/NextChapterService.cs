@@ -1,6 +1,7 @@
 ﻿using CommunityToolkit.Maui.Alerts;
 using Knyaz.Optimus;
 using Spindler.Models;
+using Spindler.Utilities;
 using System.Xml.XPath;
 
 namespace Spindler.Services
@@ -62,7 +63,7 @@ namespace Spindler.Services
                 try
                 {
                     nextUrl = ConfigService.PrettyWrapSelector(html, new(config.NextUrlPath), ConfigService.SelectorType.Link);
-                    book.HasNextChapter = nextUrl.Length > 0;
+                    book.HasNextChapter = WebUtilities.IsUrl(nextUrl);
                 } catch (XPathException) { }
                 verifiedbooks.Add(book);
             }
