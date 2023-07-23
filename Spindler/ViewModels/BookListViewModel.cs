@@ -199,7 +199,7 @@ namespace Spindler.ViewModels
             IsLoading = false;
         }
 
-        int NUM_ITEMS_ADDED_TO_LIST = 7;
+        const int NUM_ITEMS_ADDED_TO_LIST = 7;
         /// <summary>
         /// Method called when the user reaches the end of the displayed books
         /// </summary>
