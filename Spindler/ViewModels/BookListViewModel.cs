@@ -206,8 +206,8 @@ namespace Spindler.ViewModels
         [RelayCommand]
         public async void EndOfListReached()
         {
-            // First time load
-            if (DisplayedBooks.Count == 0)
+            bool firstTimeLoaded = DisplayedBooks.Count == 0;
+            if (firstTimeLoaded)
             {
                 // Set up pinned books
                 CurrentList = await Database.GetBooksByBooklistIdAsync(Id);

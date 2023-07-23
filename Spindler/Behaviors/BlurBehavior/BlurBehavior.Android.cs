@@ -31,9 +31,9 @@ public partial class BlurBehavior : PlatformBehavior<Image, ImageView>
         }
         else if (OperatingSystem.IsAndroidVersionAtLeast(21))
         {
-            Drawable? drawable = null;
             Radius = 20 - Radius;
-            // Wait until drawable is not null, because it can be null at this moment
+            
+            Drawable? drawable = null;
             Stopwatch timer = new();
             timer.Start();
             while (drawable is null && timer.Elapsed <= TimeSpan.FromSeconds(10))
@@ -42,10 +42,10 @@ public partial class BlurBehavior : PlatformBehavior<Image, ImageView>
                 drawable = imageView.Drawable;
             }
             timer.Stop();
+
             if (timer.Elapsed > TimeSpan.FromSeconds(10))
                 return;
 
-            // Create bitmap from drawable
             Bitmap bitmap = Bitmap.CreateBitmap(drawable!.IntrinsicWidth / 5, drawable.IntrinsicHeight / 5, Bitmap.Config.Argb8888!)!;
             Canvas canvas = new(bitmap);
             drawable!.SetBounds(0, 0, canvas.Width, canvas.Height);
@@ -102,13 +102,10 @@ public partial class BlurBehavior : PlatformBehavior<Image, ImageView>
         int numPixels = img.Width * img.Height;
         int[] pixels = new int[numPixels];
 
-        //Get JPEG pixels.  Each int is the color values for one pixel.
         img.GetPixels(pixels, 0, img.Width, 0, 0, img.Width, img.Height);
 
-        //Create a Bitmap of the appropriate format.
         Bitmap result = Bitmap.CreateBitmap(img.Width, img.Height, Bitmap.Config.Argb8888!)!;
 
-        //Set RGB pixels.
         result.SetPixels(pixels, 0, result.Width, 0, 0, result.Width, result.Height);
         return result;
     }
