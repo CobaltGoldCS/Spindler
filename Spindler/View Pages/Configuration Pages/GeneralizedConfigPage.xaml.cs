@@ -7,6 +7,8 @@ public partial class GeneralizedConfigPage : ContentPage
     public GeneralizedConfigPage()
     {
         InitializeComponent();
-        BindingContext = new GeneralizedConfigViewModel();
+        var viewModel = new GeneralizedConfigViewModel();
+        BindingContext = viewModel;
+        viewModel.ReloadItems();
     }
 }

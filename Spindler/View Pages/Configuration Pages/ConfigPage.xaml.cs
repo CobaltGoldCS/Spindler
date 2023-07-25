@@ -8,5 +8,6 @@ public partial class ConfigPage : ContentPage
         InitializeComponent();
         var viewModel = new ConfigViewModel();
         BindingContext = viewModel;
+        viewModel.ReloadItems();
     }
 }

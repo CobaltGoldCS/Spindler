@@ -27,7 +27,7 @@ namespace Spindler.ViewModels
         public bool isRefreshing = false;
 
         [RelayCommand]
-        public async Task ReloadItems()
+        public async void ReloadItems()
         {
             IsRefreshing = true;
             ConfigItems = await App.Database.GetAllItemsAsync<GeneralizedConfig>();
