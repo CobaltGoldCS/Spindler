@@ -8,8 +8,6 @@ using CommunityToolkit.Mvvm.Messaging;
 using Spindler.Models;
 using CommunityToolkit.Maui.Behaviors;
 using CommunityToolkit.Maui.Core;
-using Kotlin.Jvm.Internal;
-using static Android.Graphics.BlurMaskFilter;
 using CommunityToolkit.Maui.Core.Extensions;
 
 namespace Spindler;

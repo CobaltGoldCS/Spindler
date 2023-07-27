@@ -1,14 +1,21 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+﻿using CommunityToolkit.Maui.Alerts;
+using CommunityToolkit.Maui.Storage;
+using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
+using Microsoft.Maui.Controls;
+using Newtonsoft.Json;
 using Spindler.Models;
 using Spindler.Utilities;
 using Spindler.Views;
+using System.Text;
 
 namespace Spindler.ViewModels;
 
 public partial class SettingsViewmodel : ObservableObject
 {
     private string font = Preferences.Default.Get("font", "OpenSansRegular");
+    private static string DatabaseLocation = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Spindler.db");
     public string Font
     {
         get => font;
@@ -91,5 +98,41 @@ public partial class SettingsViewmodel : ObservableObject
             return;
         }
         Shell.Current.Navigating -= Navigating;
+    }
+
+    // TODO: Create An Automatic Back Up System
+    [RelayCommand]
+    private static async Task Import()
+    {
+        if (!await Shell.Current.CurrentPage.DisplayAlert("Warning!", "Importing a new file will delete previous data", "Import", "Nevermind"))
+            return;
+        FileResult? file = await FilePicker.Default.PickAsync(PickOptions.Default);
+        if (file is null)
+        {
+            return;
+        }
+        File.Copy(file.FullPath, DatabaseLocation, true);
+    }
+
+    [RelayCommand]
+    private static async Task Export()
+    {
+        
+        CancellationToken cancellationToken = new();
+        using FileStream stream = File.OpenRead(DatabaseLocation);
+
+        try
+        {
+            FileSaverImplementation fileSaverInstance = new();
+            var filePath = await fileSaverInstance.SaveAsync($"SpindlerDatabase.db", stream, cancellationToken);
+            await Toast.Make($"File saved at {filePath}").Show(cancellationToken);
+#if IOS || MACCATALYST
+            fileSaverInstance.Dispose();
+#endif
+        }
+        catch (Exception ex)
+        {
+            await Toast.Make($"File not saved: {ex.Message}").Show(cancellationToken);
+        }
     }
 }
