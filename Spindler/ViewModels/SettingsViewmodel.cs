@@ -123,12 +123,9 @@ public partial class SettingsViewmodel : ObservableObject
 
         try
         {
-            FileSaverImplementation fileSaverInstance = new();
-            var filePath = await fileSaverInstance.SaveAsync($"SpindlerDatabase.db", stream, cancellationToken);
-            await Toast.Make($"File saved at {filePath}").Show(cancellationToken);
-#if IOS || MACCATALYST
-            fileSaverInstance.Dispose();
-#endif
+            var filePath = await FileSaver.Default.SaveAsync($"SpindlerDatabase.db", stream, cancellationToken);
+            filePath.EnsureSuccess();
+            await Toast.Make($"File saved at {filePath.FilePath}").Show(cancellationToken);
         }
         catch (Exception ex)
         {

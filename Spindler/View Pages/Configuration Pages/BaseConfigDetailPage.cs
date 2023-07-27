@@ -77,12 +77,9 @@ namespace Spindler.Views.Configuration_Pages
 
             try
             {
-                FileSaverImplementation fileSaverInstance = new();
-                var filePath = await fileSaverInstance.SaveAsync($"{Configuration.Name.Replace('.', '-')}.json", stream, cancellationToken);
+                var filePath = await FileSaver.Default.SaveAsync($"{Configuration.Name.Replace('.', '-')}.json", stream, cancellationToken);
+                filePath.EnsureSuccess();
                 await Toast.Make($"File saved at {filePath}").Show(cancellationToken);
-#if IOS || MACCATALYST
-                fileSaverInstance.Dispose();
-#endif
             }
             catch (Exception ex)
             {
