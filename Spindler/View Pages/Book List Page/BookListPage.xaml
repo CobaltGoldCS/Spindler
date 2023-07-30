@@ -178,7 +178,7 @@
                 <LinearItemsLayout ItemSpacing="5" Orientation="Vertical"/>
             </CollectionView.ItemsLayout>
             <CollectionView.EmptyView>
-                <VerticalStackLayout VerticalOptions="Fill" HorizontalOptions="Fill">
+                <VerticalStackLayout VerticalOptions="Center" HorizontalOptions="Center">
                     <ActivityIndicator IsRunning="True" Color="{StaticResource Primary}"/>
                 </VerticalStackLayout>
             </CollectionView.EmptyView>

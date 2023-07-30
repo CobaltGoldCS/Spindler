@@ -24,7 +24,8 @@
                         Margin="0,0,30,0"
                         VerticalOptions="Center">
                 <Label Text="{Binding CurrentData.Title}"
-                       FontSize="Title"
+                       FontSize="Medium"
+                       FontAttributes="Bold"
                        HeightRequest="50"
                        VerticalTextAlignment="Center"
                        HorizontalOptions="FillAndExpand"
