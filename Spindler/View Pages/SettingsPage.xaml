@@ -42,11 +42,11 @@
             <HorizontalStackLayout Grid.ColumnSpan="3" Grid.Row="5" Margin="-5, 0, 0, 0">
                 <Button Text="Export Data" 
                         Command="{Binding ExportCommand}"
-                        Style="{StaticResource ChipButton}"/>
+                        Style="{DynamicResource ChipButton}"/>
                 <Button Text="Import Data"
                         BackgroundColor="{DynamicResource Warning}"
                         Command="{Binding ImportCommand}"
-                        Style="{StaticResource ChipButton}"/>
+                        Style="{DynamicResource ChipButton}"/>
             </HorizontalStackLayout>
         </Grid>
     </ScrollView>
