@@ -63,7 +63,7 @@
                        Text="{Binding Title}"
                        FontSize="13"
                        FontAutoScalingEnabled="False"
-                       Margin="15,0,0,0"
+                       Margin="12,0,10,0"
                        MaxLines="3"/>
             </Grid>
         </DataTemplate>
@@ -178,7 +178,9 @@
                 <LinearItemsLayout ItemSpacing="5" Orientation="Vertical"/>
             </CollectionView.ItemsLayout>
             <CollectionView.EmptyView>
-                <ActivityIndicator IsRunning="True" Color="{StaticResource Primary}"/>
+                <VerticalStackLayout VerticalOptions="Fill" HorizontalOptions="Fill">
+                    <ActivityIndicator IsRunning="True" Color="{StaticResource Primary}"/>
+                </VerticalStackLayout>
             </CollectionView.EmptyView>
             <CollectionView.Footer>
                 <ActivityIndicator 
