@@ -1,5 +1,6 @@
 namespace Spindler.Views;
 
+using AndroidX.Lifecycle;
 using CommunityToolkit.Maui.Animations;
 using Spindler.Models;
 using Spindler.ViewModels;
@@ -12,6 +13,8 @@ public partial class BookListPage : ContentPage, IQueryAttributable
         BookList? bookList = query["booklist"]! as BookList;
         await bookList!.UpdateAccessTimeToNow().ConfigureAwait(false);
         ((BookListViewModel)BindingContext).SetBookListAndProperties(bookList);
+        // Populate Lists
+        await MainThread.InvokeOnMainThreadAsync(((BookListViewModel)BindingContext).EndOfListReached);
     }
     public BookListPage(BookListViewModel viewmodel)
     {

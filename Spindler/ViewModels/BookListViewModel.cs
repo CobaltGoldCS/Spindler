@@ -209,6 +209,7 @@ namespace Spindler.ViewModels
             bool firstTimeLoaded = DisplayedBooks.Count == 0;
             if (firstTimeLoaded)
             {
+                PinnedBooks.Clear();
                 // Set up pinned books
                 CurrentList = await Database.GetBooksByBooklistIdAsync(Id);
                 foreach (var book in CurrentList.Where(book => book.Pinned))
