@@ -73,6 +73,7 @@ public partial class BookmarkDialog : Popup
 		var width = DeviceDisplay.MainDisplayInfo.Width / DeviceDisplay.MainDisplayInfo.Density;
         var height = .5 * (DeviceDisplay.MainDisplayInfo.Height / DeviceDisplay.MainDisplayInfo.Density);
 		Size = new(width, height);
+		ResultWhenUserTapsOutsideOfPopup = null;
     }
 
     [RelayCommand]

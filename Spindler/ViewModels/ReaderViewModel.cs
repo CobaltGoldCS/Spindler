@@ -14,7 +14,7 @@ using System.Xml.XPath;
 
 namespace Spindler.ViewModels;
 
-public partial class ReaderViewModel : ObservableObject, IReader, IRecipient<BookmarkClickedMessage>
+public partial class ReaderViewModel : ObservableObject, IReader
 {
     #region Class Attributes
     /// <summary>
@@ -87,7 +87,6 @@ public partial class ReaderViewModel : ObservableObject, IReader, IRecipient<Boo
         Database = database;
         Client = client;
         Shell.Current.Navigating += OnShellNavigating;
-        WeakReferenceMessenger.Default.Register(this);
     }
 
 
@@ -176,7 +175,7 @@ public partial class ReaderViewModel : ObservableObject, IReader, IRecipient<Boo
     /// The Click event handler for the Bookmark Button
     /// </summary>
     [RelayCommand]
-    public void Bookmark()
+    public async Task Bookmark()
     {
         if (CurrentData is null || IsLoading)
             return;
@@ -187,13 +186,11 @@ public partial class ReaderViewModel : ObservableObject, IReader, IRecipient<Boo
         );
 
         WeakReferenceMessenger.Default.Send(new CreateBottomSheetMessage(view));
-    }
-
-    public async void Receive(BookmarkClickedMessage message)
-    {
-        if (message.Value is null)
+        if (await PopupExtensions.ShowPopupAsync(Shell.Current.CurrentPage, view) is not Bookmark bookmark)
+        {
             return;
-        var bookmark = message.Value;
+        }
+
         // UI Changes
         IsLoading = true;
         PrevButtonIsVisible = false;

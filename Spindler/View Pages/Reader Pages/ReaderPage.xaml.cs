@@ -13,7 +13,7 @@ using System.ComponentModel;
 
 namespace Spindler;
 
-public partial class ReaderPage : ContentPage, IQueryAttributable, IRecipient<CreateBottomSheetMessage>, IRecipient<ChangeScrollMessage>
+public partial class ReaderPage : ContentPage, IQueryAttributable, IRecipient<ChangeScrollMessage>
 {
     HttpClient Client { get; set; }
     IDataService DataService { get; set; }
@@ -61,15 +61,6 @@ public partial class ReaderPage : ContentPage, IQueryAttributable, IRecipient<Cr
         await ViewModel.StartLoad();
     }
 
-    async void IRecipient<CreateBottomSheetMessage>.Receive(CreateBottomSheetMessage message)
-    {
-        if (await this.ShowPopupAsync(message.Value) is not Bookmark bookmark)
-        {
-            return;
-        }
-        WeakReferenceMessenger.Default.Send(new BookmarkClickedMessage(bookmark));
-    }
-
     /// <summary>
     /// In charge of scrolling to positions. NOTE: Negative values scroll to bottom
     /// </summary>
@@ -92,7 +83,6 @@ public partial class ReaderPage : ContentPage, IQueryAttributable, IRecipient<Cr
         InitializeComponent();
         Client = client;
         DataService = dataService;
-        WeakReferenceMessenger.Default.Register<CreateBottomSheetMessage>(this);
-        WeakReferenceMessenger.Default.Register<ChangeScrollMessage>(this);
+        WeakReferenceMessenger.Default.RegisterAll(this);
     }
 }
