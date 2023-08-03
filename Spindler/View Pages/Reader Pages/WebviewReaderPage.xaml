@@ -4,6 +4,8 @@
              x:Class="Spindler.Views.WebviewReaderPage"
              xmlns:Model="clr-namespace:Spindler.Models"
              xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             xmlns:utils="clr-namespace:Spindler.Utilities"
+             x:Name="_this"
              Title="{Binding Title}"
              Shell.TabBarIsVisible="False">
     <ContentPage.BindingContext>
@@ -20,20 +22,34 @@
                  VerticalOptions="FillAndExpand"
                  HorizontalOptions="FillAndExpand"
                  Navigated="WebViewOnNavigated"/>
-        <ImageButton x:Name="backButton" Source="arrow_left.svg" Clicked="Back_Clicked" HeightRequest="30" Grid.Row="1" Grid.Column="0">
-            <ImageButton.Behaviors>
-                <toolkit:IconTintColorBehavior TintColor="{AppThemeBinding Dark={StaticResource White}, Light={StaticResource Black}}"/>
-            </ImageButton.Behaviors>
-        </ImageButton>
-        <ImageButton Source="rotate_right.svg" Clicked="Reload_Clicked" HeightRequest="30" Grid.Row="1" Grid.Column="1" Margin="10,10">
-            <ImageButton.Behaviors>
-                <toolkit:IconTintColorBehavior TintColor="{AppThemeBinding Dark={StaticResource White}, Light={StaticResource Black}}"/>
-            </ImageButton.Behaviors>
-        </ImageButton>
-        <ImageButton x:Name="forwardButton" Source="arrow_right.svg" Clicked="Forward_Clicked" HeightRequest="30" Grid.Row="1" Grid.Column="2">
-            <ImageButton.Behaviors>
-                <toolkit:IconTintColorBehavior TintColor="{AppThemeBinding Dark={StaticResource White}, Light={StaticResource Black}}"/>
-            </ImageButton.Behaviors>
-        </ImageButton>
+        
+        <Button x:Name="backButton" 
+                Text="&#xF177;"
+                Style="{StaticResource IconButton}"
+                Command="{Binding Source={Reference _this}, Path=BackCommand}"
+                Grid.Row="1" 
+                Grid.Column="0"/>
+
+        <Button Text="&#xE807;" 
+                Style="{StaticResource IconButton}" 
+                Grid.Row="1" 
+                Grid.Column="1" 
+                Margin="10,10">
+            <Button.Behaviors>
+                <toolkit:AnimationBehavior Command="{Binding Source={Reference _this}, Path=ReloadCommand}">
+                    <toolkit:AnimationBehavior.AnimationType>
+                        <utils:RotationAnimation/>
+                    </toolkit:AnimationBehavior.AnimationType>
+                </toolkit:AnimationBehavior>
+            </Button.Behaviors>
+        </Button>
+
+        <Button x:Name="forwardButton" 
+                Text="&#xF178;"
+                Style="{StaticResource IconButton}"
+                Command="{Binding Source={Reference _this}, Path=ForwardCommand}"
+                Grid.Row="1"
+                Grid.Column="2"/>
+
     </Grid>
 </ContentPage>

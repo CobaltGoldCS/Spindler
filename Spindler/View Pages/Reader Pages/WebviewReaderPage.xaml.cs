@@ -1,3 +1,4 @@
+using CommunityToolkit.Mvvm.Input;
 using Spindler.Models;
 using Spindler.Services;
 using Spindler.Views.Reader_Pages;
@@ -36,18 +37,21 @@ public partial class WebviewReaderPage : ContentPage, IQueryAttributable, IReade
         forwardButton.IsEnabled = ReaderBrowser.CanGoForward;
     }
 
-    private void Back_Clicked(object sender, EventArgs e)
+    [RelayCommand]
+    private void Back()
     {
         if (!ReaderBrowser.CanGoBack) return;
         ReaderBrowser.GoBack();
     }
 
-    private void Reload_Clicked(object sender, EventArgs e)
+    [RelayCommand]
+    private void Reload()
     {
         ReaderBrowser.Reload();
     }
 
-    private void Forward_Clicked(object sender, EventArgs e)
+    [RelayCommand]
+    private void Forward()
     {
         if (!ReaderBrowser.CanGoForward) return;
         ReaderBrowser.GoForward();
