@@ -1,6 +1,5 @@
 namespace Spindler.Views;
 
-using AndroidX.Lifecycle;
 using CommunityToolkit.Maui.Animations;
 using Spindler.Models;
 using Spindler.ViewModels;
