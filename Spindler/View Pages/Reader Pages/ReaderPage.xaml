@@ -41,8 +41,7 @@
                         Style="{DynamicResource IconButton}"
                         Text="&#xE801;"
                         FontSize="24"
-                        FontAutoScalingEnabled="False"
-                        Command="{Binding BookmarkCommand}">
+                        FontAutoScalingEnabled="False">
                     <Button.Behaviors>
                         <toolkit:AnimationBehavior Command="{Binding BookmarkCommand}">
                             <toolkit:AnimationBehavior.AnimationType>

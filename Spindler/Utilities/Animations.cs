@@ -1,4 +1,5 @@
 ﻿using CommunityToolkit.Maui.Animations;
+using CommunityToolkit.Maui.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,6 +12,6 @@ class RotationAnimation : BaseAnimation
 {
     public async override Task Animate(VisualElement view)
     {
-        await view.RelRotateTo(360, easing: Easing.CubicIn);
+        await view.RelRotateTo(360, 500, easing: Easing.CubicIn);
     }
 }
