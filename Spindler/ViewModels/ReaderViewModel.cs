@@ -102,8 +102,8 @@ public partial class ReaderViewModel : ObservableObject, IReader
         IDispatcher? dispatcher = Dispatcher.GetForCurrentThread();
         _ = Task.Run(async () =>
         {
-            IEnumerable<Book> updateQueue = await chapterService.CheckChaptersInBookList(CurrentBook, nextChapterToken.Token);
-            await dispatcher!.DispatchAsync(async () => await App.Database.SaveItemsAsync(updateQueue));
+            //IEnumerable<Book> updateQueue = await chapterService.CheckChaptersInBookList(CurrentBook, nextChapterToken.Token);
+            //await dispatcher!.DispatchAsync(async () => await App.Database.SaveItemsAsync(updateQueue));
         });
 
         var data = await ReaderService.LoadUrl(CurrentBook!.Url);

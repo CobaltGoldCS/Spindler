@@ -33,7 +33,7 @@ public partial class HomeViewModel : ObservableObject
     }
 
     [RelayCommand]
-    private async void ConfigButton(int id)
+    private async Task ConfigButton(int id)
     {
         // Add A Dialog to change the values of BookList
         BookList bookList = await App.Database.GetItemByIdAsync<BookList>(id);
@@ -47,7 +47,7 @@ public partial class HomeViewModel : ObservableObject
     }
 
     [RelayCommand]
-    private async void AddToolBarItem()
+    private async Task AddToolBarItem()
     {
         Dictionary<string, object> parameters = new()
         {
@@ -59,7 +59,7 @@ public partial class HomeViewModel : ObservableObject
     }
 
     [RelayCommand]
-    private async void Selection()
+    private async Task Selection()
     {
         if (CurrentSelection is null)
                 return;
@@ -80,7 +80,7 @@ public partial class HomeViewModel : ObservableObject
     }
 
     [RelayCommand]
-    public async void Load()
+    public async Task Load()
     {
         await Task.Run(async () =>
         {
