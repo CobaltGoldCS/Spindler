@@ -142,15 +142,16 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <PackageReference Include="CommunityToolkit.Maui" Version="5.0.0" />
-	  <PackageReference Include="CommunityToolkit.Mvvm" Version="8.1.0" GeneratePathProperty="true" />
-	  <PackageReference Include="HtmlAgilityPack" Version="1.11.46" GeneratePathProperty="true" />
+	  <PackageReference Include="CommunityToolkit.Maui" Version="5.2.0" />
+	  <PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.1" GeneratePathProperty="true" />
+	  <PackageReference Include="Gsemac.Net.WebDrivers" Version="0.14.7" />
+	  <PackageReference Include="HtmlAgilityPack" Version="1.11.51" GeneratePathProperty="true" />
 	  <PackageReference Include="HtmlAgilityPack.CssSelectors.NetCore" Version="1.2.1" GeneratePathProperty="true" />
 	  <PackageReference Include="Knyaz.Optimus" Version="3.0.1" GeneratePathProperty="true" />
 	  <PackageReference Include="Knyaz.Optimus.Scripting.Jurassic" Version="3.0.1" GeneratePathProperty="true" />
 	  <PackageReference Include="Newtonsoft.Json" Version="13.0.3" GeneratePathProperty="true" />
 	  <PackageReference Include="sqlite-net-pcl" Version="1.8.116" GeneratePathProperty="true" />
-	  <PackageReference Include="SQLitePCLRaw.provider.dynamic_cdecl" Version="2.1.4" GeneratePathProperty="true" />
+	  <PackageReference Include="SQLitePCLRaw.provider.dynamic_cdecl" Version="2.1.5" GeneratePathProperty="true" />
 	</ItemGroup>
 
 	<ItemGroup>

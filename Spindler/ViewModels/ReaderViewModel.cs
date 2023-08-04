@@ -102,8 +102,9 @@ public partial class ReaderViewModel : ObservableObject, IReader
         IDispatcher? dispatcher = Dispatcher.GetForCurrentThread();
         _ = Task.Run(async () =>
         {
-            //IEnumerable<Book> updateQueue = await chapterService.CheckChaptersInBookList(CurrentBook, nextChapterToken.Token);
-            //await dispatcher!.DispatchAsync(async () => await App.Database.SaveItemsAsync(updateQueue));
+            // See https://github.com/gsemac/Gsemac.Common/issues/10
+            // IEnumerable<Book> updateQueue = await chapterService.CheckChaptersInBookList(CurrentBook, nextChapterToken.Token);
+            // await dispatcher!.DispatchAsync(async () => await App.Database.SaveItemsAsync(updateQueue));
         });
 
         var data = await ReaderService.LoadUrl(CurrentBook!.Url);
@@ -143,7 +144,7 @@ public partial class ReaderViewModel : ObservableObject, IReader
     /// <param name="selector">Whether the target chapter is the next or previous chapter</param>
     /// <exception cref="InvalidDataException">If Somehow another invalid selector type was used</exception>
     [RelayCommand]
-    private async void ChangeChapter(ReaderDataService.UrlType selector)
+    private async Task ChangeChapter(ReaderDataService.UrlType selector)
     {
         if (IsLoading)
             return;
@@ -223,7 +224,7 @@ public partial class ReaderViewModel : ObservableObject, IReader
     /// Scrolls to the bottom of the view
     /// </summary>
     [RelayCommand]
-    public void ScrollBottom()
+    public static void ScrollBottom()
     {
         WeakReferenceMessenger.Default.Send(new ChangeScrollMessage((-1, true)));
     }
