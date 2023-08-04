@@ -194,6 +194,16 @@ public partial class ReaderDataService
         return stringWriter.ToString().Trim();
     }
 
+    /// <summary>
+    /// Gets the content as HTML
+    /// </summary>
+    /// <param name="nav">The Document to Get the Content Of</param>
+    /// <returns><see cref="ConfigService.Selector.Content"/> as clean Html</returns>
+    public string GetContentHtml(HtmlDocument nav)
+    {
+        return ConfigService.PrettyWrapSelector(nav.DocumentNode.InnerHtml, ConfigService.Selector.Content, ConfigService.SelectorType.Html);
+    }
+
 
     /// <summary>
     /// Get title from <paramref name="html"/>

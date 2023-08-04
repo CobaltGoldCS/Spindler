@@ -42,6 +42,10 @@ public partial class ConfigService
         /// Denotes a preference for text of html elements (target text)
         /// </summary>
         Text,
+        /// <summary>
+        /// Denotes HTML Selection
+        /// </summary>
+        Html,
     }
 
     public enum Selector
@@ -193,6 +197,7 @@ public partial class ConfigService
                 "img" => targetNode?.GetAttributeValue("src", null),
                 _ => targetNode?.CreateNavigator().Value,
             },
+            SelectorType.Html => targetNode?.InnerHtml,
             _ => throw new NotImplementedException($"This selector type: {type} is not implemented (CssElementHandler)"),
         };
     }
@@ -222,17 +227,24 @@ public partial class ConfigService
         if (targetNode is null)
             return null;
 
-        // Select proper attributes from links
-        if (type == SelectorType.Link && !XPathSelectsValue().Matches(path).Any())
+        // Select Proper Attributes
+        if (XPathSelectsValue().Matches(path).Any() && type is SelectorType.Text)
         {
-            return targetNode.OriginalName switch
-            {
-                "a" => targetNode.GetAttributeValue("href", null),
-                "img" => targetNode.GetAttributeValue("src", null),
-                _ => targetNode.CreateNavigator().Value,
-            };
+            return targetNode.CreateNavigator().Value;
         }
-        return targetNode.CreateNavigator().Value;
+
+        return type switch
+        {
+            SelectorType.Text => targetNode.CreateNavigator().Value,
+            SelectorType.Link => targetNode?.OriginalName switch
+            {
+                "a" => targetNode?.GetAttributeValue("href", null),
+                "img" => targetNode?.GetAttributeValue("src", null),
+                _ => targetNode?.CreateNavigator().Value,
+            },
+            SelectorType.Html => targetNode?.InnerHtml,
+            _ => throw new NotImplementedException($"This selector type: {type} is not implemented (CssElementHandler)"),
+        };
     }
 
     #endregion
