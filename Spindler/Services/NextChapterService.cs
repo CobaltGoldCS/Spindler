@@ -1,7 +1,10 @@
 ﻿using CommunityToolkit.Maui.Alerts;
-using Knyaz.Optimus;
+using Gsemac.Net;
+using Gsemac.Net.Http;
+using Microsoft.Extensions.Logging;
 using Spindler.Models;
 using Spindler.Utilities;
+using System.Net;
 using System.Xml.XPath;
 
 namespace Spindler.Services
@@ -12,6 +15,14 @@ namespace Spindler.Services
         public NextChapterService(HttpClient client)
         {
             Client = client;
+        }
+
+        private class WebClient : WebClientBase
+        {
+            public WebClient(IHttpWebRequestFactory webRequestFactory, WebRequestHandler webRequestHandler)
+                : base(webRequestFactory, webRequestHandler)
+            {
+            }
         }
 
         /// <summary>
@@ -38,31 +49,25 @@ namespace Spindler.Services
         {
             List<Book> verifiedbooks = new();
 
-            var engine = EngineBuilder.New().Build();
+            using WebRequestHandler handler = new();
+            using IWebClient webClient = WebClientFactory.Default.Create();
 
             foreach (Book book in books)
             {
                 if (token.IsCancellationRequested) return verifiedbooks;
 
-                Knyaz.Optimus.Page document;
+                string html;
                 try
                 {
-                    document = await engine.OpenUrl(book.Url);
+                    html = webClient.DownloadString(book.Url);
                 }
-                catch (System.Net.WebException)
-                {
-                    await Toast.Make($"Could not search for {book.Url} (Next Chapter Detector)").Show(token);
-                    continue;
-                }
-                string html = document.Document.InnerHTML;
+                catch (System.Net.WebException) { continue; }
                 Config? config = await Config.FindValidConfig(Client, book.Url, html);
                 if (config is null || config.UsesWebview)
                     continue;
-
-                string nextUrl;
                 try
                 {
-                    nextUrl = ConfigService.PrettyWrapSelector(html, new(config.NextUrlPath), ConfigService.SelectorType.Link);
+                    string nextUrl = ConfigService.PrettyWrapSelector(html, new(config.NextUrlPath), ConfigService.SelectorType.Link);
                     book.HasNextChapter = WebUtilities.IsUrl(nextUrl);
                 } catch (XPathException) { }
                 verifiedbooks.Add(book);
