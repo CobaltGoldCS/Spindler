@@ -144,7 +144,6 @@
 	<ItemGroup>
 	  <PackageReference Include="CommunityToolkit.Maui" Version="5.2.0" />
 	  <PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.1" GeneratePathProperty="true" />
-	  <PackageReference Include="Gsemac.Net.WebDrivers" Version="0.14.7" />
 	  <PackageReference Include="HtmlAgilityPack" Version="1.11.51" GeneratePathProperty="true" />
 	  <PackageReference Include="HtmlAgilityPack.CssSelectors.NetCore" Version="1.2.1" GeneratePathProperty="true" />
 	  <PackageReference Include="Knyaz.Optimus" Version="3.0.1" GeneratePathProperty="true" />
