@@ -11,7 +11,7 @@ public partial class HomePage : ContentPage
     {
         InitializeComponent();
         BindingContext = viewModel;
-        viewModel.Load();
+        _ = viewModel.Load();
         RequestPermissionIfNotGranted();
     }
 
