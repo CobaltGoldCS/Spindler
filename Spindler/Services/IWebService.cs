@@ -14,6 +14,6 @@ namespace Spindler.Services
         /// </summary>
         /// <param name="url">The Uniform Resource Locator pointing to a website</param>
         /// <returns>Success or failure html relating to the request</returns>
-        public Task<IResult<string>> GetHtmlFromUrl(string url);
+        public Task<Result<string>> GetHtmlFromUrl(string url);
     }
 }

@@ -43,15 +43,15 @@ public class StandardWebService : IWebService
     /// </summary>
     /// <param name="url">The absolute url to attempt to scrape</param>
     /// <returns>Returns an ErrorOr object either containing the html or an error value string</returns>
-    public async Task<IResult<string>> GetHtmlFromUrl(string url)
+    public async Task<Result<string>> GetHtmlFromUrl(string url)
     {
         var message = new HttpRequestMessage(HttpMethod.Get, url);
         var result = await Client.SendAsync(message);
         if (result.IsSuccessStatusCode)
         {
-            return new Ok<string>(await result.Content.ReadAsStringAsync());
+            return Result<string>.Success(await result.Content.ReadAsStringAsync());
         }
-        return new Invalid<string>(new Error($"Response {result.StatusCode} : {Environment.NewLine}{await result.Content.ReadAsStringAsync()}"));
+        return Result<string>.Error($"Response {result.StatusCode} : {Environment.NewLine}{await result.Content.ReadAsStringAsync()}");
     }
     private static readonly string[] possibleUserAgents = {
             "Mozilla/5.0 (Linux; Android 10; SM-G980F Build/QP1A.190711.020; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/78.0.3904.96 Mobile Safari/537.36",

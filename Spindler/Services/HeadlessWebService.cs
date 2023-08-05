@@ -9,7 +9,7 @@ namespace Spindler.Services
     {
         WebScraperBrowser WebScraperBrowser { get; set; }
 
-        IResult<string>? ReturnResult;
+        Result<string>? ReturnResult;
         string html = string.Empty;
         public HeadlessWebService(WebScraperBrowser browser)
         {
@@ -17,7 +17,7 @@ namespace Spindler.Services
             WebScraperBrowser.Navigated += WebScraperBrowser_Navigated;
         }
 
-        public async Task<IResult<string>> GetHtmlFromUrl(string url)
+        public async Task<Result<string>> GetHtmlFromUrl(string url)
         {
 
 
@@ -40,16 +40,16 @@ namespace Spindler.Services
                     cloudflareString = ConfigService.PrettyWrapSelector(html, cloudflareDetectPath, ConfigService.SelectorType.Text);
                     if (timer.Elapsed >= TimeSpan.FromSeconds(20))
                     {
-                        return new Invalid<string>(new Error("Cloudlflare bypass timed out"));
+                        return Result<string>.Error("Cloudlflare bypass timed out");
                     }
                 }
             }
             catch (XPathException)
             {
-                return new Invalid<string>(new("X Path is invalid"));
+                return Result<string>.Error("X Path is invalid");
             }
 
-            ReturnResult = new Ok<string>(html);
+            ReturnResult = Result<string>.Success(html);
             html = string.Empty;
             return ReturnResult;
         }
@@ -59,12 +59,12 @@ namespace Spindler.Services
         {
             if (e.Result == WebNavigationResult.Cancel)
             {
-                ReturnResult = new Invalid<string>(new Error("Headless navigation cancelled"));
+                ReturnResult = Result<string>.Error("Headless navigation cancelled");
                 return;
             }
             if (e.Result == WebNavigationResult.Failure)
             {
-                ReturnResult = new Invalid<string>(new Error("Headless navigation failed"));
+                ReturnResult = Result<string>.Error("Headless navigation failed");
                 return;
             }
 

@@ -110,10 +110,10 @@ public partial class ReaderViewModel : ObservableObject, IReader
         var data = await ReaderService.LoadUrl(CurrentBook!.Url);
         switch (data)
         {
-            case Invalid<LoadedData> error:
-                await SafeAssert(false, error.Value.getMessage());
+            case Result<LoadedData>.Err error:
+                await SafeAssert(false, error.Message);
                 return;
-            case Ok<LoadedData> value:
+            case Result<LoadedData>.Ok value:
                 CurrentData = value!.Value;
                 break;
         };
@@ -123,12 +123,12 @@ public partial class ReaderViewModel : ObservableObject, IReader
         {
             var html = await ReaderService.WebService.GetHtmlFromUrl(CurrentBook.Url);
 
-            if (html is Invalid<string>) return;
+            if (html is Result<string>.Err) return;
 
             try
             {
                 CurrentBook.ImageUrl = ReaderService.ConfigService.PrettyWrapSelector(
-                                    (html as Ok<string>)!.Value, ConfigService.Selector.ImageUrl, ConfigService.SelectorType.Link);
+                                    (html as Result<string>.Ok)!.Value, ConfigService.Selector.ImageUrl, ConfigService.SelectorType.Link);
             }
             catch (XPathException) { }
         }
@@ -163,12 +163,12 @@ public partial class ReaderViewModel : ObservableObject, IReader
         };
 
         var dataResult = await ReaderService.GetLoadedData(selector, CurrentData!);
-        if(dataResult is Invalid<LoadedData> error)
+        if(dataResult is Result<LoadedData>.Err error)
         {
-            await SafeAssert(false, error.Value.getMessage());
+            await SafeAssert(false, error.Message);
             return;
         }
-        CurrentData = (dataResult as Ok<LoadedData>)!.Value;
+        CurrentData = (dataResult as Result<LoadedData>.Ok)!.Value;
         DataChanged();
     }
 
@@ -204,10 +204,10 @@ public partial class ReaderViewModel : ObservableObject, IReader
         var data = await ReaderService.LoadUrl(bookmark!.Url);
         switch (data)
         {
-            case Invalid<LoadedData> error:
-                await SafeAssert(false, error.Value.getMessage());
+            case Result<LoadedData>.Err error:
+                await SafeAssert(false, error.Message);
                 return;
-            case Ok<LoadedData> value:
+            case Result<LoadedData>.Ok value:
                 CurrentData = value!.Value;
                 break;
         };

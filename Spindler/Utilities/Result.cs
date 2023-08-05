@@ -1,43 +1,17 @@
-﻿using System.Reflection.Metadata;
+﻿namespace Spindler.Utilities;
 
-namespace Spindler.Utilities;
-
-
-public interface IResult<Value>
-{
-}
-public interface IValueContainer<T>
-{
-    T Value { get; protected set; }
-}
-
-public sealed record Invalid<ExpectedType>(Error value) : IResult<ExpectedType>, IValueContainer<Error>
+public abstract record Result<T>
 {
     /// <summary>
-    /// The Error Value
+    /// A class containing a successful Result
     /// </summary>
-    public Error Value { get; set; } = value;
-
-}
-/// <summary>
-/// A class containing a successful Result
-/// </summary>
-public sealed record Ok<ValueType>(ValueType value) : IResult<ValueType>, IValueContainer<ValueType>
-{
+    public sealed record Ok(T Value) : Result<T> { };
     /// <summary>
-    /// The Ok Value
+    /// A Class containing an unsuccessful Result
     /// </summary>
-    public ValueType Value { get; set; } = value;
-}
+    /// <param name="Message">The Result's Error Message</param>
+    public sealed record Err(string Message) : Result<T> { };
 
-
-public record Error
-{
-    private string Message;
-    public string getMessage() => Message;
-
-    public Error(string message)
-    {
-        Message = message;
-    }
+    public static Result<T> Success(T value) => new Ok(value);
+    public static Result<T> Error(string message) => new Err(message);
 }

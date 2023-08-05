@@ -27,10 +27,10 @@ public partial class ReaderDataService
 
     private WebUtilities WebUtilities = new();
 
-    private Task<IResult<LoadedData>>[] LoadingDataTask = new Task<IResult<LoadedData>>[] 
+    private Task<Result<LoadedData>>[] LoadingDataTask = new Task<Result<LoadedData>>[] 
     { 
-        Task.FromResult((IResult<LoadedData>)new Invalid<LoadedData>(new Error("Uninitialized Data"))),
-        Task.FromResult((IResult<LoadedData>)new Invalid<LoadedData>(new Error("Uninitialized Data")))
+        Task.FromResult(Result<LoadedData>.Error("Uninitialized Data")),
+        Task.FromResult(Result<LoadedData>.Error("Uninitialized Data"))
     };
 
     public enum UrlType
@@ -48,32 +48,32 @@ public partial class ReaderDataService
 
     public void InvalidatePreloadedData()
     {
-        LoadingDataTask[0] = Task.FromResult((IResult<LoadedData>)new Invalid<LoadedData>(new Error("Uninitialized Data")));
-        LoadingDataTask[1] = Task.FromResult((IResult<LoadedData>)new Invalid<LoadedData>(new Error("Uninitialized Data")));
+        LoadingDataTask[0] = Task.FromResult(Result<LoadedData>.Error("Uninitialized Data"));
+        LoadingDataTask[1] = Task.FromResult(Result<LoadedData>.Error("Uninitialized Data"));
     }
 
-    public async Task<IResult<LoadedData>> GetLoadedData(UrlType urlType, LoadedData currentData)
+    public async Task<Result<LoadedData>> GetLoadedData(UrlType urlType, LoadedData currentData)
     {
 
         var targetData = await LoadingDataTask[(int)urlType];
         // Attempt to reload the return data if it fails the first time
-        IResult<LoadedData> returnData = targetData switch
+        Result<LoadedData> returnData = targetData switch
         {
-            Ok<LoadedData> => targetData,
-            Invalid<LoadedData> => await LoadUrl(urlType == UrlType.Previous ? currentData.prevUrl : currentData.nextUrl),
+            Result<LoadedData>.Ok => targetData,
+            Result<LoadedData>.Err => await LoadUrl(urlType == UrlType.Previous ? currentData.prevUrl : currentData.nextUrl),
             _ => throw new NotImplementedException("Result must be ok or invalid")
         };
 
-        if (returnData is Invalid<LoadedData>)
+        if (returnData is Result<LoadedData>.Err)
         {
             return returnData;
         }
 
-        var data = (returnData as Ok<LoadedData>)!.Value;
+        var data = (returnData as Result<LoadedData>.Ok)!.Value;
 
         LoadingDataTask[(int)urlType] = LoadUrl(urlType == UrlType.Previous ? data.prevUrl : data.nextUrl);
         // This task holds just the previously loaded data in the array
-        LoadingDataTask[( (int)urlType + 1 ) % LoadingDataTask.Length] = Task.FromResult(new Ok<LoadedData>(currentData) as IResult<LoadedData>);
+        LoadingDataTask[( (int)urlType + 1 ) % LoadingDataTask.Length] = Task.FromResult(Result<LoadedData>.Success(currentData));
 
         return returnData;
     }
@@ -83,29 +83,29 @@ public partial class ReaderDataService
     /// </summary>
     /// <param name="url">The url to obtain data from</param>
     /// <returns>A LoadedData task holding either a null LoadedData, or a LoadedData with valid values</returns>
-    public async Task<IResult<LoadedData>> LoadUrl(string url)
+    public async Task<Result<LoadedData>> LoadUrl(string url)
     {
         if (!WebUtilities.IsUrl(url))
         {
-            return new Invalid<LoadedData>(new Error($"'{url}' is not a valid url"));
+            return Result<LoadedData>.Error($"'{url}' is not a valid url");
         }
         if (!WebUtilities.HasBaseUrl())
         {
-            if (!Uri.TryCreate(url, UriKind.Absolute, out Uri? uri)) return new Invalid<LoadedData>(new Error($"'{url}' is not a valid url"));
+            if (!Uri.TryCreate(url, UriKind.Absolute, out Uri? uri)) return Result<LoadedData>.Error($"'{url}' is not a valid url");
             WebUtilities.SetBaseUrl(new Uri(uri.GetLeftPart(UriPartial.Authority) + "/", UriKind.Absolute));
         }
         url = WebUtilities.MakeAbsoluteUrl(url).ToString();
 
         var html = await WebService.GetHtmlFromUrl(url);
         // Format the html of a failed request
-        if (html is Invalid<string> error)
+        if (html is Result<string>.Err error)
         {
             HtmlDocument invalidHtml = new HtmlDocument();
-            invalidHtml.LoadHtml(error.value.getMessage());
+            invalidHtml.LoadHtml(error.Message);
             string innerText = invalidHtml.DocumentNode.InnerText.Trim();
-            return new Invalid<LoadedData>(new Error(MatchNewlines().Replace(innerText, Environment.NewLine)));
+            return Result<LoadedData>.Error(MatchNewlines().Replace(innerText, Environment.NewLine));
         }
-        return await LoadReaderData(url, (html as Ok<string>)!.Value);
+        return await LoadReaderData(url, (html as Result<string>.Ok)!.Value);
     }
 
     /// <summary>
@@ -114,7 +114,7 @@ public partial class ReaderDataService
     /// <param name="url">The url used to obtain the reader data (this is not processed in this function)</param>
     /// <param name="html">The html to search for relevant data</param>
     /// <returns>A loaded data object containing the required data from the target website</returns>
-    public async Task<IResult<LoadedData>> LoadReaderData(string url, string html)
+    public async Task<Result<LoadedData>> LoadReaderData(string url, string html)
     {
 
         HtmlDocument doc = new();
@@ -123,7 +123,7 @@ public partial class ReaderDataService
         if (!WebUtilities.HasBaseUrl())
         {
             if (!Uri.TryCreate(url, UriKind.Absolute, out Uri? uri))
-                return new Invalid<LoadedData>(new Error($"'{url}' is not a valid url"));
+                return Result<LoadedData>.Error($"'{url}' is not a valid url");
             WebUtilities.SetBaseUrl(new Uri(uri.GetLeftPart(UriPartial.Authority) + "/", UriKind.Absolute));
         }
 
@@ -145,11 +145,11 @@ public partial class ReaderDataService
                 currentUrl = url
             };
 
-            return new Ok<LoadedData>(data);
+            return Result<LoadedData>.Success(data);
         }
         catch (XPathException)
         {
-            return new Invalid<LoadedData>(new("Invalid XPath"));
+            return Result<LoadedData>.Error("Invalid XPath");
         }
     }
 
