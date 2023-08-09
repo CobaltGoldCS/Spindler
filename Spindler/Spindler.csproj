@@ -150,6 +150,8 @@
 	  <PackageReference Include="Knyaz.Optimus.Scripting.Jurassic" Version="3.0.1" GeneratePathProperty="true" />
 	  <PackageReference Include="Newtonsoft.Json" Version="13.0.3" GeneratePathProperty="true" />
 	  <PackageReference Include="sqlite-net-pcl" Version="1.8.116" GeneratePathProperty="true" />
+	  <PackageReference Include="SQLitePCLRaw.bundle_green" Version="2.1.5" />
+	  <PackageReference Include="SQLitePCLRaw.provider.dynamic_cdecl" Version="2.1.5" />
 	</ItemGroup>
 
 	<ItemGroup>

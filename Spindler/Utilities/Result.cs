@@ -13,13 +13,6 @@ public abstract record Result<T>
     public sealed record Err(string Message) : Result<T> { };
 }
 
-<<<<<<< HEAD
-=======
-    public static Result<T> Success(T value) => new Ok(value);
-    public static Result<T> Error(string message) => new Err(message);
-}
-
->>>>>>> d7e480da4153f13fb55eec4494b1922afe9aa416
 public static class Result
 {
     public static Result<T> Success<T>(T value) => new Result<T>.Ok(value);

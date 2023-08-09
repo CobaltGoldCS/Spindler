@@ -184,7 +184,7 @@ public partial class BookSearcherPage : ContentPage
     /// </code>
     /// </summary>
     [RelayCommand]
-    private async void CreateBookFromConfigInformation()
+    private async Task CreateBookFromConfigInformation()
     {
         string html = await SearchBrowser.GetHtml();
 
@@ -215,7 +215,7 @@ public partial class BookSearcherPage : ContentPage
     /// Creates a popup that allows you to choose a configuration to load the url of
     /// </summary>
     [RelayCommand]
-    private async void UseConfigAsDomainUrl()
+    private async Task UseConfigAsDomainUrl()
     {
         if (IsLoading) return;
         PickerPopup popup = new("Choose a config to search", await App.Database.GetAllItemsAsync<Config>());

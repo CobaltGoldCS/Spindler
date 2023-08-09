@@ -191,13 +191,13 @@ public partial class ConfigService
         return type switch
         {
             SelectorType.Text => targetNode.CreateNavigator().Value,
-            SelectorType.Link => targetNode?.OriginalName switch
+            SelectorType.Link => targetNode.OriginalName switch
             {
-                "a" => targetNode?.GetAttributeValue("href", null),
-                "img" => targetNode?.GetAttributeValue("src", null),
-                _ => targetNode?.CreateNavigator().Value,
+                "a" => targetNode.GetAttributeValue("href", null),
+                "img" => targetNode.GetAttributeValue("src", null),
+                _ => targetNode.CreateNavigator().Value,
             },
-            SelectorType.Html => targetNode?.InnerHtml,
+            SelectorType.Html => targetNode.InnerHtml,
             _ => throw new NotImplementedException($"This selector type: {type} is not implemented (CssElementHandler)"),
         };
     }
@@ -236,13 +236,13 @@ public partial class ConfigService
         return type switch
         {
             SelectorType.Text => targetNode.CreateNavigator().Value,
-            SelectorType.Link => targetNode?.OriginalName switch
+            SelectorType.Link => targetNode.OriginalName switch
             {
-                "a" => targetNode?.GetAttributeValue("href", null),
-                "img" => targetNode?.GetAttributeValue("src", null),
-                _ => targetNode?.CreateNavigator().Value,
+                "a" => targetNode.GetAttributeValue("href", null),
+                "img" => targetNode.GetAttributeValue("src", null),
+                _ => targetNode.CreateNavigator().Value,
             },
-            SelectorType.Html => targetNode?.InnerHtml,
+            SelectorType.Html => targetNode.InnerHtml,
             _ => throw new NotImplementedException($"This selector type: {type} is not implemented (CssElementHandler)"),
         };
     }

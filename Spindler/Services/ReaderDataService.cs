@@ -42,6 +42,7 @@ public partial class ReaderDataService
     public ReaderDataService(Config config, IWebService webService)
     {
         Config = config;
+
         ConfigService = new(config);
         WebService = webService;
     }
@@ -179,6 +180,11 @@ public partial class ReaderDataService
 
         foreach (HtmlNode child in node.ChildNodes)
         {
+            if (badTags.Contains(child.OriginalName))
+            {
+                continue;
+            }
+
             string innerText = WhitespaceOnlyRegex().Replace(HttpUtility.HtmlDecode(child.InnerText), string.Empty);
             if (innerText.Length == 0)
             {
@@ -201,7 +207,11 @@ public partial class ReaderDataService
     /// <returns><see cref="ConfigService.Selector.Content"/> as clean Html</returns>
     public string GetContentHtml(HtmlDocument nav)
     {
-        return ConfigService.PrettyWrapSelector(nav.DocumentNode.InnerHtml, ConfigService.Selector.Content, ConfigService.SelectorType.Html);
+        var rawHtml = ConfigService.PrettyWrapSelector(nav.DocumentNode.InnerHtml, ConfigService.Selector.Content, ConfigService.SelectorType.Html);
+        HtmlDocument doc = new();
+        doc.LoadHtml(rawHtml);
+        HtmlNode filteredNode = FilterChildren(doc.DocumentNode);
+        return filteredNode.CreateNavigator().Value;
     }
 
 
@@ -215,6 +225,21 @@ public partial class ReaderDataService
         return HttpUtility.HtmlDecode(ConfigService.PrettyWrapSelector(html, ConfigService.Selector.Title, type: ConfigService.SelectorType.Text)).Trim();
     }
 
+
+    static HashSet<string> badTags = new HashSet<string> { "script", "link", "meta", "style", "img", "video", "track" };
+    private static HtmlNode FilterChildren(HtmlNode node)
+    {
+        HtmlNodeCollection filteredChildren = new HtmlNodeCollection(node);
+        foreach (HtmlNode child in node.ChildNodes)
+        {
+            if (badTags.Contains(child.OriginalName))
+            {
+                filteredChildren.Add(child);
+            }
+        }
+        node.RemoveChildren(filteredChildren);
+        return node;
+    }
 
     [GeneratedRegex("^\\s+$", RegexOptions.Multiline)]
     private static partial Regex WhitespaceOnlyRegex();

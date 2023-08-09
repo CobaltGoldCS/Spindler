@@ -121,6 +121,19 @@ public class Config : IIndexedModel
         }
     }
 
+    [Ignore]
+    [JsonIgnore]
+    public bool FilteringContentEnabled
+    {
+        get => (bool)ExtraConfigs.GetValueOrDefault("filteringcontentenabled", true);
+        set
+        {
+            var tempExtraConfigs = ExtraConfigs;
+            tempExtraConfigs["filteringcontentenabled"] = value;
+            ExtraConfigs = tempExtraConfigs;
+        }
+    }
+
     /// <summary>
     /// Find a valid website configuration based on <paramref name="url"/>
     /// </summary>
