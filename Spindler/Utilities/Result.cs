@@ -15,3 +15,9 @@ public abstract record Result<T>
     public static Result<T> Success(T value) => new Ok(value);
     public static Result<T> Error(string message) => new Err(message);
 }
+
+public static class Result
+{
+    public static Result<T> Success<T>(T value) => new Result<T>.Ok(value);
+    public static Result<T> Error<T>(string message) => new Result<T>.Err(message);
+}
