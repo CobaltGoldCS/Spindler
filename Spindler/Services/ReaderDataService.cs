@@ -29,8 +29,8 @@ public partial class ReaderDataService
 
     private Task<Result<LoadedData>>[] LoadingDataTask = new Task<Result<LoadedData>>[] 
     { 
-        Task.FromResult(Result<LoadedData>.Error("Uninitialized Data")),
-        Task.FromResult(Result<LoadedData>.Error("Uninitialized Data"))
+        Task.FromResult(Result.Error<LoadedData>("Uninitialized Data")),
+        Task.FromResult(Result.Error<LoadedData>("Uninitialized Data"))
     };
 
     public enum UrlType
@@ -48,8 +48,8 @@ public partial class ReaderDataService
 
     public void InvalidatePreloadedData()
     {
-        LoadingDataTask[0] = Task.FromResult(Result<LoadedData>.Error("Uninitialized Data"));
-        LoadingDataTask[1] = Task.FromResult(Result<LoadedData>.Error("Uninitialized Data"));
+        LoadingDataTask[0] = Task.FromResult(Result.Error<LoadedData>("Uninitialized Data"));
+        LoadingDataTask[1] = Task.FromResult(Result.Error<LoadedData>("Uninitialized Data"));
     }
 
     public async Task<Result<LoadedData>> GetLoadedData(UrlType urlType, LoadedData currentData)
@@ -73,7 +73,7 @@ public partial class ReaderDataService
 
         LoadingDataTask[(int)urlType] = LoadUrl(urlType == UrlType.Previous ? data.prevUrl : data.nextUrl);
         // This task holds just the previously loaded data in the array
-        LoadingDataTask[( (int)urlType + 1 ) % LoadingDataTask.Length] = Task.FromResult(Result<LoadedData>.Success(currentData));
+        LoadingDataTask[( (int)urlType + 1 ) % LoadingDataTask.Length] = Task.FromResult(Result.Success(currentData));
 
         return returnData;
     }
@@ -87,11 +87,11 @@ public partial class ReaderDataService
     {
         if (!WebUtilities.IsUrl(url))
         {
-            return Result<LoadedData>.Error($"'{url}' is not a valid url");
+            return Result.Error<LoadedData>($"'{url}' is not a valid url");
         }
         if (!WebUtilities.HasBaseUrl())
         {
-            if (!Uri.TryCreate(url, UriKind.Absolute, out Uri? uri)) return Result<LoadedData>.Error($"'{url}' is not a valid url");
+            if (!Uri.TryCreate(url, UriKind.Absolute, out Uri? uri)) return Result.Error<LoadedData>($"'{url}' is not a valid url");
             WebUtilities.SetBaseUrl(new Uri(uri.GetLeftPart(UriPartial.Authority) + "/", UriKind.Absolute));
         }
         url = WebUtilities.MakeAbsoluteUrl(url).ToString();
@@ -103,7 +103,7 @@ public partial class ReaderDataService
             HtmlDocument invalidHtml = new HtmlDocument();
             invalidHtml.LoadHtml(error.Message);
             string innerText = invalidHtml.DocumentNode.InnerText.Trim();
-            return Result<LoadedData>.Error(MatchNewlines().Replace(innerText, Environment.NewLine));
+            return Result.Error<LoadedData>(MatchNewlines().Replace(innerText, Environment.NewLine));
         }
         return await LoadReaderData(url, (html as Result<string>.Ok)!.Value);
     }
@@ -123,7 +123,7 @@ public partial class ReaderDataService
         if (!WebUtilities.HasBaseUrl())
         {
             if (!Uri.TryCreate(url, UriKind.Absolute, out Uri? uri))
-                return Result<LoadedData>.Error($"'{url}' is not a valid url");
+                return Result.Error<LoadedData>($"'{url}' is not a valid url");
             WebUtilities.SetBaseUrl(new Uri(uri.GetLeftPart(UriPartial.Authority) + "/", UriKind.Absolute));
         }
 
@@ -145,11 +145,11 @@ public partial class ReaderDataService
                 currentUrl = url
             };
 
-            return Result<LoadedData>.Success(data);
+            return Result.Success(data);
         }
         catch (XPathException)
         {
-            return Result<LoadedData>.Error("Invalid XPath");
+            return Result.Error<LoadedData>("Invalid XPath");
         }
     }
 

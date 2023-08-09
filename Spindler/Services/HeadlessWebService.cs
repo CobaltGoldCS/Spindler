@@ -40,16 +40,16 @@ namespace Spindler.Services
                     cloudflareString = ConfigService.PrettyWrapSelector(html, cloudflareDetectPath, ConfigService.SelectorType.Text);
                     if (timer.Elapsed >= TimeSpan.FromSeconds(20))
                     {
-                        return Result<string>.Error("Cloudlflare bypass timed out");
+                        return Result.Error<string>("Cloudlflare bypass timed out");
                     }
                 }
             }
             catch (XPathException)
             {
-                return Result<string>.Error("X Path is invalid");
+                return Result.Error<string>("X Path is invalid");
             }
 
-            ReturnResult = Result<string>.Success(html);
+            ReturnResult = Result.Success(html);
             html = string.Empty;
             return ReturnResult;
         }
@@ -59,12 +59,12 @@ namespace Spindler.Services
         {
             if (e.Result == WebNavigationResult.Cancel)
             {
-                ReturnResult = Result<string>.Error("Headless navigation cancelled");
+                ReturnResult = Result.Error<string>("Headless navigation cancelled");
                 return;
             }
             if (e.Result == WebNavigationResult.Failure)
             {
-                ReturnResult = Result<string>.Error("Headless navigation failed");
+                ReturnResult = Result.Error<string>("Headless navigation failed");
                 return;
             }
 
