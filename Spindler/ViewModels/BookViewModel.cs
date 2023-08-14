@@ -53,7 +53,7 @@ public partial class BookViewModel : ObservableObject
     string method = "Read With Normal Reader";
 
 
-    public async Task Load(Image view, Book book)
+    public async Task Load(Book book)
     {
         this.book = book;
         Domain = new UriBuilder(book.Url).Host;
