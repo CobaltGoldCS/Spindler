@@ -39,6 +39,7 @@ namespace Spindler.Views.Configuration_Pages
             {
                 state = State.ModifyConfig;
             }
+            SetSwitchesBasedOnExtraConfigs();
         }
         #endregion
 
@@ -87,6 +88,12 @@ namespace Spindler.Views.Configuration_Pages
             }
         }
 
+        /// <summary>
+        /// Holds all of the logic required to import a configuration except for UI
+        /// </summary>
+        /// <param name="sender">The Button that triggered the task</param>
+        /// <param name="e">The Event</param>
+        /// <returns>A task to await</returns>
         protected virtual async Task Import(object sender, EventArgs e)
         {
             CancellationToken cancellationToken = new();
@@ -108,6 +115,7 @@ namespace Spindler.Views.Configuration_Pages
             Configuration = config;
             BindingContext = Configuration;
             Configuration.Id = -1; // Required to create a new config
+            SetSwitchesBasedOnExtraConfigs();
         }
 
         #endregion
@@ -116,5 +124,10 @@ namespace Spindler.Views.Configuration_Pages
         {
 
         }
+
+        /// <summary>
+        /// UI Logic to set controls based on configuration
+        /// </summary>
+        protected abstract void SetSwitchesBasedOnExtraConfigs();
     }
 }

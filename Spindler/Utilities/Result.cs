@@ -1,4 +1,7 @@
-﻿namespace Spindler.Utilities;
+﻿using CommunityToolkit.Mvvm.Messaging;
+using System.Collections;
+
+namespace Spindler.Utilities;
 
 public abstract record Result<T>
 {

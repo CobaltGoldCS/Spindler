@@ -46,6 +46,7 @@
                     <EntryCell x:Name="separatorEntry" Label="The Separator between p tags"/>
                     <controls:CustomSwitchCell x:Name="animationSwitch" Text="Animated Autoscroll" On="True"/>
                     <controls:CustomSwitchCell x:Name="headlessSwitch" Text="Enable headless mode (increased compatability, decreased performance)"/>
+                    <controls:CustomSwitchCell x:Name="filterSwitch" Text="Filter out certain types of text"/>
                 </TableSection>
                 <TableSection Title="Import Options" TextColor="{StaticResource Primary}">
                     <TextCell x:Name="exportButton" Text="Export Config as JSON" IsEnabled="False" Tapped="ExportCommand" TextColor="{StaticResource Warning}"/>

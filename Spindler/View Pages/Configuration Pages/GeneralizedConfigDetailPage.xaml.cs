@@ -24,12 +24,6 @@ public partial class GeneralizedConfigDetailPage : BaseConfigDetailPage<Generali
                 Title = $"Modify {Configuration.DomainName}";
                 break;
         }
-        switchWebView.On = Configuration.UsesWebview;
-        animationSwitch.On = Configuration.HasAutoscrollAnimation;
-        separatorEntry.Text = Configuration.Separator
-            .Replace(Environment.NewLine, @"\n")
-            .Replace("\t", @"\t");
-        headlessSwitch.On = Configuration.UsesHeadless;
     }
 
 
@@ -69,20 +63,21 @@ public partial class GeneralizedConfigDetailPage : BaseConfigDetailPage<Generali
                             .Replace(@"\n", Environment.NewLine)
                             .Replace(@"\t", "     ")},
             { "headless", headlessSwitch.On },
+            { "filteringcontentenabled", filterSwitch.On },
         };
         base.okButton_Clicked(sender, e);
     }
 
-    protected async void ImportCommand(object sender, EventArgs e)
+    #endregion
+
+    protected override void SetSwitchesBasedOnExtraConfigs()
     {
-        await base.Import(sender, e);
         switchWebView.On = Configuration.UsesWebview;
         animationSwitch.On = Configuration.HasAutoscrollAnimation;
         separatorEntry.Text = Configuration.Separator
             .Replace(Environment.NewLine, @"\n")
             .Replace("\t", @"\t");
         headlessSwitch.On = Configuration.UsesHeadless;
+        filterSwitch.On = Configuration.FilteringContentEnabled;
     }
-
-    #endregion
 }

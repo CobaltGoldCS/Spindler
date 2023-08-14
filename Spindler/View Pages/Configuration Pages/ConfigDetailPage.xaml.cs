@@ -25,12 +25,6 @@ public partial class ConfigDetailPage : BaseConfigDetailPage<Config>
                 Title = $"Modify {Configuration.DomainName}";
                 break;
         }
-        switchWebView.On = Configuration.UsesWebview;
-        animationSwitch.On = Configuration.HasAutoscrollAnimation;
-        separatorEntry.Text = Configuration.Separator
-            .Replace(Environment.NewLine, @"\n")
-            .Replace("\t", @"\t");
-        headlessSwitch.On = Configuration.UsesHeadless;
     }
 
 
@@ -39,7 +33,7 @@ public partial class ConfigDetailPage : BaseConfigDetailPage<Config>
     {
 
         InitializeComponent();
-        domainEntry.Behaviors.Add(new TextValidationBehavior(DomainValidationRegex.IsMatch));
+        domainEntry.Behaviors.Add(new TextValidationBehavior(DomainValidation().IsMatch));
 
         TextValidationBehavior validSelectorBehavior = new(ConfigService.IsValidSelector);
         contentEntry.Behaviors.Add(validSelectorBehavior);
@@ -51,7 +45,7 @@ public partial class ConfigDetailPage : BaseConfigDetailPage<Config>
 
     protected override void okButton_Clicked(object sender, EventArgs e)
     {
-        if (!DomainValidationRegex.IsMatch(domainEntry.Text) ||
+        if (!DomainValidation().IsMatch(domainEntry.Text) ||
             !ConfigService.IsValidSelector(contentEntry.Text) ||
             !ConfigService.IsValidSelector(nextEntry.Text) ||
             !ConfigService.IsValidSelector(prevEntry.Text))
@@ -67,6 +61,8 @@ public partial class ConfigDetailPage : BaseConfigDetailPage<Config>
                             .Replace(@"\n", Environment.NewLine)
                             .Replace(@"\t", "     ")},
             { "headless", headlessSwitch.On },
+            { "filteringcontentenabled", filterSwitch.On },
+
         };
 
         base.okButton_Clicked(sender, e);
@@ -74,15 +70,17 @@ public partial class ConfigDetailPage : BaseConfigDetailPage<Config>
 
     #endregion
 
-    protected async void ImportCommand(object sender, EventArgs e)
+    protected override void SetSwitchesBasedOnExtraConfigs()
     {
-        await base.Import(sender, e);
         switchWebView.On = Configuration.UsesWebview;
         animationSwitch.On = Configuration.HasAutoscrollAnimation;
         separatorEntry.Text = Configuration.Separator
             .Replace(Environment.NewLine, @"\n")
             .Replace("\t", @"\t");
         headlessSwitch.On = Configuration.UsesHeadless;
+        filterSwitch.On = Configuration.FilteringContentEnabled;
     }
-    private static readonly Regex DomainValidationRegex = new("^(?!www\\.)(((?!\\-))(xn\\-\\-)?[a-z0-9\\-_]{0,61}[a-z0-9]{1,1}\\.)*(xn\\-\\-)?([a-z0-9\\-]{1,61}|[a-z0-9\\-]{1,30})\\.[a-z]{2,}$");
+
+    [GeneratedRegex("^(?!www\\.)(((?!\\-))(xn\\-\\-)?[a-z0-9\\-_]{0,61}[a-z0-9]{1,1}\\.)*(xn\\-\\-)?([a-z0-9\\-]{1,61}|[a-z0-9\\-]{1,30})\\.[a-z]{2,}$")]
+    private static partial Regex DomainValidation();
 }
