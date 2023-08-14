@@ -156,7 +156,7 @@ public class Config : IIndexedModel
             {
                 try
                 {
-                    if ((new Path(config.MatchPath).Select(doc, SelectorType.Text) != string.Empty))
+                    if (config.MatchPath.AsPath().Select(doc, SelectorType.Text) != string.Empty)
                     {
                         selectedConfig = config;
                         state.Stop();

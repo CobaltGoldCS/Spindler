@@ -1,5 +1,7 @@
-﻿using HtmlAgilityPack;
+﻿using Bumptech.Glide.Load.Data;
+using HtmlAgilityPack;
 using HtmlAgilityPack.CssSelectors.NetCore;
+using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
 using System.Web;
 
@@ -162,4 +164,9 @@ public partial class CSSPathSelector : IHTMLSelector
 
     [GeneratedRegex("((?:https?:/)?/[-a-zA-Z0-9+&@#/%?=~_|!:, .;]*[-a-zA-Z0-9+&@#/%=~_|])")]
     private static partial Regex CleanLinkRegex();
+}
+
+public static class PathExtensions
+{
+    public static Path AsPath(this string str) => new Path(str);
 }

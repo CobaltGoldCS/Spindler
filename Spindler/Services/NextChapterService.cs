@@ -63,7 +63,7 @@ namespace Spindler.Services
                 string nextUrl;
                 try
                 {
-                    nextUrl = (new Path(config.NextUrlPath).Select(html, SelectorType.Link));
+                    nextUrl = config.NextUrlPath.AsPath().Select(html, SelectorType.Link);
                     book.HasNextChapter = WebUtilities.IsUrl(nextUrl);
                 } catch (XPathException) { }
                 verifiedbooks.Add(book);

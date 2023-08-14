@@ -59,10 +59,9 @@ public partial class ConfigService
     public static bool IsValidSelector(string? path)
     {
         if (path is null) return false;
-        var temppath = new SelectorPath(path);
         try
         {
-            _ = temppath.Select(path, SelectorType.Text) != null;
+            _ = path.AsPath().Select(path, SelectorType.Text) != null;
             return true;
         }
         catch (Exception e) when (

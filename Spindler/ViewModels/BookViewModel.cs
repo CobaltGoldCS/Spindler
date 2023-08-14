@@ -74,10 +74,10 @@ public partial class BookViewModel : ObservableObject
         if (config!.UsesHeadless) Method = "Read With Headless Reader";
         if (config!.UsesWebview) Method = "Read With Web View Reader";
 
-        TitleSelectorType = GetPathAsString(config.TitlePath);
-        ContentSelectorType = GetPathAsString(config.ContentPath);
-        PreviousSelectorType = GetPathAsString(config.PrevUrlPath);
-        NextSelectorType = GetPathAsString(config.NextUrlPath);
+        TitleSelectorType = GetPathTypeAsString(config.TitlePath);
+        ContentSelectorType = GetPathTypeAsString(config.ContentPath);
+        PreviousSelectorType = GetPathTypeAsString(config.PrevUrlPath);
+        NextSelectorType = GetPathTypeAsString(config.NextUrlPath);
     }
     [RelayCommand]
     public async void ReadClicked()
@@ -108,10 +108,9 @@ public partial class BookViewModel : ObservableObject
         await Shell.Current.GoToAsync($"../{nameof(BookDetailPage)}", parameters: parameters);
     }
 
-    private static string GetPathAsString(string path)
+    private static string GetPathTypeAsString(string path)
     {
-        var tempPath = new Models.Path(path);
-        return tempPath.type switch
+        return path.AsPath().type switch
         {
             Models.Path.Type.XPath => "X Path",
             Models.Path.Type.Css => "CSS Path",
