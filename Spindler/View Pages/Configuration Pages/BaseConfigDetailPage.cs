@@ -94,7 +94,7 @@ namespace Spindler.Views.Configuration_Pages
         /// <param name="sender">The Button that triggered the task</param>
         /// <param name="e">The Event</param>
         /// <returns>A task to await</returns>
-        protected virtual async Task Import(object sender, EventArgs e)
+        protected virtual async void ImportCommand(object sender, EventArgs e)
         {
             CancellationToken cancellationToken = new();
             FileResult? file = await FilePicker.Default.PickAsync(PickOptions.Default);
