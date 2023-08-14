@@ -133,8 +133,8 @@ public partial class ReaderDataService
             Task<string>[] selections = new Task<string>[4];
             selections[0] = Task.Run(() => GetContent(doc));
             selections[1] = Task.Run(() => GetTitle(html));
-            selections[2] = Task.Run(() => ConfigService.PrettyWrapSelector(html, ConfigService.Selector.NextUrl, type: ConfigService.SelectorType.Link));
-            selections[3] = Task.Run(() => ConfigService.PrettyWrapSelector(html, ConfigService.Selector.PrevUrl, type: ConfigService.SelectorType.Link));
+            selections[2] = Task.Run(() => ConfigService.PrettyWrapSelector(html, ConfigService.Selector.NextUrl, SelectorType.Link));
+            selections[3] = Task.Run(() => ConfigService.PrettyWrapSelector(html, ConfigService.Selector.PrevUrl, SelectorType.Link));
             string[] content = await Task.WhenAll(selections);
 
             LoadedData data = new()
@@ -164,8 +164,8 @@ public partial class ReaderDataService
         Path contentPath = ConfigService.GetPath(ConfigService.Selector.Content);
         HtmlNode node = contentPath.type switch
         {
-            Path.Type.Css => nav.QuerySelector(contentPath.path),
-            Path.Type.XPath => nav.DocumentNode.SelectSingleNode(contentPath.path),
+            Path.Type.Css => nav.QuerySelector(contentPath.PathString),
+            Path.Type.XPath => nav.DocumentNode.SelectSingleNode(contentPath.PathString),
             _ => throw new NotImplementedException("This path type has not been implemented {ConfigService.GetContent}"),
         };
 
@@ -207,7 +207,7 @@ public partial class ReaderDataService
     /// <returns><see cref="ConfigService.Selector.Content"/> as clean Html</returns>
     public string GetContentHtml(HtmlDocument nav)
     {
-        var rawHtml = ConfigService.PrettyWrapSelector(nav.DocumentNode.InnerHtml, ConfigService.Selector.Content, ConfigService.SelectorType.Html);
+        var rawHtml = ConfigService.PrettyWrapSelector(nav.DocumentNode.InnerHtml, ConfigService.Selector.Content, SelectorType.Html);
         HtmlDocument doc = new();
         doc.LoadHtml(rawHtml);
         HtmlNode filteredNode = FilterChildren(doc.DocumentNode);
@@ -222,7 +222,7 @@ public partial class ReaderDataService
     /// <returns>A title determined by the title selector</returns>
     public string GetTitle(string html)
     {
-        return HttpUtility.HtmlDecode(ConfigService.PrettyWrapSelector(html, ConfigService.Selector.Title, type: ConfigService.SelectorType.Text)).Trim();
+        return HttpUtility.HtmlDecode(ConfigService.PrettyWrapSelector(html, ConfigService.Selector.Title, type: SelectorType.Text)).Trim();
     }
 
 

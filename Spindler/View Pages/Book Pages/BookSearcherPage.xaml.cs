@@ -5,6 +5,7 @@ using HtmlAgilityPack;
 using Spindler.CustomControls;
 using Spindler.Models;
 using Spindler.Services;
+using Path = Spindler.Models.Path;
 
 namespace Spindler.Views.Book_Pages;
 
@@ -158,7 +159,8 @@ public partial class BookSearcherPage : ContentPage
 
         try
         {
-            string content = ConfigService.PrettyWrapSelector(doc, new Models.Path(Config.ContentPath), ConfigService.SelectorType.Text);
+            Path contentPath = new Models.Path(Config.ContentPath);
+            string content = contentPath.Select(doc, SelectorType.Text);
 
             SwitchUiBasedOnState(!string.IsNullOrEmpty(content) ? State.BookFound : State.BookNotFound);
         } catch (Exception e)
@@ -199,7 +201,8 @@ public partial class BookSearcherPage : ContentPage
         HtmlDocument doc = new();
         doc.LoadHtml(html);
 
-        string title = ConfigService.PrettyWrapSelector(doc, new Models.Path(Config!.TitlePath), ConfigService.SelectorType.Text);
+        Models.Path titlePath = new Models.Path(Config!.TitlePath);
+        string title = titlePath.Select(doc, SelectorType.Text);
         await App.Database.SaveItemAsync(
             new Book
             {

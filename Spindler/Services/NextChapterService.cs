@@ -3,6 +3,7 @@ using Knyaz.Optimus;
 using Spindler.Models;
 using Spindler.Utilities;
 using System.Xml.XPath;
+using Path = Spindler.Models.Path;
 
 namespace Spindler.Services
 {
@@ -62,7 +63,7 @@ namespace Spindler.Services
                 string nextUrl;
                 try
                 {
-                    nextUrl = ConfigService.PrettyWrapSelector(html, new(config.NextUrlPath), ConfigService.SelectorType.Link);
+                    nextUrl = (new Path(config.NextUrlPath).Select(html, SelectorType.Link));
                     book.HasNextChapter = WebUtilities.IsUrl(nextUrl);
                 } catch (XPathException) { }
                 verifiedbooks.Add(book);

@@ -1,4 +1,5 @@
 ﻿using Spindler.CustomControls;
+using Spindler.Models;
 using Spindler.Utilities;
 using System.Diagnostics;
 using System.Xml.XPath;
@@ -28,7 +29,7 @@ namespace Spindler.Services
             Models.Path cloudflareDetectPath = new Models.Path("body.no-js > div.main-wrapper > div.main-content > h2#challenge-running");
             try
             {
-                var cloudflareString = ConfigService.PrettyWrapSelector(html, cloudflareDetectPath, ConfigService.SelectorType.Text);
+                var cloudflareString = cloudflareDetectPath.Select(html, SelectorType.Text);
                 Stopwatch timer = Stopwatch.StartNew();
 
                 while (!string.IsNullOrEmpty(cloudflareString) || html.Length < 300)
@@ -37,7 +38,7 @@ namespace Spindler.Services
                     if (cloudflareString == null)
                         break;
 
-                    cloudflareString = ConfigService.PrettyWrapSelector(html, cloudflareDetectPath, ConfigService.SelectorType.Text);
+                    cloudflareString = cloudflareDetectPath.Select(html, SelectorType.Text);
                     if (timer.Elapsed >= TimeSpan.FromSeconds(20))
                     {
                         return Result.Error<string>("Cloudlflare bypass timed out");

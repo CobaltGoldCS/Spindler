@@ -156,7 +156,7 @@ public class Config : IIndexedModel
             {
                 try
                 {
-                    if (ConfigService.PrettyWrapSelector(doc, new Path(config.MatchPath), ConfigService.SelectorType.Text) != string.Empty)
+                    if ((new Path(config.MatchPath).Select(doc, SelectorType.Text) != string.Empty))
                     {
                         selectedConfig = config;
                         state.Stop();

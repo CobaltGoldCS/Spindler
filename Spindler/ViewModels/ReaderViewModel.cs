@@ -128,7 +128,7 @@ public partial class ReaderViewModel : ObservableObject, IReader
             try
             {
                 CurrentBook.ImageUrl = ReaderService.ConfigService.PrettyWrapSelector(
-                                    (html as Result<string>.Ok)!.Value, ConfigService.Selector.ImageUrl, ConfigService.SelectorType.Link);
+                                    (html as Result<string>.Ok)!.Value, ConfigService.Selector.ImageUrl, SelectorType.Link);
             }
             catch (XPathException) { }
         }
