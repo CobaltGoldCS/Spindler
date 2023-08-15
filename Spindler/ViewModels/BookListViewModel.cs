@@ -204,18 +204,14 @@ namespace Spindler.ViewModels
         /// Method called when the user reaches the end of the displayed books
         /// </summary>
         [RelayCommand]
-        public async void EndOfListReached()
+        public async Task EndOfListReached()
         {
             bool firstTimeLoaded = DisplayedBooks.Count == 0;
-            if (firstTimeLoaded)
+            if (firstTimeLoaded && !PinnedBooksAreVisible)
             {
-                PinnedBooks.Clear();
                 // Set up pinned books
                 CurrentList = await Database.GetBooksByBooklistIdAsync(Id);
-                foreach (var book in CurrentList.Where(book => book.Pinned))
-                {
-                    PinnedBooks.Add(book);
-                }
+                PinnedBooks = new(CurrentList.Where(b => b.Pinned));
                 PinnedBooksAreVisible = PinnedBooks.Count > 0;
 
                 LoaderHeightRequest = 0;
