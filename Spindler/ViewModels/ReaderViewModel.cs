@@ -20,7 +20,8 @@ public partial class ReaderViewModel : ObservableObject, IReader
     /// <summary>
     /// The Service managing reader data
     /// </summary>
-    public ReaderDataService ReaderService = new(new Config(), new StandardWebService(new()));
+    [ObservableProperty]
+    public ReaderDataService readerService = new(new Config(), new StandardWebService(new()));
     /// <summary>
     /// The reference to the underlying database
     /// </summary>

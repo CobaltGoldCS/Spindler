@@ -33,7 +33,7 @@ public partial class GeneralizedConfigDetailPage : BaseConfigDetailPage<Generali
         InitializeComponent();
 
 
-        TextValidationBehavior validSelectorBehavior = new((string value) => ConfigService.IsValidSelector(value));
+        TextValidationBehavior validSelectorBehavior = new(ConfigService.IsValidSelector);
         matchEntry.Behaviors.Add(validSelectorBehavior);
         contentEntry.Behaviors.Add(validSelectorBehavior);
         nextEntry.Behaviors.Add(validSelectorBehavior);
@@ -64,6 +64,7 @@ public partial class GeneralizedConfigDetailPage : BaseConfigDetailPage<Generali
                             .Replace(@"\t", "     ")},
             { "headless", headlessSwitch.On },
             { "filteringcontentenabled", filterSwitch.On },
+            { "htmlcontentenabled", htmlSwitch.On },
         };
         base.okButton_Clicked(sender, e);
     }
@@ -79,5 +80,6 @@ public partial class GeneralizedConfigDetailPage : BaseConfigDetailPage<Generali
             .Replace("\t", @"\t");
         headlessSwitch.On = Configuration.UsesHeadless;
         filterSwitch.On = Configuration.FilteringContentEnabled;
+        htmlSwitch.On = Configuration.HtmlContentEnabled;
     }
 }

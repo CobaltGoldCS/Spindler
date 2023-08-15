@@ -42,6 +42,7 @@
             <TableRoot>
                 <TableSection Title="Extra Configuration Options" TextColor="{DynamicResource Primary}">
                     <EntryCell x:Name="imageEntry" Label="Image Url Path" Text="{Binding ImageUrlPath}"/>
+                    <controls:CustomSwitchCell x:Name="htmlSwitch" Text="Display Content as HTML"/>
                 </TableSection>
                 <TableSection Title="Web View" TextColor="{DynamicResource Primary}">
                     <controls:CustomSwitchCell x:Name="switchWebView" Text="Use Web View for Viewing this website" On="False" />

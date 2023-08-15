@@ -134,6 +134,19 @@ public class Config : IIndexedModel
         }
     }
 
+    [Ignore]
+    [JsonIgnore]
+    public bool HtmlContentEnabled
+    {
+        get => (bool)ExtraConfigs.GetValueOrDefault("htmlcontentenabled", false);
+        set
+        {
+            var tempExtraConfigs = ExtraConfigs;
+            tempExtraConfigs["htmlcontentenabled"] = value;
+            ExtraConfigs = tempExtraConfigs;
+        }
+    }
+
     /// <summary>
     /// Find a valid website configuration based on <paramref name="url"/>
     /// </summary>

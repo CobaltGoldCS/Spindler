@@ -47,6 +47,7 @@
         <Label  x:Name="TextView" Grid.Row="3"
                 Padding="30,30,30,50"
                 FontAutoScalingEnabled="False"
+                TextType="{Binding Source = {x:Reference this}, Path = TextType}"
                 Text="{Binding Source = {x:Reference this}, Path = Text}"
             />
     </Border>

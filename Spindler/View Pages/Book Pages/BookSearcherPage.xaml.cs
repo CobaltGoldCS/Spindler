@@ -159,7 +159,7 @@ public partial class BookSearcherPage : ContentPage
 
         try
         {
-            Path contentPath = new Models.Path(Config.ContentPath);
+            Path contentPath = Config.ContentPath.AsPath();
             string content = contentPath.Select(doc, SelectorType.Text);
 
             SwitchUiBasedOnState(!string.IsNullOrEmpty(content) ? State.BookFound : State.BookNotFound);
@@ -201,7 +201,7 @@ public partial class BookSearcherPage : ContentPage
         HtmlDocument doc = new();
         doc.LoadHtml(html);
 
-        Models.Path titlePath = new Models.Path(Config!.TitlePath);
+        Models.Path titlePath = Config!.TitlePath.AsPath();
         string title = titlePath.Select(doc, SelectorType.Text);
         await App.Database.SaveItemAsync(
             new Book

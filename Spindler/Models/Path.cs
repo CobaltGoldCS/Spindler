@@ -1,5 +1,4 @@
-﻿using Bumptech.Glide.Load.Data;
-using HtmlAgilityPack;
+﻿using HtmlAgilityPack;
 using HtmlAgilityPack.CssSelectors.NetCore;
 using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
