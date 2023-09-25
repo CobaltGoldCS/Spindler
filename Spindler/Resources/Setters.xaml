@@ -24,6 +24,24 @@
         <Setter Property="TextColor" Value="{DynamicResource Primary}"/>
         <Setter Property="FontSize" Value="Large"/>
         <Setter Property="FontFamily" Value="SPIcon"/>
+        <Setter Property="VisualStateManager.VisualStateGroups">
+            <VisualStateGroupList>
+                <VisualStateGroup x:Name="CommonStates">
+                    <VisualState x:Name="Normal">
+                        <VisualState.Setters>
+                            <Setter Property="BackgroundColor" Value="Transparent" />
+                            <Setter Property="TextColor" Value="{DynamicResource Primary}" />
+                        </VisualState.Setters>
+                    </VisualState>
+                    <VisualState x:Name="Disabled">
+                        <VisualState.Setters>
+                            <Setter Property="TextColor" Value="{DynamicResource DisabledTextColor}" />
+                            <Setter Property="BackgroundColor" Value="{DynamicResource CardBackground}" />
+                        </VisualState.Setters>
+                    </VisualState>
+                </VisualStateGroup>
+            </VisualStateGroupList>
+        </Setter>
     </Style>
 
     <Style TargetType="Border">
