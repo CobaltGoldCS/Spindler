@@ -5,6 +5,7 @@
              xmlns:vms="clr-namespace:Spindler.ViewModels"
              xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
              xmlns:behaviors="clr-namespace:Spindler.Behaviors"
+             xmlns:table="clr-namespace:Spindler.Views.TableReplacements"
              x:DataType="vms:BookViewModel">
 
     <Shell.TitleView>
@@ -33,7 +34,7 @@
                 <behaviors:BlurBehavior Radius="15"/>
             </Image.Behaviors>
         </Image>
-        <Grid RowDefinitions="auto, auto, auto, *" Background="transparent">
+        <Grid RowDefinitions="auto, auto, auto, *" Background="Transparent">
             <Image  Source="{Binding ImageUrl, Mode=OneWay}"
                         Aspect="AspectFill"
                         Margin="0,5,0,0"
@@ -72,17 +73,13 @@
                         Grid.Row="3"
                         BackgroundColor="{DynamicResource Background}"
                         StrokeThickness="0">
-                <TableView>
-                    <TableRoot>
-                        <TableSection Title="Selector Information" TextColor="{DynamicResource Primary}">
-                            <TextCell Text="Domain Name" Detail="{Binding Domain, Mode=OneWay}" TextColor="{DynamicResource Primary}" DetailColor="{DynamicResource TextColor}"/>
-                            <TextCell Text="Title Selector" Detail="{Binding TitleSelectorType, Mode=OneWay}" TextColor="{DynamicResource Primary}" DetailColor="{DynamicResource TextColor}"/>
-                            <TextCell Text="Content Selector" Detail="{Binding ContentSelectorType, Mode=OneWay}" TextColor="{DynamicResource Primary}" DetailColor="{DynamicResource TextColor}"/>
-                            <TextCell Text="Previous Selector" Detail="{Binding PreviousSelectorType, Mode=OneWay}" TextColor="{DynamicResource Primary}" DetailColor="{DynamicResource TextColor}"/>
-                            <TextCell Text="Next Selector" Detail="{Binding NextSelectorType, Mode=OneWay}" TextColor="{DynamicResource Primary}" DetailColor="{DynamicResource TextColor}"/>
-                        </TableSection>
-                    </TableRoot>
-                </TableView>
+                <Grid RowDefinitions="auto, auto, auto, auto, auto">
+                    <table:DetailLabel Grid.Row="0" Title="Domain Name" Text="{Binding Domain, Mode=OneWay}"/>
+                    <table:DetailLabel Grid.Row="1" Title="Title Selector" Text="{Binding TitleSelectorType, Mode=OneWay}"/>
+                    <table:DetailLabel Grid.Row="2" Title="Content Selector" Text="{Binding ContentSelectorType, Mode=OneWay}"/>
+                    <table:DetailLabel Grid.Row="3" Title="Previous Selector" Text="{Binding PreviousSelectorType, Mode=OneWay}"/>
+                    <table:DetailLabel Grid.Row="4" Title="Next Selector" Text="{Binding NextSelectorType, Mode=OneWay}"/>
+                </Grid>
             </Border>
         </Grid>
     </Grid>

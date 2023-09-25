@@ -141,7 +141,7 @@ namespace Spindler.ViewModels
             {
                 { "book", selection}
             };
-            await Shell.Current.GoToAsync($"{nameof(BookPage)}", parameters);
+            await Shell.Current.GoToAsync(nameof(BookPage), parameters);
 
             Executing = false;
         }

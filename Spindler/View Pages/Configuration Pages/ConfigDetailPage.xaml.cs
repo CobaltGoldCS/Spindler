@@ -31,8 +31,14 @@ public partial class ConfigDetailPage : BaseConfigDetailPage<Config>
 
     public ConfigDetailPage()
     {
-
-        InitializeComponent();
+        try
+        {
+            InitializeComponent();
+        } catch(Exception ex)
+        {
+            ex.ToString();
+        }
+ 
         domainEntry.Behaviors.Add(new TextValidationBehavior(DomainValidation().IsMatch));
 
         TextValidationBehavior validSelectorBehavior = new(ConfigService.IsValidSelector);

@@ -24,6 +24,8 @@ public partial class App : Application
         }
     }
 
+    private ResourceDictionary Setters = new Setters();
+
     public App()
     {
         InitializeComponent();
@@ -50,7 +52,7 @@ public partial class App : Application
 
     public void SetTheme(Theme? theme = null)
     {
-        Current?.Resources.MergedDictionaries.Clear();
+        Current!.Resources.MergedDictionaries.Clear();
         if (theme is null)
         {
             var themeType = Preferences.Get("theme", (int)Themes.Default);
@@ -65,8 +67,8 @@ public partial class App : Application
             _ => throw new NotImplementedException()
         };
         MainPage.Behaviors.Clear();
-        Current?.Resources.MergedDictionaries.Add(resourceDictionary);
-        Current?.Resources.MergedDictionaries.Add(new Resources.Setters());
+        Current!.Resources.MergedDictionaries.Add(resourceDictionary);
+        Current!.Resources.MergedDictionaries.Add(Setters);
 
         var statusBarColor = (Color)resourceDictionary["CardBackground"];
         StatusBarStyle bestContrast = (statusBarColor.GetByteRed() * 0.299 + statusBarColor.GetByteGreen() * 0.587 + statusBarColor.GetByteBlue() * 0.114) > 186 ? StatusBarStyle.DarkContent : StatusBarStyle.LightContent;
@@ -81,8 +83,8 @@ public partial class App : Application
 
         // These are necessary in order to prevent crashing while allowing themes to override styles
         // Add a resource dictionary with lower priority, then remove the one with top priority
-        Current?.Resources.MergedDictionaries.Add(resourceDictionary);
-        Current?.Resources.MergedDictionaries.Remove(resourceDictionary);
+        Current!.Resources.MergedDictionaries.Add(resourceDictionary);
+        Current!.Resources.MergedDictionaries.Remove(resourceDictionary);
 
 
         WeakReferenceMessenger.Default.Send(new ResourceDictionaryUpdatedMessage(resourceDictionary));

@@ -44,9 +44,10 @@
                         Command="{Binding ExportCommand}"
                         Style="{DynamicResource ChipButton}"/>
                 <Button Text="Import Data"
+                        CornerRadius="15"
+                        Margin="10,5"
                         BackgroundColor="{DynamicResource Warning}"
-                        Command="{Binding ImportCommand}"
-                        Style="{DynamicResource ChipButton}"/>
+                        Command="{Binding ImportCommand}" />
             </HorizontalStackLayout>
         </Grid>
     </ScrollView>
