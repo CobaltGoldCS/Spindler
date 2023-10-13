@@ -3,28 +3,30 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="Spindler.Views.ErrorPage"
              Title="An Error Has Occurred"
+             xmlns:table="clr-namespace:Spindler.Views.TableReplacements"
              x:Name="this">
     <Shell.BackButtonBehavior>
         <BackButtonBehavior Command="{Binding Source={x:Reference this}, Path=BackButtonCommand}"/>
     </Shell.BackButtonBehavior>
     <ScrollView Orientation="Vertical" IsEnabled="True">
         <VerticalStackLayout>
-            <Label FontSize="Caption" Text="Error Message:" Margin="30,0,0,2"/>
-            <Label x:Name="ErrorLabel" FontSize="Title" LineBreakMode="WordWrap"
-            Text="ERROR HERE" Margin="30,0,0,0" />
-            <Label Text="Is your configuration incorrect or missing?" Margin="30, 30, 30, 0" FontSize="Body" />
-            <TableView>
-                <TableRoot>
-                    <TableSection Title="Having Multiple Problems? Use Compatability Mode">
-                        <SwitchCell x:Name="HeadlessMode" OnChanged="HeadlessMode_OnChanged" Text="Open in headless (compatability) mode?"/>
-                    </TableSection>
-                    <TableSection>
-                        <ViewCell>
-                            <Button Text="Reload" Clicked="ReloadClicked"/>
-                        </ViewCell>
-                    </TableSection>
-                </TableRoot>
-            </TableView>
+            <Label FontSize="Caption"
+                   Text="Error Message:"
+                   Margin="30,0,0,2"/>
+            <Label x:Name="ErrorLabel"
+                   FontSize="Title"
+                   LineBreakMode="WordWrap"
+                   Text="ERROR HERE"
+                   Margin="30,0,0,0" />
+            <Label Text="Is your configuration incorrect or missing?"
+                   Margin="30, 30, 30, 0"
+                   FontSize="Body" />
+            <table:LabelSwitch x:Name="HeadlessMode"
+                               Text="Having compatibility problems? Use Headless Mode"/>
+            <Button Margin="100,30"
+                    HorizontalOptions="Center" 
+                    Text="Reload" 
+                    Clicked="ReloadClicked"/>
         </VerticalStackLayout>
     </ScrollView>
 </ContentPage>
