@@ -4,7 +4,12 @@
              x:Class="Spindler.Views.TableReplacements.TableInput"
              x:Name="_this"
              CompressedLayout.IsHeadless="True">
-    <Entry Margin="10,0,0,0"
-           Placeholder="{Binding Source={Reference _this}, Path=Label}"
-           Text="{Binding Source={Reference _this}, Path=Text}"/>
+    <Grid RowDefinitions="*, auto"
+          CompressedLayout.IsHeadless="True">
+        <Label Margin="0,0,10,0"
+               Text="{Binding Source={Reference _this}, Path=Label}"/>
+        <Entry Grid.Row="1"
+               Placeholder="{Binding Source={Reference _this}, Path=Label}"
+               Text="{Binding Source={Reference _this}, Path=Text}"/>
+    </Grid>
 </ContentView>
