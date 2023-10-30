@@ -219,6 +219,9 @@
 	  <MauiXaml Update="Views\TableReplacements\DetailLabel.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
+	  <MauiXaml Update="Views\TableReplacements\LabelSwitch.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
 	  <MauiXaml Update="Views\WebScraperBrowser.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
