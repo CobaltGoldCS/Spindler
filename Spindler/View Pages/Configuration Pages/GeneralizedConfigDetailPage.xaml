@@ -4,6 +4,7 @@
              xmlns:pages="clr-namespace:Spindler.Views.Configuration_Pages"
              xmlns:models="clr-namespace:Spindler.Models"
              xmlns:controls="clr-namespace:Spindler.CustomControls"
+             xmlns:table="clr-namespace:Spindler.Views.TableReplacements"
              x:Class="Spindler.GeneralizedConfigDetailPage"
              x:TypeArguments="models:GeneralizedConfig"
              Shell.PresentationMode="ModalAnimated"
@@ -38,27 +39,34 @@
             <Entry x:Name="nextEntry" HorizontalOptions="FillAndExpand" Grid.Row="5" Grid.Column="1" IsSpellCheckEnabled="False"
                                 Placeholder="Path pointing to the next url" Text="{Binding NextUrlPath}"/>
         </Grid>
-        <TableView Grid.Row="1" Grid.ColumnSpan="3" VerticalOptions="StartAndExpand">
-            <TableRoot>
-                <TableSection Title="Extra Configuration Options" TextColor="{DynamicResource Primary}">
-                    <EntryCell x:Name="imageEntry" Label="Image Url Path" Text="{Binding ImageUrlPath}"/>
-                    <controls:CustomSwitchCell x:Name="htmlSwitch" Text="Display Content as HTML"/>
-                </TableSection>
-                <TableSection Title="Web View" TextColor="{DynamicResource Primary}">
-                    <controls:CustomSwitchCell x:Name="switchWebView" Text="Use Web View for Viewing this website" On="False" />
-                </TableSection>
-                <TableSection Title="Reader View" TextColor="{DynamicResource Primary}">
-                    <EntryCell x:Name="separatorEntry" Label="The Separator between p tags"/>
-                    <controls:CustomSwitchCell x:Name="animationSwitch" Text="Animated Autoscroll" On="True"/>
-                    <controls:CustomSwitchCell x:Name="headlessSwitch" Text="Enable headless mode (increased compatability, decreased performance)"/>
-                    <controls:CustomSwitchCell x:Name="filterSwitch" Text="Filter out certain types of text"/>
-                </TableSection>
-                <TableSection Title="Import Options" TextColor="{DynamicResource Primary}">
-                    <TextCell x:Name="exportButton" Text="Export Config as JSON" IsEnabled="False" Tapped="ExportCommand" TextColor="{DynamicResource Warning}"/>
-                    <TextCell x:Name="importButton" Text="Import Config from JSON file" IsEnabled="False" Tapped="ImportCommand" TextColor="{DynamicResource Warning}"/>
-                </TableSection>
-            </TableRoot>
-        </TableView>
+        <ScrollView Grid.Row="1" VerticalOptions="StartAndExpand" Grid.ColumnSpan="3">
+            <Grid RowDefinitions="auto, auto, auto, auto" CompressedLayout.IsHeadless="True">
+                <VerticalStackLayout CompressedLayout.IsHeadless="True">
+                    <Label Text="Extra Configuration Options" TextColor="{StaticResource Primary}"/>
+                    <table:TableInput Label="Image Url Path" Text="{Binding ImageUrlPath}"/>
+                    <table:LabelSwitch x:Name="htmlSwitch" Text="Display Content as Html"/>
+                </VerticalStackLayout>
+
+                <VerticalStackLayout CompressedLayout.IsHeadless="True" Grid.Row="1">
+                    <Label Text="Web View" TextColor="{StaticResource Primary}"/>
+                    <table:LabelSwitch x:Name="switchWebView" Text="Use Web View for Viewing this website" On="False"/>
+                </VerticalStackLayout>
+
+                <VerticalStackLayout CompressedLayout.IsHeadless="True" Grid.Row="2">
+                    <Label Text="Reader View" TextColor="{StaticResource Primary}"/>
+                    <table:TableInput x:Name="separatorEntry" Label="The Separator between P tags"/>
+                    <table:LabelSwitch x:Name="animationSwitch" Text="Animated Autoscroll" On="True"/>
+                    <table:LabelSwitch x:Name="headlessSwitch" Text="Enable headless mode (increased compatability, decreased performance)"/>
+                    <table:LabelSwitch x:Name="filterSwitch" Text="Filter out certain types of text"/>
+                </VerticalStackLayout>
+
+                <VerticalStackLayout CompressedLayout.IsHeadless="True" Grid.Row="3">
+                    <Label Text="Import Options" TextColor="{StaticResource Primary}"/>
+                    <Button x:Name="exportButton" Text="Export Config as JSON" IsEnabled="False" Pressed="ExportCommand" BackgroundColor="{StaticResource Warning}" CornerRadius="0"/>
+                    <Button x:Name="importButton" Text="Import Config from JSON file" IsEnabled="False" Pressed="ImportCommand" BackgroundColor="{StaticResource Warning}" CornerRadius="0"/>
+                </VerticalStackLayout>
+            </Grid>
+        </ScrollView>
 
         <controls:AddButtonGroup x:Name="Buttons"
                                  Grid.Row="2"

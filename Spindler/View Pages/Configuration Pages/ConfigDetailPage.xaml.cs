@@ -1,3 +1,4 @@
+using CommunityToolkit.Maui.Alerts;
 using Spindler.Behaviors;
 using Spindler.Models;
 using Spindler.Services;
@@ -31,14 +32,7 @@ public partial class ConfigDetailPage : BaseConfigDetailPage<Config>
 
     public ConfigDetailPage()
     {
-        try
-        {
-            InitializeComponent();
-        } catch(Exception ex)
-        {
-            ex.ToString();
-        }
- 
+        InitializeComponent();
         domainEntry.Behaviors.Add(new TextValidationBehavior(DomainValidation().IsMatch));
 
         TextValidationBehavior validSelectorBehavior = new(ConfigService.IsValidSelector);
@@ -56,6 +50,7 @@ public partial class ConfigDetailPage : BaseConfigDetailPage<Config>
             !ConfigService.IsValidSelector(nextEntry.Text) ||
             !ConfigService.IsValidSelector(prevEntry.Text))
         {
+            Toast.Make("Please make sure to have valid arguments").Show();
             return;
         }
 
