@@ -80,7 +80,7 @@ public partial class BookViewModel : ObservableObject
         NextSelectorType = GetPathTypeAsString(config.NextUrlPath);
     }
     [RelayCommand]
-    public async void ReadClicked()
+    public async Task ReadClicked()
     {
         Dictionary<string, object?> parameters = new()
         {
@@ -99,7 +99,7 @@ public partial class BookViewModel : ObservableObject
     }
 
     [RelayCommand]
-    public async void ModifyClicked()
+    public async Task ModifyClicked()
     {
         Dictionary<string, object> parameters = new()
     {

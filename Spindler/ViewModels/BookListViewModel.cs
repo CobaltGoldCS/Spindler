@@ -84,7 +84,7 @@ namespace Spindler.ViewModels
         /// </summary>
         /// <param name="book">The book that the config button is attached to</param>
         [RelayCommand]
-        private async void ConfigButton(Book book)
+        private async Task ConfigButton(Book book)
         {
             Dictionary<string, object> parameters = new()
             {
@@ -97,7 +97,7 @@ namespace Spindler.ViewModels
         /// Method called when the plus icon in the tool bar is selected
         /// </summary>
         [RelayCommand]
-        private async void AddToolBarItem()
+        private async Task AddToolBarItem()
         {
             Dictionary<string, object> parameters = new()
             {
@@ -132,7 +132,7 @@ namespace Spindler.ViewModels
         /// </summary>
         /// <param name="selection">The book that is selected</param>
         [RelayCommand]
-        private async void Selection(Book selection)
+        private async Task Selection(Book selection)
         {
             if (Executing)
                 return;
@@ -151,7 +151,7 @@ namespace Spindler.ViewModels
         /// </summary>
         /// <param name="selection">The book that is tapped</param>
         [RelayCommand]
-        private async void DoubleTapped(Book selection)
+        private async Task DoubleTapped(Book selection)
         {
             if (Executing)
                 return;
