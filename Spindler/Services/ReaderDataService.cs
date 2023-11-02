@@ -131,7 +131,17 @@ public partial class ReaderDataService
         try
         {
             Task<string>[] selections = new Task<string>[4];
-            selections[0] = Config.HtmlContentEnabled ? Task.Run(() => GetContentHtml(doc)) : Task.Run(() => GetContent(doc));
+
+            BaseContentExtractor contentExtractor;
+            if (Config.HtmlContentEnabled)
+            {
+                contentExtractor = new HtmlContentExtractor();
+            }
+            else
+            {
+                contentExtractor = new TextContentExtractor();
+            }
+            selections[0] = Task.Run(() => contentExtractor.GetContent(doc, Config, ConfigService));
             selections[1] = Task.Run(() => GetTitle(html));
             selections[2] = Task.Run(() => ConfigService.PrettyWrapSelector(html, ConfigService.Selector.NextUrl, SelectorType.Link));
             selections[3] = Task.Run(() => ConfigService.PrettyWrapSelector(html, ConfigService.Selector.PrevUrl, SelectorType.Link));
@@ -154,97 +164,6 @@ public partial class ReaderDataService
         }
     }
 
-    /// <summary>
-    /// Smart Get Content that matches given content path using <see cref="Path"/>
-    /// </summary>
-    /// <param name="nav">The HtmlDocument to evaluate for matches</param>
-    /// <returns>A String containing the text of the content matched by contentpath</returns>
-    public string GetContent(HtmlDocument nav)
-    {
-        Path contentPath = ConfigService.GetPath(ConfigService.Selector.Content);
-        HtmlNode node = contentPath.type switch
-        {
-            Path.Type.Css => nav.QuerySelector(contentPath.PathString),
-            Path.Type.XPath => nav.DocumentNode.SelectSingleNode(contentPath.PathString),
-            _ => throw new NotImplementedException("This path type has not been implemented {ConfigService.GetContent}"),
-        };
-
-        if (node == null) return string.Empty;
-        if (!node.HasChildNodes)
-        {
-            return HttpUtility.HtmlDecode(node.InnerText).Replace("\n", Config.Separator).Trim();
-        }
-
-        // Node contains child nodes, so we must get the text of each
-        StringWriter stringWriter = new();
-
-        foreach (HtmlNode child in node.ChildNodes)
-        {
-            if (badTags.Contains(child.OriginalName))
-            {
-                continue;
-            }
-
-            string innerText = WhitespaceOnlyRegex().Replace(HttpUtility.HtmlDecode(child.InnerText), string.Empty);
-            if (innerText.Length == 0)
-            {
-                if (child.OriginalName == "br" && child.NextSibling?.OriginalName != "br")
-                {
-                    stringWriter.Write("\n");
-                }
-                continue;
-            }
-            stringWriter.Write($"\t\t{HttpUtility.HtmlDecode(child.InnerText).Replace("\n", Config.Separator)}");
-            stringWriter.Write(Config.Separator);
-        }
-        return stringWriter.ToString().Trim();
-    }
-
-    /// <summary>
-    /// Gets the content as HTML
-    /// </summary>
-    /// <param name="nav">The Document to Get the Content Of</param>
-    /// <returns><see cref="ConfigService.Selector.Content"/> as clean Html</returns>
-    public string GetContentHtml(HtmlDocument nav)
-    {
-        Path contentPath = ConfigService.GetPath(ConfigService.Selector.Content);
-        HtmlNode node = contentPath.type switch
-        {
-            Path.Type.Css => nav.QuerySelector(contentPath.PathString),
-            Path.Type.XPath => nav.DocumentNode.SelectSingleNode(contentPath.PathString),
-            _ => throw new NotImplementedException("This path type has not been implemented {ConfigService.GetContent}"),
-        };
-
-        if (node == null) return string.Empty;
-        if (!node.HasChildNodes)
-        {
-            return HttpUtility.HtmlDecode(node.InnerHtml).Replace("\n", Config.Separator).Trim();
-        }
-
-        // Node contains child nodes, so we must get the text of each
-        StringWriter stringWriter = new();
-
-        foreach (HtmlNode child in node.ChildNodes)
-        {
-            if (badTags.Contains(child.OriginalName))
-            {
-                continue;
-            }
-
-            string innerText = WhitespaceOnlyRegex().Replace(HttpUtility.HtmlDecode(child.InnerHtml), string.Empty);
-            if (innerText.Length == 0)
-            {
-                if (child.OriginalName == "br" && child.NextSibling?.OriginalName != "br")
-                {
-                    stringWriter.Write("\n");
-                }
-                continue;
-            }
-            stringWriter.Write($"     {HttpUtility.HtmlDecode(child.InnerHtml)}");
-        }
-        return stringWriter.ToString().Trim();
-    }
-
 
     /// <summary>
     /// Get title from <paramref name="html"/>
@@ -255,25 +174,6 @@ public partial class ReaderDataService
     {
         return HttpUtility.HtmlDecode(ConfigService.PrettyWrapSelector(html, ConfigService.Selector.Title, type: SelectorType.Text)).Trim();
     }
-
-
-    static HashSet<string> badTags = new HashSet<string> { "script", "link", "meta", "style", "img", "video", "track" };
-    private static HtmlNode FilterChildren(HtmlNode node)
-    {
-        HtmlNodeCollection filteredChildren = new HtmlNodeCollection(node);
-        foreach (HtmlNode child in node.ChildNodes)
-        {
-            if (badTags.Contains(child.OriginalName))
-            {
-                filteredChildren.Add(child);
-            }
-        }
-        node.RemoveChildren(filteredChildren);
-        return node;
-    }
-
-    [GeneratedRegex("^\\s+$", RegexOptions.Multiline)]
-    private static partial Regex WhitespaceOnlyRegex();
 
     [GeneratedRegex("[\\s]{2,}")]
     private static partial Regex MatchNewlines();
