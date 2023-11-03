@@ -49,7 +49,7 @@ public partial class SettingsViewmodel : ObservableObject
     }
 
     [ObservableProperty]
-    public string[] layoutList = { "List", "Grid" };
+    public string[] layoutList = ["List", "Grid"];
 
     private string selectedLayout = Preferences.Default.Get("book list layout", "List"); // Default is LayoutType.List
     public string SelectedLayout

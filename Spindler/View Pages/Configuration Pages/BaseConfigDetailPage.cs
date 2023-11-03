@@ -46,7 +46,7 @@ namespace Spindler.Views.Configuration_Pages
             {
                 state = State.ModifyConfig;
             }
-            selectedExtractor = ContentExtractorOption.FromContentType((TargetType)Configuration.ContentType);
+            selectedExtractor = possibleExtractors.FirstOrDefault(extractor => Convert.ToInt32(extractor.contentType) == Configuration.ContentType, possibleExtractors[0]);
             SetSwitchesBasedOnExtraConfigs();
         }
         #endregion

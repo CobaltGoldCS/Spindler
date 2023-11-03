@@ -64,7 +64,7 @@ public partial class ConfigDetailPage : BaseConfigDetailPage<Config>
                             .Replace(@"\t", "     ")},
             { "headless", headlessSwitch.On },
             { "filteringcontentenabled", filterSwitch.On },
-            { "contenttype", (int)((ContentExtractorOption)ContentTypeSelector.SelectedItem).contentType },
+            { "contenttype", Convert.ToInt32(((ContentExtractorOption)ContentTypeSelector.SelectedItem).contentType) },
 
         };
 
@@ -82,8 +82,9 @@ public partial class ConfigDetailPage : BaseConfigDetailPage<Config>
             .Replace("\t", @"\t");
         headlessSwitch.On = Configuration.UsesHeadless;
         filterSwitch.On = Configuration.FilteringContentEnabled;
-        ContentTypeSelector.SelectedItem = selectedExtractor;
+
         ContentTypeSelector.ItemsSource = possibleExtractors;
+        ContentTypeSelector.SelectedItem = selectedExtractor;
     }
 
     [GeneratedRegex("^(?!www\\.)(((?!\\-))(xn\\-\\-)?[a-z0-9\\-_]{0,61}[a-z0-9]{1,1}\\.)*(xn\\-\\-)?([a-z0-9\\-]{1,61}|[a-z0-9\\-]{1,30})\\.[a-z]{2,}$")]
