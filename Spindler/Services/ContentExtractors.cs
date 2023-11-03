@@ -70,6 +70,9 @@ public abstract partial class BaseContentExtractor
 }
 
 
+/// <summary>
+/// Selects the html 
+/// </summary>
 public class HtmlContentExtractor : BaseContentExtractor
 {
     public override string GetContent(HtmlDocument nav, Config config, ConfigService service)
@@ -89,10 +92,34 @@ public class HtmlContentExtractor : BaseContentExtractor
             return HttpUtility.HtmlDecode(node.InnerHtml).Replace("\n", config.Separator).Trim();
         }
 
-        return ExtractChildText(node, config);
+        StringBuilder builder = new();
+
+        string? desiredName = null;
+
+        foreach (HtmlNode child in node.ChildNodes)
+        {
+            if (badTags.Contains(child.OriginalName))
+            {
+                continue;
+            }
+
+            desiredName ??= child.OriginalName;
+            // "Smart" Filter certain tags together.
+            if (config.FilteringContentEnabled && child.OriginalName != desiredName)
+            {
+                continue;
+            }
+
+            builder.Append(child.InnerHtml);
+            builder.Append(config.Separator);
+        }
+        return builder.ToString();
     }
 }
 
+/// <summary>
+/// Selects the Text of the matched tag and sanitizes it
+/// </summary>
 public class TextContentExtractor : BaseContentExtractor
 {
     public override string GetContent(HtmlDocument nav, Config config, ConfigService service)
@@ -115,6 +142,10 @@ public class TextContentExtractor : BaseContentExtractor
     }
 }
 
+/// <summary>
+/// This selector selects all tags that match the path, and concatenates
+/// their string content into the full content.
+/// </summary>
 public class AllTagsContentExtractor : BaseContentExtractor
 {
     public override string GetContent(HtmlDocument nav, Config config, ConfigService service)
