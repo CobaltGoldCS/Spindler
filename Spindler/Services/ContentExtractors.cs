@@ -4,6 +4,7 @@ using Spindler.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.Metadata.Ecma335;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -16,6 +17,7 @@ public enum TargetType
 {
     Text,
     Html,
+    All_Tags_Matching_Path
 }
 public abstract partial class BaseContentExtractor
 {
@@ -110,5 +112,37 @@ public class TextContentExtractor : BaseContentExtractor
         }
 
         return ExtractChildText(node, config);
+    }
+}
+
+public class AllTagsContentExtractor : BaseContentExtractor
+{
+    public override string GetContent(HtmlDocument nav, Config config, ConfigService service)
+    {
+        Path contentPath = service.GetPath(ConfigService.Selector.Content);
+        IEnumerable<HtmlNode> nodes = contentPath.type switch
+        {
+            Path.Type.Css => nav.QuerySelectorAll(contentPath.PathString).AsEnumerable(),
+            Path.Type.XPath => nav.DocumentNode.SelectNodes(contentPath.PathString).AsEnumerable(),
+            _ => throw new NotImplementedException("This path type has not been implemented {ConfigService.GetContent}"),
+        };
+
+        StringBuilder builder = new();
+
+        foreach (HtmlNode node in nodes)
+        {
+            if (node == null) continue;
+
+            if (!node.HasChildNodes)
+            {
+                builder.Append(HttpUtility.HtmlDecode(node.InnerText).Replace("\n", config.Separator).Trim());
+            } else
+            {
+                builder.Append(ExtractChildText(node, config));
+            }
+            builder.Append(config.Separator);
+        }
+
+        return builder.ToString();
     }
 }

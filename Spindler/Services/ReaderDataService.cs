@@ -130,20 +130,23 @@ public partial class ReaderDataService
 
         try
         {
-            Task<string>[] selections = new Task<string>[4];
 
             BaseContentExtractor contentExtractor = (TargetType)Config.ContentType switch
             {
                 TargetType.Text => new TextContentExtractor(),
                 TargetType.Html => new HtmlContentExtractor(),
+                TargetType.All_Tags_Matching_Path => new AllTagsContentExtractor(),
                 _ => throw new InvalidDataException("Content Type Not Supported")
             };
 
-            selections[0] = Task.Run(() => contentExtractor.GetContent(doc, Config, ConfigService));
-            selections[1] = Task.Run(() => GetTitle(html));
-            selections[2] = Task.Run(() => ConfigService.PrettyWrapSelector(html, ConfigService.Selector.NextUrl, SelectorType.Link));
-            selections[3] = Task.Run(() => ConfigService.PrettyWrapSelector(html, ConfigService.Selector.PrevUrl, SelectorType.Link));
-            string[] content = await Task.WhenAll(selections);
+            Task<string>[] selectorOperations =
+            [
+                Task.Run(() => contentExtractor.GetContent(doc, Config, ConfigService)),
+                Task.Run(() => GetTitle(html)),
+                Task.Run(() => ConfigService.PrettyWrapSelector(html, ConfigService.Selector.NextUrl, SelectorType.Link)),
+                Task.Run(() => ConfigService.PrettyWrapSelector(html, ConfigService.Selector.PrevUrl, SelectorType.Link)),
+            ];
+            string[] content = await Task.WhenAll(selectorOperations);
 
             LoadedData data = new()
             {
