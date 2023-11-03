@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Spindler.Services
+namespace Spindler.Services.Web
 {
     public interface IWebService
     {

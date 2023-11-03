@@ -1,7 +1,7 @@
 ﻿using Spindler.Models;
 using System.Xml.XPath;
 
-namespace Spindler.Services;
+namespace Spindler.Services.Web;
 
 using SelectorPath = Models.Path;
 public partial class ConfigService

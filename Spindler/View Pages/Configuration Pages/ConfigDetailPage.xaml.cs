@@ -2,7 +2,7 @@ using CommunityToolkit.Maui.Alerts;
 using CommunityToolkit.Mvvm.ComponentModel;
 using Spindler.Behaviors;
 using Spindler.Models;
-using Spindler.Services;
+using Spindler.Services.Web;
 using Spindler.Views.Configuration_Pages;
 using System.Text.RegularExpressions;
 

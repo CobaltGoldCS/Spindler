@@ -5,7 +5,7 @@ using Spindler.Utilities;
 using System.Xml.XPath;
 using Path = Spindler.Models.Path;
 
-namespace Spindler.Services
+namespace Spindler.Services.Web
 {
     public class NextChapterService
     {
@@ -65,7 +65,8 @@ namespace Spindler.Services
                 {
                     nextUrl = config.NextUrlPath.AsPath().Select(html, SelectorType.Link);
                     book.HasNextChapter = WebUtilities.IsUrl(nextUrl);
-                } catch (XPathException) { }
+                }
+                catch (XPathException) { }
                 verifiedbooks.Add(book);
             }
             return verifiedbooks;

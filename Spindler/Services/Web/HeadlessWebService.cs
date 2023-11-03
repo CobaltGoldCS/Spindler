@@ -4,7 +4,7 @@ using Spindler.Utilities;
 using System.Diagnostics;
 using System.Xml.XPath;
 
-namespace Spindler.Services
+namespace Spindler.Services.Web
 {
     public class HeadlessWebService : IWebService
     {

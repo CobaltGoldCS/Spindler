@@ -2,6 +2,7 @@
 using HtmlAgilityPack;
 using HtmlAgilityPack.CssSelectors.NetCore;
 using Spindler.Models;
+using Spindler.Services.Web;
 using Spindler.Utilities;
 using System.Text.RegularExpressions;
 using System.Web;
@@ -144,7 +145,7 @@ public partial class ReaderDataService : ObservableObject
                 _ => throw new InvalidDataException("Content Type Not Supported")
             };
 
-            IsContentHtml = (TargetType)Config.ContentType == TargetType.Html;
+            IsContentHtml = contentExtractor is HtmlExtractor;
 
             Task<string>[] selectorOperations =
             [

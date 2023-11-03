@@ -1,6 +1,6 @@
 using Spindler.Behaviors;
 using Spindler.Models;
-using Spindler.Services;
+using Spindler.Services.Web;
 using Spindler.Views.Configuration_Pages;
 
 namespace Spindler;

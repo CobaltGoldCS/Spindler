@@ -2,7 +2,7 @@
 using System.Net;
 using System.Net.Http.Headers;
 
-namespace Spindler.Services;
+namespace Spindler.Services.Web;
 
 public class StandardWebService : IWebService
 {

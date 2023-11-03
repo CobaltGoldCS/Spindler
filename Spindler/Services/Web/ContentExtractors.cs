@@ -1,6 +1,7 @@
 ﻿using HtmlAgilityPack;
 using HtmlAgilityPack.CssSelectors.NetCore;
 using Spindler.Models;
+using Spindler.Services.Web;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -30,7 +31,13 @@ public abstract partial class BaseContentExtractor
     public abstract string GetContent(HtmlDocument nav, Config config, ConfigService service);
     protected static HashSet<string> badTags = new() { "script", "link", "meta", "style", "img", "video", "track" };
 
-    protected string ExtractChildText(HtmlNode node, Config config)
+    /// <summary>
+    /// Extract the child text from every child node of <see cref="HtmlNode"/>
+    /// </summary>
+    /// <param name="node">The parent node to extract child text from</param>
+    /// <param name="config">The configuration options to use for extracting text</param>
+    /// <returns>A string containing the sanitized, formatted, and extracted child text</returns>
+    protected virtual string ExtractChildText(HtmlNode node, Config config)
     {
         StringWriter stringWriter = new();
 
@@ -69,31 +76,11 @@ public abstract partial class BaseContentExtractor
     protected static partial Regex WhitespaceOnlyRegex();
 }
 
-
-/// <summary>
-/// Selects the html 
-/// </summary>
-public class HtmlContentExtractor : BaseContentExtractor
+public abstract class HtmlExtractor : BaseContentExtractor
 {
-    public override string GetContent(HtmlDocument nav, Config config, ConfigService service)
+    protected override string ExtractChildText(HtmlNode node, Config config)
     {
-        Path contentPath = service.GetPath(ConfigService.Selector.Content);
-
-        HtmlNode node = contentPath.type switch
-        {
-            Path.Type.Css => nav.QuerySelector(contentPath.PathString),
-            Path.Type.XPath => nav.DocumentNode.SelectSingleNode(contentPath.PathString),
-            _ => throw new NotImplementedException("This path type has not been implemented {ConfigService.GetContent}"),
-        };
-
         string htmlSeparator = config.Separator.Replace("\n", "<br>").Replace("\t", "&#9;");
-
-        if (node == null) return string.Empty;
-        if (!node.HasChildNodes)
-        {
-            return HttpUtility.HtmlDecode(node.InnerHtml).Replace("\n", htmlSeparator);
-        }
-
         StringBuilder builder = new();
 
         string? desiredName = null;
@@ -116,6 +103,35 @@ public class HtmlContentExtractor : BaseContentExtractor
             builder.Append(htmlSeparator);
         }
         return builder.ToString();
+    }
+}
+
+
+/// <summary>
+/// Selects the html of the path
+/// </summary>
+public class HtmlContentExtractor : HtmlExtractor
+{
+    public override string GetContent(HtmlDocument nav, Config config, ConfigService service)
+    {
+        Path contentPath = service.GetPath(ConfigService.Selector.Content);
+
+        HtmlNode node = contentPath.type switch
+        {
+            Path.Type.Css => nav.QuerySelector(contentPath.PathString),
+            Path.Type.XPath => nav.DocumentNode.SelectSingleNode(contentPath.PathString),
+            _ => throw new NotImplementedException("This path type has not been implemented {ConfigService.GetContent}"),
+        };
+
+        string htmlSeparator = config.Separator.Replace("\n", "<br>").Replace("\t", "&#9;");
+
+        if (node == null) return string.Empty;
+        if (!node.HasChildNodes)
+        {
+            return HttpUtility.HtmlDecode(node.InnerHtml).Replace("\n", htmlSeparator);
+        }
+
+        return ExtractChildText(node, config);
     }
 }
 
