@@ -29,7 +29,11 @@ public abstract partial class BaseContentExtractor
     /// <param name="config">Configuration information for the HTML content</param>
     /// <returns>Main Content according to Config and Document</returns>
     public abstract string GetContent(HtmlDocument nav, Config config, ConfigService service);
-    protected static HashSet<string> badTags = new() { "script", "link", "meta", "style", "img", "video", "track" };
+    
+    /// <summary>
+    /// Tags that should not be included (Generally)
+    /// </summary>
+    protected static readonly HashSet<string> BadTags = ["script", "link", "meta", "style", "img", "video", "track"];
 
     /// <summary>
     /// Extract the child text from every child node of <see cref="HtmlNode"/>
@@ -45,7 +49,7 @@ public abstract partial class BaseContentExtractor
 
         foreach (HtmlNode child in node.ChildNodes)
         {
-            if (badTags.Contains(child.OriginalName))
+            if (BadTags.Contains(child.OriginalName))
             {
                 continue;
             }
@@ -87,7 +91,7 @@ public abstract class HtmlExtractor : BaseContentExtractor
 
         foreach (HtmlNode child in node.ChildNodes)
         {
-            if (badTags.Contains(child.OriginalName))
+            if (BadTags.Contains(child.OriginalName))
             {
                 continue;
             }
