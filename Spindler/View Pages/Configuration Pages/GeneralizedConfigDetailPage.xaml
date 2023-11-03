@@ -40,7 +40,7 @@
                                 Placeholder="Path pointing to the next url" Text="{Binding NextUrlPath}"/>
         </Grid>
         <ScrollView Grid.Row="1" VerticalOptions="StartAndExpand" Grid.ColumnSpan="3">
-            <Grid RowDefinitions="auto, auto, auto, auto" CompressedLayout.IsHeadless="True">
+            <Grid RowDefinitions="auto, auto, auto, auto" CompressedLayout.IsHeadless="True" Margin="0, 30">
                 <VerticalStackLayout CompressedLayout.IsHeadless="True">
                     <Label Text="Extra Configuration Options" TextColor="{StaticResource Primary}"/>
                     <table:TableInput Label="Image Url Path" Text="{Binding ImageUrlPath}"/>
@@ -62,8 +62,8 @@
 
                 <VerticalStackLayout CompressedLayout.IsHeadless="True" Grid.Row="3">
                     <Label Text="Import Options" TextColor="{StaticResource Primary}"/>
-                    <Button x:Name="exportButton" Text="Export Config as JSON" IsEnabled="False" Pressed="ExportCommand" BackgroundColor="{StaticResource Warning}" CornerRadius="0"/>
-                    <Button x:Name="importButton" Text="Import Config from JSON file" IsEnabled="False" Pressed="ImportCommand" BackgroundColor="{StaticResource Warning}" CornerRadius="0"/>
+                    <Button x:Name="exportButton" Text="Export Config as JSON" IsEnabled="False" Pressed="ExportCommand" BackgroundColor="{DynamicResource Warning}" CornerRadius="0"/>
+                    <Button x:Name="importButton" Text="Import Config from JSON file" IsEnabled="False" Pressed="ImportCommand" BackgroundColor="{DynamicResource Warning}" CornerRadius="0"/>
                 </VerticalStackLayout>
             </Grid>
         </ScrollView>
