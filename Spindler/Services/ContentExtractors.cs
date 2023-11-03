@@ -86,10 +86,12 @@ public class HtmlContentExtractor : BaseContentExtractor
             _ => throw new NotImplementedException("This path type has not been implemented {ConfigService.GetContent}"),
         };
 
+        string htmlSeparator = config.Separator.Replace("\n", "<br>").Replace("\t", "&#9;");
+
         if (node == null) return string.Empty;
         if (!node.HasChildNodes)
         {
-            return HttpUtility.HtmlDecode(node.InnerHtml).Replace("\n", config.Separator).Trim();
+            return HttpUtility.HtmlDecode(node.InnerHtml).Replace("\n", htmlSeparator);
         }
 
         StringBuilder builder = new();
@@ -111,7 +113,7 @@ public class HtmlContentExtractor : BaseContentExtractor
             }
 
             builder.Append(child.InnerHtml);
-            builder.Append(config.Separator);
+            builder.Append(htmlSeparator);
         }
         return builder.ToString();
     }

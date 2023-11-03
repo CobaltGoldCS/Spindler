@@ -1,4 +1,5 @@
-﻿using HtmlAgilityPack;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using HtmlAgilityPack;
 using HtmlAgilityPack.CssSelectors.NetCore;
 using Spindler.Models;
 using Spindler.Utilities;
@@ -9,7 +10,7 @@ using Path = Spindler.Models.Path;
 
 namespace Spindler.Services;
 
-public partial class ReaderDataService
+public partial class ReaderDataService : ObservableObject
 {
     // This is so other things can access lower level APIs
     /// <summary>
@@ -24,6 +25,10 @@ public partial class ReaderDataService
     /// Internal Config
     /// </summary>
     public Config Config { get; private set; }
+
+    [ObservableProperty]
+    public bool isContentHtml = false;
+
 
     private WebUtilities WebUtilities = new();
 
@@ -138,6 +143,8 @@ public partial class ReaderDataService
                 TargetType.All_Tags_Matching_Path => new AllTagsContentExtractor(),
                 _ => throw new InvalidDataException("Content Type Not Supported")
             };
+
+            IsContentHtml = (TargetType)Config.ContentType == TargetType.Html;
 
             Task<string>[] selectorOperations =
             [
