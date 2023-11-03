@@ -132,15 +132,13 @@ public partial class ReaderDataService
         {
             Task<string>[] selections = new Task<string>[4];
 
-            BaseContentExtractor contentExtractor;
-            if (Config.HtmlContentEnabled)
+            BaseContentExtractor contentExtractor = (TargetType)Config.ContentType switch
             {
-                contentExtractor = new HtmlContentExtractor();
-            }
-            else
-            {
-                contentExtractor = new TextContentExtractor();
-            }
+                TargetType.Text => new TextContentExtractor(),
+                TargetType.Html => new HtmlContentExtractor(),
+                _ => throw new InvalidDataException("Content Type Not Supported")
+            };
+
             selections[0] = Task.Run(() => contentExtractor.GetContent(doc, Config, ConfigService));
             selections[1] = Task.Run(() => GetTitle(html));
             selections[2] = Task.Run(() => ConfigService.PrettyWrapSelector(html, ConfigService.Selector.NextUrl, SelectorType.Link));

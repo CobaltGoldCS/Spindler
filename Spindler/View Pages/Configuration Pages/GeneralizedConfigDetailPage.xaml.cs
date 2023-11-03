@@ -64,7 +64,7 @@ public partial class GeneralizedConfigDetailPage : BaseConfigDetailPage<Generali
                             .Replace(@"\t", "     ")},
             { "headless", headlessSwitch.On },
             { "filteringcontentenabled", filterSwitch.On },
-            { "htmlcontentenabled", htmlSwitch.On },
+            { "contenttype", (int)((ContentExtractorOption)ContentTypeSelector.SelectedItem).contentType },
         };
         base.okButton_Clicked(sender, e);
     }
@@ -80,6 +80,7 @@ public partial class GeneralizedConfigDetailPage : BaseConfigDetailPage<Generali
             .Replace("\t", @"\t");
         headlessSwitch.On = Configuration.UsesHeadless;
         filterSwitch.On = Configuration.FilteringContentEnabled;
-        htmlSwitch.On = Configuration.HtmlContentEnabled;
+        ContentTypeSelector.SelectedItem = selectedExtractor;
+        ContentTypeSelector.ItemsSource = possibleExtractors;
     }
 }

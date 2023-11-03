@@ -1,4 +1,5 @@
 using CommunityToolkit.Maui.Alerts;
+using CommunityToolkit.Mvvm.ComponentModel;
 using Spindler.Behaviors;
 using Spindler.Models;
 using Spindler.Services;
@@ -63,7 +64,7 @@ public partial class ConfigDetailPage : BaseConfigDetailPage<Config>
                             .Replace(@"\t", "     ")},
             { "headless", headlessSwitch.On },
             { "filteringcontentenabled", filterSwitch.On },
-            { "htmlcontentenabled", htmlSwitch.On },
+            { "contenttype", (int)((ContentExtractorOption)ContentTypeSelector.SelectedItem).contentType },
 
         };
 
@@ -81,7 +82,8 @@ public partial class ConfigDetailPage : BaseConfigDetailPage<Config>
             .Replace("\t", @"\t");
         headlessSwitch.On = Configuration.UsesHeadless;
         filterSwitch.On = Configuration.FilteringContentEnabled;
-        htmlSwitch.On = Configuration.HtmlContentEnabled;
+        ContentTypeSelector.SelectedItem = selectedExtractor;
+        ContentTypeSelector.ItemsSource = possibleExtractors;
     }
 
     [GeneratedRegex("^(?!www\\.)(((?!\\-))(xn\\-\\-)?[a-z0-9\\-_]{0,61}[a-z0-9]{1,1}\\.)*(xn\\-\\-)?([a-z0-9\\-]{1,61}|[a-z0-9\\-]{1,30})\\.[a-z]{2,}$")]

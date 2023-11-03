@@ -13,7 +13,14 @@ namespace Spindler.Views.Configuration_Pages
     /// <typeparam name="TConfig">Must be derived from <code>Config</code></typeparam>
     public abstract class BaseConfigDetailPage<TConfig> : ContentPage, IQueryAttributable where TConfig : Models.Config, new()
     {
-        #region Attributes
+        #region Attributes 
+        
+        protected ContentExtractorOption[] possibleExtractors = ((TargetType[])Enum.GetValues(typeof(TargetType)))
+        .Select(content => ContentExtractorOption.FromContentType(content))
+        .ToArray();
+
+        protected ContentExtractorOption selectedExtractor = ContentExtractorOption.FromContentType(TargetType.Text);
+
         protected State state = State.NewConfig;
 
         protected TConfig configuration = new() { Id = -1 };
@@ -39,6 +46,7 @@ namespace Spindler.Views.Configuration_Pages
             {
                 state = State.ModifyConfig;
             }
+            selectedExtractor = ContentExtractorOption.FromContentType((TargetType)Configuration.ContentType);
             SetSwitchesBasedOnExtraConfigs();
         }
         #endregion
@@ -47,6 +55,28 @@ namespace Spindler.Views.Configuration_Pages
         {
             NewConfig,
             ModifyConfig
+        }
+
+        protected class ContentExtractorOption
+        {
+            public string name;
+            public TargetType contentType;
+
+            private ContentExtractorOption(string name, TargetType contentType)
+            {
+                this.name = name;
+                this.contentType = contentType;
+            }
+
+            public static ContentExtractorOption FromContentType(TargetType type)
+            {
+                return new ContentExtractorOption(Enum.GetName(typeof(TargetType), type)!, type);
+            }
+
+            public override string ToString()
+            {
+                return name.Replace("_", " ");
+            }
         }
 
 

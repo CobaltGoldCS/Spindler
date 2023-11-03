@@ -44,7 +44,7 @@
                 <VerticalStackLayout CompressedLayout.IsHeadless="True">
                     <Label Text="Extra Configuration Options" TextColor="{StaticResource Primary}"/>
                     <table:TableInput Label="Image Url Path" Text="{Binding ImageUrlPath}"/>
-                    <table:LabelSwitch x:Name="htmlSwitch" Text="Display Content as Html"/>
+                    <Picker x:Name="ContentTypeSelector" Title="Content Extraction Strategy"/>
                 </VerticalStackLayout>
 
                 <VerticalStackLayout CompressedLayout.IsHeadless="True" Grid.Row="1">

@@ -147,6 +147,19 @@ public class Config : IIndexedModel
         }
     }
 
+    [Ignore]
+    [JsonIgnore]
+    public int ContentType
+    {
+        get => Convert.ToInt32(ExtraConfigs.GetValueOrDefault("contenttype", 0));
+        set
+        {
+            var tempExtraConfigs = ExtraConfigs;
+            tempExtraConfigs["contenttype"] = value;
+            ExtraConfigs = tempExtraConfigs;
+        }
+    }
+
     /// <summary>
     /// Find a valid website configuration based on <paramref name="url"/>
     /// </summary>

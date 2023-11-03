@@ -1,4 +1,5 @@
 namespace Spindler;
+
 using Microsoft.Maui.Controls;
 using Spindler.Services;
 using Spindler.Utilities;

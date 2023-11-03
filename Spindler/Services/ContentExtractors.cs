@@ -11,6 +11,12 @@ using System.Web;
 using Path = Spindler.Models.Path;
 
 namespace Spindler.Services;
+
+public enum TargetType
+{
+    Text,
+    Html,
+}
 public abstract partial class BaseContentExtractor
 {
     /// <summary>
