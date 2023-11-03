@@ -31,6 +31,12 @@ public partial class HomePage : ContentPage
             await Permissions.RequestAsync<Permissions.StorageRead>();
         }
 
+        status = await Permissions.CheckStatusAsync<Permissions.Media>();
+        if (status != PermissionStatus.Granted)
+        {
+            await Permissions.RequestAsync<Permissions.Media>();
+        }
+
         status = await Permissions.CheckStatusAsync<Permissions.StorageWrite>();
         if (status != PermissionStatus.Granted)
         {
