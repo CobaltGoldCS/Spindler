@@ -3,7 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="Spindler.Resources.Styles.Default">
     <Color x:Key="Primary">#3E8EED</Color>
-    <Color x:Key="Warning">OrangeRed</Color>
+    <Color x:Key="Warning">#FF4500</Color>
     <Color x:Key="Background">#25272D</Color>
     <Color x:Key="TextColor">#FFFFFF</Color>
     <Color x:Key="PlaceholderColor">#969696</Color>

@@ -19,6 +19,6 @@ public partial class BookPage : ContentPage, IQueryAttributable
     public async void ApplyQueryAttributes(IDictionary<string, object> query)
     {
         Book? book = query["book"] as Book;
-        await ViewModel.Load(BackgroundImage, book!);
+        await ViewModel.Load(book!);
     }
 }

@@ -26,6 +26,7 @@ using Spindler.Services;
 using System.Diagnostics;
 */
 using HtmlAgilityPack;
+using Spindler.Models;
 using Spindler.Services;
 using System.Diagnostics;
 using System.Text.RegularExpressions;
@@ -73,7 +74,7 @@ public partial class WebScraperBrowser : WebView
             string html = await GetHtml();
             HtmlDocument doc = new();
             doc.LoadHtml(html);
-            string textString = ConfigService.PrettyWrapSelector(doc, selector, ConfigService.SelectorType.Text);
+            string textString = selector.Select(doc, SelectorType.Text);
             if (textString != string.Empty)
             {
                 timer.Stop();

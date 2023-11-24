@@ -6,6 +6,7 @@ using CommunityToolkit.Mvvm.Messaging;
 using CommunityToolkit.Mvvm.Messaging.Messages;
 using Spindler.Models;
 using Spindler.Services;
+using Spindler.Services.Web;
 using Spindler.Utilities;
 using Spindler.Views;
 using Spindler.Views.Reader_Pages;
@@ -20,7 +21,8 @@ public partial class ReaderViewModel : ObservableObject, IReader
     /// <summary>
     /// The Service managing reader data
     /// </summary>
-    public ReaderDataService ReaderService = new(new Config(), new StandardWebService(new()));
+    [ObservableProperty]
+    public ReaderDataService readerService = new(new Config(), new StandardWebService(new()));
     /// <summary>
     /// The reference to the underlying database
     /// </summary>
@@ -128,7 +130,7 @@ public partial class ReaderViewModel : ObservableObject, IReader
             try
             {
                 CurrentBook.ImageUrl = ReaderService.ConfigService.PrettyWrapSelector(
-                                    (html as Result<string>.Ok)!.Value, ConfigService.Selector.ImageUrl, ConfigService.SelectorType.Link);
+                                    (html as Result<string>.Ok)!.Value, ConfigService.Selector.ImageUrl, SelectorType.Link);
             }
             catch (XPathException) { }
         }

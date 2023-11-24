@@ -67,7 +67,7 @@ namespace Spindler.ViewModels
         /// A handler for when the Ok button is clicked
         /// </summary>
         [RelayCommand]
-        private async void Ok()
+        private async Task Ok()
         {
             if (!string.IsNullOrWhiteSpace(Booklist.Name))
             {
@@ -80,7 +80,7 @@ namespace Spindler.ViewModels
         /// A handler for when the Delete button is clicked
         /// </summary>
         [RelayCommand]
-        private async void Delete()
+        private async Task Delete()
         {
             if (Booklist.Id > 0 && await Application.Current!.MainPage!.DisplayAlert("Warning!", "Are you sure you want to delete this booklist?", "Yes", "No"))
             {
@@ -93,7 +93,7 @@ namespace Spindler.ViewModels
         /// A handler for when the Cancel button is clicked
         /// </summary>
         [RelayCommand]
-        private async void Cancel()
+        private async Task Cancel()
         {
             await Close();
         }

@@ -3,12 +3,7 @@ using CommunityToolkit.Maui.Storage;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
-using Microsoft.Maui.Controls;
-using Newtonsoft.Json;
-using Spindler.Models;
 using Spindler.Utilities;
-using Spindler.Views;
-using System.Text;
 
 namespace Spindler.ViewModels;
 
@@ -49,7 +44,7 @@ public partial class SettingsViewmodel : ObservableObject
     }
 
     [ObservableProperty]
-    public string[] layoutList = { "List", "Grid" };
+    public string[] layoutList = ["List", "Grid"];
 
     private string selectedLayout = Preferences.Default.Get("book list layout", "List"); // Default is LayoutType.List
     public string SelectedLayout

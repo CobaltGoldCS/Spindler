@@ -22,6 +22,15 @@ public partial class Reader : Grid
         set { SetValue(TextProperty, value); }
     }
 
+    public static readonly BindableProperty TextTypeProperty =
+                BindableProperty.Create(nameof(TextType), typeof(TextType), typeof(Grid));
+
+    public TextType TextType
+    {
+        get => (TextType)GetValue(TextTypeProperty);
+        set { SetValue(TextTypeProperty, value); }
+    }
+
     public static readonly BindableProperty TitleProperty =
                 BindableProperty.Create(nameof(Title), typeof(string), typeof(Grid));
 

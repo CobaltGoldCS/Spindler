@@ -5,6 +5,7 @@ using CommunityToolkit.Maui.Views;
 using CommunityToolkit.Mvvm.Messaging;
 using Spindler.CustomControls;
 using Spindler.Models;
+using Spindler.Services.Web;
 using Spindler.Services;
 using Spindler.Utilities;
 using Spindler.ViewModels;

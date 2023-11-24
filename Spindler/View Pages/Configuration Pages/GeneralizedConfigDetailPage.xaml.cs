@@ -1,6 +1,6 @@
 using Spindler.Behaviors;
 using Spindler.Models;
-using Spindler.Services;
+using Spindler.Services.Web;
 using Spindler.Views.Configuration_Pages;
 
 namespace Spindler;
@@ -24,12 +24,6 @@ public partial class GeneralizedConfigDetailPage : BaseConfigDetailPage<Generali
                 Title = $"Modify {Configuration.DomainName}";
                 break;
         }
-        switchWebView.On = Configuration.UsesWebview;
-        animationSwitch.On = Configuration.HasAutoscrollAnimation;
-        separatorEntry.Text = Configuration.Separator
-            .Replace(Environment.NewLine, @"\n")
-            .Replace("\t", @"\t");
-        headlessSwitch.On = Configuration.UsesHeadless;
     }
 
 
@@ -39,7 +33,7 @@ public partial class GeneralizedConfigDetailPage : BaseConfigDetailPage<Generali
         InitializeComponent();
 
 
-        TextValidationBehavior validSelectorBehavior = new((string value) => ConfigService.IsValidSelector(value));
+        TextValidationBehavior validSelectorBehavior = new(ConfigService.IsValidSelector);
         matchEntry.Behaviors.Add(validSelectorBehavior);
         contentEntry.Behaviors.Add(validSelectorBehavior);
         nextEntry.Behaviors.Add(validSelectorBehavior);
@@ -69,20 +63,25 @@ public partial class GeneralizedConfigDetailPage : BaseConfigDetailPage<Generali
                             .Replace(@"\n", Environment.NewLine)
                             .Replace(@"\t", "     ")},
             { "headless", headlessSwitch.On },
+            { "filteringcontentenabled", filterSwitch.On },
+            { "contenttype", Convert.ToInt32(((ContentExtractorOption)ContentTypeSelector.SelectedItem).contentType) },
         };
         base.okButton_Clicked(sender, e);
     }
 
-    protected async void ImportCommand(object sender, EventArgs e)
+    #endregion
+
+    protected override void SetSwitchesBasedOnExtraConfigs()
     {
-        await base.Import(sender, e);
         switchWebView.On = Configuration.UsesWebview;
         animationSwitch.On = Configuration.HasAutoscrollAnimation;
         separatorEntry.Text = Configuration.Separator
             .Replace(Environment.NewLine, @"\n")
             .Replace("\t", @"\t");
         headlessSwitch.On = Configuration.UsesHeadless;
-    }
+        filterSwitch.On = Configuration.FilteringContentEnabled;
 
-    #endregion
+        ContentTypeSelector.ItemsSource = possibleExtractors;
+        ContentTypeSelector.SelectedItem = selectedExtractor;
+    }
 }

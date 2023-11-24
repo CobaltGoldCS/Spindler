@@ -77,7 +77,7 @@ public partial class BookmarkDialog : Popup
     }
 
     [RelayCommand]
-	private async void Add()
+	private async Task Add()
 	{
 		Bookmark bookmark = GetNewBookmark.Invoke();
 		Bookmarks.Add(bookmark);

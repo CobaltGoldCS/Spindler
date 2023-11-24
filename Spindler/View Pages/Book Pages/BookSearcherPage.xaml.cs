@@ -5,6 +5,7 @@ using HtmlAgilityPack;
 using Spindler.CustomControls;
 using Spindler.Models;
 using Spindler.Services;
+using Path = Spindler.Models.Path;
 
 namespace Spindler.Views.Book_Pages;
 
@@ -158,7 +159,8 @@ public partial class BookSearcherPage : ContentPage
 
         try
         {
-            string content = ConfigService.PrettyWrapSelector(doc, new Models.Path(Config.ContentPath), ConfigService.SelectorType.Text);
+            Path contentPath = Config.ContentPath.AsPath();
+            string content = contentPath.Select(doc, SelectorType.Text);
 
             SwitchUiBasedOnState(!string.IsNullOrEmpty(content) ? State.BookFound : State.BookNotFound);
         } catch (Exception e)
@@ -184,7 +186,7 @@ public partial class BookSearcherPage : ContentPage
     /// </code>
     /// </summary>
     [RelayCommand]
-    private async void CreateBookFromConfigInformation()
+    private async Task CreateBookFromConfigInformation()
     {
         string html = await SearchBrowser.GetHtml();
 
@@ -199,7 +201,8 @@ public partial class BookSearcherPage : ContentPage
         HtmlDocument doc = new();
         doc.LoadHtml(html);
 
-        string title = ConfigService.PrettyWrapSelector(doc, new Models.Path(Config!.TitlePath), ConfigService.SelectorType.Text);
+        Models.Path titlePath = Config!.TitlePath.AsPath();
+        string title = titlePath.Select(doc, SelectorType.Text);
         await App.Database.SaveItemAsync(
             new Book
             {
@@ -215,7 +218,7 @@ public partial class BookSearcherPage : ContentPage
     /// Creates a popup that allows you to choose a configuration to load the url of
     /// </summary>
     [RelayCommand]
-    private async void UseConfigAsDomainUrl()
+    private async Task UseConfigAsDomainUrl()
     {
         if (IsLoading) return;
         PickerPopup popup = new("Choose a config to search", await App.Database.GetAllItemsAsync<Config>());

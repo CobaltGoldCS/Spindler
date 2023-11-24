@@ -17,7 +17,6 @@ public partial class ErrorPage : ContentPage
         set
         {
             config = value;
-            // TODO: Make this reactable for Config to actually be affected
             HeadlessMode.On = config?.UsesHeadless ?? false;
         }
     }

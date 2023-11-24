@@ -1,8 +1,9 @@
 ﻿using CommunityToolkit.Maui.Alerts;
 using CommunityToolkit.Maui.Storage;
-using Newtonsoft.Json;
 using Spindler.Services;
+using Spindler.Services.Web;
 using System.Text;
+using Newtonsoft.Json;
 
 namespace Spindler.Views.Configuration_Pages
 {
@@ -13,7 +14,14 @@ namespace Spindler.Views.Configuration_Pages
     /// <typeparam name="TConfig">Must be derived from <code>Config</code></typeparam>
     public abstract class BaseConfigDetailPage<TConfig> : ContentPage, IQueryAttributable where TConfig : Models.Config, new()
     {
-        #region Attributes
+        #region Attributes 
+        
+        protected ContentExtractorOption[] possibleExtractors = ((TargetType[])Enum.GetValues(typeof(TargetType)))
+        .Select(content => ContentExtractorOption.FromContentType(content))
+        .ToArray();
+
+        protected ContentExtractorOption selectedExtractor = ContentExtractorOption.FromContentType(TargetType.Text);
+
         protected State state = State.NewConfig;
 
         protected TConfig configuration = new() { Id = -1 };
@@ -39,6 +47,8 @@ namespace Spindler.Views.Configuration_Pages
             {
                 state = State.ModifyConfig;
             }
+            selectedExtractor = possibleExtractors.FirstOrDefault(extractor => Convert.ToInt32(extractor.contentType) == Configuration.ContentType, possibleExtractors[0]);
+            SetSwitchesBasedOnExtraConfigs();
         }
         #endregion
 
@@ -46,6 +56,28 @@ namespace Spindler.Views.Configuration_Pages
         {
             NewConfig,
             ModifyConfig
+        }
+
+        protected class ContentExtractorOption
+        {
+            public string name;
+            public TargetType contentType;
+
+            private ContentExtractorOption(string name, TargetType contentType)
+            {
+                this.name = name;
+                this.contentType = contentType;
+            }
+
+            public static ContentExtractorOption FromContentType(TargetType type)
+            {
+                return new ContentExtractorOption(Enum.GetName(typeof(TargetType), type)!, type);
+            }
+
+            public override string ToString()
+            {
+                return name.Replace("_", " ");
+            }
         }
 
 
@@ -87,7 +119,13 @@ namespace Spindler.Views.Configuration_Pages
             }
         }
 
-        protected virtual async Task Import(object sender, EventArgs e)
+        /// <summary>
+        /// Holds all of the logic required to import a configuration except for UI
+        /// </summary>
+        /// <param name="sender">The Button that triggered the task</param>
+        /// <param name="e">The Event</param>
+        /// <returns>A task to await</returns>
+        protected virtual async void ImportCommand(object sender, EventArgs e)
         {
             CancellationToken cancellationToken = new();
             FileResult? file = await FilePicker.Default.PickAsync(PickOptions.Default);
@@ -108,6 +146,7 @@ namespace Spindler.Views.Configuration_Pages
             Configuration = config;
             BindingContext = Configuration;
             Configuration.Id = -1; // Required to create a new config
+            SetSwitchesBasedOnExtraConfigs();
         }
 
         #endregion
@@ -116,5 +155,10 @@ namespace Spindler.Views.Configuration_Pages
         {
 
         }
+
+        /// <summary>
+        /// UI Logic to set controls based on configuration
+        /// </summary>
+        protected abstract void SetSwitchesBasedOnExtraConfigs();
     }
 }

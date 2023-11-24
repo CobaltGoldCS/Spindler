@@ -1,9 +1,10 @@
 ﻿using Spindler.CustomControls;
+using Spindler.Models;
 using Spindler.Utilities;
 using System.Diagnostics;
 using System.Xml.XPath;
 
-namespace Spindler.Services
+namespace Spindler.Services.Web
 {
     public class HeadlessWebService : IWebService
     {
@@ -28,7 +29,7 @@ namespace Spindler.Services
             Models.Path cloudflareDetectPath = new Models.Path("body.no-js > div.main-wrapper > div.main-content > h2#challenge-running");
             try
             {
-                var cloudflareString = ConfigService.PrettyWrapSelector(html, cloudflareDetectPath, ConfigService.SelectorType.Text);
+                var cloudflareString = cloudflareDetectPath.Select(html, SelectorType.Text);
                 Stopwatch timer = Stopwatch.StartNew();
 
                 while (!string.IsNullOrEmpty(cloudflareString) || html.Length < 300)
@@ -37,19 +38,19 @@ namespace Spindler.Services
                     if (cloudflareString == null)
                         break;
 
-                    cloudflareString = ConfigService.PrettyWrapSelector(html, cloudflareDetectPath, ConfigService.SelectorType.Text);
+                    cloudflareString = cloudflareDetectPath.Select(html, SelectorType.Text);
                     if (timer.Elapsed >= TimeSpan.FromSeconds(20))
                     {
-                        return Result<string>.Error("Cloudlflare bypass timed out");
+                        return Result.Error<string>("Cloudlflare bypass timed out");
                     }
                 }
             }
             catch (XPathException)
             {
-                return Result<string>.Error("X Path is invalid");
+                return Result.Error<string>("X Path is invalid");
             }
 
-            ReturnResult = Result<string>.Success(html);
+            ReturnResult = Result.Success(html);
             html = string.Empty;
             return ReturnResult;
         }
@@ -59,12 +60,12 @@ namespace Spindler.Services
         {
             if (e.Result == WebNavigationResult.Cancel)
             {
-                ReturnResult = Result<string>.Error("Headless navigation cancelled");
+                ReturnResult = Result.Error<string>("Headless navigation cancelled");
                 return;
             }
             if (e.Result == WebNavigationResult.Failure)
             {
-                ReturnResult = Result<string>.Error("Headless navigation failed");
+                ReturnResult = Result.Error<string>("Headless navigation failed");
                 return;
             }
 

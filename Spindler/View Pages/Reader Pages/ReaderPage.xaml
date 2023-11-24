@@ -12,6 +12,9 @@
              Title="{Binding CurrentData.Title}"
              Shell.BackgroundColor="{DynamicResource CardBackground}"
              Shell.TabBarIsVisible="False">
+    <ContentPage.Resources>
+        <toolkit:BoolToObjectConverter x:Key="TextTypeConverter" TrueObject="{Static TextType.Html}" FalseObject="{Static TextType.Text}"/>
+    </ContentPage.Resources>
 
     <Shell.TitleView>
         <Grid ColumnDefinitions="*, auto"
@@ -81,6 +84,7 @@
                   BackgroundColor="{DynamicResource CardBackground}">
                 <controls:Reader x:Name="ReaderView"
                                  Text="{Binding CurrentData.Text}"
+                                 TextType="{Binding Path=ReaderService.IsContentHtml, Converter={StaticResource TextTypeConverter}}"
                                  Title="{Binding CurrentData.Title}"
                                  Loading="{Binding IsLoading}"
                                  NextVisible="{Binding NextButtonIsVisible}"

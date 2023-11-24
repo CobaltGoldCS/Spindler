@@ -1,6 +1,8 @@
-﻿using HtmlAgilityPack;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using HtmlAgilityPack;
 using HtmlAgilityPack.CssSelectors.NetCore;
 using Spindler.Models;
+using Spindler.Services.Web;
 using Spindler.Utilities;
 using System.Text.RegularExpressions;
 using System.Web;
@@ -9,7 +11,7 @@ using Path = Spindler.Models.Path;
 
 namespace Spindler.Services;
 
-public partial class ReaderDataService
+public partial class ReaderDataService : ObservableObject
 {
     // This is so other things can access lower level APIs
     /// <summary>
@@ -25,12 +27,16 @@ public partial class ReaderDataService
     /// </summary>
     public Config Config { get; private set; }
 
+    [ObservableProperty]
+    public bool isContentHtml = false;
+
+
     private WebUtilities WebUtilities = new();
 
     private Task<Result<LoadedData>>[] LoadingDataTask = new Task<Result<LoadedData>>[] 
     { 
-        Task.FromResult(Result<LoadedData>.Error("Uninitialized Data")),
-        Task.FromResult(Result<LoadedData>.Error("Uninitialized Data"))
+        Task.FromResult(Result.Error<LoadedData>("Uninitialized Data")),
+        Task.FromResult(Result.Error<LoadedData>("Uninitialized Data"))
     };
 
     public enum UrlType
@@ -42,14 +48,15 @@ public partial class ReaderDataService
     public ReaderDataService(Config config, IWebService webService)
     {
         Config = config;
+
         ConfigService = new(config);
         WebService = webService;
     }
 
     public void InvalidatePreloadedData()
     {
-        LoadingDataTask[0] = Task.FromResult(Result<LoadedData>.Error("Uninitialized Data"));
-        LoadingDataTask[1] = Task.FromResult(Result<LoadedData>.Error("Uninitialized Data"));
+        LoadingDataTask[0] = Task.FromResult(Result.Error<LoadedData>("Uninitialized Data"));
+        LoadingDataTask[1] = Task.FromResult(Result.Error<LoadedData>("Uninitialized Data"));
     }
 
     public async Task<Result<LoadedData>> GetLoadedData(UrlType urlType, LoadedData currentData)
@@ -73,7 +80,7 @@ public partial class ReaderDataService
 
         LoadingDataTask[(int)urlType] = LoadUrl(urlType == UrlType.Previous ? data.prevUrl : data.nextUrl);
         // This task holds just the previously loaded data in the array
-        LoadingDataTask[( (int)urlType + 1 ) % LoadingDataTask.Length] = Task.FromResult(Result<LoadedData>.Success(currentData));
+        LoadingDataTask[( (int)urlType + 1 ) % LoadingDataTask.Length] = Task.FromResult(Result.Success(currentData));
 
         return returnData;
     }
@@ -87,11 +94,11 @@ public partial class ReaderDataService
     {
         if (!WebUtilities.IsUrl(url))
         {
-            return Result<LoadedData>.Error($"'{url}' is not a valid url");
+            return Result.Error<LoadedData>($"'{url}' is not a valid url");
         }
         if (!WebUtilities.HasBaseUrl())
         {
-            if (!Uri.TryCreate(url, UriKind.Absolute, out Uri? uri)) return Result<LoadedData>.Error($"'{url}' is not a valid url");
+            if (!Uri.TryCreate(url, UriKind.Absolute, out Uri? uri)) return Result.Error<LoadedData>($"'{url}' is not a valid url");
             WebUtilities.SetBaseUrl(new Uri(uri.GetLeftPart(UriPartial.Authority) + "/", UriKind.Absolute));
         }
         url = WebUtilities.MakeAbsoluteUrl(url).ToString();
@@ -103,7 +110,7 @@ public partial class ReaderDataService
             HtmlDocument invalidHtml = new HtmlDocument();
             invalidHtml.LoadHtml(error.Message);
             string innerText = invalidHtml.DocumentNode.InnerText.Trim();
-            return Result<LoadedData>.Error(MatchNewlines().Replace(innerText, Environment.NewLine));
+            return Result.Error<LoadedData>(MatchNewlines().Replace(innerText, Environment.NewLine));
         }
         return await LoadReaderData(url, (html as Result<string>.Ok)!.Value);
     }
@@ -123,18 +130,31 @@ public partial class ReaderDataService
         if (!WebUtilities.HasBaseUrl())
         {
             if (!Uri.TryCreate(url, UriKind.Absolute, out Uri? uri))
-                return Result<LoadedData>.Error($"'{url}' is not a valid url");
+                return Result.Error<LoadedData>($"'{url}' is not a valid url");
             WebUtilities.SetBaseUrl(new Uri(uri.GetLeftPart(UriPartial.Authority) + "/", UriKind.Absolute));
         }
 
         try
         {
-            Task<string>[] selections = new Task<string>[4];
-            selections[0] = Task.Run(() => GetContent(doc));
-            selections[1] = Task.Run(() => GetTitle(html));
-            selections[2] = Task.Run(() => ConfigService.PrettyWrapSelector(html, ConfigService.Selector.NextUrl, type: ConfigService.SelectorType.Link));
-            selections[3] = Task.Run(() => ConfigService.PrettyWrapSelector(html, ConfigService.Selector.PrevUrl, type: ConfigService.SelectorType.Link));
-            string[] content = await Task.WhenAll(selections);
+
+            BaseContentExtractor contentExtractor = (TargetType)Config.ContentType switch
+            {
+                TargetType.Text => new TextContentExtractor(),
+                TargetType.Html => new HtmlContentExtractor(),
+                TargetType.All_Tags_Matching_Path => new AllTagsContentExtractor(),
+                _ => throw new InvalidDataException("Content Type Not Supported")
+            };
+
+            IsContentHtml = contentExtractor is HtmlExtractor;
+
+            Task<string>[] selectorOperations =
+            [
+                Task.Run(() => contentExtractor.GetContent(doc, Config, ConfigService)),
+                Task.Run(() => GetTitle(html)),
+                Task.Run(() => ConfigService.PrettyWrapSelector(html, ConfigService.Selector.NextUrl, SelectorType.Link)),
+                Task.Run(() => ConfigService.PrettyWrapSelector(html, ConfigService.Selector.PrevUrl, SelectorType.Link)),
+            ];
+            string[] content = await Task.WhenAll(selectorOperations);
 
             LoadedData data = new()
             {
@@ -145,63 +165,12 @@ public partial class ReaderDataService
                 currentUrl = url
             };
 
-            return Result<LoadedData>.Success(data);
+            return Result.Success(data);
         }
         catch (XPathException)
         {
-            return Result<LoadedData>.Error("Invalid XPath");
+            return Result.Error<LoadedData>("Invalid XPath");
         }
-    }
-
-    /// <summary>
-    /// Smart Get Content that matches given content path using <see cref="Path"/>
-    /// </summary>
-    /// <param name="nav">The HtmlDocument to evaluate for matches</param>
-    /// <returns>A String containing the text of the content matched by contentpath</returns>
-    public string GetContent(HtmlDocument nav)
-    {
-        Path contentPath = ConfigService.GetPath(ConfigService.Selector.Content);
-        HtmlNode node = contentPath.type switch
-        {
-            Path.Type.Css => nav.QuerySelector(contentPath.path),
-            Path.Type.XPath => nav.DocumentNode.SelectSingleNode(contentPath.path),
-            _ => throw new NotImplementedException("This path type has not been implemented {ConfigService.GetContent}"),
-        };
-
-        if (node == null) return string.Empty;
-        if (!node.HasChildNodes)
-        {
-            return HttpUtility.HtmlDecode(node.InnerText).Replace("\n", Config.Separator).Trim();
-        }
-
-        // Node contains child nodes, so we must get the text of each
-        StringWriter stringWriter = new();
-
-        foreach (HtmlNode child in node.ChildNodes)
-        {
-            string innerText = WhitespaceOnlyRegex().Replace(HttpUtility.HtmlDecode(child.InnerText), string.Empty);
-            if (innerText.Length == 0)
-            {
-                if (child.OriginalName == "br" && child.NextSibling?.OriginalName != "br")
-                {
-                    stringWriter.Write("\n");
-                }
-                continue;
-            }
-            stringWriter.Write($"\t\t{HttpUtility.HtmlDecode(child.InnerText).Replace("\n", Config.Separator)}");
-            stringWriter.Write(Config.Separator);
-        }
-        return stringWriter.ToString().Trim();
-    }
-
-    /// <summary>
-    /// Gets the content as HTML
-    /// </summary>
-    /// <param name="nav">The Document to Get the Content Of</param>
-    /// <returns><see cref="ConfigService.Selector.Content"/> as clean Html</returns>
-    public string GetContentHtml(HtmlDocument nav)
-    {
-        return ConfigService.PrettyWrapSelector(nav.DocumentNode.InnerHtml, ConfigService.Selector.Content, ConfigService.SelectorType.Html);
     }
 
 
@@ -212,12 +181,8 @@ public partial class ReaderDataService
     /// <returns>A title determined by the title selector</returns>
     public string GetTitle(string html)
     {
-        return HttpUtility.HtmlDecode(ConfigService.PrettyWrapSelector(html, ConfigService.Selector.Title, type: ConfigService.SelectorType.Text)).Trim();
+        return HttpUtility.HtmlDecode(ConfigService.PrettyWrapSelector(html, ConfigService.Selector.Title, type: SelectorType.Text)).Trim();
     }
-
-
-    [GeneratedRegex("^\\s+$", RegexOptions.Multiline)]
-    private static partial Regex WhitespaceOnlyRegex();
 
     [GeneratedRegex("[\\s]{2,}")]
     private static partial Regex MatchNewlines();

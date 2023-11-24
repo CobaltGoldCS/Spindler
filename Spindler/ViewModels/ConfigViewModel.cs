@@ -26,7 +26,7 @@ public partial class ConfigViewModel : ObservableObject
     public bool isRefreshing = false;
 
     [RelayCommand]
-    public async void ReloadItems()
+    public async Task ReloadItems()
     {
         IsRefreshing = true;
         ConfigItems = await App.Database.GetAllItemsAsync<Config>();

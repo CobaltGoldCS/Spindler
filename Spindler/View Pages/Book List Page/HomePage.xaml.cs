@@ -1,4 +1,5 @@
 namespace Spindler;
+
 using Microsoft.Maui.Controls;
 using Spindler.Services;
 using Spindler.Utilities;
@@ -28,6 +29,12 @@ public partial class HomePage : ContentPage
         if (status != PermissionStatus.Granted)
         {
             await Permissions.RequestAsync<Permissions.StorageRead>();
+        }
+
+        status = await Permissions.CheckStatusAsync<Permissions.Media>();
+        if (status != PermissionStatus.Granted)
+        {
+            await Permissions.RequestAsync<Permissions.Media>();
         }
 
         status = await Permissions.CheckStatusAsync<Permissions.StorageWrite>();

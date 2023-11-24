@@ -62,7 +62,7 @@ public class Config : IIndexedModel
     [JsonIgnore]
     public Dictionary<string, object> ExtraConfigs
     {
-        get => JsonConvert.DeserializeObject<Dictionary<string, object>>(ExtraConfigsBlobbed) ?? new();
+        get => JsonConvert.DeserializeObject<Dictionary<string, object>>(ExtraConfigsBlobbed) ?? [];
         set
         {
             ExtraConfigsBlobbed = JsonConvert.SerializeObject(value);
@@ -121,6 +121,45 @@ public class Config : IIndexedModel
         }
     }
 
+    [Ignore]
+    [JsonIgnore]
+    public bool FilteringContentEnabled
+    {
+        get => (bool)ExtraConfigs.GetValueOrDefault("filteringcontentenabled", true);
+        set
+        {
+            var tempExtraConfigs = ExtraConfigs;
+            tempExtraConfigs["filteringcontentenabled"] = value;
+            ExtraConfigs = tempExtraConfigs;
+        }
+    }
+
+    [Ignore]
+    [JsonIgnore]
+    public bool HtmlContentEnabled
+    {
+        get => (bool)ExtraConfigs.GetValueOrDefault("htmlcontentenabled", false);
+        set
+        {
+            var tempExtraConfigs = ExtraConfigs;
+            tempExtraConfigs["htmlcontentenabled"] = value;
+            ExtraConfigs = tempExtraConfigs;
+        }
+    }
+
+    [Ignore]
+    [JsonIgnore]
+    public int ContentType
+    {
+        get => Convert.ToInt32(ExtraConfigs.GetValueOrDefault("contenttype", 0));
+        set
+        {
+            var tempExtraConfigs = ExtraConfigs;
+            tempExtraConfigs["contenttype"] = value;
+            ExtraConfigs = tempExtraConfigs;
+        }
+    }
+
     /// <summary>
     /// Find a valid website configuration based on <paramref name="url"/>
     /// </summary>
@@ -143,7 +182,7 @@ public class Config : IIndexedModel
             {
                 try
                 {
-                    if (ConfigService.PrettyWrapSelector(doc, new Path(config.MatchPath), ConfigService.SelectorType.Text) != string.Empty)
+                    if (config.MatchPath.AsPath().Select(doc, SelectorType.Text) != string.Empty)
                     {
                         selectedConfig = config;
                         state.Stop();
