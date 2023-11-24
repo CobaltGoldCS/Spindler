@@ -1,6 +1,9 @@
 ﻿using CommunityToolkit.Maui.Alerts;
+using Gsemac.IO.Logging;
 using Gsemac.Net;
+using Gsemac.Net.Cloudflare.Selenium;
 using Gsemac.Net.Http;
+using Gsemac.Net.WebDrivers;
 using Microsoft.Extensions.Logging;
 using Spindler.Models;
 using Spindler.Utilities;
@@ -12,18 +15,36 @@ namespace Spindler.Services.Web
 {
     public class NextChapterService
     {
-        HttpClient Client;
+        readonly HttpClient Client;
+        readonly IWebClient webClient;
+
         public NextChapterService(HttpClient client)
         {
             Client = client;
+            using ServiceProvider serviceProvider = CreateServiceProvider();
+
+            HttpWebRequestFactory httpWebRequestFactory = new HttpWebRequestFactory();
+            WebDriverFactory factory = new WebDriverFactory();
+            WebDriverChallengeHandler challengeHandler = new WebDriverChallengeHandler(httpWebRequestFactory, factory);
+            IWebClientFactory webClientFactory = new WebClientFactory(httpWebRequestFactory, challengeHandler);
+
+            webClient = webClientFactory.Create();
         }
 
-        private class WebClient : WebClientBase
+        ~NextChapterService()
         {
-            public WebClient(IHttpWebRequestFactory webRequestFactory, WebRequestHandler webRequestHandler)
-                : base(webRequestFactory, webRequestHandler)
-            {
-            }
+            webClient.Dispose();
+        }
+
+        public static ServiceProvider CreateServiceProvider()
+        {
+
+            return new ServiceCollection()
+                .AddSingleton<Gsemac.IO.Logging.ILogger, ConsoleLogger>()
+                .AddSingleton<IWebClientFactory, WebClientFactory>()
+                .AddSingleton<IHttpWebRequestFactory, HttpWebRequestFactory>()
+                .BuildServiceProvider();
+
         }
 
         /// <summary>
@@ -46,12 +67,30 @@ namespace Spindler.Services.Web
             return await CheckChaptersInBookList(filteredBooks, token);
         }
 
+        public async Task<Book> CheckNextChapterBook(Book book, CancellationToken token)
+        {
+
+
+            string html = webClient.DownloadString(book.Url);
+
+            Config? config = await Config.FindValidConfig(Client, book.Url, html);
+
+            if (config is null || config.UsesWebview)
+                return book;
+
+            string nextUrl = new ConfigService(config).PrettyWrapSelector(html, ConfigService.Selector.NextUrl, SelectorType.Link);
+            book.HasNextChapter = WebUtilities.IsUrl(nextUrl);
+            return book;
+        }
+
         public async Task<IEnumerable<Book>> CheckChaptersInBookList(List<Book> books, CancellationToken token)
         {
             List<Book> verifiedbooks = new();
 
-            using WebRequestHandler handler = new();
-            using IWebClient webClient = WebClientFactory.Default.Create();
+            using ServiceProvider serviceProvider = CreateServiceProvider();
+            IWebClientFactory webClientFactory = serviceProvider.GetRequiredService<IWebClientFactory>();
+
+            using IWebClient webClient = webClientFactory.Create();
 
             foreach (Book book in books)
             {
@@ -68,7 +107,7 @@ namespace Spindler.Services.Web
                     continue;
                 try
                 {
-                    string nextUrl = ConfigService.PrettyWrapSelector(html, new(config.NextUrlPath), ConfigService.SelectorType.Link);
+                    string nextUrl = new ConfigService(config).PrettyWrapSelector(html, ConfigService.Selector.NextUrl, SelectorType.Link);
                     book.HasNextChapter = WebUtilities.IsUrl(nextUrl);
                 }
                 catch (XPathException) { }

@@ -105,8 +105,18 @@ public partial class ReaderViewModel : ObservableObject, IReader
         _ = Task.Run(async () =>
         {
             // See https://github.com/gsemac/Gsemac.Common/issues/10
-            // IEnumerable<Book> updateQueue = await chapterService.CheckChaptersInBookList(CurrentBook, nextChapterToken.Token);
-            // await dispatcher!.DispatchAsync(async () => await App.Database.SaveItemsAsync(updateQueue));
+            List<Book> books = await Database.GetAllItemsAsync<Book>();
+            books.Remove(CurrentBook);
+            foreach(Book book in books)
+            {
+                if (book.HasNextChapter)
+                {
+                    continue;
+                }
+
+                Book updated = await chapterService.CheckNextChapterBook(book, nextChapterToken.Token);
+                await dispatcher!.DispatchAsync(async () => await App.Database.SaveItemAsync(updated));
+            }
         });
 
         var data = await ReaderService.LoadUrl(CurrentBook!.Url);
