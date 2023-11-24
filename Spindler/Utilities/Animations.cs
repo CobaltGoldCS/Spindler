@@ -10,7 +10,7 @@ namespace Spindler.Utilities;
 
 class RotationAnimation : BaseAnimation
 {
-    public async override Task Animate(VisualElement view)
+    public async override Task Animate(VisualElement view, CancellationToken token = default)
     {
         await view.RelRotateTo(360, 500, easing: Easing.CubicIn);
     }

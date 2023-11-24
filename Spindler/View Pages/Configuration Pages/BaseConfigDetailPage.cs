@@ -1,9 +1,9 @@
 ﻿using CommunityToolkit.Maui.Alerts;
 using CommunityToolkit.Maui.Storage;
-using Newtonsoft.Json;
 using Spindler.Services;
 using Spindler.Services.Web;
 using System.Text;
+using Newtonsoft.Json;
 
 namespace Spindler.Views.Configuration_Pages
 {

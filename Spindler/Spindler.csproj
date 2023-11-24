@@ -142,17 +142,17 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <PackageReference Include="Microsoft.Maui.Controls" Version="8.0.0-rc.2.9511" />
-	  <PackageReference Include="CommunityToolkit.Maui" Version="5.3.0" />
-	  <PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.1" GeneratePathProperty="true" />
-	  <PackageReference Include="HtmlAgilityPack" Version="1.11.51" GeneratePathProperty="true" />
+	  <PackageReference Include="Microsoft.Maui.Controls" Version="8.0.3" />
+	  <PackageReference Include="CommunityToolkit.Maui" Version="7.0.0" />
+	  <PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.2" GeneratePathProperty="true" />
+	  <PackageReference Include="HtmlAgilityPack" Version="1.11.54" GeneratePathProperty="true" />
 	  <PackageReference Include="HtmlAgilityPack.CssSelectors.NetCore" Version="1.2.1" GeneratePathProperty="true" />
 	  <PackageReference Include="Knyaz.Optimus" Version="3.0.1" GeneratePathProperty="true" />
 	  <PackageReference Include="Knyaz.Optimus.Scripting.Jurassic" Version="3.0.1" GeneratePathProperty="true" />
-	  <PackageReference Include="Newtonsoft.Json" Version="13.0.3" GeneratePathProperty="true" />
+	  <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
 	  <PackageReference Include="sqlite-net-pcl" Version="1.8.116" GeneratePathProperty="true" />
-	  <PackageReference Include="SQLitePCLRaw.bundle_green" Version="2.1.5" />
-	  <PackageReference Include="SQLitePCLRaw.provider.dynamic_cdecl" Version="2.1.5" />
+	  <PackageReference Include="SQLitePCLRaw.bundle_green" Version="2.1.7" />
+	  <PackageReference Include="SQLitePCLRaw.provider.dynamic_cdecl" Version="2.1.7" />
 	</ItemGroup>
 
 	<ItemGroup>

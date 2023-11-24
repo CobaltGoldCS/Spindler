@@ -17,11 +17,10 @@ public class DataService : IDataService
         database.CreateTablesAsync(createFlags: CreateFlags.None, typeof(Book), typeof(BookList), typeof(Config), typeof(GeneralizedConfig)).Wait();
     }
 
+    // NOTE: This is used for dependency injection
     public DataService()
     {
-        string databasePath = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Spindler.db");
-
-        database = new SQLiteAsyncConnection(databasePath,
+        database = new SQLiteAsyncConnection(System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Spindler.db"), 
                 SQLiteOpenFlags.ReadWrite |
                 SQLiteOpenFlags.Create |
                 SQLiteOpenFlags.SharedCache

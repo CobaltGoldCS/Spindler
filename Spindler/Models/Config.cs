@@ -62,7 +62,7 @@ public class Config : IIndexedModel
     [JsonIgnore]
     public Dictionary<string, object> ExtraConfigs
     {
-        get => JsonConvert.DeserializeObject<Dictionary<string, object>>(ExtraConfigsBlobbed) ?? new();
+        get => JsonConvert.DeserializeObject<Dictionary<string, object>>(ExtraConfigsBlobbed) ?? [];
         set
         {
             ExtraConfigsBlobbed = JsonConvert.SerializeObject(value);
