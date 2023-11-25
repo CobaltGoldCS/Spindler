@@ -66,10 +66,11 @@ public partial class WebScraperBrowser : WebView
     /// <param name="retryDelay">Delay before trying to find the selector again</param>
     /// <param name="timeout">The duration before <see cref="WaitUntilValid(Models.Path, TimeSpan, TimeSpan)"/> times out</param>
     /// <returns>Whether or not WaitUntilValid was able to find a matching html sequence</returns>
-    public async Task<bool> WaitUntilValid(Models.Path selector, TimeSpan retryDelay, TimeSpan timeout)
+    public async Task<bool> WaitUntilValid(Models.Path selector, TimeSpan retryDelay, TimeSpan timeout, CancellationToken? token = null)
     {
         var timer = Stopwatch.StartNew();
-        while (timer.Elapsed < timeout)
+        token ??= new CancellationTokenSource().Token;
+        while (timer.Elapsed < timeout && token.Value.IsCancellationRequested)
         {
             string html = await GetHtml();
             HtmlDocument doc = new();
@@ -109,15 +110,5 @@ public partial class WebScraperBrowser : WebView
     {
         InitializeComponent();
     }
-
-    private WebScraperBrowser(object _)
-    {
-    }
-
-    public static WebScraperBrowser CreateHeadless()
-    {
-        return new WebScraperBrowser(new object());
-    }
-
 
 }

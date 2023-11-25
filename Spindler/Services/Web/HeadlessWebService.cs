@@ -18,21 +18,22 @@ namespace Spindler.Services.Web
             WebScraperBrowser.Navigated += WebScraperBrowser_Navigated;
         }
 
-        public async Task<Result<string>> GetHtmlFromUrl(string url)
+        public async Task<Result<string>> GetHtmlFromUrl(string url, CancellationToken? token = null)
         {
 
 
             WebScraperBrowser.Source = url;
 
+            token ??= new CancellationToken();
 
             // Attempt to bypass cloudflare
             Models.Path cloudflareDetectPath = new Models.Path("body.no-js > div.main-wrapper > div.main-content > h2#challenge-running");
+            Stopwatch timer = Stopwatch.StartNew();
             try
             {
                 var cloudflareString = cloudflareDetectPath.Select(html, SelectorType.Text);
-                Stopwatch timer = Stopwatch.StartNew();
 
-                while (!string.IsNullOrEmpty(cloudflareString) || html.Length < 300)
+                while (!string.IsNullOrEmpty(cloudflareString) || html.Length < 300 && !token.Value.IsCancellationRequested)
                 {
                     await Task.Delay(TimeSpan.FromSeconds(2));
                     if (cloudflareString == null)
@@ -41,6 +42,7 @@ namespace Spindler.Services.Web
                     cloudflareString = cloudflareDetectPath.Select(html, SelectorType.Text);
                     if (timer.Elapsed >= TimeSpan.FromSeconds(20))
                     {
+                        timer.Reset();
                         return Result.Error<string>("Cloudlflare bypass timed out");
                     }
                 }
@@ -48,6 +50,15 @@ namespace Spindler.Services.Web
             catch (XPathException)
             {
                 return Result.Error<string>("X Path is invalid");
+            }
+            finally
+            {
+                timer.Reset();
+            }
+
+            if (token.Value.IsCancellationRequested)
+            {
+                return Result.Error<string>("Cancelled");
             }
 
             ReturnResult = Result.Success(html);

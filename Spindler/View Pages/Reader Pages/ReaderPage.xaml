@@ -77,7 +77,7 @@
                 WidthRequest="35"
                 FontAutoScalingEnabled="False"
                 FontSize="20"/>
-            <Grid RowDefinitions="*, 0"
+            <Grid RowDefinitions="*, 0, 0"
                   CompressedLayout.IsHeadless="True"
                   VerticalOptions="FillAndExpand"
                   Padding="0,40,0,0"
@@ -95,6 +95,7 @@
                                  NextCommandParameter="{x:Static services:ReaderDataService+UrlType.Next}"
                                  Grid.Row="0"/>
                 <controls:WebScraperBrowser x:Name="HeadlessBrowser" Visible="False" Grid.Row="1"/>
+                <controls:WebScraperBrowser x:Name="NextChapterBrowser" Visible="False" Grid.Row="2"/>
             </Grid>
         </Grid>
     </ScrollView>

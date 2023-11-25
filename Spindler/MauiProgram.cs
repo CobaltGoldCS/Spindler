@@ -1,4 +1,5 @@
-﻿using CommunityToolkit.Maui;
+﻿using CloudFlareUtilities;
+using CommunityToolkit.Maui;
 using Spindler.Services;
 using Spindler.ViewModels;
 using Spindler.Views;
@@ -71,13 +72,7 @@ public static class MauiProgram
 
     private static void AddHttpClient(this  IServiceCollection service)
     {
-        HttpClientHandler handler = new()
-        {
-            AllowAutoRedirect = true,
-            MaxAutomaticRedirections = 2,
-            PreAuthenticate = true,
-            UseDefaultCredentials = true,
-        };
+        ClearanceHandler handler = new();
         service.AddSingleton(new HttpClient(handler));
     }
 }
