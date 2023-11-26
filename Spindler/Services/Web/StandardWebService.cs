@@ -43,10 +43,11 @@ public class StandardWebService : IWebService
     /// </summary>
     /// <param name="url">The absolute url to attempt to scrape</param>
     /// <returns>Returns an ErrorOr object either containing the html or an error value string</returns>
-    public async Task<Result<string>> GetHtmlFromUrl(string url)
+    public async Task<Result<string>> GetHtmlFromUrl(string url, CancellationToken? token = null)
     {
         var message = new HttpRequestMessage(HttpMethod.Get, url);
-        var result = await Client.SendAsync(message);
+        token ??= new CancellationToken();
+        var result = await Client.SendAsync(message, token.Value);
         if (result.IsSuccessStatusCode)
         {
             return Result.Success(await result.Content.ReadAsStringAsync());

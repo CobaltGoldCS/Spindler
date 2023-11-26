@@ -4,6 +4,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using CommunityToolkit.Mvvm.Messaging.Messages;
+using Spindler.CustomControls;
 using Spindler.Models;
 using Spindler.Services;
 using Spindler.Services.Web;
@@ -38,10 +39,13 @@ public partial class ReaderViewModel : ObservableObject, IReader
     /// </summary>
     public Book CurrentBook = new() { Title = "Loading" };
 
+
+    private readonly WebScraperBrowser NextChapterBrowser;
+
     /// <summary>
     /// A cancellation token for the next chapter background service
     /// </summary>
-    public CancellationTokenRegistration nextChapterToken = new();
+    private CancellationTokenSource nextChapterToken = new();
 
     #region Bindable Properties
 
@@ -83,11 +87,12 @@ public partial class ReaderViewModel : ObservableObject, IReader
     /// <summary>
     /// Creates a new ReaderViewModel Instance (please use ReaderViewModelBuilder)
     /// </summary>
-    public ReaderViewModel(IDataService database, HttpClient client)
+    public ReaderViewModel(IDataService database, HttpClient client, WebScraperBrowser nextChapterBrowser)
     {
         IsLoading = true;
         Database = database;
         Client = client;
+        NextChapterBrowser = nextChapterBrowser;
         Shell.Current.Navigating += OnShellNavigating;
     }
 
@@ -99,15 +104,11 @@ public partial class ReaderViewModel : ObservableObject, IReader
     /// <returns>A task indicating the state of the inital load</returns>
     public async Task StartLoad()
     {
-        NextChapterService chapterService = new(Client);
+        
         await CurrentBook.UpdateViewTimeAndSave(Database);
         IDispatcher? dispatcher = Dispatcher.GetForCurrentThread();
-        _ = Task.Run(async () =>
-        {
-            // See https://github.com/gsemac/Gsemac.Common/issues/10
-            // IEnumerable<Book> updateQueue = await chapterService.CheckChaptersInBookList(CurrentBook, nextChapterToken.Token);
-            // await dispatcher!.DispatchAsync(async () => await App.Database.SaveItemsAsync(updateQueue));
-        });
+
+        NextChapterService chapterService = new(Client, NextChapterBrowser, Database);
 
         var data = await ReaderService.LoadUrl(CurrentBook!.Url);
         switch (data)
@@ -135,6 +136,10 @@ public partial class ReaderViewModel : ObservableObject, IReader
             catch (XPathException) { }
         }
         DataChanged();
+
+        List<Book> books = await Database.GetAllItemsAsync<Book>();
+        books.Remove(CurrentBook);
+        _ = Task.Run(async () => await chapterService.SaveBooks(books, nextChapterToken.Token));
     }
     #endregion
 
@@ -242,6 +247,7 @@ public partial class ReaderViewModel : ObservableObject, IReader
     public async void OnShellNavigating(object? sender,
                        ShellNavigatingEventArgs e)
     {
+        nextChapterToken.Cancel();
         if (e.Target.Location.OriginalString == "..")
         {
             CurrentBook.Position = ReaderScrollPosition;
@@ -308,9 +314,9 @@ public partial class ReaderViewModel : ObservableObject, IReader
 public class ReaderViewModelBuilder
 {
     private readonly ReaderViewModel Target;
-    public ReaderViewModelBuilder(IDataService database, HttpClient client)
+    public ReaderViewModelBuilder(IDataService database, HttpClient client, WebScraperBrowser NextChapterBrowser)
     {
-        Target = new ReaderViewModel(database, client);
+        Target = new ReaderViewModel(database, client, NextChapterBrowser);
     }
 
     /// <summary>
