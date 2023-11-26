@@ -1,5 +1,4 @@
-﻿using CloudKit;
-using Spindler.CustomControls;
+﻿using Spindler.CustomControls;
 using Spindler.Models;
 using Spindler.Utilities;
 

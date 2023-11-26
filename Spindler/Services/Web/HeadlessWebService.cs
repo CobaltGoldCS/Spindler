@@ -12,6 +12,7 @@ namespace Spindler.Services.Web
 
         WebScraperBrowser WebScraperBrowser { get; set; }
         Stopwatch Timer = new();
+        CancellationToken Token = new();
         TaskCompletionSource<Result<string>> HtmlResult { get; set; } = new TaskCompletionSource<Result<string>>();
 
         public HeadlessWebService(WebScraperBrowser browser)
@@ -20,12 +21,18 @@ namespace Spindler.Services.Web
             WebScraperBrowser.Navigated += WebScraperBrowser_Navigated;
         }
 
+        ~HeadlessWebService()
+        {
+            WebScraperBrowser.Navigated -= WebScraperBrowser_Navigated;
+        }
+
         public async Task<Result<string>> GetHtmlFromUrl(string url, CancellationToken? token = null)
         {
             token ??= new CancellationToken();
+            Token = token.Value;
             Timer = Stopwatch.StartNew();
 
-            WebScraperBrowser.Source = url;
+            await MainThread.InvokeOnMainThreadAsync(() => WebScraperBrowser.Source = url);
 
 
             string html;
@@ -38,7 +45,7 @@ namespace Spindler.Services.Web
                 do
                 {
                     HtmlResult = new TaskCompletionSource<Result<string>>();
-                    if (Timer.Elapsed > TIMEOUT || token.Value.IsCancellationRequested)
+                    if (Timer.Elapsed > TIMEOUT || Token.IsCancellationRequested)
                     {
                         Timer.Reset();
                         return Result.Error<string>("Website timed out");
@@ -68,7 +75,7 @@ namespace Spindler.Services.Web
             return Result.Success(html);
         }
 
-
+        // [WebView] java.lang.Throwable: A WebView method was called on thread 'Thread-10'. All WebView methods must be called on the same thread. (Expected Looper Looper (main, tid 2) {8ff3b30} called on null, FYI main Looper is Looper (main, tid 2) {8ff3b30})
         async void WebScraperBrowser_Navigated(object? sender, WebNavigatedEventArgs e)
         {
             if (e.Result == WebNavigationResult.Cancel)
@@ -81,7 +88,12 @@ namespace Spindler.Services.Web
                 HtmlResult.SetResult(Result.Error<string>("Headless navigation failed"));
                 return;
             }
-            HtmlResult.SetResult(Result.Success(await WebScraperBrowser.GetHtml()));
+            string html = await MainThread.InvokeOnMainThreadAsync(async () => await WebScraperBrowser.GetHtml());
+            if (HtmlResult.Task.IsCompleted || Token.IsCancellationRequested)
+            {
+                return;
+            }
+            HtmlResult.SetResult(Result.Success(html));
         }
     }
 }
