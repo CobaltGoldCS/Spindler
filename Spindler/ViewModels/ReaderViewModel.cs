@@ -104,9 +104,11 @@ public partial class ReaderViewModel : ObservableObject, IReader
     /// <returns>A task indicating the state of the inital load</returns>
     public async Task StartLoad()
     {
-        NextChapterService chapterService = new(Client, NextChapterBrowser);
+        
         await CurrentBook.UpdateViewTimeAndSave(Database);
         IDispatcher? dispatcher = Dispatcher.GetForCurrentThread();
+
+        NextChapterService chapterService = new(Client, NextChapterBrowser, Database);
 
         var data = await ReaderService.LoadUrl(CurrentBook!.Url);
         switch (data)
@@ -135,25 +137,9 @@ public partial class ReaderViewModel : ObservableObject, IReader
         }
         DataChanged();
 
-
-        _ =  Task.Run(async () =>
-        {
-            List<Book> books = await Database.GetAllItemsAsync<Book>();
-            books.Remove(CurrentBook);
-            foreach (Book book in books)
-            {
-                if (book.HasNextChapter)
-                {
-                    continue;
-                }
-
-                dispatcher!.Dispatch(async () =>
-                {
-                    Book updated = await chapterService.CheckNextChapterBook(book, nextChapterToken.Token);
-                    await App.Database.SaveItemAsync(updated);
-                });
-            }
-        });
+        List<Book> books = await Database.GetAllItemsAsync<Book>();
+        books.Remove(CurrentBook);
+        _ = Task.Run(async () => await chapterService.SaveBooks(books, nextChapterToken.Token));
     }
     #endregion
 

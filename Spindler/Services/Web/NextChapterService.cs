@@ -1,13 +1,31 @@
-﻿using Spindler.CustomControls;
+﻿using CloudKit;
+using Spindler.CustomControls;
 using Spindler.Models;
 using Spindler.Utilities;
 
 namespace Spindler.Services.Web
 {
-    public class NextChapterService(HttpClient client, WebScraperBrowser browser)
+    public class NextChapterService
     {
-        readonly HttpClient Client = client;
-        readonly WebScraperBrowser Browser = browser;
+        readonly HttpClient Client;
+        readonly HeadlessWebService Service;
+        readonly IDataService Database;
+
+        public NextChapterService(HttpClient client, WebScraperBrowser browser, IDataService database)
+        {
+            Client = client;
+            Service = new(browser);
+            Database = database;
+        }
+
+        public async Task SaveBooks(List<Book> books, CancellationToken token)
+        {
+            foreach (Book book in books)
+            {
+                Book updated = await CheckNextChapterBook(book, token);
+                await Database.SaveItemAsync(updated);
+            }
+        }
 
         public async Task<Book> CheckNextChapterBook(Book book, CancellationToken token)
         {
@@ -17,8 +35,7 @@ namespace Spindler.Services.Web
                 return book;
             }
 
-            HeadlessWebService service = new(Browser);
-            Result<string> result = await service.GetHtmlFromUrl(book.Url, token);
+            Result<string> result = await Service.GetHtmlFromUrl(book.Url, token);
 
             if (result is Result<string>.Err)
             {

@@ -47,6 +47,7 @@ public partial class ReaderPage : ContentPage, IQueryAttributable, IRecipient<Ch
             });
             return;
         }
+
         var ViewModel = new ReaderViewModelBuilder(DataService, Client, NextChapterBrowser)
             .SetRequiredInfo(new((Config)configObject, type switch
             {
