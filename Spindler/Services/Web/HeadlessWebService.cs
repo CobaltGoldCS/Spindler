@@ -8,10 +8,12 @@ namespace Spindler.Services.Web
 {
     public class HeadlessWebService : IWebService
     {
-        WebScraperBrowser WebScraperBrowser { get; set; }
+        readonly TimeSpan TIMEOUT = TimeSpan.FromSeconds(15);
 
-        Result<string>? ReturnResult;
-        string html = string.Empty;
+        WebScraperBrowser WebScraperBrowser { get; set; }
+        Stopwatch Timer = new();
+        TaskCompletionSource<Result<string>> HtmlResult { get; set; } = new TaskCompletionSource<Result<string>>();
+
         public HeadlessWebService(WebScraperBrowser browser)
         {
             WebScraperBrowser = browser;
@@ -20,50 +22,50 @@ namespace Spindler.Services.Web
 
         public async Task<Result<string>> GetHtmlFromUrl(string url, CancellationToken? token = null)
         {
-
+            token ??= new CancellationToken();
+            Timer = Stopwatch.StartNew();
 
             WebScraperBrowser.Source = url;
 
-            token ??= new CancellationToken();
 
+            string html;
             // Attempt to bypass cloudflare
-            Models.Path cloudflareDetectPath = new Models.Path("body.no-js > div.main-wrapper > div.main-content > h2#challenge-running");
-            Stopwatch timer = Stopwatch.StartNew();
+            Models.Path cloudflareDetectPath = new("body.no-js > div.main-wrapper > div.main-content > h2#challenge-running");
             try
             {
-                var cloudflareString = cloudflareDetectPath.Select(html, SelectorType.Text);
 
-                while (!string.IsNullOrEmpty(cloudflareString) || html.Length < 300 && !token.Value.IsCancellationRequested)
+                string cloudFlareString = string.Empty;
+                do
                 {
-                    await Task.Delay(TimeSpan.FromSeconds(2));
-                    if (cloudflareString == null)
-                        break;
-
-                    cloudflareString = cloudflareDetectPath.Select(html, SelectorType.Text);
-                    if (timer.Elapsed >= TimeSpan.FromSeconds(20))
+                    HtmlResult = new TaskCompletionSource<Result<string>>();
+                    if (Timer.Elapsed > TIMEOUT || token.Value.IsCancellationRequested)
                     {
-                        timer.Reset();
-                        return Result.Error<string>("Cloudlflare bypass timed out");
+                        Timer.Reset();
+                        return Result.Error<string>("Website timed out");
                     }
+
+                    html = await HtmlResult.Task switch
+                    {
+                        Result<string>.Err => string.Empty,
+                        Result<string>.Ok okResult => okResult.Value,
+                        _ => throw new NotImplementedException()
+                    };
+
+                    cloudFlareString = cloudflareDetectPath.Select(html, SelectorType.Text);
                 }
+                while (!string.IsNullOrEmpty(cloudFlareString) || html.Length < 300);
             }
             catch (XPathException)
             {
+                Timer.Reset();
                 return Result.Error<string>("X Path is invalid");
             }
             finally
             {
-                timer.Reset();
+                Timer.Reset();
             }
 
-            if (token.Value.IsCancellationRequested)
-            {
-                return Result.Error<string>("Cancelled");
-            }
-
-            ReturnResult = Result.Success(html);
-            html = string.Empty;
-            return ReturnResult;
+            return Result.Success(html);
         }
 
 
@@ -71,16 +73,15 @@ namespace Spindler.Services.Web
         {
             if (e.Result == WebNavigationResult.Cancel)
             {
-                ReturnResult = Result.Error<string>("Headless navigation cancelled");
+                HtmlResult.SetResult(Result.Error<string>("Headless navigation cancelled"));
                 return;
             }
             if (e.Result == WebNavigationResult.Failure)
             {
-                ReturnResult = Result.Error<string>("Headless navigation failed");
+                HtmlResult.SetResult(Result.Error<string>("Headless navigation failed"));
                 return;
             }
-
-            html = await WebScraperBrowser.GetHtml();
+            HtmlResult.SetResult(Result.Success(await WebScraperBrowser.GetHtml()));
         }
     }
 }
