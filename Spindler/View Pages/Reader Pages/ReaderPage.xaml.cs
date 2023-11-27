@@ -51,7 +51,7 @@ public partial class ReaderPage : ContentPage, IQueryAttributable, IRecipient<Ch
         var ViewModel = new ReaderViewModelBuilder(DataService, Client, NextChapterBrowser)
             .SetRequiredInfo(new((Config)configObject, type switch
             {
-                ReaderType.Headless => new HeadlessWebService(HeadlessBrowser),
+                ReaderType.Headless => HeadlessBrowser,
                 ReaderType.Standard => new StandardWebService(Client),
                 _ => throw new NotImplementedException("This service has not been implemented")
             }))

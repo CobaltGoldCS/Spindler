@@ -1,28 +1,20 @@
-﻿using Spindler.CustomControls;
-using Spindler.Models;
+﻿using Spindler.Models;
 using Spindler.Utilities;
 
 namespace Spindler.Services.Web
 {
-    public class NextChapterService
+    public class NextChapterService(HttpClient client, IWebService browser, IDataService database)
     {
-        readonly HttpClient Client;
-        readonly HeadlessWebService Service;
-        readonly IDataService Database;
-
-        public NextChapterService(HttpClient client, WebScraperBrowser browser, IDataService database)
-        {
-            Client = client;
-            Service = new(browser);
-            Database = database;
-        }
+        private readonly HttpClient _Client = client;
+        private readonly IWebService _WebService = browser;
+        private readonly IDataService _Database = database;
 
         public async Task SaveBooks(List<Book> books, CancellationToken token)
         {
             foreach (Book book in books)
             {
                 Book updated = await CheckNextChapterBook(book, token);
-                await Database.SaveItemAsync(updated);
+                await _Database.SaveItemAsync(updated);
             }
         }
 
@@ -34,7 +26,7 @@ namespace Spindler.Services.Web
                 return book;
             }
 
-            Result<string> result = await Service.GetHtmlFromUrl(book.Url, token);
+            Result<string> result = await _WebService.GetHtmlFromUrl(book.Url, token);
 
             if (result is Result<string>.Err)
             {
@@ -42,7 +34,7 @@ namespace Spindler.Services.Web
             }
 
             string html = (result as Result<string>.Ok)!.Value;
-            Config? config = await Config.FindValidConfig(Client, book.Url, html);
+            Config? config = await Config.FindValidConfig(_Client, book.Url, html);
 
             if (config is null || config.UsesWebview)
                 return book;
