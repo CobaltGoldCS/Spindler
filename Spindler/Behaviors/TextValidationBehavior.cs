@@ -7,7 +7,8 @@ public class TextValidationBehavior : Behavior<Entry>
     public TextValidationBehavior(Func<string, bool> validationFunction)
     {
         this.validationFunction = validationFunction;
-        ICollection<ResourceDictionary> mergedDictionaries = Application.Current!.Resources.MergedDictionaries;
+        ResourceDictionary mergedDictionaries = Application.Current!.Resources;
+        textColor = (Color)mergedDictionaries["TextColor"];
     }
     protected override void OnAttachedTo(Entry entry)
     {
