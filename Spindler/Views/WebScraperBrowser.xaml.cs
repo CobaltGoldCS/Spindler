@@ -56,43 +56,20 @@ public partial class WebScraperBrowser : WebView, IWebService
     }
 
     /// <summary>
-    /// Get the html of the current page using a JavaScript Evaluation
+    /// Get the html of the current page using a JavaScript Evaluation.
+    /// <para>
+    /// As this is based on what the Browser has currently loaded there is a possibility that the html
+    /// is incomplete, and unwanted. If you want complete html every time use <see cref="GetHtmlFromUrl(string, CancellationToken?)"/>
+    /// </para>
     /// </summary>
+
     /// <returns>Html of the given page</returns>
-    public async Task<string> GetHtml()
+    public async Task<string> GetHtmlUnsafe()
     {
         string html = await EvaluateJavaScriptAsync(
             "'<html>'+document.getElementsByTagName('html')[0].innerHTML+'</html>';") ?? "";
         html = Regex.Unescape(html);
         return html;
-    }
-
-    /// <summary>
-    /// Waits <paramref name="selector"/> is matched by the current page or <paramref name="timeout"/>
-    /// </summary>
-    /// <param name="selector">The selector to wait for </param>
-    /// <param name="retryDelay">Delay before trying to find the selector again</param>
-    /// <param name="timeout">The duration before <see cref="WaitUntilValid(Models.Path, TimeSpan, TimeSpan)"/> times out</param>
-    /// <returns>Whether or not WaitUntilValid was able to find a matching html sequence</returns>
-    public async Task<bool> WaitUntilValid(Models.Path selector, TimeSpan retryDelay, TimeSpan timeout, CancellationToken? token = null)
-    {
-        var timer = Stopwatch.StartNew();
-        token ??= new CancellationTokenSource().Token;
-        while (timer.Elapsed < timeout && token.Value.IsCancellationRequested)
-        {
-            string html = await GetHtml();
-            HtmlDocument doc = new();
-            doc.LoadHtml(html);
-            string textString = selector.Select(doc, SelectorType.Text);
-            if (textString != string.Empty)
-            {
-                timer.Stop();
-                return true;
-            }
-            await Task.Delay(retryDelay);
-        }
-        timer.Stop();
-        return false;
     }
 
     /// <summary>
@@ -181,7 +158,7 @@ public partial class WebScraperBrowser : WebView, IWebService
             _htmlCompletion.SetResult(Result.Error<string>("Headless navigation failed"));
             return;
         }
-        string html = await MainThread.InvokeOnMainThreadAsync(GetHtml);
+        string html = await MainThread.InvokeOnMainThreadAsync(GetHtmlUnsafe);
         if (_htmlCompletion.Task.IsCompleted || _cancellationToken.IsCancellationRequested)
         {
             return;

@@ -145,7 +145,7 @@ public partial class BookSearcherPage : ContentPage
     [RelayCommand]
     private async Task CheckCompatible(string url = "")
     {
-        string html = await SearchBrowser.GetHtml();
+        string html = await SearchBrowser.GetHtmlUnsafe();
 
         Config = await Config.FindValidConfig(Client, !string.IsNullOrEmpty(url) ? url : SearchBrowser.GetUrl(), html);
         if (Config is null)
@@ -188,7 +188,7 @@ public partial class BookSearcherPage : ContentPage
     [RelayCommand]
     private async Task CreateBookFromConfigInformation()
     {
-        string html = await SearchBrowser.GetHtml();
+        string html = await SearchBrowser.GetHtmlUnsafe();
 
         PickerPopup bookListPopup = new("Choose Book List of Book", await App.Database.GetAllItemsAsync<BookList>());
         var result = await this.ShowPopupAsync(bookListPopup);
