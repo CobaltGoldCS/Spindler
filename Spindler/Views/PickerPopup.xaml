@@ -23,11 +23,10 @@
             <CollectionView.ItemTemplate>
                 <DataTemplate x:DataType="Models:IIndexedModel">
                     <Border Padding="10" HorizontalOptions="Fill" BackgroundColor="{DynamicResource CardBackground}">
-                        <Label VerticalTextAlignment="Center" 
-                               HorizontalTextAlignment="Center" 
-                               HorizontalOptions="Fill"
+                        <Label HorizontalTextAlignment="Center" 
                                FontAutoScalingEnabled="False"
                                FontSize="Large"
+                               TextColor="{DynamicResource TextColor}"
                                Text="{Binding Name}"/>
                     </Border>
                 </DataTemplate>

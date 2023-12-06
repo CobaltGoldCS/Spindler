@@ -39,7 +39,7 @@ public partial class PickerPopup : Popup
             OnPropertyChanged();
         }
     }
-
+    // TODO: The text items do not show up other than the background
     public PickerPopup(string title, IEnumerable<IIndexedModel> items)
     {
         InitializeComponent();
