@@ -20,7 +20,7 @@ public partial class DetailLabel : ContentView
         set => SetValue(TextProperty, value);
     }
     public DetailLabel()
-	{
-		InitializeComponent();
-	}
+    {
+        InitializeComponent();
+    }
 }

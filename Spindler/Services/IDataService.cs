@@ -12,9 +12,9 @@ public interface IDataService
         where T : IIndexedModel, new();
 
     Task<List<T>> GetAllItemsAsync<T>() where T : IIndexedModel, new();
-    
+
     Task<int> DeleteItemAsync<T>(T item) where T : IIndexedModel, new();
-    
+
     Task<T> GetItemByIdAsync<T>(int id) where T : IIndexedModel, new();
 
     #endregion

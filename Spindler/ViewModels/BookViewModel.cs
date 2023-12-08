@@ -1,12 +1,8 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using Microsoft.Maui.Graphics.Platform;
 using Spindler.Models;
-using Spindler.Utilities;
 using Spindler.Views;
 using Spindler.Views.Book_Pages;
-using System;
-using System.Net;
 
 namespace Spindler.ViewModels;
 

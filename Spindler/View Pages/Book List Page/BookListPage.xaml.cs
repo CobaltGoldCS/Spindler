@@ -1,6 +1,5 @@
 namespace Spindler.Views;
 
-using CommunityToolkit.Maui.Animations;
 using Spindler.Models;
 using Spindler.ViewModels;
 using System.Collections.Generic;
@@ -23,7 +22,7 @@ public partial class BookListPage : ContentPage, IQueryAttributable
 
         DataTemplate bookLayout = (DataTemplate)Resources[layoutType + "Layout"];
         ItemsLayout itemsLayout = (ItemsLayout)Resources[layoutType + "ItemsLayout"];
-        
+
         BooksList.ItemTemplate = bookLayout;
         BooksList.ItemsLayout = itemsLayout;
 

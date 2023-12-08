@@ -2,7 +2,6 @@ namespace Spindler;
 
 using Microsoft.Maui.Controls;
 using Spindler.Services;
-using Spindler.Utilities;
 using Spindler.ViewModels;
 
 public partial class HomePage : ContentPage

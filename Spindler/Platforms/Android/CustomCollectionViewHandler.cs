@@ -1,6 +1,5 @@
-﻿using Microsoft.Maui.Controls;
+﻿using AndroidX.RecyclerView.Widget;
 using Microsoft.Maui.Controls.Handlers.Items;
-using AndroidX.RecyclerView.Widget;
 
 namespace Spindler.Platforms.Android;
 

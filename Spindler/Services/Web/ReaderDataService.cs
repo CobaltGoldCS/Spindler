@@ -1,13 +1,11 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using HtmlAgilityPack;
-using HtmlAgilityPack.CssSelectors.NetCore;
 using Spindler.Models;
 using Spindler.Services.Web;
 using Spindler.Utilities;
 using System.Text.RegularExpressions;
 using System.Web;
 using System.Xml.XPath;
-using Path = Spindler.Models.Path;
 
 namespace Spindler.Services;
 
@@ -33,8 +31,8 @@ public partial class ReaderDataService : ObservableObject
 
     private WebUtilities WebUtilities = new();
 
-    private Task<Result<LoadedData>>[] LoadingDataTask = new Task<Result<LoadedData>>[] 
-    { 
+    private Task<Result<LoadedData>>[] LoadingDataTask = new Task<Result<LoadedData>>[]
+    {
         Task.FromResult(Result.Error<LoadedData>("Uninitialized Data")),
         Task.FromResult(Result.Error<LoadedData>("Uninitialized Data"))
     };
@@ -80,7 +78,7 @@ public partial class ReaderDataService : ObservableObject
 
         LoadingDataTask[(int)urlType] = LoadUrl(urlType == UrlType.Previous ? data.prevUrl : data.nextUrl);
         // This task holds just the previously loaded data in the array
-        LoadingDataTask[( (int)urlType + 1 ) % LoadingDataTask.Length] = Task.FromResult(Result.Success(currentData));
+        LoadingDataTask[((int)urlType + 1) % LoadingDataTask.Length] = Task.FromResult(Result.Success(currentData));
 
         return returnData;
     }

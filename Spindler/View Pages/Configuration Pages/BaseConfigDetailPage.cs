@@ -1,9 +1,9 @@
 ﻿using CommunityToolkit.Maui.Alerts;
 using CommunityToolkit.Maui.Storage;
+using Newtonsoft.Json;
 using Spindler.Services;
 using Spindler.Services.Web;
 using System.Text;
-using Newtonsoft.Json;
 
 namespace Spindler.Views.Configuration_Pages
 {
@@ -15,7 +15,7 @@ namespace Spindler.Views.Configuration_Pages
     public abstract class BaseConfigDetailPage<TConfig> : ContentPage, IQueryAttributable where TConfig : Models.Config, new()
     {
         #region Attributes 
-        
+
         protected ContentExtractorOption[] possibleExtractors = ((TargetType[])Enum.GetValues(typeof(TargetType)))
         .Select(content => ContentExtractorOption.FromContentType(content))
         .ToArray();

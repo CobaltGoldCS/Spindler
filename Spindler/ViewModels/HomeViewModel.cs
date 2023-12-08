@@ -3,10 +3,7 @@ using CommunityToolkit.Mvvm.Input;
 using Spindler.Models;
 using Spindler.Services;
 using Spindler.Views;
-using System.Collections.Generic;
-using System;
 using System.Collections.ObjectModel;
-using System.Collections;
 
 namespace Spindler.ViewModels;
 
@@ -62,7 +59,7 @@ public partial class HomeViewModel : ObservableObject
     private async Task Selection()
     {
         if (CurrentSelection is null)
-                return;
+            return;
 
         await CurrentSelection!.UpdateAccessTimeToNow();
         Dictionary<string, object> parameters = new()

@@ -1,9 +1,6 @@
-﻿using Android.Graphics;
-using Android.Graphics.Drawables;
+﻿using Android.Graphics.Drawables;
 using Android.Views;
-using Android.Widget;
 using Google.Android.Material.BottomNavigation;
-using Google.Android.Material.Internal;
 using Microsoft.Maui.Controls.Platform;
 using Microsoft.Maui.Controls.Platform.Compatibility;
 using Microsoft.Maui.Platform;

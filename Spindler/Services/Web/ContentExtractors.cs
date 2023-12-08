@@ -2,13 +2,8 @@
 using HtmlAgilityPack.CssSelectors.NetCore;
 using Spindler.Models;
 using Spindler.Services.Web;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection.Metadata.Ecma335;
 using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using System.Web;
 using Path = Spindler.Models.Path;
 
@@ -29,7 +24,7 @@ public abstract partial class BaseContentExtractor
     /// <param name="config">Configuration information for the HTML content</param>
     /// <returns>Main Content according to Config and Document</returns>
     public abstract string GetContent(HtmlDocument nav, Config config, ConfigService service);
-    
+
     /// <summary>
     /// Tags that should not be included (Generally)
     /// </summary>
@@ -189,7 +184,8 @@ public class AllTagsContentExtractor : BaseContentExtractor
             if (!node.HasChildNodes)
             {
                 builder.Append(HttpUtility.HtmlDecode(node.InnerText).Replace("\n", config.Separator).Trim());
-            } else
+            }
+            else
             {
                 builder.Append(ExtractChildText(node, config));
             }

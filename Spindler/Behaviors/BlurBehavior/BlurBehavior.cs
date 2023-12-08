@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Spindler.Behaviors;
+﻿namespace Spindler.Behaviors;
 public partial class BlurBehavior
 {
     public static readonly BindableProperty RadiusProperty = BindableProperty.Create(nameof(Radius), typeof(float), typeof(BlurBehavior), 5f, propertyChanged: OnRadiusChanged);

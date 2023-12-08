@@ -1,6 +1,5 @@
 using CommunityToolkit.Mvvm.Input;
 using Spindler.Models;
-using System.Runtime.CompilerServices;
 
 namespace Spindler.Views;
 
@@ -8,7 +7,7 @@ namespace Spindler.Views;
 [QueryProperty(nameof(Message), "errormessage")]
 public partial class ErrorPage : ContentPage
 {
-    
+
     #region Attributes
     private Config? config = null;
     public Config? Config

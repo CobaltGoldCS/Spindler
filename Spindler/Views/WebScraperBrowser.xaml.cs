@@ -1,38 +1,8 @@
-
-/* Unmerged change from project 'Spindler (net7.0-windows10.0.19041.0)'
-Before:
-using System.Diagnostics;
-After:
-using HtmlAgilityPack;
-using Spindler.Services;
-using System.Diagnostics;
-*/
-
-/* Unmerged change from project 'Spindler (net7.0-maccatalyst)'
-Before:
-using System.Diagnostics;
-After:
-using HtmlAgilityPack;
-using Spindler.Services;
-using System.Diagnostics;
-*/
-
-/* Unmerged change from project 'Spindler (net7.0-ios)'
-Before:
-using System.Diagnostics;
-After:
-using HtmlAgilityPack;
-using Spindler.Services;
-using System.Diagnostics;
-*/
-using HtmlAgilityPack;
 using Spindler.Models;
-using Spindler.Services;
 using Spindler.Services.Web;
 using Spindler.Utilities;
 using System.Diagnostics;
 using System.Text.RegularExpressions;
-using System.Threading;
 using System.Xml.XPath;
 
 namespace Spindler.CustomControls;

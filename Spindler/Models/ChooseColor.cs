@@ -1,4 +1,4 @@
 ﻿namespace Spindler.Models
 {
-    public record ChooseColor (Color color);
+    public record ChooseColor(Color color);
 }

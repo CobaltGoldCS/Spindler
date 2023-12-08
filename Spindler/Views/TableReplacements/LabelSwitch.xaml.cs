@@ -21,7 +21,7 @@ public partial class LabelSwitch : ContentView
     }
 
     public LabelSwitch()
-	{
-		InitializeComponent();
-	}
+    {
+        InitializeComponent();
+    }
 }

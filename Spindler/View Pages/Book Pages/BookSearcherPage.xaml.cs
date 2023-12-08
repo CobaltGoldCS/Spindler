@@ -4,7 +4,6 @@ using CommunityToolkit.Mvvm.Input;
 using HtmlAgilityPack;
 using Spindler.CustomControls;
 using Spindler.Models;
-using Spindler.Services;
 using Path = Spindler.Models.Path;
 
 namespace Spindler.Views.Book_Pages;
@@ -163,7 +162,8 @@ public partial class BookSearcherPage : ContentPage
             string content = contentPath.Select(doc, SelectorType.Text);
 
             SwitchUiBasedOnState(!string.IsNullOrEmpty(content) ? State.BookFound : State.BookNotFound);
-        } catch (Exception e)
+        }
+        catch (Exception e)
         {
             await Toast.Make(e.Message).Show();
         }

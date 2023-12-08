@@ -1,14 +1,13 @@
-﻿using Spindler.Services;
-using Spindler.Utilities;
-using Spindler.Views;
-using Spindler.Resources;
-using Spindler.Views.Book_Pages;
-using SQLitePCL;
-using CommunityToolkit.Mvvm.Messaging;
-using Spindler.Models;
-using CommunityToolkit.Maui.Behaviors;
+﻿using CommunityToolkit.Maui.Behaviors;
 using CommunityToolkit.Maui.Core;
 using CommunityToolkit.Maui.Core.Extensions;
+using CommunityToolkit.Mvvm.Messaging;
+using Spindler.Resources;
+using Spindler.Services;
+using Spindler.Utilities;
+using Spindler.Views;
+using Spindler.Views.Book_Pages;
+using SQLitePCL;
 
 namespace Spindler;
 
@@ -44,7 +43,8 @@ public partial class App : Application
         Routing.RegisterRoute("Config/" + nameof(ConfigDetailPage), typeof(ConfigDetailPage));
         Routing.RegisterRoute("GeneralConfig/" + nameof(GeneralizedConfigDetailPage), typeof(GeneralizedConfigDetailPage));
 
-        WeakReferenceMessenger.Default.Register<ThemeChangedMessage>(this, (theme, message) => {
+        WeakReferenceMessenger.Default.Register<ThemeChangedMessage>(this, (theme, message) =>
+        {
             SetTheme(message.Value);
         });
     }

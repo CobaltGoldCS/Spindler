@@ -1,7 +1,6 @@
-﻿using Spindler.Services;
+﻿using Newtonsoft.Json;
+using Spindler.Services;
 using SQLite;
-using System.Collections.ObjectModel;
-using Newtonsoft.Json;
 
 namespace Spindler.Models;
 
@@ -43,7 +42,7 @@ public record Book : IIndexedModel
     /// </summary>
     public bool Pinned { get; set; } = false;
 
-   
+
     [Ignore]
     public IList<Bookmark> Bookmarks
     {

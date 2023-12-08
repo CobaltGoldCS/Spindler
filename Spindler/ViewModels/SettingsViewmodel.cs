@@ -112,7 +112,7 @@ public partial class SettingsViewmodel : ObservableObject
     [RelayCommand]
     private static async Task Export()
     {
-        
+
         CancellationToken cancellationToken = new();
         using FileStream stream = File.OpenRead(DatabaseLocation);
 

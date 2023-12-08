@@ -69,7 +69,7 @@ public static class MauiProgram
         return service;
     }
 
-    private static void AddHttpClient(this  IServiceCollection service)
+    private static void AddHttpClient(this IServiceCollection service)
     {
         service.AddSingleton(new HttpClient());
     }

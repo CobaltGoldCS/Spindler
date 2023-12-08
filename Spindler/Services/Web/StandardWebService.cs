@@ -1,6 +1,4 @@
 ﻿using Spindler.Utilities;
-using System.Net;
-using System.Net.Http.Headers;
 
 namespace Spindler.Services.Web;
 

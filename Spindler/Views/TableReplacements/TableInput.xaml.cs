@@ -20,7 +20,7 @@ public partial class TableInput : ContentView
         set => SetValue(TextProperty, value);
     }
     public TableInput()
-	{
-		InitializeComponent();
-	}
+    {
+        InitializeComponent();
+    }
 }

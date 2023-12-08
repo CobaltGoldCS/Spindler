@@ -3,7 +3,7 @@
 public class WebUtilities
 {
     private Uri? baseUrl;
-    private Uri BaseUrl 
+    private Uri BaseUrl
     {
         get
         {

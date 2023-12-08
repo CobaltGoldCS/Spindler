@@ -1,16 +1,9 @@
 using CommunityToolkit.Maui.Alerts;
-using CommunityToolkit.Maui.Animations;
-using CommunityToolkit.Maui.Behaviors;
-using CommunityToolkit.Maui.Views;
 using CommunityToolkit.Mvvm.Messaging;
-using Spindler.CustomControls;
 using Spindler.Models;
-using Spindler.Services.Web;
 using Spindler.Services;
-using Spindler.Utilities;
+using Spindler.Services.Web;
 using Spindler.ViewModels;
-using Spindler.Views;
-using System.ComponentModel;
 
 namespace Spindler;
 
@@ -28,14 +21,14 @@ public partial class ReaderPage : ContentPage, IQueryAttributable, IRecipient<Ch
     public async void ApplyQueryAttributes(IDictionary<string, object> query)
     {
         Book book = (query["book"] as Book)!;
-        
+
         ReaderType type = (ReaderType)query["type"];
         if (!query.TryGetValue("config", out object? configObject))
         {
             configObject = await Config.FindValidConfig(Client, book.Url);
         }
 
-        
+
 
         if (configObject is null)
         {
@@ -72,7 +65,8 @@ public partial class ReaderPage : ContentPage, IQueryAttributable, IRecipient<Ch
         if (message.Value.Item1 < 0)
         {
             await ReadingLayout.ScrollToAsync(ReaderView, ScrollToPosition.End, message.Value.Item2);
-        } else
+        }
+        else
         {
             await ReadingLayout.ScrollToAsync(ReadingLayout.ScrollX, message.Value.Item1, message.Value.Item2);
         }

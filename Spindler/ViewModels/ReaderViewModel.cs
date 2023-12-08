@@ -1,5 +1,4 @@
-﻿using CommunityToolkit.Maui.Core.Extensions;
-using CommunityToolkit.Maui.Views;
+﻿using CommunityToolkit.Maui.Views;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
@@ -104,7 +103,7 @@ public partial class ReaderViewModel : ObservableObject, IReader
     /// <returns>A task indicating the state of the inital load</returns>
     public async Task StartLoad()
     {
-        
+
         await CurrentBook.UpdateViewTimeAndSave(Database);
         IDispatcher? dispatcher = Dispatcher.GetForCurrentThread();
 
@@ -155,7 +154,7 @@ public partial class ReaderViewModel : ObservableObject, IReader
     {
         if (IsLoading)
             return;
-        
+
         IsLoading = true;
         PrevButtonIsVisible = false;
         NextButtonIsVisible = false;
@@ -170,7 +169,7 @@ public partial class ReaderViewModel : ObservableObject, IReader
         };
 
         var dataResult = await ReaderService.GetLoadedData(selector, CurrentData!);
-        if(dataResult is Result<LoadedData>.Err error)
+        if (dataResult is Result<LoadedData>.Err error)
         {
             await SafeAssert(false, error.Message);
             return;
@@ -188,8 +187,8 @@ public partial class ReaderViewModel : ObservableObject, IReader
         if (CurrentData is null || IsLoading)
             return;
         Popup view = new BookmarkDialog(
-            Database, 
-            CurrentBook, 
+            Database,
+            CurrentBook,
             getNewBookmark: () => new Bookmark(CurrentData.Title!, ReaderScrollPosition, CurrentData.currentUrl!)
         );
 
@@ -237,7 +236,7 @@ public partial class ReaderViewModel : ObservableObject, IReader
     }
     #endregion
 
-    
+
 
     /// <summary>
     /// Overrides navigation methods
@@ -277,7 +276,7 @@ public partial class ReaderViewModel : ObservableObject, IReader
         CurrentData.nextUrl = new Uri(baseUri: baseUri, CurrentData.nextUrl).ToString();
 
         IsLoading = false;
-        
+
         if (CurrentBook.Position > 0)
         {
             WeakReferenceMessenger.Default.Send(new ChangeScrollMessage((CurrentBook.Position, ReaderService.Config.HasAutoscrollAnimation)));

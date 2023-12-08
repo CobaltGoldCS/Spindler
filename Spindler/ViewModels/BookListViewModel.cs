@@ -2,7 +2,6 @@
 using CommunityToolkit.Mvvm.Input;
 using Spindler.Models;
 using Spindler.Services;
-using Spindler.Utilities;
 using Spindler.Views;
 using Spindler.Views.Book_Pages;
 using System.Collections.ObjectModel;
@@ -13,7 +12,7 @@ namespace Spindler.ViewModels
     {
         private readonly IDataService Database;
         private readonly HttpClient Client;
-        
+
         #region Bindings
         [ObservableProperty]
         public string title = "Book List";
@@ -186,7 +185,7 @@ namespace Spindler.ViewModels
             CurrentList = new(await Database.GetBooksByBooklistIdAsync(Id));
             DisplayedBooks.Clear();
             PinnedBooks.Clear();
-            foreach(var book in CurrentList.Take(NUM_ITEMS_ADDED_TO_LIST))
+            foreach (var book in CurrentList.Take(NUM_ITEMS_ADDED_TO_LIST))
             {
                 DisplayedBooks.Add(book);
             }
