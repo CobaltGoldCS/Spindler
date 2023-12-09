@@ -106,7 +106,7 @@ public partial class BookViewModel : ObservableObject
 
     private static string GetPathTypeAsString(string path)
     {
-        return path.AsPath().type switch
+        return path.AsPath().PathType switch
         {
             Models.Path.Type.XPath => "X Path",
             Models.Path.Type.Css => "CSS Path",

@@ -115,7 +115,7 @@ public class HtmlContentExtractor : HtmlExtractor
     {
         Path contentPath = service.GetPath(ConfigService.Selector.Content);
 
-        HtmlNode node = contentPath.type switch
+        HtmlNode node = contentPath.PathType switch
         {
             Path.Type.Css => nav.QuerySelector(contentPath.PathString),
             Path.Type.XPath => nav.DocumentNode.SelectSingleNode(contentPath.PathString),
@@ -142,7 +142,7 @@ public class TextContentExtractor : BaseContentExtractor
     public override string GetContent(HtmlDocument nav, Config config, ConfigService service)
     {
         Path contentPath = service.GetPath(ConfigService.Selector.Content);
-        HtmlNode node = contentPath.type switch
+        HtmlNode node = contentPath.PathType switch
         {
             Path.Type.Css => nav.QuerySelector(contentPath.PathString),
             Path.Type.XPath => nav.DocumentNode.SelectSingleNode(contentPath.PathString),
@@ -168,7 +168,7 @@ public class AllTagsContentExtractor : BaseContentExtractor
     public override string GetContent(HtmlDocument nav, Config config, ConfigService service)
     {
         Path contentPath = service.GetPath(ConfigService.Selector.Content);
-        IEnumerable<HtmlNode> nodes = contentPath.type switch
+        IEnumerable<HtmlNode> nodes = contentPath.PathType switch
         {
             Path.Type.Css => nav.QuerySelectorAll(contentPath.PathString).AsEnumerable(),
             Path.Type.XPath => nav.DocumentNode.SelectNodes(contentPath.PathString).AsEnumerable(),

@@ -11,9 +11,9 @@ namespace Spindler.Models;
 public class Path
 {
     public string PathString;
-    public Type type { get; private set; }
+    public Type PathType { get; private set; }
 
-    private IHTMLSelector InternalSelector;
+    private readonly IHTMLSelector InternalSelector;
 
     public enum Type
     {
@@ -24,9 +24,9 @@ public class Path
     public Path(string pathString)
     {
         PathString = pathString;
-        type = PathString.StartsWith("/") ? Type.XPath : Type.Css;
+        PathType = PathString.StartsWith('/') ? Type.XPath : Type.Css;
 
-        InternalSelector = type switch
+        InternalSelector = PathType switch
         {
             Type.Css => new CSSPathSelector(),
             Type.XPath => new XPathSelector(),
@@ -63,7 +63,7 @@ public enum SelectorType
     Html,
 }
 
-public interface IHTMLSelector
+public partial interface IHTMLSelector
 {
     public string? Select(HtmlDocument nav, Path path, SelectorType type);
     public string? Select(string html, Path path, SelectorType type)
@@ -72,6 +72,9 @@ public interface IHTMLSelector
         doc.LoadHtml(html);
         return Select(doc, path, type);
     }
+
+    [GeneratedRegex("(.+) \\$(.+)")]
+    public static partial Regex CustomSyntax();
 }
 
 public partial class XPathSelector : IHTMLSelector
@@ -79,8 +82,8 @@ public partial class XPathSelector : IHTMLSelector
     public string? Select(HtmlDocument nav, Path path, SelectorType type)
     {
         // Custom $ Syntax
-        MatchCollection attributes = Regex.Matches(path.PathString, "(.+) \\$(.+)");
-        if (attributes.Any())
+        MatchCollection attributes = IHTMLSelector.CustomSyntax().Matches(path.PathString);
+        if (attributes.Count != 0)
         {
             var cleanpath = attributes[0].Groups[1].Value;
             var modifier = attributes[0].Groups[2].Value;
@@ -95,7 +98,7 @@ public partial class XPathSelector : IHTMLSelector
             return null;
 
         // Select Proper Attributes
-        if (XPathSelectsValue().Matches(path.PathString).Any() && type is SelectorType.Text)
+        if (XPathSelectsValue().Matches(path.PathString).Count != 0 && type is SelectorType.Text)
         {
             return targetNode.CreateNavigator().Value;
         }
@@ -124,8 +127,8 @@ public partial class CSSPathSelector : IHTMLSelector
     public string? Select(HtmlDocument nav, Path path, SelectorType type)
     {
         // Custom $ Syntax
-        MatchCollection attributes = Regex.Matches(path.PathString, "(.+) \\$(.+)");
-        if (attributes.Any())
+        MatchCollection attributes = IHTMLSelector.CustomSyntax().Matches(path.PathString);
+        if (attributes.Count != 0)
         {
             var cleanpath = attributes[0].Groups[1].Value;
             var modifier = attributes[0].Groups[2].Value;
@@ -162,6 +165,7 @@ public partial class CSSPathSelector : IHTMLSelector
 
     [GeneratedRegex("((?:https?:/)?/[-a-zA-Z0-9+&@#/%?=~_|!:, .;]*[-a-zA-Z0-9+&@#/%=~_|])")]
     private static partial Regex CleanLinkRegex();
+
 }
 
 public static class PathExtensions
