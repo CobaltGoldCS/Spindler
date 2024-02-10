@@ -29,7 +29,7 @@
                     <ShellContent
                                 Title="General Configurations"
                                 Icon="multiple_gears.svg"
-                                ContentTemplate="{DataTemplate views:GeneralizedConfigPage}"
+                                ContentTemplate="{DataTemplate local:ConfigPage}"
                                 Route="GeneralConfig"/>
                 </Tab>
 

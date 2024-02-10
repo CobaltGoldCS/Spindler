@@ -57,9 +57,11 @@ public static class MauiProgram
         // Present within the AppShell As Tab Pages
         service.AddSingleton<HomePage>();
         service.AddSingleton<HomeViewModel>();
+        service.AddTransient<ConfigPage>();
+        service.AddTransient<ConfigViewModel>();
+
         service.AddTransient<ConfigDetailPage>();
         service.AddTransient<ConfigDetailViewModel>();
-
         service.AddTransient<BookPage>();
         service.AddTransient<BookDetailPage>();
         service.AddTransient<BookSearcherPage>();

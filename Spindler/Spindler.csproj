@@ -166,9 +166,6 @@
 	  <Compile Update="View Pages\Book Pages\BookPage.xaml.cs">
 	    <DependentUpon>BookPage.xaml</DependentUpon>
 	  </Compile>
-	  <Compile Update="View Pages\Configuration Pages\GeneralizedConfigDetailPage.xaml.cs">
-	    <DependentUpon>GeneralizedConfigDetailPage.xaml</DependentUpon>
-	  </Compile>
 	  <Compile Update="Views\Items\PinnedBookItem.xaml.cs">
 	    <DependentUpon>PinnedBookItem.xaml</DependentUpon>
 	  </Compile>
@@ -241,16 +238,10 @@
 	  <MauiXaml Update="View Pages\Book List Page\BookListPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
-	  <MauiXaml Update="View Pages\Configuration Pages\GeneralizedConfigDetailPage.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </MauiXaml>
 	  <MauiXaml Update="View Pages\Configuration Pages\ConfigDetailPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="View Pages\Configuration Pages\ConfigPage.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </MauiXaml>
-	  <MauiXaml Update="View Pages\Configuration Pages\GeneralizedConfigPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="View Pages\Reader Pages\ErrorPage.xaml">

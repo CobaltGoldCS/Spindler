@@ -1,13 +1,24 @@
+using Spindler.Services;
 using Spindler.ViewModels;
+
 namespace Spindler;
 
 public partial class ConfigPage : ContentPage
 {
-    public ConfigPage()
+    ConfigViewModel ViewModel;
+    public ConfigPage(IDataService service)
     {
         InitializeComponent();
-        var viewModel = new ConfigViewModel();
-        BindingContext = viewModel;
-        viewModel.ReloadItems();
+        ViewModel = new(service);
+        Shell.Current.Navigated += Navigated;
+    }
+
+    private void Navigated(object? sender, ShellNavigatedEventArgs e)
+    {
+        ViewModel.IsGeneralized = e.Current.Location.OriginalString == "//GeneralConfig";
+     
+        BindingContext = ViewModel;
+        _ = ViewModel.ReloadItems();
+        Shell.Current.Navigated -= Navigated;
     }
 }
