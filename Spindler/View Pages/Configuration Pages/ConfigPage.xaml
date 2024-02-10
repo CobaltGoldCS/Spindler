@@ -12,6 +12,7 @@
     <ContentPage.BindingContext>
         <vms:ConfigViewModel/>
     </ContentPage.BindingContext>
+
     <Grid RowDefinitions="auto, *" CompressedLayout.IsHeadless="True">
         <!-- Top Button Area-->
         <Border StrokeShape="RoundRectangle 10,10,10,10" Margin="10,5,10,0" Stroke="{DynamicResource CardBackground}">

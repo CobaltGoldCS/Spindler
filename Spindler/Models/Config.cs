@@ -1,14 +1,19 @@
-﻿using HtmlAgilityPack;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using HtmlAgilityPack;
 using Newtonsoft.Json;
+using Spindler.Services.Web;
 using SQLite;
+using System.Text.RegularExpressions;
 using System.Xml.XPath;
 
 namespace Spindler.Models;
 
+
+
 /// <summary>
 /// A Model representing configurations between the sqlite database and the backend code
 /// </summary>
-public class Config : IIndexedModel
+public partial class Config : IIndexedModel
 {
     /// <summary>
     /// UID of the Config
@@ -201,4 +206,13 @@ public class Config : IIndexedModel
             return null;
         }
     }
+
+    public virtual bool IsValidConfig() => DomainValidation().IsMatch(DomainName)
+        && ConfigService.IsValidSelector(ContentPath)
+        && ConfigService.IsValidSelector(NextUrlPath)
+        && ConfigService.IsValidSelector(PrevUrlPath);
+
+
+    [GeneratedRegex("^(?!www\\.)(((?!\\-))(xn\\-\\-)?[a-z0-9\\-_]{0,61}[a-z0-9]{1,1}\\.)*(xn\\-\\-)?([a-z0-9\\-]{1,61}|[a-z0-9\\-]{1,30})\\.[a-z]{2,}$")]
+    private static partial Regex DomainValidation();
 }

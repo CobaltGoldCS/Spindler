@@ -12,7 +12,7 @@ public partial class TableInput : ContentView
     }
 
     public static readonly BindableProperty TextProperty =
-                BindableProperty.Create(nameof(Text), typeof(string), typeof(DetailLabel));
+                BindableProperty.Create(nameof(Text), typeof(string), typeof(DetailLabel), defaultBindingMode: BindingMode.TwoWay);
 
     public string Text
     {

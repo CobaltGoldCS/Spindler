@@ -42,7 +42,7 @@ public partial class GeneralizedConfigViewModel : ObservableObject
         {
             { "config", SelectedItem! }
         };
-        await Shell.Current.GoToAsync($"/{nameof(GeneralizedConfigDetailPage)}", parameters);
+        await Shell.Current.GoToAsync($"/{nameof(ConfigDetailPage)}", parameters);
         SelectedItem = null;
     }
 
@@ -56,6 +56,6 @@ public partial class GeneralizedConfigViewModel : ObservableObject
                 new GeneralizedConfig() { Id = -1 }
             }
         };
-        await Shell.Current.GoToAsync($"/{nameof(GeneralizedConfigDetailPage)}", parameters);
+        await Shell.Current.GoToAsync($"/{nameof(ConfigDetailPage)}", parameters);
     }
 }

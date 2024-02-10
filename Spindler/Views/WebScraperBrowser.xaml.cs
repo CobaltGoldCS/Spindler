@@ -1,6 +1,7 @@
 using Spindler.Models;
 using Spindler.Services.Web;
 using Spindler.Utilities;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Text.RegularExpressions;
 using System.Xml.XPath;
@@ -19,6 +20,7 @@ public partial class WebScraperBrowser : WebView, IWebService
     /// <summary>
     /// Overrides the visibility options of a normal WebView
     /// </summary>
+    [DefaultValue(true)]
     public bool Visible
     {
         get => (bool)GetValue(VisibleProperty);
@@ -61,6 +63,12 @@ public partial class WebScraperBrowser : WebView, IWebService
     /// <returns>Whether WebScraperBrowser redirected or not</returns>
     public bool IsRedirect(string lastKnownUrl) => GetUrl() != lastKnownUrl;
 
+    /// <summary>
+    /// Threadsafe method for getting html from a browser. Ensure that the browser is not being used by anything else.
+    /// </summary>
+    /// <param name="url">The url to obtain html from</param>
+    /// <param name="token">A cancellation token that will cancel this method's operation</param>
+    /// <returns>A result containing either HTML or an error involving a failed operation</returns>
     public async Task<Result<string>> GetHtmlFromUrl(string url, CancellationToken? token = null)
     {
         Navigated += PageLoaded;
@@ -105,6 +113,7 @@ public partial class WebScraperBrowser : WebView, IWebService
         }
         finally
         {
+            Navigated -= PageLoaded;
             timer.Reset();
         }
 

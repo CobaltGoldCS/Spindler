@@ -58,7 +58,7 @@ public partial class ConfigService
     /// <returns>If the selector is valid or not</returns>
     public static bool IsValidSelector(string? path)
     {
-        if (path is null) return false;
+        if (path is null || path.Length == 0) return false;
         try
         {
             _ = path.AsPath().Select(path, SelectorType.Text) != null;

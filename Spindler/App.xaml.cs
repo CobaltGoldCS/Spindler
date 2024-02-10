@@ -41,7 +41,7 @@ public partial class App : Application
 
         Routing.RegisterRoute($"{nameof(HomePage)}/{nameof(BookListDetailPage)}", typeof(BookListDetailPage));
         Routing.RegisterRoute("Config/" + nameof(ConfigDetailPage), typeof(ConfigDetailPage));
-        Routing.RegisterRoute("GeneralConfig/" + nameof(GeneralizedConfigDetailPage), typeof(GeneralizedConfigDetailPage));
+        Routing.RegisterRoute("GeneralConfig/" + nameof(ConfigDetailPage), typeof(ConfigDetailPage));
 
         WeakReferenceMessenger.Default.Register<ThemeChangedMessage>(this, (theme, message) =>
         {

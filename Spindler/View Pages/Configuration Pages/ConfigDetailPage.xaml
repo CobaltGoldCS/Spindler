@@ -1,75 +1,89 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<pages:BaseConfigDetailPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:pages="clr-namespace:Spindler.Views.Configuration_Pages"
              xmlns:models="clr-namespace:Spindler.Models"
              xmlns:controls="clr-namespace:Spindler.CustomControls"
+             xmlns:vm="clr-namespace:Spindler.ViewModels"
              xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
              xmlns:table="clr-namespace:Spindler.Views.TableReplacements"
              x:Class="Spindler.ConfigDetailPage"
-             x:TypeArguments="models:Config"
+             x:DataType="vm:ConfigDetailViewModel"
              Shell.PresentationMode="ModalAnimated"
              Title="ConfigDetailPage">
-    <ContentPage.BindingContext>
-        <models:Config/>
-    </ContentPage.BindingContext>
+
     <Grid RowDefinitions="auto, *, auto" VerticalOptions="FillAndExpand">
-        <Grid RowDefinitions="40, 40, 40, 40, 40" ColumnDefinitions="auto, *" Padding="9,0,9,0">
-            <Label Text="Domain:" VerticalOptions="Center"/>
-            <Entry x:Name="domainEntry" HorizontalOptions="FillAndExpand" Grid.Column="1"
-                               Placeholder="Domain name of the website ex: google.com" Text="{Binding DomainName}"/>
+        <Grid x:Name="CoreInformation" RowDefinitions="auto, 40, 40, 40, 40" ColumnDefinitions="auto, *" Padding="9,0,9,0">
+
+            <Grid x:Name="SpecializedConfigInfo" RowDefinitions="40" ColumnDefinitions="auto, *" IsVisible="false" Grid.ColumnSpan="2">
+                <Label Text="Domain:" VerticalOptions="Center"/>
+                <Entry x:Name="domainEntry" HorizontalOptions="FillAndExpand" Grid.Column="1" 
+                       Placeholder="Domain name of the website ex: google.com" Text="{Binding Config.DomainName}"/>
+            </Grid>
+
+            <Grid x:Name="GeneralizedConfigInfo" RowDefinitions="40,40" ColumnDefinitions="auto, *" IsVisible="false" Grid.ColumnSpan="2">
+                <Label Text="Config Name:" VerticalOptions="Center"/>
+                <Entry x:Name="nameEntry" HorizontalOptions="FillAndExpand" Grid.Column="1"
+               Placeholder="Name of the config" Text="{Binding Config.DomainName}"/>
+
+                <Label Text="Match Path:" VerticalOptions="Center" Grid.Row="1"/>
+                <Entry x:Name="matchEntry" HorizontalOptions="FillAndExpand" Grid.Column="1" Grid.Row="1" IsSpellCheckEnabled="False"
+               Placeholder="Match path of the configuration" Text="{Binding MatchPath}"/>
+            </Grid>
+
+
 
             <Label Text="Title Path:" VerticalOptions="Center" Grid.Row="1"/>
             <Entry x:Name="titleEntry" HorizontalOptions="FillAndExpand" Grid.Row="1" Grid.Column="1" IsSpellCheckEnabled="False"
-                               Placeholder="[Optional] Path pointing to the title element" Text="{Binding TitlePath}"/>
+                               Placeholder="[Optional] Path pointing to the title element" Text="{Binding Config.TitlePath}"/>
 
             <Label Text="Content Path:" VerticalOptions="Center" Grid.Row="2"/>
             <Entry x:Name="contentEntry" HorizontalOptions="FillAndExpand" Grid.Row="2" Grid.Column="1" IsSpellCheckEnabled="False"
-                               Placeholder="Path pointing to the content of the page" Text="{Binding ContentPath}"/>
+                               Placeholder="Path pointing to the content of the page" Text="{Binding Config.ContentPath}"/>
 
             <Label Text="Previous Path:" VerticalOptions="Center" Grid.Row="3"/>
             <Entry x:Name="prevEntry" HorizontalOptions="FillAndExpand" Grid.Row="3" Grid.Column="1" IsSpellCheckEnabled="False"
-                            Placeholder="Path pointing to the previous url" Text="{Binding PrevUrlPath}"/>
+                            Placeholder="Path pointing to the previous url" Text="{Binding Config.PrevUrlPath}"/>
 
             <Label Text="Next Path:" VerticalOptions="Center" Grid.Row="4"/>
             <Entry x:Name="nextEntry" HorizontalOptions="FillAndExpand" Grid.Row="4" Grid.Column="1" IsSpellCheckEnabled="False"
-                            Placeholder="Path pointing to the next url" Text="{Binding NextUrlPath}"/>
+                            Placeholder="Path pointing to the next url" Text="{Binding Config.NextUrlPath}"/>
         </Grid>
         <ScrollView Grid.Row="1" VerticalOptions="StartAndExpand">
             <Grid RowDefinitions="auto, auto, auto, auto" CompressedLayout.IsHeadless="True" Margin="0, 30">
                 <VerticalStackLayout CompressedLayout.IsHeadless="True">
                     <Label Text="Extra Configuration Options" TextColor="{StaticResource Primary}"/>
-                    <table:TableInput Label="Image Url Path" Text="{Binding ImageUrlPath}"/>
-                    <Picker x:Name="ContentTypeSelector" Title="Content Extraction Strategy"/>
+                    <table:TableInput Label="Image Url Path" Text="{Binding Config.ImageUrlPath}"/>
+                    <Picker x:Name="ContentTypeSelector" Title="Content Extraction Strategy" ItemsSource="{Binding PossibleExtractors}" SelectedItem="{Binding Config.ContentType}"/>
                 </VerticalStackLayout>
 
                 <VerticalStackLayout CompressedLayout.IsHeadless="True" Grid.Row="1">
                     <Label Text="Web View" TextColor="{StaticResource Primary}"/>
-                    <table:LabelSwitch x:Name="switchWebView" Text="Use Web View for Viewing this website" On="False"/>
+                    <table:LabelSwitch x:Name="switchWebView" Text="Use Web View for Viewing this website" On="{Binding Config.UsesWebview}"/>
                 </VerticalStackLayout>
 
                 <VerticalStackLayout CompressedLayout.IsHeadless="True" Grid.Row="2">
                     <Label Text="Reader View" TextColor="{StaticResource Primary}"/>
-                    <table:TableInput x:Name="separatorEntry" Label="The Separator between P tags"/>
-                    <table:LabelSwitch x:Name="animationSwitch" Text="Animated Autoscroll" On="True"/>
-                    <table:LabelSwitch x:Name="headlessSwitch" Text="Enable headless mode (increased compatability, decreased performance)"/>
-                    <table:LabelSwitch x:Name="filterSwitch" Text="Filter out certain types of text"/>
+                    <table:TableInput x:Name="separatorEntry" Label="The Separator between P tags" Text="{Binding SeparatorText}"/>
+                    <table:LabelSwitch x:Name="animationSwitch" Text="Animated Autoscroll" On="{Binding Config.HasAutoscrollAnimation}"/>
+                    <table:LabelSwitch x:Name="headlessSwitch" Text="Enable headless mode (increased compatability, decreased performance)" On="{Binding Config.UsesHeadless}"/>
+                    <table:LabelSwitch x:Name="filterSwitch" Text="Filter out certain types of text" On="{Binding Config.FilteringContentEnabled}"/>
                 </VerticalStackLayout>
 
                 <VerticalStackLayout CompressedLayout.IsHeadless="True" Grid.Row="3">
                     <Label Text="Import Options" TextColor="{StaticResource Primary}"/>
-                    <Button x:Name="exportButton" Text="Export Config as JSON" IsEnabled="False" Pressed="ExportCommand" BackgroundColor="{DynamicResource Warning}" CornerRadius="0"/>
-                    <Button x:Name="importButton" Text="Import Config from JSON file" IsEnabled="False" Pressed="ImportCommand" BackgroundColor="{DynamicResource Warning}" CornerRadius="0"/>
+                    <Button x:Name="exportButton" Text="Export Config as JSON" IsEnabled="False" Command="{Binding ExportCommand}" BackgroundColor="{DynamicResource Warning}" CornerRadius="0"/>
+                    <Button x:Name="importButton" Text="Import Config from JSON file" IsEnabled="False" Command="{Binding ImportCommand}" BackgroundColor="{DynamicResource Warning}" CornerRadius="0"/>
                 </VerticalStackLayout>
             </Grid>
         </ScrollView>
 
         <controls:AddButtonGroup x:Name="AddButtonGroup"
                                  Grid.Row="2"
-                                 DeleteClicked="DeleteButton_Clicked"
-                                 CancelClicked="Cancel_Clicked"
-                                 OkClicked="okButton_Clicked"
+                                 DeleteCommand="{Binding DeleteCommand}"
+                                 CancelCommand="{Binding CancelCommand}"
+                                 OkCommand="{Binding AddCommand}"
                                  HorizontalOptions="FillAndExpand"/>
 
     </Grid>
-</pages:BaseConfigDetailPage>
+</ContentPage>

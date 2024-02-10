@@ -12,7 +12,7 @@ public partial class LabelSwitch : ContentView
     }
 
     public static readonly BindableProperty OnProperty =
-                BindableProperty.Create(nameof(On), typeof(bool), typeof(LabelSwitch));
+                BindableProperty.Create(nameof(On), typeof(bool), typeof(LabelSwitch), defaultBindingMode: BindingMode.TwoWay);
 
     public bool On
     {
