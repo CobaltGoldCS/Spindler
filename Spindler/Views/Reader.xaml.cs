@@ -16,14 +16,41 @@ public partial class Reader : Grid
     public static readonly BindableProperty TextProperty =
                 BindableProperty.Create(nameof(Text), typeof(string), typeof(Grid));
 
+    public static readonly BindableProperty TextTypeProperty =
+                BindableProperty.Create(nameof(TextType), typeof(TextType), typeof(Grid));
+
+    public static readonly BindableProperty TitleProperty =
+                BindableProperty.Create(nameof(Title), typeof(string), typeof(Grid));
+
+    public static readonly BindableProperty LoadingProperty =
+            BindableProperty.Create(nameof(Loading), typeof(bool), typeof(Grid));
+
+    public static readonly BindableProperty PrevVisibleProperty =
+            BindableProperty.Create(nameof(PrevVisible), typeof(bool), typeof(Grid));
+
+    public static readonly BindableProperty NextVisibleProperty =
+            BindableProperty.Create(nameof(NextVisible), typeof(bool), typeof(Grid));
+
+    public static readonly BindableProperty PreviousCommandProperty =
+            BindableProperty.Create(nameof(PreviousCommand), typeof(ICommand), typeof(Grid));
+
+    public static readonly BindableProperty PreviousCommandParameterProperty =
+            BindableProperty.Create(nameof(PreviousCommandParameter), typeof(object), typeof(Grid));
+
+    public static readonly BindableProperty NextCommandProperty =
+            BindableProperty.Create(nameof(NextCommand), typeof(ICommand), typeof(Grid));
+
+    public static readonly BindableProperty NextCommandParameterProperty =
+            BindableProperty.Create(nameof(NextCommandParameter), typeof(object), typeof(Grid));
+
+    public event EventHandler? PrevClicked;
+    public event EventHandler? NextClicked;
+
     public string Text
     {
         get => (string)GetValue(TextProperty);
         set { SetValue(TextProperty, value); }
     }
-
-    public static readonly BindableProperty TextTypeProperty =
-                BindableProperty.Create(nameof(TextType), typeof(TextType), typeof(Grid));
 
     public TextType TextType
     {
@@ -31,17 +58,11 @@ public partial class Reader : Grid
         set { SetValue(TextTypeProperty, value); }
     }
 
-    public static readonly BindableProperty TitleProperty =
-                BindableProperty.Create(nameof(Title), typeof(string), typeof(Grid));
-
     public string Title
     {
         get => (string)GetValue(TitleProperty);
         set { SetValue(TitleProperty, value); }
     }
-
-    public static readonly BindableProperty LoadingProperty =
-                BindableProperty.Create(nameof(Loading), typeof(bool), typeof(Grid));
 
     public bool Loading
     {
@@ -49,8 +70,6 @@ public partial class Reader : Grid
         set { SetValue(LoadingProperty, value); }
     }
 
-    public static readonly BindableProperty PrevVisibleProperty =
-                BindableProperty.Create(nameof(PrevVisible), typeof(bool), typeof(Grid));
 
     public bool PrevVisible
     {
@@ -58,8 +77,6 @@ public partial class Reader : Grid
         set { SetValue(PrevVisibleProperty, value); }
     }
 
-    public static readonly BindableProperty NextVisibleProperty =
-                BindableProperty.Create(nameof(NextVisible), typeof(bool), typeof(Grid));
 
     public bool NextVisible
     {
@@ -67,17 +84,11 @@ public partial class Reader : Grid
         set { SetValue(NextVisibleProperty, value); }
     }
 
-    public static readonly BindableProperty PreviousCommandProperty =
-                BindableProperty.Create(nameof(PreviousCommand), typeof(ICommand), typeof(Grid));
-
     public ICommand PreviousCommand
     {
         get => (ICommand)GetValue(PreviousCommandProperty);
         set { SetValue(PreviousCommandProperty, value); }
     }
-
-    public static readonly BindableProperty PreviousCommandParameterProperty =
-                BindableProperty.Create(nameof(PreviousCommandParameter), typeof(object), typeof(Grid));
 
     public object PreviousCommandParameter
     {
@@ -85,17 +96,11 @@ public partial class Reader : Grid
         set { SetValue(PreviousCommandParameterProperty, value); }
     }
 
-    public static readonly BindableProperty NextCommandProperty =
-                BindableProperty.Create(nameof(NextCommand), typeof(ICommand), typeof(Grid));
-
     public ICommand NextCommand
     {
         get => (ICommand)GetValue(NextCommandProperty);
         set { SetValue(NextCommandProperty, value); }
     }
-
-    public static readonly BindableProperty NextCommandParameterProperty =
-                BindableProperty.Create(nameof(NextCommandParameter), typeof(object), typeof(Grid));
 
     public object NextCommandParameter
     {
@@ -103,13 +108,10 @@ public partial class Reader : Grid
         set { SetValue(NextCommandParameterProperty, value); }
     }
 
-    public event EventHandler? PrevClicked;
-
     private void Prev_Clicked(object sender, EventArgs e)
     {
         PrevClicked?.Invoke(sender, e);
     }
-    public event EventHandler? NextClicked;
 
     private void Next_Clicked(object sender, EventArgs e)
     {
