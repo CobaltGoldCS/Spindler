@@ -18,11 +18,7 @@ namespace Spindler.ViewModels;
 public partial class ReaderViewModel : ObservableObject, IReader
 {
     #region Class Attributes
-    /// <summary>
-    /// The Service managing reader data
-    /// </summary>
-    [ObservableProperty]
-    public ReaderDataService readerService = new(new Config(), new StandardWebService(new()));
+    
     /// <summary>
     /// The reference to the underlying database
     /// </summary>
@@ -47,6 +43,12 @@ public partial class ReaderViewModel : ObservableObject, IReader
     private CancellationTokenSource nextChapterToken = new();
 
     #region Bindable Properties
+
+    /// <summary>
+    /// The Service managing reader data
+    /// </summary>
+    [ObservableProperty]
+    public ReaderDataService readerService = new(new Config(), new StandardWebService(new()));
 
     /// <summary>
     /// The Current Data the User interface uses to populate various UI elements
