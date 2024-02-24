@@ -12,13 +12,32 @@
              Shell.PresentationMode="ModalAnimated"
              Title="ConfigDetailPage">
 
+    <ContentPage.Resources>
+        <Style x:Key="validStyle" TargetType="Label">
+            <Setter Property="TextColor" Value="{x:StaticResource TextColor}"/>
+        </Style>
+
+        <Style x:Key="invalidStyle" TargetType="Label">
+            <Setter Property="TextColor" Value="{x:StaticResource Warning}"/>
+        </Style>
+    </ContentPage.Resources>
+
     <Grid RowDefinitions="auto, *, auto" VerticalOptions="FillAndExpand">
         <Grid x:Name="CoreInformation" RowDefinitions="auto, 40, 40, 40, 40" ColumnDefinitions="auto, *" Padding="9,0,9,0">
 
             <Grid x:Name="SpecializedConfigInfo" RowDefinitions="40" ColumnDefinitions="auto, *" IsVisible="false" Grid.ColumnSpan="2">
                 <Label Text="Domain:" VerticalOptions="Center"/>
+
                 <Entry x:Name="domainEntry" HorizontalOptions="FillAndExpand" Grid.Column="1" 
-                       Placeholder="Domain name of the website ex: google.com" Text="{Binding Config.DomainName}"/>
+                       Placeholder="Domain name of the website ex: google.com" Text="{Binding Config.DomainName}">
+                    <Entry.Behaviors>
+                        <toolkit:TextValidationBehavior 
+                             ValidStyle="{x:StaticResource validStyle}"
+                             InvalidStyle="{x:StaticResource invalidStyle}"
+                             Flags="ValidateOnValueChanged"
+                             RegexPattern="^(?!www\\.)(((?!\\-))(xn\\-\\-)?[a-z0-9\\-_]{0,61}[a-z0-9]{1,1}\\.)*(xn\\-\\-)?([a-z0-9\\-]{1,61}|[a-z0-9\\-]{1,30})\\.[a-z]{2,}$"/>
+                    </Entry.Behaviors>
+                </Entry>
             </Grid>
 
             <Grid x:Name="GeneralizedConfigInfo" RowDefinitions="40,40" ColumnDefinitions="auto, *" IsVisible="false" Grid.ColumnSpan="2">
