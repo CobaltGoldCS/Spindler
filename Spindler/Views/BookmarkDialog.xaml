@@ -8,7 +8,7 @@
                VerticalOptions="End"
                Color="{DynamicResource Background}"
                xmlns:models="clr-namespace:Spindler.Models">
-    <Grid RowDefinitions="auto, auto"
+    <Grid RowDefinitions="auto, *"
           HorizontalOptions="Fill"
           VerticalOptions="Fill"
           ColumnDefinitions="*, 50">
@@ -41,7 +41,7 @@
                                ColumnDefinitions="*, 50"
                                
                                WidthRequest="{Binding Source={Reference _this}, Path=Width}">
-                        
+
                         <Label FontSize="24" FontAutoScalingEnabled="False" Text="{Binding Name}" Padding="5"/>
                         <Button Text="&#xF1F8;"
                                 Grid.Column="1"
@@ -56,9 +56,6 @@
                     </Grid>
                 </DataTemplate>
             </CollectionView.ItemTemplate>
-            <CollectionView.Footer>
-                <Label HeightRequest="40"/>
-            </CollectionView.Footer>
         </CollectionView>
     </Grid>
 </toolkit:Popup>
