@@ -5,12 +5,13 @@ using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using Spindler.Utilities;
 
+
 namespace Spindler.ViewModels;
 
 public partial class SettingsViewmodel : ObservableObject
 {
     private string font = Preferences.Default.Get("font", "OpenSansRegular");
-    private static string DatabaseLocation = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Spindler.db");
+    private static string DatabaseLocation = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Spindler.db");
     public string Font
     {
         get => font;
@@ -57,8 +58,6 @@ public partial class SettingsViewmodel : ObservableObject
         }
     }
 
-    [ObservableProperty]
-    private bool isBusy = false;
 
     private Theme selectedTheme = Theme.FromThemeType((Themes)Preferences.Get("theme", (int)Themes.Default));
 
@@ -80,20 +79,6 @@ public partial class SettingsViewmodel : ObservableObject
         .Select(themes => Theme.FromThemeType(themes))
         .ToArray();
 
-    public SettingsViewmodel()
-    {
-        Shell.Current.Navigating += Navigating;
-    }
-
-    private void Navigating(object? sender, ShellNavigatingEventArgs e)
-    {
-        if (IsBusy)
-        {
-            e.Cancel();
-            return;
-        }
-        Shell.Current.Navigating -= Navigating;
-    }
 
     // TODO: Create An Automatic Back Up System
     [RelayCommand]
@@ -116,15 +101,15 @@ public partial class SettingsViewmodel : ObservableObject
         CancellationToken cancellationToken = new();
         using FileStream stream = File.OpenRead(DatabaseLocation);
 
-        try
+        var filePath = await FileSaver.Default.SaveAsync($"SpindlerDatabase.db", stream, cancellationToken);
+
+        if (filePath.IsSuccessful)
         {
-            var filePath = await FileSaver.Default.SaveAsync($"SpindlerDatabase.db", stream, cancellationToken);
             filePath.EnsureSuccess();
             await Toast.Make($"File saved at {filePath.FilePath}").Show(cancellationToken);
-        }
-        catch (Exception ex)
+        } else
         {
-            await Toast.Make($"File not saved: {ex.Message}").Show(cancellationToken);
+            await Toast.Make($"File not saved: {filePath.Exception}").Show(cancellationToken);
         }
     }
 }
