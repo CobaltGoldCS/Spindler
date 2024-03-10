@@ -8,6 +8,11 @@
              Title="Add or Modify Book List"
              Shell.PresentationMode="ModalAnimated"
              x:DataType="vms:BookListDetailViewModel">
+    <ContentPage.Resources>
+        <DataTemplate x:Key="ChooseColorTemplate" x:DataType="vms:ChooseColor">
+            <Ellipse WidthRequest="50" HeightRequest="50" BackgroundColor="Transparent" Margin="5" Fill="{Binding color}"/>
+        </DataTemplate>
+    </ContentPage.Resources>
     <Grid RowDefinitions="*, auto" VerticalOptions="FillAndExpand">
         <Grid RowDefinitions="50, 50, 30, 60, 60" ColumnDefinitions="50, *" VerticalOptions="FillAndExpand">
             <StackLayout Orientation="Horizontal" Grid.ColumnSpan="2">
@@ -28,29 +33,21 @@
                     ItemsSource="{Binding ColorList, Mode=OneTime}" 
                     SelectionMode="Single" 
                     SelectionChangedCommand="{Binding Color1PickedCommand}"
-                    SelectedItem="{Binding ChosenColor1}" Grid.Row="3" Grid.ColumnSpan="2">
+                    SelectedItem="{Binding ChosenColor1}" Grid.Row="3" Grid.ColumnSpan="2"
+                    ItemTemplate="{StaticResource ChooseColorTemplate}">
                 <CollectionView.ItemsLayout>
                     <LinearItemsLayout Orientation="Horizontal"/>
                 </CollectionView.ItemsLayout>
-                <CollectionView.ItemTemplate>
-                    <DataTemplate x:DataType="models:ChooseColor">
-                        <Ellipse WidthRequest="50" HeightRequest="50" BackgroundColor="Transparent" Margin="5" Fill="{Binding color}"/>
-                    </DataTemplate>
-                </CollectionView.ItemTemplate>
             </CollectionView>
             <CollectionView 
                     ItemsSource="{Binding ColorList, Mode=OneTime}" 
                     SelectionMode="Single" 
                     SelectionChangedCommand="{Binding Color2PickedCommand}"
-                    SelectedItem="{Binding ChosenColor2}" Grid.Row="4" Grid.ColumnSpan="2">
+                    SelectedItem="{Binding ChosenColor2}" Grid.Row="4" Grid.ColumnSpan="2"
+                    ItemTemplate="{StaticResource ChooseColorTemplate}">
                 <CollectionView.ItemsLayout>
                     <LinearItemsLayout Orientation="Horizontal"/>
                 </CollectionView.ItemsLayout>
-                <CollectionView.ItemTemplate>
-                    <DataTemplate x:DataType="models:ChooseColor">
-                        <Ellipse WidthRequest="50" HeightRequest="50" BackgroundColor="Transparent" Margin="5" Fill="{Binding color}"/>
-                    </DataTemplate>
-                </CollectionView.ItemTemplate>
             </CollectionView>
         </Grid>
 

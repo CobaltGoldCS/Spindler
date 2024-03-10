@@ -6,9 +6,9 @@ using Spindler.Services;
 
 namespace Spindler.ViewModels
 {
+    public record ChooseColor(Color color);
     public partial class BookListDetailViewModel : ObservableObject
     {
-        public record ChooseColor(Color color);
 
         [ObservableProperty]
         public ChooseColor chosenColor1;
