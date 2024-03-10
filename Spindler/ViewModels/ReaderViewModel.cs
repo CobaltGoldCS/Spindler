@@ -88,7 +88,7 @@ public partial class ReaderViewModel : ObservableObject, IReader
     /// <summary>
     /// Creates a new ReaderViewModel Instance (please use ReaderViewModelBuilder)
     /// </summary>
-    public ReaderViewModel(IDataService database, HttpClient client, WebScraperBrowser nextChapterBrowser)
+    internal ReaderViewModel(IDataService database, HttpClient client, WebScraperBrowser nextChapterBrowser)
     {
         IsLoading = true;
         Database = database;
@@ -107,7 +107,6 @@ public partial class ReaderViewModel : ObservableObject, IReader
     {
 
         await CurrentBook.UpdateViewTimeAndSave(Database);
-        IDispatcher? dispatcher = Dispatcher.GetForCurrentThread();
 
         NextChapterService chapterService = new(Client, NextChapterBrowser, Database);
 
@@ -125,22 +124,27 @@ public partial class ReaderViewModel : ObservableObject, IReader
         // Get image url from load
         if (string.IsNullOrEmpty(CurrentBook!.ImageUrl) || CurrentBook!.ImageUrl == "no_image.jpg")
         {
-            var html = await ReaderService.WebService.GetHtmlFromUrl(CurrentBook.Url);
-
-            if (html is Result<string>.Err) return;
-
-            try
-            {
-                CurrentBook.ImageUrl = ReaderService.ConfigService.PrettyWrapSelector(
-                                    (html as Result<string>.Ok)!.Value, ConfigService.Selector.ImageUrl, SelectorType.Link);
-            }
-            catch (XPathException) { }
+            await SetImageUrl();
         }
-        DataChanged();
+        ChangeChapter();
 
         List<Book> books = await Database.GetAllItemsAsync<Book>();
         books.Remove(CurrentBook);
         _ = Task.Run(async () => await chapterService.SaveBooks(books, nextChapterToken.Token));
+    }
+
+    private async Task SetImageUrl()
+    {
+        var html = await ReaderService.WebService.GetHtmlFromUrl(CurrentBook.Url);
+
+        if (html is Result<string>.Err) return;
+
+        try
+        {
+            CurrentBook.ImageUrl = ReaderService.ConfigService.PrettyWrapSelector(
+                                (html as Result<string>.Ok)!.Value, ConfigService.Selector.ImageUrl, SelectorType.Link);
+        }
+        catch (XPathException) { }
     }
     #endregion
 
@@ -177,7 +181,7 @@ public partial class ReaderViewModel : ObservableObject, IReader
             return;
         }
         CurrentData = (dataResult as Result<LoadedData>.Ok)!.Value;
-        DataChanged();
+        ChangeChapter();
     }
 
     /// <summary>
@@ -222,7 +226,7 @@ public partial class ReaderViewModel : ObservableObject, IReader
 
         // Cleanup 
         IsLoading = false;
-        DataChanged();
+        ChangeChapter();
         if (bookmark.Position > 0)
             WeakReferenceMessenger.Default.Send(new ChangeScrollMessage((bookmark.Position, false)));
         CurrentBook = await Database.GetItemByIdAsync<Book>(CurrentBook.Id);
@@ -253,7 +257,7 @@ public partial class ReaderViewModel : ObservableObject, IReader
         {
             CurrentBook.Position = ReaderScrollPosition;
             CurrentBook.HasNextChapter = NextButtonIsVisible;
-            await App.Database.SaveItemAsync(CurrentBook);
+            await Database.SaveItemAsync(CurrentBook);
         }
         Shell.Current.Navigating -= OnShellNavigating;
     }
@@ -263,7 +267,7 @@ public partial class ReaderViewModel : ObservableObject, IReader
     /// <summary>
     /// Updates the UI with current information from <see cref="CurrentData"/>
     /// </summary>
-    private async void DataChanged()
+    private async void ChangeChapter()
     {
         // Database updates
         CurrentBook!.Url = CurrentData!.currentUrl!;
@@ -357,11 +361,10 @@ public class ReaderViewModelBuilder
 /// <summary>
 /// A message containing position (double) and isAnimated (bool)
 /// </summary>
-class ChangeScrollMessage : ValueChangedMessage<(double, bool)>
+/// <remarks>
+/// Create a new ScrollChangedMessage
+/// </remarks>
+/// <param name="value">position (double) and isAnimated (bool). If position is negative, scroll to the bottom of the view</param>
+class ChangeScrollMessage((double, bool) value) : ValueChangedMessage<(double, bool)>(value)
 {
-    /// <summary>
-    /// Create a new ScrollChangedMessage
-    /// </summary>
-    /// <param name="value">position (double) and isAnimated (bool)</param>
-    public ChangeScrollMessage((double, bool) value) : base(value) { }
 }
