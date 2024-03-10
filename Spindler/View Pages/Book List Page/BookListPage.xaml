@@ -43,19 +43,20 @@
                         >
                     <Grid>
                         <Image Source="{Binding Path=ImageUrl, Mode=OneTime, TargetNullValue=spindler_icon.svg}" 
-                           Aspect="AspectFill" />
+                           Aspect="AspectFill">
+                            <Image.Shadow>
+                                <Shadow Offset="15,10" Brush="Black" Opacity="0.8"/>
+                            </Image.Shadow>
+                        </Image>
                         <Path Fill="{DynamicResource Warning}"
-                              Data="M 0,0 L 0, 15 L 15, 0Z"
+                              Data="M 0 0 L 12, 0 L 12, 20 L 6, 14 L 0, 20 Z"
                               HeightRequest="20"
-                              WidthRequest="20"
+                              WidthRequest="13"
                               HorizontalOptions="Start"
                               VerticalOptions="Start"
-                              Margin="-2,0,7,0"
+                              Margin="10,0,0,0"
                               IsVisible="{Binding Path=HasNextChapter, Mode=OneWay}"/>
                     </Grid>
-                    <Border.Shadow>
-                        <Shadow Offset="15,10" Brush="Black" Opacity="0.8"/>
-                    </Border.Shadow>
                 </Border>
                 
                 
