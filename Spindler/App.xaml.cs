@@ -40,14 +40,15 @@ public partial class App : Application
     }
 
 
-    public void SetTheme(Theme? theme = null)
+    public void SetTheme()
+    {
+        var themeType = Preferences.Get("theme", (int)Themes.Default);
+        var theme = Theme.FromThemeType((Themes)themeType);
+        SetTheme(theme);
+    }
+    public void SetTheme(Theme theme)
     {
         Current!.Resources.MergedDictionaries.Clear();
-        if (theme is null)
-        {
-            var themeType = Preferences.Get("theme", (int)Themes.Default);
-            theme = Theme.FromThemeType((Themes)themeType);
-        }
         ResourceDictionary resourceDictionary = theme.theme switch
         {
             Themes.Default => new Resources.Styles.Default(),
@@ -61,7 +62,9 @@ public partial class App : Application
         Current!.Resources.MergedDictionaries.Add(Setters);
 
         var statusBarColor = (Color)resourceDictionary["CardBackground"];
-        StatusBarStyle bestContrast = (statusBarColor.GetByteRed() * 0.299 + statusBarColor.GetByteGreen() * 0.587 + statusBarColor.GetByteBlue() * 0.114) > 186 ? StatusBarStyle.DarkContent : StatusBarStyle.LightContent;
+        StatusBarStyle bestContrast = (statusBarColor.GetByteRed() * 0.299 + statusBarColor.GetByteGreen() * 0.587 + statusBarColor.GetByteBlue() * 0.114) > 186 
+            ? StatusBarStyle.DarkContent 
+            : StatusBarStyle.LightContent;
 
 #if !MACCATALYST
         MainPage.Behaviors.Add(new StatusBarBehavior
