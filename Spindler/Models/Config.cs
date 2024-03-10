@@ -1,6 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using HtmlAgilityPack;
 using Newtonsoft.Json;
+using Spindler.Services;
 using Spindler.Services.Web;
 using SQLite;
 using System.Text.RegularExpressions;
@@ -169,11 +170,11 @@ public partial class Config : IIndexedModel
     /// </summary>
     /// <param name="url">The url of the targeted website (handles http/https)</param>
     /// <returns>A valid configuration, or null if no valid configuration was found</returns>
-    public static async Task<Config?> FindValidConfig(HttpClient client, string url, string? html = null)
+    public static async Task<Config?> FindValidConfig(IDataService database, HttpClient client, string url, string? html = null)
     {
         try
         {
-            Config c = await App.Database.GetConfigByDomainNameAsync(new UriBuilder(url).Host);
+            Config c = await database.GetConfigByDomainNameAsync(new UriBuilder(url).Host);
 
             if (c != null) return c;
 
@@ -182,7 +183,7 @@ public partial class Config : IIndexedModel
 
             // Parallel index through all generalized configs
             Config? selectedConfig = null;
-            Parallel.ForEach(await App.Database.GetAllItemsAsync<GeneralizedConfig>(), (GeneralizedConfig config, ParallelLoopState state) =>
+            Parallel.ForEach(await database.GetAllItemsAsync<GeneralizedConfig>(), (GeneralizedConfig config, ParallelLoopState state) =>
             {
                 try
                 {

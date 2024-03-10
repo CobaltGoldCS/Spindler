@@ -1,4 +1,5 @@
 using Spindler.Models;
+using Spindler.Services;
 using Spindler.ViewModels;
 
 
@@ -8,10 +9,10 @@ public partial class BookPage : ContentPage, IQueryAttributable
 {
     public BookViewModel ViewModel { get; set; }
 
-    public BookPage(HttpClient client)
+    public BookPage(IDataService database, HttpClient client)
     {
         InitializeComponent();
-        ViewModel = new BookViewModel(client);
+        ViewModel = new BookViewModel(database, client);
         BindingContext = ViewModel;
     }
 

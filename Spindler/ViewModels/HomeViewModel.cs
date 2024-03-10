@@ -33,7 +33,7 @@ public partial class HomeViewModel : ObservableObject
     private async Task ConfigButton(int id)
     {
         // Add A Dialog to change the values of BookList
-        BookList bookList = await App.Database.GetItemByIdAsync<BookList>(id);
+        BookList bookList = await Database.GetItemByIdAsync<BookList>(id);
         Dictionary<string, object> parameters = new()
         {
             {
@@ -61,7 +61,7 @@ public partial class HomeViewModel : ObservableObject
         if (CurrentSelection is null)
             return;
 
-        await CurrentSelection!.UpdateAccessTimeToNow();
+        await CurrentSelection!.UpdateAccessTimeToNow(Database);
         Dictionary<string, object> parameters = new()
         {
             { "booklist", CurrentSelection! }

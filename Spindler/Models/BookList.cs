@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using Spindler.Services;
 using SQLite;
 
 namespace Spindler.Models;
@@ -61,10 +62,10 @@ public class BookList : IIndexedModel
     /// Updates <see cref="LastAccessed"/> to the current time, and saves booklist in the database.
     /// </summary>
     /// <returns>An awaitable <see cref="Task"/></returns>
-    public async Task UpdateAccessTimeToNow()
+    public async Task UpdateAccessTimeToNow(IDataService database)
     {
         LastAccessed = DateTime.UtcNow;
-        await App.Database.SaveItemAsync(this);
+        await database.SaveItemAsync(this);
     }
 
     public int GetId() => Id;

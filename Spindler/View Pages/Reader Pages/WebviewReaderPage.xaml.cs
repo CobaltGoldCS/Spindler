@@ -62,7 +62,7 @@ public partial class WebviewReaderPage : ContentPage, IQueryAttributable, IReade
     {
         if (e.Target.Location.OriginalString == "..")
         {
-            await App.Database.SaveItemAsync(Book!);
+            await DataService.SaveItemAsync(Book!);
         }
         Shell.Current.Navigating -= OnShellNavigating;
         ReaderBrowser.Navigated -= WebViewOnNavigated;

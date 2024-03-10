@@ -1,10 +1,12 @@
 using Spindler.Models;
+using Spindler.Services;
 using Spindler.ViewModels;
 
 namespace Spindler;
 
 public partial class BookListDetailPage : ContentPage, IQueryAttributable
 {
+    IDataService DataService { get; set; }
 
     public void ApplyQueryAttributes(IDictionary<string, object> query)
     {
@@ -20,12 +22,13 @@ public partial class BookListDetailPage : ContentPage, IQueryAttributable
             AddButtonGroup.OkText = $"Modify {booklist.Name}";
             Title = $"Modify {booklist.Name}";
         }
-        BindingContext = new BookListDetailViewModel(booklist);
+        BindingContext = new BookListDetailViewModel(DataService, booklist);
     }
 
-    public BookListDetailPage()
+    public BookListDetailPage(IDataService dataService)
     {
         InitializeComponent();
+        this.DataService = dataService;
         /*UrlEntry.Behaviors.Add(new TextValidationBehavior((string text) =>
         {
             bool validUrl = Uri.TryCreate(text, UriKind.Absolute, out Uri? url) && (url.Scheme == Uri.UriSchemeHttp || url.Scheme == Uri.UriSchemeHttps);

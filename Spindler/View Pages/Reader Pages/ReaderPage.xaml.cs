@@ -25,7 +25,7 @@ public partial class ReaderPage : ContentPage, IQueryAttributable, IRecipient<Ch
         ReaderType type = (ReaderType)query["type"];
         if (!query.TryGetValue("config", out object? configObject))
         {
-            configObject = await Config.FindValidConfig(Client, book.Url);
+            configObject = await Config.FindValidConfig(DataService, Client, book.Url);
         }
 
 

@@ -155,7 +155,7 @@ namespace Spindler.ViewModels
             if (Executing)
                 return;
             Executing = true;
-            var config = await Config.FindValidConfig(Client, selection.Url);
+            var config = await Config.FindValidConfig(Database, Client, selection.Url);
 
             var parameters = new Dictionary<string, object>()
             {

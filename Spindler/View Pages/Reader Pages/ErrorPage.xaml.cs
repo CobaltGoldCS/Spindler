@@ -1,5 +1,6 @@
 using CommunityToolkit.Mvvm.Input;
 using Spindler.Models;
+using Spindler.Services;
 
 namespace Spindler.Views;
 
@@ -29,11 +30,14 @@ public partial class ErrorPage : ContentPage
         }
     }
 
+    IDataService Database { get; set; }
+
     #endregion
 
-    public ErrorPage()
+    public ErrorPage(IDataService dataService)
     {
         InitializeComponent();
+        Database = dataService;
     }
 
     private async void HeadlessMode_OnChanged(object sender, ToggledEventArgs e)
@@ -44,7 +48,7 @@ public partial class ErrorPage : ContentPage
         }
         Config.UsesHeadless = HeadlessMode.On;
         if (Config.Id > -1)
-            await App.Database.SaveItemAsync(Config!);
+            await Database.SaveItemAsync(Config!);
     }
 
     private async void ReloadClicked(object sender, EventArgs e)

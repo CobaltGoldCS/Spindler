@@ -13,16 +13,6 @@ namespace Spindler;
 
 public partial class App : Application
 {
-    private static DataService? database;
-    public static DataService Database
-    {
-        get
-        {
-            database ??= new DataService(System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Spindler.db"));
-            return database;
-        }
-    }
-
     private ResourceDictionary Setters = new Setters();
 
     public App()

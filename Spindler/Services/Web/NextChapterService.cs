@@ -34,7 +34,7 @@ namespace Spindler.Services.Web
             }
 
             string html = (result as Result<string>.Ok)!.Value;
-            Config? config = await Config.FindValidConfig(_Client, book.Url, html);
+            Config? config = await Config.FindValidConfig(_Database, _Client, book.Url, html);
 
             if (config is null || config.UsesWebview)
                 return book;

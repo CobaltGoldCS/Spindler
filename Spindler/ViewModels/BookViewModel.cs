@@ -1,23 +1,19 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Spindler.Models;
+using Spindler.Services;
 using Spindler.Views;
 using Spindler.Views.Book_Pages;
 
 namespace Spindler.ViewModels;
 
-public partial class BookViewModel : ObservableObject
+public partial class BookViewModel(IDataService database, HttpClient client) : ObservableObject
 {
-    HttpClient client;
+    readonly HttpClient Client = client;
+    readonly IDataService Database = database;
 
     Book? book;
     Config? config;
-
-    public BookViewModel(HttpClient client)
-    {
-        this.client = client;
-    }
-
     [ObservableProperty]
     Brush background = new SolidColorBrush(Application.Current?.Resources["CardBackground"] as Color ?? Colors.CadetBlue);
 
@@ -54,7 +50,7 @@ public partial class BookViewModel : ObservableObject
         this.book = book;
         Domain = new UriBuilder(book.Url).Host;
 
-        config = await Config.FindValidConfig(client, book.Url);
+        config = await Config.FindValidConfig(Database, Client, book.Url);
 
         Title = book.Title;
         ImageUrl = book.ImageUrl;

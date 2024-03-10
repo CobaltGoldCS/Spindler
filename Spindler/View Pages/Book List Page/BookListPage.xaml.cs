@@ -1,22 +1,28 @@
 namespace Spindler.Views;
 
 using Spindler.Models;
+using Spindler.Services;
 using Spindler.ViewModels;
 using System.Collections.Generic;
 
 public partial class BookListPage : ContentPage, IQueryAttributable
 {
+    IDataService Database;
     public async void ApplyQueryAttributes(IDictionary<string, object> query)
     {
         BookList? bookList = query["booklist"]! as BookList;
-        await bookList!.UpdateAccessTimeToNow().ConfigureAwait(false);
-        ((BookListViewModel)BindingContext).SetBookListAndProperties(bookList);
+
+        var ViewModel = (BookListViewModel)BindingContext;
+
+        await bookList!.UpdateAccessTimeToNow(Database).ConfigureAwait(false);
+        ViewModel.SetBookListAndProperties(bookList);
         // Populate Lists
-        await MainThread.InvokeOnMainThreadAsync(((BookListViewModel)BindingContext).EndOfListReached);
+        await MainThread.InvokeOnMainThreadAsync(ViewModel.EndOfListReached);
     }
-    public BookListPage(BookListViewModel viewmodel)
+    public BookListPage(IDataService database, BookListViewModel viewmodel)
     {
         InitializeComponent();
+        Database = database;
 
         string layoutType = Preferences.Default.Get("book list layout", "List");
 

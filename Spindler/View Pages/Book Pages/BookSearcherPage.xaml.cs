@@ -4,6 +4,7 @@ using CommunityToolkit.Mvvm.Input;
 using HtmlAgilityPack;
 using Spindler.CustomControls;
 using Spindler.Models;
+using Spindler.Services;
 using Path = Spindler.Models.Path;
 
 namespace Spindler.Views.Book_Pages;
@@ -29,6 +30,7 @@ public partial class BookSearcherPage : ContentPage
     public Config? Config { get; set; } = null;
 
     public HttpClient Client;
+    public IDataService Database;
 
     /// <summary>
     /// Whether <see cref="SearchBrowser"/> is busy loading and checking a page or not
@@ -65,10 +67,11 @@ public partial class BookSearcherPage : ContentPage
     }
 
 
-    public BookSearcherPage(HttpClient client)
+    public BookSearcherPage(IDataService database, HttpClient client)
     {
         InitializeComponent();
         SwitchUiBasedOnState(State.BookNotFound);
+        Database = database;
         Client = client;
     }
 
@@ -146,7 +149,7 @@ public partial class BookSearcherPage : ContentPage
     {
         string html = await SearchBrowser.GetHtmlUnsafe();
 
-        Config = await Config.FindValidConfig(Client, !string.IsNullOrEmpty(url) ? url : SearchBrowser.GetUrl(), html);
+        Config = await Config.FindValidConfig(Database, Client, !string.IsNullOrEmpty(url) ? url : SearchBrowser.GetUrl(), html);
         if (Config is null)
         {
             IsLoading = false;
@@ -190,7 +193,7 @@ public partial class BookSearcherPage : ContentPage
     {
         string html = await SearchBrowser.GetHtmlUnsafe();
 
-        PickerPopup bookListPopup = new("Choose Book List of Book", await App.Database.GetAllItemsAsync<BookList>());
+        PickerPopup bookListPopup = new("Choose Book List of Book", await Database.GetAllItemsAsync<BookList>());
         var result = await this.ShowPopupAsync(bookListPopup);
 
         if (result is not BookList)
@@ -203,7 +206,7 @@ public partial class BookSearcherPage : ContentPage
 
         Models.Path titlePath = Config!.TitlePath.AsPath();
         string title = titlePath.Select(doc, SelectorType.Text);
-        await App.Database.SaveItemAsync(
+        await Database.SaveItemAsync(
             new Book
             {
                 BookListId = ((BookList)result).Id,
@@ -221,7 +224,7 @@ public partial class BookSearcherPage : ContentPage
     private async Task UseConfigAsDomainUrl()
     {
         if (IsLoading) return;
-        PickerPopup popup = new("Choose a config to search", await App.Database.GetAllItemsAsync<Config>());
+        PickerPopup popup = new("Choose a config to search", await Database.GetAllItemsAsync<Config>());
         var result = await this.ShowPopupAsync(popup);
 
         if (result is not Config config ||

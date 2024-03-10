@@ -64,7 +64,7 @@ public partial class BookDetailPage : ContentPage, IQueryAttributable
     {
         if (Book!.Id > 0 && await DisplayAlert("Warning!", "Are you sure you want to delete this book?", "Yes", "No"))
         {
-            await App.Database.DeleteItemAsync(Book);
+            await DataService.DeleteItemAsync(Book);
         }
         await Close();
     }
@@ -91,7 +91,7 @@ public partial class BookDetailPage : ContentPage, IQueryAttributable
 
     private async void SwitchBookList_Clicked(object sender, EventArgs e)
     {
-        var popup = new PickerPopup("Switch Book Lists", await App.Database.GetBookListsAsync());
+        var popup = new PickerPopup("Switch Book Lists", await DataService.GetBookListsAsync());
         object? result = await this.ShowPopupAsync(popup);
         if (result is not BookList list) return;
         Book!.BookListId = list.Id;

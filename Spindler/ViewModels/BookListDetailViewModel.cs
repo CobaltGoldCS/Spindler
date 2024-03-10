@@ -2,6 +2,7 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Spindler.Models;
+using Spindler.Services;
 
 namespace Spindler.ViewModels
 {
@@ -47,10 +48,13 @@ namespace Spindler.ViewModels
             }
         }
 
-        public BookListDetailViewModel(BookList Booklist)
+        IDataService Database { get; set; }
+
+        public BookListDetailViewModel(IDataService dataService, BookList booklist)
         {
-            this.Booklist = Booklist;
-            booklist = Booklist;
+            Booklist = booklist;
+            this.booklist = booklist;
+            Database = dataService;
 
             chosenColor1 = new(Booklist.Color1);
             chosenColor2 = new(Booklist.Color2);
@@ -71,7 +75,7 @@ namespace Spindler.ViewModels
         {
             if (!string.IsNullOrWhiteSpace(Booklist.Name))
             {
-                await Booklist.UpdateAccessTimeToNow();
+                await Booklist.UpdateAccessTimeToNow(Database);
             }
             await Close();
         }
@@ -84,7 +88,7 @@ namespace Spindler.ViewModels
         {
             if (Booklist.Id > 0 && await Application.Current!.MainPage!.DisplayAlert("Warning!", "Are you sure you want to delete this booklist?", "Yes", "No"))
             {
-                await App.Database.DeleteBookListAsync(Booklist);
+                await Database.DeleteBookListAsync(Booklist);
             }
             await Close();
         }
