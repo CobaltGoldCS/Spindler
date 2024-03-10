@@ -50,6 +50,9 @@ public record Book : IIndexedModel
         set => BookmarksBlobbed = JsonConvert.SerializeObject(value);
     }
 
+    [Ignore]
+    public bool HasImageUrl { get => !string.IsNullOrEmpty(ImageUrl) && ImageUrl != "no_image.jpg"; }
+
     public string BookmarksBlobbed { get; set; } = string.Empty;
 
     /// <summary>

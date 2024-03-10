@@ -8,11 +8,15 @@
              xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
              x:DataType="viewmodels:BookListViewModel"
              x:Class="Spindler.Views.BookListPage"
+             IsBusy="{Binding IsLoading}"
              x:Name="thisPage">
 
     <ContentPage.Resources>
         <toolkit:BoolToObjectConverter x:Key="ExpanderIconConverter" FalseObject="&#xF175;" TrueObject="&#xF176;"/>
-        <Color x:Key="BorderColor">#55FFFFFF</Color>
+        <Color x:Key="TrueColor">Transparent</Color>
+        <Color x:Key="FalseColor">#55FFFFFF</Color>
+        <toolkit:BoolToObjectConverter x:Key="BorderColorConverter" FalseObject="{StaticResource FalseColor}" TrueObject="{StaticResource TrueColor}"/>
+        
         <DataTemplate x:Key="ListLayout" x:DataType="models:Book">
             <items:BookItem 
                         BookParameter="{Binding Path=., Mode=OneTime}"
@@ -38,7 +42,7 @@
                         WidthRequest="100"
                         HeightRequest="150"
                         StrokeShape="RoundRectangle 3,3,3,3"
-                        Stroke="{StaticResource BorderColor}"
+                        Stroke="{Binding Path=HasImageUrl, Mode=OneTime, Converter={StaticResource BorderColorConverter}}"
                         CompressedLayout.IsHeadless="True"
                         >
                     <Grid>
@@ -54,7 +58,7 @@
                               WidthRequest="13"
                               HorizontalOptions="Start"
                               VerticalOptions="Start"
-                              Margin="10,0,0,0"
+                              Margin="10,-2,0,0"
                               IsVisible="{Binding Path=HasNextChapter, Mode=OneWay}"/>
                     </Grid>
                 </Border>
@@ -178,11 +182,6 @@
             <CollectionView.ItemsLayout>
                 <LinearItemsLayout ItemSpacing="5" Orientation="Vertical"/>
             </CollectionView.ItemsLayout>
-            <CollectionView.EmptyView>
-                <VerticalStackLayout VerticalOptions="Center" HorizontalOptions="Center">
-                    <ActivityIndicator IsRunning="True" Color="{StaticResource Primary}"/>
-                </VerticalStackLayout>
-            </CollectionView.EmptyView>
             <CollectionView.Footer>
                 <ActivityIndicator 
                     IsRunning="{Binding IsExpanding, Mode=OneWay}"
