@@ -8,6 +8,8 @@ namespace Spindler.ViewModels
 {
     public partial class BookListDetailViewModel : ObservableObject
     {
+        public record ChooseColor(Color color);
+
         [ObservableProperty]
         public ChooseColor chosenColor1;
         [ObservableProperty]
