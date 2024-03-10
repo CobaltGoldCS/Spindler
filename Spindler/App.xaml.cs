@@ -44,6 +44,10 @@ public partial class App : Application
         Routing.RegisterRoute("GeneralConfig/" + nameof(ConfigDetailPage), typeof(ConfigDetailPage));
     }
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> ee5aa7ab4525dabf5c0aae756d96fb6fb1220294
     public void SetTheme()
     {
         var themeType = Preferences.Get("theme", (int)Themes.Default);
