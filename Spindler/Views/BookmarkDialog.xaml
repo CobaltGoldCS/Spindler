@@ -42,7 +42,7 @@
                                
                                WidthRequest="{Binding Source={Reference _this}, Path=Width}">
 
-                        <Label FontSize="24" FontAutoScalingEnabled="False" Text="{Binding Name}" Padding="5"/>
+                        <Label FontSize="24" FontAutoScalingEnabled="False" Text="{Binding Name}" Padding="5, 5, 10, 5"/>
                         <Button Text="&#xF1F8;"
                                 Grid.Column="1"
                                 CornerRadius="0"
@@ -50,8 +50,8 @@
                                 FontFamily="SPIcon"
                                 FontSize="25"
                                 FontAutoScalingEnabled="False"
-                                TextColor="White"
-                                BackgroundColor="{DynamicResource Warning}"
+                                TextColor="{DynamicResource TextColor}"
+                                BackgroundColor="{StaticResource Warning}"
                                 Clicked="DeleteItem_Clicked"/>
                     </Grid>
                 </DataTemplate>

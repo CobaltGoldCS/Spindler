@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:pages="clr-namespace:Spindler.Views.Configuration_Pages"
              xmlns:models="clr-namespace:Spindler.Models"
              xmlns:controls="clr-namespace:Spindler.CustomControls"
              xmlns:vm="clr-namespace:Spindler.ViewModels"
@@ -89,10 +88,10 @@
                     <table:LabelSwitch x:Name="filterSwitch" Text="Filter out certain types of text" On="{Binding Config.FilteringContentEnabled}"/>
                 </VerticalStackLayout>
 
-                <VerticalStackLayout CompressedLayout.IsHeadless="True" Grid.Row="3">
+                <VerticalStackLayout CompressedLayout.IsHeadless="True" Grid.Row="3" Spacing="5">
                     <Label Text="Import Options" TextColor="{StaticResource Primary}"/>
-                    <Button x:Name="exportButton" Text="Export Config as JSON" IsEnabled="False" Command="{Binding ExportCommand}" BackgroundColor="{DynamicResource Warning}" CornerRadius="0"/>
-                    <Button x:Name="importButton" Text="Import Config from JSON file" IsEnabled="False" Command="{Binding ImportCommand}" BackgroundColor="{DynamicResource Warning}" CornerRadius="0"/>
+                    <Button x:Name="exportButton" Text="Export Config as JSON" IsEnabled="False" Command="{Binding ExportCommand}" BackgroundColor="{StaticResource Warning}" CornerRadius="0" Padding="0,5"/>
+                    <Button x:Name="importButton" Text="Import Config from JSON file" IsEnabled="False" Command="{Binding ImportCommand}" BackgroundColor="{StaticResource Warning}" CornerRadius="0" Padding="0,5"/>
                 </VerticalStackLayout>
             </Grid>
         </ScrollView>

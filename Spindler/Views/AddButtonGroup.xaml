@@ -5,6 +5,7 @@
       x:Name="this"
       HorizontalOptions="CenterAndExpand"
       ColumnDefinitions="auto, auto, *"
+      BackgroundColor="Transparent"
       CompressedLayout.IsHeadless="True"
              >
     <Button x:Name="Cancel" Margin="5,0,5,0"
@@ -18,7 +19,7 @@
             FontSize="Medium"
             Clicked="Button_Clicked"
             FontAutoScalingEnabled="False"
-            Style="{DynamicResource DeleteButton}"
+            BackgroundColor="{StaticResource Warning}"
             Command="{Binding Source = {x:Reference this}, Path = DeleteCommand}"/>
     <Button x:Name="okButton" Margin="5,0,5,0"
             Text="{Binding Source = {x:Reference this}, Path = OkText}"
