@@ -7,7 +7,7 @@ using System.Collections.ObjectModel;
 
 namespace Spindler.ViewModels;
 
-public partial class HomeViewModel : ObservableObject
+public partial class HomeViewModel : SpindlerViewModel
 {
     #region Class Attributes
     [ObservableProperty]
@@ -19,12 +19,11 @@ public partial class HomeViewModel : ObservableObject
     [ObservableProperty]
     public bool isLoading = true;
 
-    readonly IDataService Database;
     public List<BookList>? BookLists;
 
     #endregion
 
-    public HomeViewModel(IDataService database)
+    public HomeViewModel(IDataService database) : base(database)
     {
         Database = database;
     }
@@ -40,7 +39,7 @@ public partial class HomeViewModel : ObservableObject
                 "booklist", bookList
             }
         };
-        await Shell.Current.GoToAsync($"{nameof(BookListDetailPage)}", parameters);
+        await NavigateTo($"{nameof(BookListDetailPage)}", parameters);
     }
 
     [RelayCommand]
@@ -52,7 +51,7 @@ public partial class HomeViewModel : ObservableObject
                 "booklist", new BookList()
             }
         };
-        await Shell.Current.GoToAsync($"{nameof(BookListDetailPage)}", parameters);
+        await NavigateTo($"{nameof(BookListDetailPage)}", parameters);
     }
 
     [RelayCommand]
@@ -71,7 +70,7 @@ public partial class HomeViewModel : ObservableObject
         BookLists.Insert(0, CurrentSelection!);
 
         OnPropertyChanged(nameof(BookLists));
-        await Shell.Current.GoToAsync($"{nameof(BookListPage)}", false, parameters);
+        await NavigateTo($"{nameof(BookListPage)}", parameters, false);
 
         CurrentSelection = null;
     }

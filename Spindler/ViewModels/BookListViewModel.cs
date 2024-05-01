@@ -8,9 +8,8 @@ using System.Collections.ObjectModel;
 
 namespace Spindler.ViewModels
 {
-    public partial class BookListViewModel : ObservableObject
+    public partial class BookListViewModel : SpindlerViewModel
     {
-        private readonly IDataService Database;
         private readonly HttpClient Client;
 
         #region Bindings
@@ -65,9 +64,8 @@ namespace Spindler.ViewModels
 
         #endregion
 
-        public BookListViewModel(IDataService database, HttpClient client)
+        public BookListViewModel(IDataService database, HttpClient client) : base(database)
         {
-            Database = database;
             Client = client;
         }
 
@@ -89,7 +87,7 @@ namespace Spindler.ViewModels
             {
                 { "book", book }
             };
-            await Shell.Current.GoToAsync($"{nameof(BookDetailPage)}", parameters);
+            await NavigateTo($"{nameof(BookDetailPage)}", parameters);
         }
 
         /// <summary>
@@ -108,7 +106,7 @@ namespace Spindler.ViewModels
                     }
                 }
             };
-            await Shell.Current.GoToAsync($"{nameof(BookDetailPage)}", parameters);
+            await NavigateTo($"{nameof(BookDetailPage)}", parameters);
         }
 
         object locker = new();
@@ -140,7 +138,7 @@ namespace Spindler.ViewModels
             {
                 { "book", selection}
             };
-            await Shell.Current.GoToAsync(nameof(BookPage), parameters);
+            await NavigateTo(nameof(BookPage), parameters);
 
             Executing = false;
         }
@@ -169,7 +167,7 @@ namespace Spindler.ViewModels
                 pageName = nameof(WebviewReaderPage);
             }
 
-            await Shell.Current.GoToAsync($"{pageName}", parameters);
+            await NavigateTo($"{pageName}", parameters);
 
             Executing = false;
         }

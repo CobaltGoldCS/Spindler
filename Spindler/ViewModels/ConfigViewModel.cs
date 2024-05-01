@@ -4,9 +4,8 @@ using Spindler.Models;
 using Spindler.Services;
 
 namespace Spindler.ViewModels;
-public partial class ConfigViewModel : ObservableObject
+public partial class ConfigViewModel : SpindlerViewModel
 {
-    private readonly IDataService Database;
 
     [ObservableProperty]
     public Config? selectedItem;
@@ -29,9 +28,8 @@ public partial class ConfigViewModel : ObservableObject
     [ObservableProperty]
     public bool isRefreshing = false;
 
-    public ConfigViewModel(IDataService service)
+    public ConfigViewModel(IDataService service) : base(service)
     {
-        Database = service;
     }
 
     [RelayCommand]
@@ -62,7 +60,7 @@ public partial class ConfigViewModel : ObservableObject
         {
             { "config", SelectedItem! }
         };
-        await Shell.Current.GoToAsync($"/{nameof(ConfigDetailPage)}", parameters);
+        await NavigateTo($"/{nameof(ConfigDetailPage)}", parameters);
         SelectedItem = null;
     }
 
@@ -77,6 +75,6 @@ public partial class ConfigViewModel : ObservableObject
                 newItem
             }
         };
-        await Shell.Current.GoToAsync($"/{nameof(ConfigDetailPage)}", parameters);
+        await NavigateTo($"/{nameof(ConfigDetailPage)}", parameters);
     }
 }

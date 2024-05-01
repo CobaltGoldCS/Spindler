@@ -7,7 +7,7 @@ using Spindler.Services;
 namespace Spindler.ViewModels
 {
     public record ChooseColor(Color color);
-    public partial class BookListDetailViewModel : ObservableObject
+    public partial class BookListDetailViewModel : SpindlerViewModel
     {
 
         [ObservableProperty]
@@ -50,9 +50,7 @@ namespace Spindler.ViewModels
             }
         }
 
-        IDataService Database { get; set; }
-
-        public BookListDetailViewModel(IDataService dataService, BookList booklist)
+        public BookListDetailViewModel(IDataService dataService, BookList booklist) : base(dataService)
         {
             Booklist = booklist;
             this.booklist = booklist;
@@ -64,7 +62,7 @@ namespace Spindler.ViewModels
 
         private static async Task Close()
         {
-            await Shell.Current.GoToAsync("..");
+            await NavigateTo("..");
         }
 
         #region Click Handlers

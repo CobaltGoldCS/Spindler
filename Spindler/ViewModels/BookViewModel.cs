@@ -7,10 +7,9 @@ using Spindler.Views.Book_Pages;
 
 namespace Spindler.ViewModels;
 
-public partial class BookViewModel(IDataService database, HttpClient client) : ObservableObject
+public partial class BookViewModel(IDataService database, HttpClient client) : SpindlerViewModel(database)
 {
     readonly HttpClient Client = client;
-    readonly IDataService Database = database;
 
     Book? book;
     Config? config;
@@ -86,7 +85,7 @@ public partial class BookViewModel(IDataService database, HttpClient client) : O
         {
             pageName = nameof(WebviewReaderPage);
         }
-        await Shell.Current.GoToAsync($"../{pageName}", parameters);
+        await NavigateTo($"../{pageName}", parameters);
         return;
     }
 
@@ -97,7 +96,7 @@ public partial class BookViewModel(IDataService database, HttpClient client) : O
     {
         { "book", book! }
     };
-        await Shell.Current.GoToAsync($"../{nameof(BookDetailPage)}", parameters: parameters);
+        await NavigateTo($"../{nameof(BookDetailPage)}", parameters: parameters);
     }
 
     private static string GetPathTypeAsString(string path)

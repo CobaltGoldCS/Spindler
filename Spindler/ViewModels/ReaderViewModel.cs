@@ -15,14 +15,10 @@ using System.Xml.XPath;
 
 namespace Spindler.ViewModels;
 
-public partial class ReaderViewModel : ObservableObject, IReader
+public partial class ReaderViewModel : SpindlerViewModel, IReader
 {
     #region Class Attributes
     
-    /// <summary>
-    /// The reference to the underlying database
-    /// </summary>
-    private readonly IDataService Database;
 
     /// <summary>
     /// The HttpClient used for Loading book information and/or Determining the correct config
@@ -88,10 +84,9 @@ public partial class ReaderViewModel : ObservableObject, IReader
     /// <summary>
     /// Creates a new ReaderViewModel Instance (please use ReaderViewModelBuilder)
     /// </summary>
-    internal ReaderViewModel(IDataService database, HttpClient client, WebScraperBrowser nextChapterBrowser)
+    internal ReaderViewModel(IDataService database, HttpClient client, WebScraperBrowser nextChapterBrowser) : base(database)
     {
         IsLoading = true;
-        Database = database;
         Client = client;
         NextChapterBrowser = nextChapterBrowser;
         Shell.Current.Navigating += OnShellNavigating;
@@ -199,7 +194,9 @@ public partial class ReaderViewModel : ObservableObject, IReader
         );
 
         WeakReferenceMessenger.Default.Send(new CreateBottomSheetMessage(view));
-        if (await PopupExtensions.ShowPopupAsync(Shell.Current.CurrentPage, view) is not Bookmark bookmark)
+        
+        if (!CurrentPage.TryGetTarget(out Page? currentPage) ||
+            await PopupExtensions.ShowPopupAsync(currentPage, view) is not Bookmark bookmark)
         {
             return;
         }
@@ -301,7 +298,7 @@ public partial class ReaderViewModel : ObservableObject, IReader
             { "errormessage", message },
             { "config", ReaderService.Config }
         };
-        await Shell.Current.GoToAsync($"{nameof(ErrorPage)}", parameters);
+        await NavigateTo(route: $"{nameof(ErrorPage)}", parameters: parameters);
         return false;
     }
 

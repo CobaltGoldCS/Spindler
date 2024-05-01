@@ -8,10 +8,10 @@ using Spindler.Utilities;
 
 namespace Spindler.ViewModels;
 
-public partial class SettingsViewmodel : ObservableObject
+public partial class SettingsViewmodel() : SpindlerViewModel(database: null)
 {
     private string font = Preferences.Default.Get("font", "OpenSansRegular");
-    private static string DatabaseLocation = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Spindler.db");
+    private static readonly string DatabaseLocation = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Spindler.db");
     public string Font
     {
         get => font;
@@ -82,9 +82,9 @@ public partial class SettingsViewmodel : ObservableObject
 
     // TODO: Create An Automatic Back Up System
     [RelayCommand]
-    private static async Task Import()
+    private async Task Import()
     {
-        if (!await Shell.Current.CurrentPage.DisplayAlert("Warning!", "Importing a new file will delete previous data", "Import", "Nevermind"))
+        if (CurrentPage.TryGetTarget(out Page? currentPage) || !await currentPage!.DisplayAlert("Warning!", "Importing a new file will delete previous data", "Import", "Nevermind"))
             return;
         FileResult? file = await FilePicker.Default.PickAsync(PickOptions.Default);
         if (file is null)

@@ -16,10 +16,8 @@ using System.Threading.Tasks;
 
 namespace Spindler.ViewModels;
 
-public partial class ConfigDetailViewModel : ObservableObject
+public partial class ConfigDetailViewModel : SpindlerViewModel
 {
-
-    private IDataService Database { get; init; }
 
     public class ContentExtractorOption
     {
@@ -99,9 +97,8 @@ public partial class ConfigDetailViewModel : ObservableObject
     public bool IsGeneralizedConfig() => Config is GeneralizedConfig;
 
 
-    public ConfigDetailViewModel(IDataService database)
+    public ConfigDetailViewModel(IDataService database) : base(database)
     {
-        Database = database;
     }
 
     #region Event Handlers
@@ -109,16 +106,16 @@ public partial class ConfigDetailViewModel : ObservableObject
     [RelayCommand]
     public async Task Delete()
     {
-        if (Config.Id == -1 || !await Shell.Current.CurrentPage!.DisplayAlert("Warning!", "Are you sure you want to delete this config?", "Yes", "No")) return;
+        if (Config.Id == -1 || (CurrentPage.TryGetTarget(out Page? currentPage) && !await currentPage!.DisplayAlert("Warning!", "Are you sure you want to delete this config?", "Yes", "No"))) return;
         if (IsGeneralizedConfig())
         {
             await Database.DeleteItemAsync((GeneralizedConfig)Config);
         }
         else
         {
-            await Database.DeleteItemAsync((Config)Config);
+            await Database.DeleteItemAsync(Config);
         }
-        await Shell.Current.GoToAsync("..");
+        await NavigateTo("..");
     }
 
     [RelayCommand]
@@ -139,11 +136,11 @@ public partial class ConfigDetailViewModel : ObservableObject
 
         await Database.SaveItemAsync(Config);
 
-        await Shell.Current.GoToAsync("..");
+        await NavigateTo("..");
     }
 
     [RelayCommand]
-    public async Task Cancel() => await Shell.Current.GoToAsync("..");
+    public async Task Cancel() => await NavigateTo("..");
 
     [RelayCommand]
     public async Task Export()
