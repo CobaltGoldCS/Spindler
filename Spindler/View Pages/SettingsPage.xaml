@@ -3,7 +3,8 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="Spindler.SettingsPage"
              xmlns:Viewmodels="clr-namespace:Spindler.ViewModels"
-             Shell.NavBarIsVisible="False">
+             Shell.NavBarIsVisible="False"
+             x:DataType="Viewmodels:SettingsViewmodel">
     <ContentPage.Resources>
         <Style x:Key="ChipButton" TargetType="Button">
             <Setter Property="CornerRadius" Value="15"/>
