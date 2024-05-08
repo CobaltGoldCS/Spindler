@@ -3,12 +3,15 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
         x:Class="Spindler.Views.CustomControls.Items.PinnedBookItem"
         xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+        xmlns:items="clr-namespace:Spindler.Views.CustomControls.Items"
         StrokeShape="RoundRectangle 16,10,16,10"
         Stroke="{DynamicResource TextColor}"
         StrokeThickness="{AppThemeBinding Dark=0, Light=2}"
         BackgroundColor="Transparent"
         CompressedLayout.IsHeadless="True"
+        x:DataType="items:PinnedBookItem"
         x:Name="this">
+    <!-- TODO: Update this -->
     <Border.GestureRecognizers>
         <TapGestureRecognizer 
             Tapped="Tapped"

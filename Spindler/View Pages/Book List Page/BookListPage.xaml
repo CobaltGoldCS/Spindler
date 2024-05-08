@@ -8,7 +8,6 @@
              xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
              x:DataType="viewmodels:BookListViewModel"
              x:Class="Spindler.Views.BookListPage"
-             IsBusy="{Binding IsLoading}"
              x:Name="thisPage">
 
     <ContentPage.Resources>
@@ -160,19 +159,17 @@
                             </Grid>
                         </toolkit:Expander.Header>
                         <CollectionView x:Name="PinnedBooksList"
-                                            ItemsSource="{Binding PinnedBooks, Mode=OneTime}"
-                                            SelectionMode="Single"
-                                            ItemSizingStrategy="MeasureFirstItem"
-                                            BackgroundColor="{AppThemeBinding Dark={DynamicResource DarkBackground}, Light={DynamicResource LightBackground}}">
+                                        ItemsSource="{Binding PinnedBooks, Mode=OneTime}"
+                                        SelectionMode="Single">
                             <CollectionView.ItemsLayout>
                                 <LinearItemsLayout ItemSpacing="5" Orientation="Horizontal"/>
                             </CollectionView.ItemsLayout>
                             <CollectionView.ItemTemplate>
                                 <DataTemplate x:DataType="models:Book">
                                     <items:PinnedBookItem 
-                                                BookParameter="{Binding Path=.}"
-                                                SelectionCommand="{Binding Source={x:RelativeSource AncestorType={x:Type viewmodels:BookListViewModel}}, Path=SelectionCommand, Mode=OneTime}"
-                                                DoubleTappedCommand="{Binding Source={x:RelativeSource AncestorType={x:Type viewmodels:BookListViewModel}}, Path=DoubleTappedCommand, Mode=OneTime}" />
+                                        BookParameter="{Binding Path=.}"
+                                        SelectionCommand="{Binding Source={x:RelativeSource AncestorType={x:Type viewmodels:BookListViewModel}}, Path=SelectionCommand, Mode=OneTime}"
+                                        DoubleTappedCommand="{Binding Source={x:RelativeSource AncestorType={x:Type viewmodels:BookListViewModel}}, Path=DoubleTappedCommand, Mode=OneTime}" />
                                 </DataTemplate>
                             </CollectionView.ItemTemplate>
                         </CollectionView>

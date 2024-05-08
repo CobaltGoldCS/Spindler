@@ -180,7 +180,7 @@ namespace Spindler.ViewModels
         public async Task Load()
         {
             IsLoading = true;
-            CurrentList = new(await Database.GetBooksByBooklistIdAsync(Id));
+            CurrentList = await Database.GetBooksByBooklistIdAsync(Id);
             DisplayedBooks.Clear();
             PinnedBooks.Clear();
             foreach (var book in CurrentList.Take(NUM_ITEMS_ADDED_TO_LIST))
@@ -206,13 +206,8 @@ namespace Spindler.ViewModels
             bool firstTimeLoaded = DisplayedBooks.Count == 0;
             if (firstTimeLoaded && !PinnedBooksAreVisible)
             {
-                // Set up pinned books
-                CurrentList = await Database.GetBooksByBooklistIdAsync(Id);
-                PinnedBooks = new(CurrentList.Where(b => b.Pinned));
-                PinnedBooksAreVisible = PinnedBooks.Count > 0;
-
-                LoaderHeightRequest = 0;
-                IsLoading = false;
+                await Load();
+                return;
             }
 
             LoaderHeightRequest = 20;

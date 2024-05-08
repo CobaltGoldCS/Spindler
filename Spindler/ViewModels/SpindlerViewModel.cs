@@ -9,9 +9,9 @@ public abstract class SpindlerViewModel : ObservableObject
     private IDataService? database;
     protected WeakReference<Page> CurrentPage
     {
-        get => lazyPage.Value;
+        get => LazyPage.Value;
     }
-    private Lazy<WeakReference<Page>> lazyPage { get; set; }
+    private Lazy<WeakReference<Page>> LazyPage { get; set; }
 
     /// <summary>
     /// Database Handler. Will throw if constructor is passed a null database parameter.
@@ -32,7 +32,7 @@ public abstract class SpindlerViewModel : ObservableObject
         {
             Database = database;
         }
-        lazyPage = new Lazy<WeakReference<Page>>(() => new WeakReference<Page>(Shell.Current.CurrentPage));
+        LazyPage = new Lazy<WeakReference<Page>>(() => new WeakReference<Page>(Shell.Current.CurrentPage));
     }
 
 #nullable disable
