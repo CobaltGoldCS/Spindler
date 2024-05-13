@@ -5,15 +5,20 @@
         xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
         xmlns:items="clr-namespace:Spindler.Views.CustomControls.Items"
         xmlns:behaviors="clr-namespace:Spindler.Behaviors"
-        StrokeShape="RoundRectangle 5,5,5,5"
-        Stroke="{DynamicResource TextColor}"
-        StrokeThickness="{AppThemeBinding Dark=0, Light=2}"
+        StrokeShape="RoundRectangle 2,2,2,2"
+        StrokeThickness="2"
         BackgroundColor="Transparent"
         CompressedLayout.IsHeadless="True"
         x:DataType="items:PinnedBookItem"
         x:Name="this">
-    <!-- TODO: Update this -->
-    <Border.GestureRecognizers>
+    <Border.Stroke>
+        <Binding Source="{Reference this}" Path="BookParameter.HasNextChapter">
+            <Binding.Converter>
+                <toolkit:BoolToObjectConverter TrueObject="{StaticResource Warning}" FalseObject="{StaticResource TextColor}"/>
+            </Binding.Converter>
+        </Binding>
+    </Border.Stroke>
+        <Border.GestureRecognizers>
         <TapGestureRecognizer 
             Tapped="Tapped"
             Command="{Binding Source={x:Reference this}, Path=DoubleTappedCommand}"
@@ -28,7 +33,7 @@
     <Grid
         CompressedLayout.IsHeadless="True"
         BackgroundColor="{DynamicResource Background}"
-        ColumnDefinitions="200" RowDefinitions="100">
+        ColumnDefinitions="200" RowDefinitions="200">
         <Image Source="{Binding Source={Reference this}, Path=BookParameter.ImageUrl, Mode=OneWay}"
                Background="{Binding Background, Mode=OneWay}"
                Aspect="AspectFill">
