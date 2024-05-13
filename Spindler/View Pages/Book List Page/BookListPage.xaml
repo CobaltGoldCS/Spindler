@@ -162,7 +162,10 @@
                                         ItemsSource="{Binding PinnedBooks, Mode=OneTime}"
                                         SelectionMode="Single">
                             <CollectionView.ItemsLayout>
-                                <LinearItemsLayout ItemSpacing="5" Orientation="Horizontal"/>
+                                <LinearItemsLayout Orientation="Horizontal"
+                                                   ItemSpacing="5"
+                                                   SnapPointsAlignment="Center"
+                                                   SnapPointsType="Mandatory"/>
                             </CollectionView.ItemsLayout>
                             <CollectionView.ItemTemplate>
                                 <DataTemplate x:DataType="models:Book">
