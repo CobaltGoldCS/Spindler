@@ -4,7 +4,8 @@
         x:Class="Spindler.Views.CustomControls.Items.PinnedBookItem"
         xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
         xmlns:items="clr-namespace:Spindler.Views.CustomControls.Items"
-        StrokeShape="RoundRectangle 16,10,16,10"
+        xmlns:behaviors="clr-namespace:Spindler.Behaviors"
+        StrokeShape="RoundRectangle 5,5,5,5"
         Stroke="{DynamicResource TextColor}"
         StrokeThickness="{AppThemeBinding Dark=0, Light=2}"
         BackgroundColor="Transparent"
@@ -27,20 +28,27 @@
     <Grid
         CompressedLayout.IsHeadless="True"
         BackgroundColor="{DynamicResource Background}"
-        RowDefinitions="65, 40" ColumnDefinitions="200">
+        ColumnDefinitions="200" RowDefinitions="100">
+        <Image Source="{Binding Source={Reference this}, Path=BookParameter.ImageUrl, Mode=OneWay}"
+               Background="{Binding Background, Mode=OneWay}"
+               Aspect="AspectFill">
+        </Image>
         <Label
             FontSize="Body"
             x:Name="TitleLabel"
             Text="{Binding Source={x:Reference this}, Path=BookParameter.Title}"
+            TextColor="{StaticResource White}"
             MaxLines="4"
-            Padding="15,10,15,0"/>
-        <Label  FontFamily="SPIcon"
-                FontSize="Medium"
-                TextColor="{DynamicResource Warning}"
-                IsVisible="{Binding Source={x:Reference this}, Path=BookParameter.HasNextChapter}"
-                Text="&#xE804;"
-                Margin="10,5,0,10"
-                Grid.Row="1"
-                HorizontalOptions="Start"/>
+            Padding="0,0,0,10"
+            VerticalTextAlignment="End"
+            HorizontalTextAlignment="Center">
+            <Label.Shadow>
+                <Shadow Brush="Black" Radius="10" Opacity="1"/>
+            </Label.Shadow>
+        </Label>
     </Grid>
+
+    <Border.Shadow>
+        <Shadow Brush="Black" Offset="10,10" Radius="100"/>
+    </Border.Shadow>
 </Border>
