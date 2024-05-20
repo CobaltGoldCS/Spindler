@@ -6,24 +6,19 @@ using Spindler.Utilities;
 using System.Collections.ObjectModel;
 
 namespace Spindler.ViewModels;
-public partial class ConfigViewModel : SpindlerViewModel
+public partial class ConfigViewModel(IDataService service) : SpindlerViewModel(service)
 {
+    // IsGeneralized is set by the code-behind of the Config Page, and is not set in this class
+    public bool IsGeneralized = false;
 
     [ObservableProperty]
     public Config? selectedItem;
-
-    // IsGeneralized is set by the code-behind of the Config Page, and is not set in this class
-    public bool IsGeneralized = false;
     
     [ObservableProperty]
     public ObservableCollection<Config> configItems = [];
 
     [ObservableProperty]
     public bool isRefreshing = false;
-
-    public ConfigViewModel(IDataService service) : base(service)
-    {
-    }
 
     [RelayCommand]
     public async Task ReloadItems() 
@@ -54,7 +49,12 @@ public partial class ConfigViewModel : SpindlerViewModel
     [RelayCommand]
     public async Task Add()
     {
-        Config newItem = IsGeneralized ? new GeneralizedConfig() { Id = -1 } : new Config() { Id = -1 };
+        Config newItem = IsGeneralized switch
+        {
+            true => new GeneralizedConfig() { Id = -1 },
+            false => new Config() { Id = -1 },
+        };
+
         Dictionary<string, object> parameters = new()
         {
             {
