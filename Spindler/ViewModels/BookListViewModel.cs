@@ -2,6 +2,7 @@
 using CommunityToolkit.Mvvm.Input;
 using Spindler.Models;
 using Spindler.Services;
+using Spindler.Utilities;
 using Spindler.Views;
 using Spindler.Views.Book_Pages;
 using System.Collections.ObjectModel;
@@ -19,13 +20,13 @@ namespace Spindler.ViewModels
         public int id;
 
         [ObservableProperty]
-        List<Book> currentList = new();
+        List<Book> currentList = [];
 
         [ObservableProperty]
-        ObservableCollection<Book> displayedBooks = new();
+        ObservableCollection<Book> displayedBooks = [];
 
         [ObservableProperty]
-        ObservableCollection<Book> pinnedBooks = new();
+        ObservableCollection<Book> pinnedBooks = [];
 
         [ObservableProperty]
         bool isLoading = true;
@@ -181,17 +182,10 @@ namespace Spindler.ViewModels
         {
             IsLoading = true;
             CurrentList = await Database.GetBooksByBooklistIdAsync(Id);
-            DisplayedBooks.Clear();
-            PinnedBooks.Clear();
-            foreach (var book in CurrentList.Take(NUM_ITEMS_ADDED_TO_LIST))
-            {
-                DisplayedBooks.Add(book);
-            }
 
-            foreach (var book in CurrentList.Where(book => book.Pinned))
-            {
-                PinnedBooks.Add(book);
-            }
+            PinnedBooks.CreateAndNotify(CurrentList.Where(book => book.Pinned));
+            DisplayedBooks.CreateAndNotify(CurrentList.Take(NUM_ITEMS_ADDED_TO_LIST));
+
             PinnedBooksAreVisible = PinnedBooks.Count > 0;
             IsLoading = false;
         }
