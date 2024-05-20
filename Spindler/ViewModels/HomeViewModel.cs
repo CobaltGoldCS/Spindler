@@ -2,6 +2,7 @@
 using CommunityToolkit.Mvvm.Input;
 using Spindler.Models;
 using Spindler.Services;
+using Spindler.Utilities;
 using Spindler.Views;
 using System.Collections.ObjectModel;
 
@@ -14,7 +15,7 @@ public partial class HomeViewModel : SpindlerViewModel
     BookList? currentSelection;
 
     [ObservableProperty]
-    public ObservableCollection<BookList> displayedBooklists = new();
+    public ObservableCollection<BookList> displayedBooklists = [];
 
     [ObservableProperty]
     public bool isLoading = true;
@@ -78,21 +79,10 @@ public partial class HomeViewModel : SpindlerViewModel
     [RelayCommand]
     public async Task Load()
     {
-        await Task.Run(async () =>
-        {
-            await Task.Delay(250);
-            IsLoading = true;
-            BookLists = await Database.GetBookListsAsync();
-            MainThread.BeginInvokeOnMainThread(() =>
-            {
-                DisplayedBooklists.Clear();
-                foreach (BookList list in BookLists!)
-                {
-                    DisplayedBooklists!.Add(list);
-                }
-            });
-            IsLoading = false;
-        });
+        IsLoading = true;
+        BookLists = await Database.GetBookListsAsync();
+        DisplayedBooklists.PopulateAndNotify(BookLists);
+        IsLoading = false;
     }
 
 }

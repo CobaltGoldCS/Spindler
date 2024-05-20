@@ -50,15 +50,11 @@ namespace Spindler.ViewModels
             set
             {
                 filterText = value;
-                DisplayedBooks.Clear();
                 var lowercase = value.ToLower();
-                foreach (var book in CurrentList
-                                        .Where(book => book.Name.ToLower()
-                                        .Contains(lowercase))
-                                        .Take(NUM_ITEMS_ADDED_TO_LIST))
-                {
-                    DisplayedBooks.Add(book);
-                }
+
+                DisplayedBooks.PopulateAndNotify(CurrentList
+                                        .Where(book => book.Name.Contains(lowercase, StringComparison.CurrentCultureIgnoreCase))
+                                        .Take(NUM_ITEMS_ADDED_TO_LIST));
                 SetProperty(ref filterText, value);
             }
         }
@@ -183,8 +179,8 @@ namespace Spindler.ViewModels
             IsLoading = true;
             CurrentList = await Database.GetBooksByBooklistIdAsync(Id);
 
-            PinnedBooks.CreateAndNotify(CurrentList.Where(book => book.Pinned));
-            DisplayedBooks.CreateAndNotify(CurrentList.Take(NUM_ITEMS_ADDED_TO_LIST));
+            PinnedBooks.PopulateAndNotify(CurrentList.Where(book => book.Pinned));
+            DisplayedBooks.PopulateAndNotify(CurrentList.Take(NUM_ITEMS_ADDED_TO_LIST));
 
             PinnedBooksAreVisible = PinnedBooks.Count > 0;
             IsLoading = false;
