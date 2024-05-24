@@ -29,13 +29,13 @@ public partial class ReaderDataService : ObservableObject
     public bool isContentHtml = false;
 
 
-    private WebUtilities WebUtilities = new();
+    private readonly WebUtilities WebUtilities = new();
 
-    private Task<Result<LoadedData>>[] LoadingDataTask = new Task<Result<LoadedData>>[]
-    {
+    private readonly Task<Result<LoadedData>>[] LoadingDataTask =
+    [
         Task.FromResult(Result.Error<LoadedData>("Uninitialized Data")),
         Task.FromResult(Result.Error<LoadedData>("Uninitialized Data"))
-    };
+    ];
 
     public enum UrlType
     {
@@ -69,16 +69,12 @@ public partial class ReaderDataService : ObservableObject
             _ => throw new NotImplementedException("Result must be ok or invalid")
         };
 
-        if (returnData is Result<LoadedData>.Err)
+        returnData.HandleSuccess((data) =>
         {
-            return returnData;
-        }
-
-        var data = (returnData as Result<LoadedData>.Ok)!.Value;
-
-        LoadingDataTask[(int)urlType] = LoadUrl(urlType == UrlType.Previous ? data.prevUrl : data.nextUrl);
-        // This task holds just the previously loaded data in the array
-        LoadingDataTask[((int)urlType + 1) % LoadingDataTask.Length] = Task.FromResult(Result.Success(currentData));
+            LoadingDataTask[(int)urlType] = LoadUrl(urlType == UrlType.Previous ? data.prevUrl : data.nextUrl);
+            // This task holds just the previously loaded data in the array
+            LoadingDataTask[((int)urlType + 1) % LoadingDataTask.Length] = Task.FromResult(Result.Success(currentData));
+        });
 
         return returnData;
     }

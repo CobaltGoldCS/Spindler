@@ -11,6 +11,24 @@ public abstract record Result<T>
     /// </summary>
     /// <param name="Message">The Result's Error Message</param>
     public sealed record Err(string Message) : Result<T> { };
+
+    public void HandleError(Action<Err> handler)
+    {
+        if (this is Ok)
+        {
+            return;
+        }
+        handler((Err)this);
+    }
+
+    public void HandleSuccess(Action<T> handler)
+    {
+        if (this is Err)
+        {
+            return;
+        }
+        handler(((Ok)this).Value);
+    }
 }
 
 public static class Result

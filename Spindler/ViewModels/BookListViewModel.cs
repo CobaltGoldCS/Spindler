@@ -9,9 +9,9 @@ using System.Collections.ObjectModel;
 
 namespace Spindler.ViewModels
 {
-    public partial class BookListViewModel : SpindlerViewModel
+    public partial class BookListViewModel(IDataService database, HttpClient client) : SpindlerViewModel(database)
     {
-        private readonly HttpClient Client;
+        private readonly HttpClient Client = client;
 
         #region Bindings
         [ObservableProperty]
@@ -61,16 +61,10 @@ namespace Spindler.ViewModels
 
         #endregion
 
-        public BookListViewModel(IDataService database, HttpClient client) : base(database)
-        {
-            Client = client;
-        }
-
         public void SetBookListAndProperties(BookList list)
         {
             Id = list.Id;
             Title = list.Name;
-
         }
 
         /// <summary>
@@ -84,7 +78,7 @@ namespace Spindler.ViewModels
             {
                 { "book", book }
             };
-            await NavigateTo($"{nameof(BookDetailPage)}", parameters);
+            await NavigateTo(nameof(BookDetailPage), parameters);
         }
 
         /// <summary>
@@ -103,7 +97,7 @@ namespace Spindler.ViewModels
                     }
                 }
             };
-            await NavigateTo($"{nameof(BookDetailPage)}", parameters);
+            await NavigateTo(nameof(BookDetailPage), parameters);
         }
 
         object locker = new();
@@ -155,7 +149,14 @@ namespace Spindler.ViewModels
             var parameters = new Dictionary<string, object>()
             {
                 { "book", selection},
-                { "type", config?.UsesHeadless ?? false ? ReaderPage.ReaderType.Headless : ReaderPage.ReaderType.Standard }
+                { "type", config?.UsesHeadless switch
+                    {
+                        true => ReaderPage.ReaderType.Headless,
+                        false => ReaderPage.ReaderType.Standard,
+                        null => ReaderPage.ReaderType.Standard,
+                    }
+                }
+
             };
 
             string pageName = nameof(ReaderPage);
@@ -164,7 +165,7 @@ namespace Spindler.ViewModels
                 pageName = nameof(WebviewReaderPage);
             }
 
-            await NavigateTo($"{pageName}", parameters);
+            await NavigateTo(pageName, parameters);
 
             Executing = false;
         }
