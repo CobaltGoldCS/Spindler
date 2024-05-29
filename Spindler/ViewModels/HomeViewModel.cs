@@ -81,7 +81,7 @@ public partial class HomeViewModel : SpindlerViewModel
     {
         IsLoading = true;
         BookLists = await Database.GetBookListsAsync();
-        DisplayedBooklists.PopulateAndNotify(BookLists);
+        DisplayedBooklists.PopulateAndNotify(BookLists, shouldClear: true);
         IsLoading = false;
     }
 

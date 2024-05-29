@@ -11,14 +11,18 @@ namespace Spindler.Utilities;
 static class UiUtilities
 {
     /// <summary>
-    /// Clears UI and populate <paramref name="collection"/> with <paramref name="values"/> while informing the UI of the change
+    /// Populate <paramref name="collection"/> with <paramref name="values"/> while informing the UI of the change
     /// </summary>
     /// <typeparam name="T">Type of items in the collection</typeparam>
     /// <param name="collection">The collection to clear and populate</param>
     /// <param name="values">Values to insert into collection</param>
-    public static void PopulateAndNotify<T>(this ObservableCollection<T> collection, IEnumerable<T> values)
+    /// <param name="shouldClear">Whether the collection should be cleared before it is populated</param>
+    public static void PopulateAndNotify<T>(this ObservableCollection<T> collection, IEnumerable<T> values, bool shouldClear = false)
     {
-        collection.Clear();
+        if (shouldClear)
+        {
+            collection.Clear();
+        }
 
         foreach (T value in values)
         {

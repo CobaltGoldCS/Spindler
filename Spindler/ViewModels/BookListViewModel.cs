@@ -54,7 +54,8 @@ namespace Spindler.ViewModels
 
                 DisplayedBooks.PopulateAndNotify(CurrentList
                                         .Where(book => book.Name.Contains(lowercase, StringComparison.CurrentCultureIgnoreCase))
-                                        .Take(NUM_ITEMS_ADDED_TO_LIST));
+                                        .Take(NUM_ITEMS_ADDED_TO_LIST),
+                                        shouldClear: true);
                 SetProperty(ref filterText, value);
             }
         }
@@ -180,8 +181,8 @@ namespace Spindler.ViewModels
             IsLoading = true;
             CurrentList = await Database.GetBooksByBooklistIdAsync(Id);
 
-            PinnedBooks.PopulateAndNotify(CurrentList.Where(book => book.Pinned));
-            DisplayedBooks.PopulateAndNotify(CurrentList.Take(NUM_ITEMS_ADDED_TO_LIST));
+            PinnedBooks.PopulateAndNotify(CurrentList.Where(book => book.Pinned), shouldClear: true);
+            DisplayedBooks.PopulateAndNotify(CurrentList.Take(NUM_ITEMS_ADDED_TO_LIST), shouldClear: true);
 
             PinnedBooksAreVisible = PinnedBooks.Count > 0;
             IsLoading = false;
@@ -203,13 +204,12 @@ namespace Spindler.ViewModels
 
             LoaderHeightRequest = 20;
             IsExpanding = true;
-            foreach (Book book in CurrentList!
+            DisplayedBooks.PopulateAndNotify(CurrentList!
                                     .Where(book => book.Name.Contains(FilterText))
                                     .Skip(DisplayedBooks.Count)
-                                    .Take(NUM_ITEMS_ADDED_TO_LIST))
-            {
-                DisplayedBooks!.Add(book);
-            }
+                                    .Take(NUM_ITEMS_ADDED_TO_LIST),
+                                    shouldClear: false);
+
             IsExpanding = false;
             LoaderHeightRequest = 0;
         }

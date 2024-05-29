@@ -26,10 +26,10 @@ public partial class ConfigViewModel(IDataService service) : SpindlerViewModel(s
         IsRefreshing = true;
         if (IsGeneralized)
         {
-            ConfigItems.PopulateAndNotify(await Database.GetAllItemsAsync<GeneralizedConfig>());
+            ConfigItems.PopulateAndNotify(await Database.GetAllItemsAsync<GeneralizedConfig>(), shouldClear: true);
         } else
         {
-            ConfigItems.PopulateAndNotify(await Database.GetAllItemsAsync<Config>());
+            ConfigItems.PopulateAndNotify(await Database.GetAllItemsAsync<Config>(), shouldClear: true);
         }
         
         IsRefreshing = false;
