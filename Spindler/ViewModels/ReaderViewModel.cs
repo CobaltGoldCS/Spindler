@@ -209,7 +209,6 @@ public partial class ReaderViewModel : SpindlerViewModel, IReader
         // Preloaded Data is no longer valid for the bookmark
         ReaderService.InvalidatePreloadedData();
 
-        WeakReferenceMessenger.Default.Send(new ChangeScrollMessage((0, false)));
         var data = await ReaderService.LoadUrl(bookmark!.Url);
         switch (data)
         {
@@ -223,10 +222,8 @@ public partial class ReaderViewModel : SpindlerViewModel, IReader
 
         // Cleanup 
         IsLoading = false;
+        CurrentBook.Position = bookmark.Position;
         ChangeChapter();
-        if (bookmark.Position > 0)
-            WeakReferenceMessenger.Default.Send(new ChangeScrollMessage((bookmark.Position, false)));
-        CurrentBook = await Database.GetItemByIdAsync<Book>(CurrentBook.Id);
     }
 
     /// <summary>
