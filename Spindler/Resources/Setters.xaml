@@ -145,13 +145,13 @@
                     <VisualState x:Name="Normal">
                         <VisualState.Setters>
                             <Setter Property="TextColor" Value="{DynamicResource TextColor}" />
-                            <Setter Property="TitleColor" Value="{DynamicResource DisabledTextColor}" />
+                            <Setter Property="TitleColor" Value="{AppThemeBinding Light=Black, Dark={StaticResource White}}" />
                         </VisualState.Setters>
                     </VisualState>
                     <VisualState x:Name="Disabled">
                         <VisualState.Setters>
                             <Setter Property="TextColor" Value="{DynamicResource TextColor}" />
-                            <Setter Property="TitleColor" Value="{DynamicResource DisabledTextColor}" />
+                            <Setter Property="TitleColor" Value="{AppThemeBinding Light=Black, Dark={StaticResource White}}" />
                         </VisualState.Setters>
                     </VisualState>
                 </VisualStateGroup>
