@@ -65,10 +65,10 @@ public record Book : IIndexedModel
     public bool HasNextChapter { get; set; } = false;
 
     /// <summary>
-    /// Updates <see cref="LastViewed"/> to the current time, and saves booklist in the database.
+    /// Saves a book
     /// </summary>
     /// <returns>An awaitable <see cref="Task"/></returns>
-    public async Task UpdateViewTimeAndSave(IDataService service)
+    public async Task SaveInfo(IDataService service)
     {
         LastViewed = DateTime.UtcNow;
         await service.SaveItemAsync(this);

@@ -1,4 +1,5 @@
-﻿using CommunityToolkit.Maui.Views;
+﻿using CommunityToolkit.Maui.Alerts;
+using CommunityToolkit.Maui.Views;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
@@ -50,26 +51,13 @@ public partial class ReaderViewModel : SpindlerViewModel, IReader
     /// The Current Data the User interface uses to populate various UI elements
     /// </summary>
     [ObservableProperty]
-    public LoadedData? currentData = new() { Title = "Loading" };
+    public LoadedData currentData = LoadedData.CreatePlaceholder();
 
     /// <summary>
     /// Flag for whether the View Model is loading book data
     /// </summary>
     [ObservableProperty]
-    private bool isLoading;
-
-
-    /// <summary>
-    /// Visibility of the 'Previous' Button
-    /// </summary>
-    [ObservableProperty]
-    public bool prevButtonIsVisible = false;
-
-    /// <summary>
-    /// Visibility of the 'Next' Button
-    /// </summary>
-    [ObservableProperty]
-    public bool nextButtonIsVisible = false;
+    private bool isLoading = false;
 
     /// <summary>
     /// The current Scroll position of the view
@@ -86,7 +74,6 @@ public partial class ReaderViewModel : SpindlerViewModel, IReader
     /// </summary>
     internal ReaderViewModel(IDataService database, HttpClient client, WebScraperBrowser nextChapterBrowser) : base(database)
     {
-        IsLoading = true;
         Client = client;
         NextChapterBrowser = nextChapterBrowser;
         Shell.Current.Navigating += OnShellNavigating;
@@ -100,10 +87,7 @@ public partial class ReaderViewModel : SpindlerViewModel, IReader
     /// <returns>A task indicating the state of the inital load</returns>
     public async Task StartLoad()
     {
-
-        await CurrentBook.UpdateViewTimeAndSave(Database);
-
-        NextChapterService chapterService = new(Client, NextChapterBrowser, Database);
+        IsLoading = true;
 
         var data = await ReaderService.LoadUrl(CurrentBook!.Url);
         switch (data)
@@ -116,16 +100,19 @@ public partial class ReaderViewModel : SpindlerViewModel, IReader
                 break;
         };
 
-        // Get image url from load
         if (string.IsNullOrEmpty(CurrentBook!.ImageUrl) || CurrentBook!.ImageUrl == "no_image.jpg")
         {
             await SetImageUrl();
         }
-        ChangeChapter();
 
-        List<Book> books = await Database.GetAllItemsAsync<Book>();
-        books.Remove(CurrentBook);
-        _ = Task.Run(async () => await chapterService.SaveBooks(books, nextChapterToken.Token));
+        if (CurrentBook.Position > 0)
+        {
+            WeakReferenceMessenger.Default.Send(new ChangeScrollMessage((CurrentBook.Position, ReaderService.Config.HasAutoscrollAnimation)));
+        }
+
+        IsLoading = false;
+
+        CheckForBookUpdates();
     }
 
     private async Task SetImageUrl()
@@ -139,7 +126,20 @@ public partial class ReaderViewModel : SpindlerViewModel, IReader
             CurrentBook.ImageUrl = ReaderService.ConfigService.PrettyWrapSelector(
                                 (html as Result<string>.Ok)!.Value, ConfigService.Selector.ImageUrl, SelectorType.Link);
         }
-        catch (XPathException) { }
+        catch (XPathException) {
+            Toast.Make("Invalid Image Url Selector");
+        }
+    }
+
+    /// <summary>
+    /// Start checking books to see if they have been updated
+    /// </summary>
+    private async void CheckForBookUpdates()
+    {
+        List<Book> books = await Database.GetAllItemsAsync<Book>();
+        books.Remove(CurrentBook);
+        NextChapterService chapterService = new(Client, NextChapterBrowser, Database);
+        _ = Task.Run(async () => await chapterService.SaveBooks(books, nextChapterToken.Token));
     }
     #endregion
 
@@ -154,13 +154,12 @@ public partial class ReaderViewModel : SpindlerViewModel, IReader
     private async Task ChangeChapter(ReaderDataService.UrlType selector)
     {
         if (IsLoading)
+        {
             return;
+        }
 
         IsLoading = true;
-        PrevButtonIsVisible = false;
-        NextButtonIsVisible = false;
         WeakReferenceMessenger.Default.Send(new ChangeScrollMessage((0, false)));
-        CurrentBook.Position = 0;
 
         CurrentBook.Url = selector switch
         {
@@ -176,7 +175,9 @@ public partial class ReaderViewModel : SpindlerViewModel, IReader
             return;
         }
         CurrentData = (dataResult as Result<LoadedData>.Ok)!.Value;
-        ChangeChapter();
+        await CurrentBook.SaveInfo(Database);
+
+        IsLoading = false;
     }
 
     /// <summary>
@@ -186,7 +187,9 @@ public partial class ReaderViewModel : SpindlerViewModel, IReader
     public async Task Bookmark()
     {
         if (CurrentData is null || IsLoading)
+        {
             return;
+        }
         Popup view = new BookmarkDialog(
             Database,
             CurrentBook,
@@ -203,8 +206,6 @@ public partial class ReaderViewModel : SpindlerViewModel, IReader
 
         // UI Changes
         IsLoading = true;
-        PrevButtonIsVisible = false;
-        NextButtonIsVisible = false;
 
         // Preloaded Data is no longer valid for the bookmark
         ReaderService.InvalidatePreloadedData();
@@ -222,8 +223,14 @@ public partial class ReaderViewModel : SpindlerViewModel, IReader
 
         // Cleanup 
         IsLoading = false;
-        CurrentBook.Position = bookmark.Position;
-        ChangeChapter();
+
+        if (bookmark.Position > 0)
+        {
+            WeakReferenceMessenger.Default.Send(new ChangeScrollMessage((bookmark.Position, ReaderService.Config.HasAutoscrollAnimation)));
+        }
+
+        CurrentBook!.Url = CurrentData!.currentUrl!;
+        await CurrentBook.SaveInfo(Database);
     }
 
     /// <summary>
@@ -250,38 +257,12 @@ public partial class ReaderViewModel : SpindlerViewModel, IReader
         if (e.Target.Location.OriginalString == "..")
         {
             CurrentBook.Position = ReaderScrollPosition;
-            CurrentBook.HasNextChapter = NextButtonIsVisible;
-            await Database.SaveItemAsync(CurrentBook);
+            CurrentBook.HasNextChapter = CurrentData!.NextUrlValid;
+            await CurrentBook.SaveInfo(Database);
         }
         Shell.Current.Navigating -= OnShellNavigating;
     }
 
-    #region Helperfunctions
-
-    /// <summary>
-    /// Updates the UI with current information from <see cref="CurrentData"/>
-    /// </summary>
-    private async void ChangeChapter()
-    {
-        // Database updates
-        CurrentBook!.Url = CurrentData!.currentUrl!;
-        await CurrentBook.UpdateViewTimeAndSave(Database);
-
-        NextButtonIsVisible = WebUtilities.IsUrl(CurrentData.nextUrl);
-        PrevButtonIsVisible = WebUtilities.IsUrl(CurrentData.prevUrl);
-
-        // Turn relative uris into absolutes
-        var baseUri = new Uri(CurrentData.currentUrl!);
-        CurrentData.prevUrl = new Uri(baseUri: baseUri, CurrentData.prevUrl).ToString();
-        CurrentData.nextUrl = new Uri(baseUri: baseUri, CurrentData.nextUrl).ToString();
-
-        IsLoading = false;
-
-        if (CurrentBook.Position > 0)
-        {
-            WeakReferenceMessenger.Default.Send(new ChangeScrollMessage((CurrentBook.Position, ReaderService.Config.HasAutoscrollAnimation)));
-        }
-    }
 
     #region Error Handlers
 
@@ -299,9 +280,6 @@ public partial class ReaderViewModel : SpindlerViewModel, IReader
         return false;
     }
 
-
-
-    #endregion
     #endregion
 }
 

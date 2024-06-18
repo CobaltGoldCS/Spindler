@@ -150,14 +150,13 @@ public partial class ReaderDataService : ObservableObject
             ];
             string[] content = await Task.WhenAll(selectorOperations);
 
-            LoadedData data = new()
-            {
-                Text = content[0],
-                Title = content[1],
-                nextUrl = content[2],
-                prevUrl = content[3],
-                currentUrl = url
-            };
+            LoadedData data = new(
+                title: content[1],
+                text: content[0],
+                nextUrl: content[2],
+                prevUrl: content[3],
+                currentUrl: url
+            );
 
             return Result.Success(data);
         }
