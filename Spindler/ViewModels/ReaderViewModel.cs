@@ -112,7 +112,7 @@ public partial class ReaderViewModel : SpindlerViewModel, IReader
 
         IsLoading = false;
 
-        CheckForBookUpdates();
+        StartBookChecking();
     }
 
     private async Task SetImageUrl()
@@ -134,7 +134,7 @@ public partial class ReaderViewModel : SpindlerViewModel, IReader
     /// <summary>
     /// Start checking books to see if they have been updated
     /// </summary>
-    private async void CheckForBookUpdates()
+    private async void StartBookChecking()
     {
         List<Book> books = await Database.GetAllItemsAsync<Book>();
         books.Remove(CurrentBook);
