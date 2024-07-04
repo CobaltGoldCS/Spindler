@@ -7,12 +7,7 @@ using Newtonsoft.Json;
 using Spindler.Models;
 using Spindler.Services;
 using Spindler.Services.Web;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 
 namespace Spindler.ViewModels;
 
@@ -75,7 +70,7 @@ public partial class ConfigDetailViewModel : SpindlerViewModel
 
 
     [ObservableProperty]
-    public string? separatorText;
+    public string separatorText = string.Empty;
 
     [ObservableProperty]
     public ContentExtractorOption selectedExtractor = ContentExtractorOption.FromContentType(TargetType.Text);
@@ -106,7 +101,10 @@ public partial class ConfigDetailViewModel : SpindlerViewModel
     [RelayCommand]
     public async Task Delete()
     {
-        if (Config.Id == -1 || (CurrentPage.TryGetTarget(out Page? currentPage) && !await currentPage!.DisplayAlert("Warning!", "Are you sure you want to delete this config?", "Yes", "No"))) return;
+        if (Config.Id == -1 || (CurrentPage.TryGetTarget(out Page? currentPage) && 
+            !await currentPage!.DisplayAlert("Warning!", "Are you sure you want to delete this config?", "Yes", "No")))
+            return;
+
         if (IsGeneralizedConfig())
         {
             await Database.DeleteItemAsync((GeneralizedConfig)Config);
@@ -140,25 +138,23 @@ public partial class ConfigDetailViewModel : SpindlerViewModel
     }
 
     [RelayCommand]
-    public async Task Cancel() => await NavigateTo("..");
+    public static async Task Cancel() => await NavigateTo("..");
 
     [RelayCommand]
     public async Task Export()
     {
-        CancellationToken cancellationToken = new();
-
         string output = JsonConvert.SerializeObject(Config);
         using MemoryStream stream = new(Encoding.Default.GetBytes(output));
 
         try
         {
-            var filePath = await FileSaver.Default.SaveAsync($"{Config.Name.Replace('.', '-')}.json", stream, cancellationToken);
+            var filePath = await FileSaver.Default.SaveAsync($"{Config.Name.Replace('.', '-')}.json", stream);
             filePath.EnsureSuccess();
-            await Toast.Make($"File saved at {filePath}").Show(cancellationToken);
+            await Toast.Make($"File saved at {filePath}").Show();
         }
         catch (Exception ex)
         {
-            await Toast.Make($"File not saved: {ex.Message}").Show(cancellationToken);
+            await Toast.Make($"File not saved: {ex.Message}").Show();
         }
     }
 
@@ -166,7 +162,6 @@ public partial class ConfigDetailViewModel : SpindlerViewModel
     [RelayCommand]
     public async Task Import()
     {
-        CancellationToken cancellationToken = new();
         FileResult? file = await FilePicker.Default.PickAsync(PickOptions.Default);
 
         if (file is null) return;
@@ -187,14 +182,11 @@ public partial class ConfigDetailViewModel : SpindlerViewModel
         }
         if (config is null)
         {
-            await Toast.Make("File not saved: could not convert JSON to string").Show(cancellationToken);
+            await Toast.Make("File not saved: could not convert JSON to string").Show();
             return;
         }
         Config = config;
         Config.Id = -1; // Required to create a new config
     }
     #endregion
-
-    [GeneratedRegex("^(?!www\\.)(((?!\\-))(xn\\-\\-)?[a-z0-9\\-_]{0,61}[a-z0-9]{1,1}\\.)*(xn\\-\\-)?([a-z0-9\\-]{1,61}|[a-z0-9\\-]{1,30})\\.[a-z]{2,}$")]
-    private static partial Regex DomainValidation();
 }
