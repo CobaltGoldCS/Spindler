@@ -107,7 +107,7 @@ public partial class ReaderViewModel : SpindlerViewModel, IReader
 
         if (CurrentBook.Position > 0)
         {
-            WeakReferenceMessenger.Default.Send(new ChangeScrollMessage((CurrentBook.Position, ReaderService.Config.HasAutoscrollAnimation)));
+            WeakReferenceMessenger.Default.Send(new ChangeScrollMessage(new(CurrentBook.Position, ReaderService.Config.HasAutoscrollAnimation)));
         }
 
         IsLoading = false;
@@ -159,7 +159,7 @@ public partial class ReaderViewModel : SpindlerViewModel, IReader
         }
 
         IsLoading = true;
-        WeakReferenceMessenger.Default.Send(new ChangeScrollMessage((0, false)));
+        WeakReferenceMessenger.Default.Send(new ChangeScrollMessage(new(0, false)));
 
         CurrentBook.Url = selector switch
         {
@@ -226,7 +226,7 @@ public partial class ReaderViewModel : SpindlerViewModel, IReader
 
         if (bookmark.Position > 0)
         {
-            WeakReferenceMessenger.Default.Send(new ChangeScrollMessage((bookmark.Position, ReaderService.Config.HasAutoscrollAnimation)));
+            WeakReferenceMessenger.Default.Send(new ChangeScrollMessage(new(bookmark.Position, ReaderService.Config.HasAutoscrollAnimation)));
         }
 
         CurrentBook!.Url = CurrentData!.currentUrl!;
@@ -237,10 +237,9 @@ public partial class ReaderViewModel : SpindlerViewModel, IReader
     /// Scrolls to the bottom of the view
     /// </summary>
     [RelayCommand]
-    public static void ScrollBottom()
-    {
-        WeakReferenceMessenger.Default.Send(new ChangeScrollMessage((-1, true)));
-    }
+    public void ScrollBottom() => 
+        WeakReferenceMessenger.Default.Send(new ChangeScrollMessage(
+            ScrollChangedArgs.ScrollBottom(ReaderService.Config.HasAutoscrollAnimation)));
     #endregion
 
 
@@ -331,12 +330,17 @@ public class ReaderViewModelBuilder
 }
 
 /// <summary>
-/// A message containing position (double) and isAnimated (bool)
+/// Message for changing reader scroll position
 /// </summary>
 /// <remarks>
 /// Create a new ScrollChangedMessage
 /// </remarks>
-/// <param name="value">position (double) and isAnimated (bool). If position is negative, scroll to the bottom of the view</param>
-class ChangeScrollMessage((double, bool) value) : ValueChangedMessage<(double, bool)>(value)
+/// <param name="value">Arguements relating to scrolling; use ScrollBottom for scrolling to the bottom of view</param>
+class ChangeScrollMessage(ScrollChangedArgs value) : ValueChangedMessage<ScrollChangedArgs>(value)
 {
+}
+
+record ScrollChangedArgs(double Position, bool IsAnimated)
+{
+    public static ScrollChangedArgs ScrollBottom(bool isAnimated) => new(-1, isAnimated);
 }

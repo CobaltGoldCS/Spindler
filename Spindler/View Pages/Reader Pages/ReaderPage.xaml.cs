@@ -62,13 +62,14 @@ public partial class ReaderPage : ContentPage, IQueryAttributable, IRecipient<Ch
     /// <param name="message">A message containing position (double) and isAnimated (bool)</param>
     async void IRecipient<ChangeScrollMessage>.Receive(ChangeScrollMessage message)
     {
-        if (message.Value.Item1 < 0)
+        ScrollChangedArgs arguments = message.Value;
+        if (arguments.Position < 0)
         {
-            await ReadingLayout.ScrollToAsync(ReaderView, ScrollToPosition.End, message.Value.Item2);
+            await ReadingLayout.ScrollToAsync(ReaderView, ScrollToPosition.End, arguments.IsAnimated);
         }
         else
         {
-            await ReadingLayout.ScrollToAsync(ReadingLayout.ScrollX, message.Value.Item1, message.Value.Item2);
+            await ReadingLayout.ScrollToAsync(ReadingLayout.ScrollX, arguments.Position, arguments.IsAnimated);
         }
     }
 
