@@ -119,7 +119,10 @@ public partial class ReaderViewModel : SpindlerViewModel, IReader
     {
         var html = await ReaderService.WebService.GetHtmlFromUrl(CurrentBook.Url);
 
-        if (html is Result<string>.Err) return;
+        html.HandleError((error) =>
+        {
+            return;
+        });
 
         try
         {

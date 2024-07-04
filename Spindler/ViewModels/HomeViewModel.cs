@@ -40,7 +40,7 @@ public partial class HomeViewModel : SpindlerViewModel
                 "booklist", bookList
             }
         };
-        await NavigateTo($"{nameof(BookListDetailPage)}", parameters);
+        await NavigateTo(nameof(BookListDetailPage), parameters);
     }
 
     [RelayCommand]
@@ -52,7 +52,7 @@ public partial class HomeViewModel : SpindlerViewModel
                 "booklist", new BookList()
             }
         };
-        await NavigateTo($"{nameof(BookListDetailPage)}", parameters);
+        await NavigateTo(nameof(BookListDetailPage), parameters);
     }
 
     [RelayCommand]
@@ -61,17 +61,17 @@ public partial class HomeViewModel : SpindlerViewModel
         if (CurrentSelection is null)
             return;
 
-        await CurrentSelection!.UpdateAccessTimeToNow(Database);
+        await CurrentSelection.UpdateAccessTimeToNow(Database);
         Dictionary<string, object> parameters = new()
         {
-            { "booklist", CurrentSelection! }
+            { "booklist", CurrentSelection }
         };
 
-        BookLists!.Remove(CurrentSelection!);
-        BookLists.Insert(0, CurrentSelection!);
+        BookLists!.Remove(CurrentSelection);
+        BookLists.Insert(0, CurrentSelection);
 
         OnPropertyChanged(nameof(BookLists));
-        await NavigateTo($"{nameof(BookListPage)}", parameters, false);
+        await NavigateTo(nameof(BookListPage), parameters, false);
 
         CurrentSelection = null;
     }
