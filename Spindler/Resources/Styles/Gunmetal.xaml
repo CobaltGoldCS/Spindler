@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ResourceDictionary xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Spindler.Resources.Styles.Gunmetal">
+    <Color x:Key="Primary">#EE586C</Color>
+    <Color x:Key="Warning">#EE6C4D</Color>
+    <Color x:Key="Background">#313235</Color>
+    <Color x:Key="TextColor">#D7DDEA</Color>
+    <Color x:Key="PlaceholderColor">#A6AAB4</Color>
+    <Color x:Key="DisabledTextColor">#777B82</Color>
+    <Color x:Key="CardBackground">#5C0A14</Color>
+    <Color x:Key="BorderColor">Black</Color>
+</ResourceDictionary>

@@ -59,7 +59,8 @@ public partial class App : Application
             Themes.Dracula => new Resources.Styles.Dracula(),
             Themes.Seasalt => new Resources.Styles.Seasalt(),
             Themes.TeaRose => new Resources.Styles.Tearose(),
-            _ => throw new NotImplementedException()
+            Themes.Gunmetal => new Resources.Styles.Gunmetal(),
+            _ => throw new NotImplementedException(),
         };
         MainPage.Behaviors.Clear();
         Current!.Resources.MergedDictionaries.Add(resourceDictionary);
@@ -94,7 +95,8 @@ public enum Themes
     Default,
     Dracula,
     Seasalt,
-    TeaRose
+    TeaRose,
+    Gunmetal
 }
 
 public class Theme
