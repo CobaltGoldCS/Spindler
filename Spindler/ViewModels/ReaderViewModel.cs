@@ -76,6 +76,7 @@ public partial class ReaderViewModel : SpindlerViewModel, IReader
     {
         Client = client;
         NextChapterBrowser = nextChapterBrowser;
+        WeakReferenceMessenger.Default.Send(new StatusColorUpdateMessage("CardBackground"));
         Shell.Current.Navigating += OnShellNavigating;
     }
 
@@ -261,6 +262,9 @@ public partial class ReaderViewModel : SpindlerViewModel, IReader
             CurrentBook.HasNextChapter = CurrentData!.NextUrlValid;
             await CurrentBook.SaveInfo(Database);
         }
+
+        // Set statusbar color back
+        WeakReferenceMessenger.Default.Send(new StatusColorUpdateMessage(null));
         Shell.Current.Navigating -= OnShellNavigating;
     }
 

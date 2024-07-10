@@ -10,4 +10,5 @@
     <Color x:Key="DisabledTextColor">#777B82</Color>
     <Color x:Key="CardBackground">#5C0A14</Color>
     <Color x:Key="BorderColor">Black</Color>
+    <x:String x:Key="StatusString">Background</x:String>
 </ResourceDictionary>
