@@ -33,31 +33,12 @@ public partial class LoadedData : ObservableObject
     /// </summary> 
     public string Title { get; set; }
 
-    private bool prevUrlValid;
-    /// <summary>
-    /// Whether the previous url is a valid url
-    /// </summary>
-    public bool PrevUrlValid 
-    {   
-        get => prevUrlValid; 
-        private set 
-        {
-            SetProperty(ref prevUrlValid, value);
-        }
-    }
 
+    [ObservableProperty]
+    private bool prevUrlValid;
+
+    [ObservableProperty]
     private bool nextUrlValid;
-    /// <summary>
-    /// Whether the next url is a valid url
-    /// </summary>
-    public bool NextUrlValid
-    {
-        get => nextUrlValid;
-        private set
-        {
-            SetProperty(ref nextUrlValid, value);
-        }
-    }
 
 
     public LoadedData(string title, string text, string currentUrl, string prevUrl, string nextUrl)

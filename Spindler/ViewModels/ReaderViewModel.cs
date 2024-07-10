@@ -100,6 +100,8 @@ public partial class ReaderViewModel : SpindlerViewModel, IReader
                 break;
         };
 
+        IsLoading = false;
+
         if (string.IsNullOrEmpty(CurrentBook!.ImageUrl) || CurrentBook!.ImageUrl == "no_image.jpg")
         {
             await SetImageUrl();
@@ -109,8 +111,6 @@ public partial class ReaderViewModel : SpindlerViewModel, IReader
         {
             WeakReferenceMessenger.Default.Send(new ChangeScrollMessage(new(CurrentBook.Position, ReaderService.Config.HasAutoscrollAnimation)));
         }
-
-        IsLoading = false;
 
         StartBookChecking();
     }
@@ -177,10 +177,9 @@ public partial class ReaderViewModel : SpindlerViewModel, IReader
             await SafeAssert(false, error.Message);
             return;
         }
+        IsLoading = false;
         CurrentData = (dataResult as Result<LoadedData>.Ok)!.Value;
         await CurrentBook.SaveInfo(Database);
-
-        IsLoading = false;
     }
 
     /// <summary>
