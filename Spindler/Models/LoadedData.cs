@@ -55,7 +55,7 @@ public partial class LoadedData : ObservableObject
         PrevUrlValid = WebUtilities.IsUrl(prevUrl);
     }
 
-    public static LoadedData CreatePlaceholder() => new("Loading", "Loading");
+    public static LoadedData CreatePlaceholder() => new("Loading", string.Empty);
 
     public void InvalidateNextUrl() => NextUrlValid = false;
     public void InvalidatePrevUrl() => PrevUrlValid = false;

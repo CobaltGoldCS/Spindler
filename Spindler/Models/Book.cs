@@ -76,21 +76,16 @@ public record Book : IIndexedModel
 }
 
 
-public record Bookmark : IIndexedModel
+public record Bookmark
 {
-    public Bookmark(string name, double position, string url)
+    public Bookmark(string Name, double Position, string Url)
     {
-        Name = name;
-        Position = position;
-        Url = url;
+        this.Name = Name;
+        this.Position = Position;
+        this.Url = Url;
     }
 
     public string Name { get; set; } = string.Empty;
     public string Url { get; set; } = string.Empty;
     public double Position { get; set; } = 0;
-
-    public int GetId()
-    {
-        throw new NotImplementedException();
-    }
 }

@@ -114,16 +114,10 @@ public enum Themes
     Gunmetal
 }
 
-public class Theme
+public class Theme(string safeName, Themes theme)
 {
-    public string safeName;
-    public Themes theme;
-
-    public Theme(string safeName, Themes theme)
-    {
-        this.safeName = safeName;
-        this.theme = theme;
-    }
+    public string safeName = safeName;
+    public Themes theme = theme;
 
     public override string ToString()
     {

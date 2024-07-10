@@ -18,8 +18,7 @@ namespace Spindler.ViewModels
         /// A list of valid colors to pick from in the color picker 
         /// </summary>
         [ObservableProperty]
-        public static IList<ChooseColor> colorList = new List<ChooseColor>()
-        {
+        public static IList<ChooseColor> colorList = [
             new (Colors.Black),
             new (Colors.White),
             new (Colors.Wheat ),
@@ -39,7 +38,7 @@ namespace Spindler.ViewModels
             new (Colors.Red ),
             new (Colors.Purple ),
             new (Colors.Pink ),
-        };
+        ];
         BookList booklist;
         public BookList Booklist
         {

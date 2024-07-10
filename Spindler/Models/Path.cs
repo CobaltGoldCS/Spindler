@@ -170,5 +170,5 @@ public partial class CSSPathSelector : IHTMLSelector
 
 public static class PathExtensions
 {
-    public static Path AsPath(this string str) => new Path(str);
+    public static Path AsPath(this string str) => new(str);
 }

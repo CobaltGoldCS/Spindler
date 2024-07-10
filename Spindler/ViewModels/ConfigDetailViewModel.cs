@@ -11,7 +11,7 @@ using System.Text;
 
 namespace Spindler.ViewModels;
 
-public partial class ConfigDetailViewModel : SpindlerViewModel
+public partial class ConfigDetailViewModel(IDataService database) : SpindlerViewModel(database)
 {
 
     public class ContentExtractorOption
@@ -90,11 +90,6 @@ public partial class ConfigDetailViewModel : SpindlerViewModel
     }
 
     public bool IsGeneralizedConfig() => Config is GeneralizedConfig;
-
-
-    public ConfigDetailViewModel(IDataService database) : base(database)
-    {
-    }
 
     #region Event Handlers
 
