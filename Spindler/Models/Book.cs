@@ -42,6 +42,10 @@ public record Book : IIndexedModel
     /// </summary>
     public bool Pinned { get; set; } = false;
 
+    /// <summary>
+    /// Whether the book has been completed by the original author
+    /// </summary>
+    public bool Completed { get; set; } = false;
 
     [Ignore]
     public IList<Bookmark> Bookmarks

@@ -4,28 +4,42 @@
              x:Class="Spindler.Views.Book_Pages.BookDetailPage"
              xmlns:models="clr-namespace:Spindler.Models"
              xmlns:controls="clr-namespace:Spindler.CustomControls"
+             x:DataType="models:Book"
              Title="BookDetailPage">
     <ContentPage.BindingContext>
         <models:Book/>
     </ContentPage.BindingContext>
-    <Grid Padding="5,0,5,0" RowDefinitions="auto, auto, auto, auto, auto, *, auto" ColumnDefinitions="auto, *" VerticalOptions="FillAndExpand">
-        <Label Text="Name:" Padding="0,17,5,0"/>
-        <Entry Grid.Column="1" x:Name="nameEntry" HorizontalOptions="FillAndExpand" Margin="0,5,0,0"
-                               Placeholder="The name of the book" Text="{Binding Title}"/>
-        <Label Text="Url:" Padding="0,17,5,0" Grid.Row="1"/>
-        <Entry x:Name="urlEntry" HorizontalOptions="FillAndExpand" Margin="0,5,0,0" Grid.Row="1" Grid.Column="1"
-                               Placeholder="Url where book content is found" Text="{Binding Url}"/>
 
-        <Label Text="Image Url:" Padding="0,17,5,0" Grid.Row="2"/>
-        <Entry x:Name="imageUrlEntry" HorizontalOptions="FillAndExpand" Margin="0,5,0,0" Grid.Row="2" Grid.Column="1"
-                               Placeholder="Url where book content is found" Text="{Binding ImageUrl}"/>
+    <ContentPage.Resources>
+        <Style TargetType="Label">
+            <Setter Property="Padding" Value="0,17,5,0"/>
+            <Setter Property="TextColor" Value="{DynamicResource TextColor}"/>
+        </Style>
+        <Style TargetType="Entry">
+            <Setter Property="HorizontalOptions" Value="FillAndExpand"/>
+            <Setter Property="Margin" Value="0,5,0,0"/>
+            <Setter Property="TextColor" Value="{DynamicResource TextColor}"/>
+            <Setter Property="PlaceholderColor" Value="{DynamicResource PlaceholderColor}"/>
+        </Style>
+    </ContentPage.Resources>
+    
+    <Grid Padding="5,0,5,0" RowDefinitions="auto, auto, auto, auto, auto, auto, *, auto" ColumnDefinitions="auto, *" VerticalOptions="FillAndExpand">
+        <Label Text="Name:"/>
+        <Entry Grid.Column="1" x:Name="nameEntry" Placeholder="The name of the book" Text="{Binding Title}"/>
+        
+        <Label Text="Url:" Grid.Row="1"/>
+        <Entry x:Name="urlEntry" Grid.Row="1" Grid.Column="1" Placeholder="Url where book content is found" Text="{Binding Url}"/>
 
-        <HorizontalStackLayout Grid.Row="3" Grid.ColumnSpan="2" HorizontalOptions="Center">
-            <Label Text="Pin this Book" Padding="0,10,80,0" FontSize="Medium"/>
-            <Switch IsToggled="{Binding Pinned}"/>
-        </HorizontalStackLayout>
+        <Label Text="Image Url:" Grid.Row="2"/>
+        <Entry x:Name="imageUrlEntry" Grid.Row="2" Grid.Column="1" Placeholder="Url where book content is found" Text="{Binding ImageUrl}"/>
 
-        <HorizontalStackLayout Grid.Row="4" Grid.ColumnSpan="2" HorizontalOptions="Center" Spacing="40" Margin="5,0,5,0">
+        <Label Text="Pin this Book" Grid.Row="3"/>
+        <Switch IsToggled="{Binding Pinned}" HorizontalOptions="End" Margin="0,5,0,0" Grid.Row="3" Grid.Column="1"/>
+
+        <Label Text="Completed" Grid.Row="4"/>
+        <Switch HorizontalOptions="End" Margin="0,5,0,0" Grid.Row="4" Grid.Column="1" IsToggled="{Binding Completed}"/>
+
+        <HorizontalStackLayout Grid.Row="5" Grid.ColumnSpan="2" HorizontalOptions="Center" Spacing="40" Margin="5,0,5,0">
             <HorizontalStackLayout.Resources>
                 <Style x:Key="ChipButton" TargetType="Button">
                     <Setter Property="BackgroundColor" Value="{DynamicResource Primary}"/>
@@ -38,13 +52,14 @@
             <Button Text="Change book list" Clicked="SwitchBookList_Clicked" Style="{DynamicResource ChipButton}"/>
         </HorizontalStackLayout>
 
-        <Label Text="{Binding LastViewed}" Grid.ColumnSpan="2" Grid.Row="5" HeightRequest="200" HorizontalTextAlignment="Center" VerticalOptions="StartAndExpand"/>
+        <Label Text="{Binding LastViewed}" Grid.ColumnSpan="2" Grid.Row="6" Padding="10,10" HorizontalTextAlignment="Center" VerticalOptions="End"/>
         <controls:AddButtonGroup x:Name="AddButtonGroup"
-                                 Grid.Row="6"
+                                 Grid.Row="7"
                                  Grid.ColumnSpan="2"
                                  DeleteClicked="DeleteButton_clicked"
                                  CancelClicked="Cancel_Clicked"
                                  OkClicked="okButton_Clicked"
+                                 
                                  HorizontalOptions="FillAndExpand"/>
 
     </Grid>

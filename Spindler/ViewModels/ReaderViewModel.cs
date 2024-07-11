@@ -141,6 +141,7 @@ public partial class ReaderViewModel : SpindlerViewModel, IReader
     private async void StartBookChecking()
     {
         List<Book> books = await Database.GetAllItemsAsync<Book>();
+        books.RemoveAll(book => book.Completed);
         books.Remove(CurrentBook);
         NextChapterService chapterService = new(Client, NextChapterBrowser, Database);
         _ = Task.Run(async () => await chapterService.SaveBooks(books, nextChapterToken.Token));
@@ -259,7 +260,7 @@ public partial class ReaderViewModel : SpindlerViewModel, IReader
         if (e.Target.Location.OriginalString == "..")
         {
             CurrentBook.Position = ReaderScrollPosition;
-            CurrentBook.HasNextChapter = CurrentData!.NextUrlValid;
+            CurrentBook.HasNextChapter = CurrentData!.NextUrlValid && !CurrentBook.Completed;
             await CurrentBook.SaveInfo(Database);
         }
 
