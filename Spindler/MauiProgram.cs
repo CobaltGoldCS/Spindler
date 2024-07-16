@@ -1,4 +1,6 @@
 ﻿using CommunityToolkit.Maui;
+using Microsoft.Maui.Controls.PlatformConfiguration;
+using Microsoft.Maui.Handlers;
 using Spindler.Services;
 using Spindler.ViewModels;
 using Spindler.Views;
@@ -6,6 +8,7 @@ using Spindler.Views.Book_Pages;
 
 #if ANDROID
 using Spindler.Platforms.Android;
+using Microsoft.Maui.Controls.Compatibility.Platform.Android;
 #endif
 
 namespace Spindler;
@@ -36,9 +39,16 @@ public static class MauiProgram
                 // THIS IS A TEMPORARY WORKAROUND TO FIX 'Collectionview not defined' ERRORS
                 handlers.AddHandler<CollectionView, CustomCollectionViewHandler>();
                 handlers.AddHandler<Shell, ShellHandler>();
+
+                EntryHandler.Mapper.AppendToMapping("NoUnderline", (h, v) => 
+                { 
+                    h.PlatformView.BackgroundTintList = Android.Content.Res.ColorStateList.ValueOf(Colors.Transparent.ToAndroid()); 
+                });
 #endif
             })
         ;
+
+        
         builder.Services
             .AddPages()
             .AddSingleton<IDataService, DataService>()

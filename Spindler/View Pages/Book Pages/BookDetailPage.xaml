@@ -12,12 +12,12 @@
 
     <ContentPage.Resources>
         <Style TargetType="Label">
-            <Setter Property="Padding" Value="0,17,5,0"/>
+            <Setter Property="Padding" Value="0,10,5,5"/>
             <Setter Property="TextColor" Value="{DynamicResource TextColor}"/>
         </Style>
         <Style TargetType="Entry">
             <Setter Property="HorizontalOptions" Value="FillAndExpand"/>
-            <Setter Property="Margin" Value="0,5,0,0"/>
+            <Setter Property="Margin" Value="0,0.5,0,0"/>
             <Setter Property="TextColor" Value="{DynamicResource TextColor}"/>
             <Setter Property="PlaceholderColor" Value="{DynamicResource PlaceholderColor}"/>
         </Style>
@@ -34,10 +34,10 @@
         <Entry x:Name="imageUrlEntry" Grid.Row="2" Grid.Column="1" Placeholder="Url where book content is found" Text="{Binding ImageUrl}"/>
 
         <Label Text="Pin this Book" Grid.Row="3"/>
-        <Switch IsToggled="{Binding Pinned}" HorizontalOptions="End" Margin="0,5,0,0" Grid.Row="3" Grid.Column="1"/>
+        <Switch IsToggled="{Binding Pinned}" HorizontalOptions="End" Margin="0,0,0,0" Grid.Row="3" Grid.Column="1"/>
 
         <Label Text="Completed" Grid.Row="4"/>
-        <Switch HorizontalOptions="End" Margin="0,5,0,0" Grid.Row="4" Grid.Column="1" IsToggled="{Binding Completed}"/>
+        <Switch HorizontalOptions="End" Margin="0,0,0,0" Grid.Row="4" Grid.Column="1" IsToggled="{Binding Completed}"/>
 
         <HorizontalStackLayout Grid.Row="5" Grid.ColumnSpan="2" HorizontalOptions="Center" Spacing="40" Margin="5,0,5,0">
             <HorizontalStackLayout.Resources>
