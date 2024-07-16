@@ -17,7 +17,7 @@
         </Style>
         <Style TargetType="Entry">
             <Setter Property="HorizontalOptions" Value="FillAndExpand"/>
-            <Setter Property="Margin" Value="0,5,0,0"/>
+            <Setter Property="Margin" Value="0,10,0,0"/>
             <Setter Property="TextColor" Value="{DynamicResource TextColor}"/>
             <Setter Property="PlaceholderColor" Value="{DynamicResource PlaceholderColor}"/>
         </Style>
