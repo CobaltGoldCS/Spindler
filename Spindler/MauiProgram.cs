@@ -32,6 +32,7 @@ public static class MauiProgram
                 fonts.AddFont("SignikaNegative-Bold.ttf", "Signika (Bold)");
                 fonts.AddFont("SignikaNegative-Regular.ttf", "Signika");
                 fonts.AddFont("spindler_icons.ttf", "SPIcon");
+                fonts.AddFont("GreatVibes-Regular.ttf", "Great Vibes");
             })
             .ConfigureMauiHandlers(handlers =>
             {
