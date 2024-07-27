@@ -2,12 +2,20 @@
 using CommunityToolkit.Maui.Core;
 using CommunityToolkit.Maui.Core.Extensions;
 using CommunityToolkit.Mvvm.Messaging;
-using Microsoft.Maui.Controls;
 using Spindler.Resources;
 using Spindler.Utilities;
 using Spindler.Views;
 using Spindler.Views.Book_Pages;
 using SQLitePCL;
+
+using Microsoft.Maui.Handlers;
+using Microsoft.Maui.Controls.PlatformConfiguration;
+
+#if ANDROID
+using Microsoft.Maui.Handlers;
+using Spindler.Platforms.Android;
+using Microsoft.Maui.Controls.Compatibility.Platform.Android;
+#endif
 
 namespace Spindler;
 
@@ -19,6 +27,7 @@ public partial class App : Application, IRecipient<ThemeChangedMessage>, IRecipi
     {
         InitializeComponent();
         SetTheme();
+        AddMappings();
         Batteries.Init();
         RegisterRoutes();
 
@@ -102,7 +111,33 @@ public partial class App : Application, IRecipient<ThemeChangedMessage>, IRecipi
 
         Receive(new StatusColorUpdateMessage(null));
     }
+
+    private void AddMappings()
+    {
+#if ANDROID
+        ResourceDictionary resourceDictionary = Current!.Resources.MergedDictionaries.Where(dict => dict.ContainsKey("Primary")).First();
+
+        var androidPrimary = ((Color)resourceDictionary["Primary"]).ToAndroid();
+        var androidHint = ((Color)resourceDictionary["DisabledTextColor"]).ToAndroid();
+
+        PickerHandler.Mapper.AppendToMapping("PickerUnderline", (viewHandler, virtualView) =>
+        {
+            viewHandler.PlatformView.BackgroundTintList = Android.Content.Res.ColorStateList.ValueOf(androidPrimary);
+            viewHandler.PlatformView.SetHintTextColor(Android.Content.Res.ColorStateList.ValueOf(androidHint));
+        });
+
+        var androidTransparent = Android.Content.Res.ColorStateList.ValueOf(Colors.Transparent.ToAndroid());
+
+        EntryHandler.Mapper.AppendToMapping("NoUnderline", (h, v) =>
+        {
+            h.PlatformView.BackgroundTintList = androidTransparent;
+        });
+
+#endif
+    }
 }
+
+
 
 
 public enum Themes
