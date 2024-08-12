@@ -183,6 +183,9 @@
 	  <MauiXaml Update="Resources\Styles\Dracula.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
+	  <MauiXaml Update="Resources\Styles\Galaxy.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
 	  <MauiXaml Update="Resources\Styles\Gunmetal.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>

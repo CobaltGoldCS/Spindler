@@ -95,6 +95,7 @@ public partial class App : Application, IRecipient<ThemeChangedMessage>, IRecipi
             Themes.Seasalt => new Resources.Styles.Seasalt(),
             Themes.TeaRose => new Resources.Styles.Tearose(),
             Themes.Gunmetal => new Resources.Styles.Gunmetal(),
+            Themes.Galaxy => new Resources.Styles.Galaxy(),
             _ => throw new NotImplementedException(),
         };
         MainPage.Behaviors.Clear();
@@ -146,7 +147,8 @@ public enum Themes
     Dracula,
     Seasalt,
     TeaRose,
-    Gunmetal
+    Gunmetal,
+    Galaxy,
 }
 
 public class Theme(string safeName, Themes theme)
