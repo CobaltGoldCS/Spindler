@@ -57,7 +57,7 @@ public abstract partial class BaseContentExtractor
                 }
                 continue;
             }
-            stringWriter.Write($"{HttpUtility.HtmlDecode(child.InnerText.Trim()).Replace("\n", config.Separator)}");
+            stringWriter.Write($"{HttpUtility.HtmlDecode(child.InnerText).Replace("\n", config.Separator)}");
             stringWriter.Write(config.Separator);
         }
         return stringWriter.ToString().Trim();
