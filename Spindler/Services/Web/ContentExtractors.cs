@@ -40,18 +40,10 @@ public abstract partial class BaseContentExtractor
     {
         StringWriter stringWriter = new();
 
-        string? desiredName = null;
 
         foreach (HtmlNode child in node.ChildNodes)
         {
-            if (BadTags.Contains(child.OriginalName))
-            {
-                continue;
-            }
-
-            desiredName ??= child.OriginalName;
-            // "Smart" Filter certain tags together.
-            if (config.FilteringContentEnabled && child.OriginalName != desiredName)
+            if (config.FilteringContentEnabled && BadTags.Contains(child.OriginalName))
             {
                 continue;
             }
@@ -88,18 +80,9 @@ public abstract class HtmlExtractor : BaseContentExtractor
         string htmlSeparator = config.Separator.Replace("\n", "<br>").Replace("\t", "&#9;");
         StringBuilder builder = new();
 
-        string? desiredName = null;
-
         foreach (HtmlNode child in node.ChildNodes)
         {
-            if (BadTags.Contains(child.OriginalName))
-            {
-                continue;
-            }
-
-            desiredName ??= child.OriginalName;
-            // "Smart" Filter certain tags together.
-            if (config.FilteringContentEnabled && child.OriginalName != desiredName)
+            if (config.FilteringContentEnabled && BadTags.Contains(child.OriginalName))
             {
                 continue;
             }
