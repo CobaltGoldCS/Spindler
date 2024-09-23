@@ -144,15 +144,15 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <PackageReference Include="Microsoft.Maui.Controls" Version="8.0.7" />
-	  <PackageReference Include="CommunityToolkit.Maui" Version="7.0.1" />
-	  <PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.2" GeneratePathProperty="true" />
-	  <PackageReference Include="HtmlAgilityPack" Version="1.11.58" GeneratePathProperty="true" />
+	  <PackageReference Include="Microsoft.Maui.Controls" Version="8.0.90" />
+	  <PackageReference Include="CommunityToolkit.Maui" Version="9.0.3" />
+	  <PackageReference Include="CommunityToolkit.Mvvm" Version="8.3.2" GeneratePathProperty="true" />
+	  <PackageReference Include="HtmlAgilityPack" Version="1.11.66" GeneratePathProperty="true" />
 	  <PackageReference Include="HtmlAgilityPack.CssSelectors.NetCore" Version="1.2.1" GeneratePathProperty="true" />
 	  <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-	  <PackageReference Include="sqlite-net-pcl" Version="1.8.116" GeneratePathProperty="true" />
-	  <PackageReference Include="SQLitePCLRaw.bundle_green" Version="2.1.8" />
-	  <PackageReference Include="SQLitePCLRaw.provider.dynamic_cdecl" Version="2.1.8" />
+	  <PackageReference Include="sqlite-net-pcl" Version="1.9.172" GeneratePathProperty="true" />
+	  <PackageReference Include="SQLitePCLRaw.bundle_green" Version="2.1.10" />
+	  <PackageReference Include="SQLitePCLRaw.provider.dynamic_cdecl" Version="2.1.10" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -300,7 +300,7 @@
 	<ProjectExtensions><VisualStudio><UserProperties XamarinHotReloadDebuggerTimeoutExceptionSpindlerHideInfoBar="True" XamarinHotReloadGenericExceptionInfoBarSpindlerHideInfoBar="True" XamarinHotReloadUnhandledDeviceExceptionSpindlerHideInfoBar="True" /></VisualStudio></ProjectExtensions>
 
 	<ItemGroup>
-	  <PackageReference Update="Microsoft.Maui.Controls.Compatibility" Version="8.0.6" />
+	  <PackageReference Update="Microsoft.Maui.Controls.Compatibility" Version="8.0.90" />
 	</ItemGroup>
 
 </Project>
