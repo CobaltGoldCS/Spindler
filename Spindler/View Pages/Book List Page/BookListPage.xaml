@@ -97,8 +97,12 @@
                     VerticalOptions="Center"
                     FontAutoScalingEnabled="False"
                     FontSize="27">
+
+                <Label.GestureRecognizers>
+                    <TapGestureRecognizer Command="{Binding AddToolBarItemCommand}"/>
+                </Label.GestureRecognizers>
                 <Label.Behaviors>
-                    <toolkit:AnimationBehavior Command="{Binding AddToolBarItemCommand, Mode=OneWay}">
+                    <toolkit:AnimationBehavior>
                         <toolkit:AnimationBehavior.AnimationType>
                             <util:RotationAnimation/>
                         </toolkit:AnimationBehavior.AnimationType>

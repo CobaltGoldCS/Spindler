@@ -49,6 +49,8 @@ namespace Spindler.ViewModels
             }
         }
 
+
+
         public BookListDetailViewModel(IDataService dataService, BookList booklist) : base(dataService)
         {
             Booklist = booklist;
@@ -85,7 +87,7 @@ namespace Spindler.ViewModels
         [RelayCommand]
         private async Task Delete()
         {
-            if (Booklist.Id > 0 && await Application.Current!.MainPage!.DisplayAlert("Warning!", "Are you sure you want to delete this booklist?", "Yes", "No"))
+            if (Booklist.Id > 0 && await Application.Current!.Windows[0].Page.DisplayAlert("Warning!", "Are you sure you want to delete this booklist?", "Yes", "No"))
             {
                 await Database.DeleteBookListAsync(Booklist);
             }

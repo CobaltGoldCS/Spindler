@@ -103,21 +103,23 @@ public partial class ReaderViewModel : SpindlerViewModel, IReader
 
         IsLoading = false;
 
-        if (string.IsNullOrEmpty(CurrentBook!.ImageUrl) || CurrentBook!.ImageUrl == "no_image.jpg")
-        {
-            await SetImageUrl();
-        }
+        await AutoPopulateImageIfUnknown();
 
         if (CurrentBook.Position > 0)
         {
-            WeakReferenceMessenger.Default.Send(new ChangeScrollMessage(new(CurrentBook.Position, ReaderService.Config.HasAutoscrollAnimation)));
+            ScrollReader(CurrentBook.Position);
         }
 
         StartBookChecking();
     }
 
-    private async Task SetImageUrl()
+    private async Task AutoPopulateImageIfUnknown()
     {
+
+        if (!string.IsNullOrEmpty(CurrentBook!.ImageUrl) && CurrentBook!.ImageUrl != "no_image.jpg")
+        {
+            return;
+        }
         var html = await ReaderService.WebService.GetHtmlFromUrl(CurrentBook.Url);
 
         html.HandleError((error) =>
@@ -143,6 +145,7 @@ public partial class ReaderViewModel : SpindlerViewModel, IReader
         List<Book> books = await Database.GetAllItemsAsync<Book>();
         books.RemoveAll(book => book.Completed);
         books.Remove(CurrentBook);
+
         NextChapterService chapterService = new(Client, NextChapterBrowser, Database);
         _ = Task.Run(async () => await chapterService.SaveBooks(books, nextChapterToken.Token));
     }
@@ -164,7 +167,7 @@ public partial class ReaderViewModel : SpindlerViewModel, IReader
         }
 
         IsLoading = true;
-        WeakReferenceMessenger.Default.Send(new ChangeScrollMessage(new(0, false)));
+        ScrollReader(0, isAnimated: false);
 
         CurrentBook.Url = selector switch
         {
@@ -230,7 +233,7 @@ public partial class ReaderViewModel : SpindlerViewModel, IReader
 
         if (bookmark.Position > 0)
         {
-            WeakReferenceMessenger.Default.Send(new ChangeScrollMessage(new(bookmark.Position, ReaderService.Config.HasAutoscrollAnimation)));
+            ScrollReader(bookmark.Position);
         }
 
         CurrentBook!.Url = CurrentData!.currentUrl!;
@@ -244,6 +247,15 @@ public partial class ReaderViewModel : SpindlerViewModel, IReader
     public void ScrollBottom() => 
         WeakReferenceMessenger.Default.Send(new ChangeScrollMessage(
             ScrollChangedArgs.ScrollBottom(ReaderService.Config.HasAutoscrollAnimation)));
+
+    private void ScrollReader(double position, bool? isAnimated = null)
+    {
+        if (isAnimated is null) {
+            isAnimated = ReaderService.Config.HasAutoscrollAnimation;
+        }
+        WeakReferenceMessenger.Default.Send(
+            new ChangeScrollMessage(new(position, (bool)isAnimated)));
+    }
     #endregion
 
 
