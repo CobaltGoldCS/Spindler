@@ -36,8 +36,6 @@ public static class MauiProgram
             .ConfigureMauiHandlers(handlers =>
             {
 #if ANDROID
-                // THIS IS A TEMPORARY WORKAROUND TO FIX 'Collectionview not defined' ERRORS
-                handlers.AddHandler<CollectionView, CustomCollectionViewHandler>();
                 handlers.AddHandler<Shell, ShellHandler>();
 #endif
             })

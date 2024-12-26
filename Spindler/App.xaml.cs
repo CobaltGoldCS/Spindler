@@ -27,7 +27,6 @@ public partial class App : Application, IRecipient<ThemeChangedMessage>, IRecipi
     {
         InitializeComponent();
         SetTheme();
-        AddMappings();
         Batteries.Init();
         RegisterRoutes();
 
@@ -111,30 +110,6 @@ public partial class App : Application, IRecipient<ThemeChangedMessage>, IRecipi
         WeakReferenceMessenger.Default.Send(new ResourceDictionaryUpdatedMessage(resourceDictionary));
 
         Receive(new StatusColorUpdateMessage(null));
-    }
-
-    private void AddMappings()
-    {
-#if ANDROID
-        ResourceDictionary resourceDictionary = Current!.Resources.MergedDictionaries.Where(dict => dict.ContainsKey("Primary")).First();
-
-        var androidPrimary = ((Color)resourceDictionary["Primary"]).ToAndroid();
-        var androidHint = ((Color)resourceDictionary["DisabledTextColor"]).ToAndroid();
-
-        PickerHandler.Mapper.AppendToMapping("PickerUnderline", (viewHandler, virtualView) =>
-        {
-            viewHandler.PlatformView.BackgroundTintList = Android.Content.Res.ColorStateList.ValueOf(androidPrimary);
-            viewHandler.PlatformView.SetHintTextColor(Android.Content.Res.ColorStateList.ValueOf(androidHint));
-        });
-
-        var androidTransparent = Android.Content.Res.ColorStateList.ValueOf(Colors.Transparent.ToAndroid());
-
-        EntryHandler.Mapper.AppendToMapping("NoUnderline", (h, v) =>
-        {
-            h.PlatformView.BackgroundTintList = androidTransparent;
-        });
-
-#endif
     }
 }
 
