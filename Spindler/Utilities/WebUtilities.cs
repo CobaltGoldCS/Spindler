@@ -60,5 +60,18 @@ public class WebUtilities
         BaseUrl = baseUrl;
     }
 
+    public Result<string> SetBaseUrlSafe(string baseUrl)
+    {
+        if (HasBaseUrl())
+        {
+            return Result.Success("Already has a base url");
+        }
+        if (!Uri.TryCreate(baseUrl, UriKind.Absolute, out Uri? uri))
+            return Result.Error<string>($"'{baseUrl}' is not a valid url");
+
+        SetBaseUrl(new Uri(uri.GetLeftPart(UriPartial.Authority) + "/", UriKind.Absolute));
+        return Result.Success("Base url set");
+    }
+
     public bool HasBaseUrl() => IsUrl(baseUrl?.ToString());
 }

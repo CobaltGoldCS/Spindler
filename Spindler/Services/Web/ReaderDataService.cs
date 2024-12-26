@@ -69,11 +69,25 @@ public partial class ReaderDataService : ObservableObject
             _ => throw new NotImplementedException("Result must be ok or invalid")
         };
 
+        var priorData = currentData;
+
         returnData.HandleSuccess((data) =>
         {
-            LoadingDataTask[(int)urlType] = LoadUrl(urlType == UrlType.Previous ? data.prevUrl : data.nextUrl);
-            // This task holds just the previously loaded data in the array
-            LoadingDataTask[((int)urlType + 1) % LoadingDataTask.Length] = Task.FromResult(Result.Success(currentData));
+            switch (urlType)
+            {
+                // User Clicked the previous chapter button
+                case UrlType.Previous:
+                    LoadingDataTask[(int)UrlType.Previous] = LoadUrl(data.prevUrl);
+                    LoadingDataTask[(int)UrlType.Next] = Task.FromResult(Result.Success(priorData));
+                    break;
+                // User Clicked the next chapter button
+                case UrlType.Next:
+                    LoadingDataTask[(int)UrlType.Next] = LoadUrl(data.nextUrl);
+                    LoadingDataTask[(int)UrlType.Previous] = Task.FromResult(Result.Success(priorData));
+                    break;
+                default:
+                    throw new NotImplementedException();
+            }
         });
 
         return returnData;
@@ -90,23 +104,29 @@ public partial class ReaderDataService : ObservableObject
         {
             return Result.Error<LoadedData>($"'{url}' is not a valid url");
         }
-        if (!WebUtilities.HasBaseUrl())
+        var baseUrlResult = WebUtilities.SetBaseUrlSafe(url);
+        if (baseUrlResult is Result<string>.Err error)
         {
-            if (!Uri.TryCreate(url, UriKind.Absolute, out Uri? uri)) return Result.Error<LoadedData>($"'{url}' is not a valid url");
-            WebUtilities.SetBaseUrl(new Uri(uri.GetLeftPart(UriPartial.Authority) + "/", UriKind.Absolute));
+            return Result.Error<LoadedData>(error.Message);
         }
+
         url = WebUtilities.MakeAbsoluteUrl(url).ToString();
 
         var html = await WebService.GetHtmlFromUrl(url);
-        // Format the html of a failed request
-        if (html is Result<string>.Err error)
+
+        Result<LoadedData> returnValue = Result.Error<LoadedData>("Uninitialized Data");
+        html.HandleError((error) =>
         {
-            HtmlDocument invalidHtml = new HtmlDocument();
+            HtmlDocument invalidHtml = new();
             invalidHtml.LoadHtml(error.Message);
             string innerText = invalidHtml.DocumentNode.InnerText.Trim();
-            return Result.Error<LoadedData>(MatchNewlines().Replace(innerText, Environment.NewLine));
-        }
-        return await LoadReaderData(url, (html as Result<string>.Ok)!.Value);
+            returnValue = Result.Error<LoadedData>(MatchNewlines().Replace(innerText, Environment.NewLine));
+        });
+        html.HandleSuccess(async (value) =>
+        {
+            returnValue = await LoadReaderData(url, value);
+        });
+        return returnValue;
     }
 
     /// <summary>
@@ -121,11 +141,10 @@ public partial class ReaderDataService : ObservableObject
         HtmlDocument doc = new();
         doc.LoadHtml(html);
 
-        if (!WebUtilities.HasBaseUrl())
+        var baseUrlResult = WebUtilities.SetBaseUrlSafe(url);
+        if (baseUrlResult is Result<string>.Err error)
         {
-            if (!Uri.TryCreate(url, UriKind.Absolute, out Uri? uri))
-                return Result.Error<LoadedData>($"'{url}' is not a valid url");
-            WebUtilities.SetBaseUrl(new Uri(uri.GetLeftPart(UriPartial.Authority) + "/", UriKind.Absolute));
+            return Result.Error<LoadedData>(error.Message);
         }
 
         try
