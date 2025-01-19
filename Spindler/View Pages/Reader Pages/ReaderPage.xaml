@@ -34,26 +34,25 @@
                        HorizontalOptions="FillAndExpand"
                        TextColor="{DynamicResource Primary}"/>
             </ScrollView>
-            <StackLayout Grid.Column="1"
-                         CompressedLayout.IsHeadless="True"
-                         HorizontalOptions="EndAndExpand"
-                         Orientation="Horizontal"
-                         VerticalOptions="Center"
-                         Margin="0,0,10,0">
-                <Button x:Name="BookmarkItem"
-                        Style="{DynamicResource IconButton}"
-                        Text="&#xE801;"
-                        FontSize="24"
-                        FontAutoScalingEnabled="False">
-                    <Button.Behaviors>
-                        <toolkit:AnimationBehavior Command="{Binding BookmarkCommand}">
-                            <toolkit:AnimationBehavior.AnimationType>
-                                <utils:RotationAnimation/>
-                            </toolkit:AnimationBehavior.AnimationType>
-                        </toolkit:AnimationBehavior>
-                    </Button.Behaviors>
-                </Button>
-            </StackLayout>
+            <Button x:Name="BookmarkItem"
+                   Style="{DynamicResource IconButton}"
+                   Text="&#xE801;"
+                   FontSize="24"
+                   HorizontalOptions="EndAndExpand"
+                   VerticalOptions="Center"
+                   Padding="15,0,15,0"
+                   FontAutoScalingEnabled="False">
+                <Button.GestureRecognizers>
+                    <TapGestureRecognizer Command="{Binding BookmarkCommand}"/>
+                </Button.GestureRecognizers>
+                <Button.Behaviors>
+                    <toolkit:AnimationBehavior>
+                        <toolkit:AnimationBehavior.AnimationType>
+                            <utils:RotationAnimation/>
+                        </toolkit:AnimationBehavior.AnimationType>
+                    </toolkit:AnimationBehavior>
+                </Button.Behaviors>
+            </Button>
         </Grid>
     </Shell.TitleView>
     <ScrollView x:Name="ReadingLayout"
