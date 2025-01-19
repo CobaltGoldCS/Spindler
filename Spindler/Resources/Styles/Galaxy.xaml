@@ -1,0 +1,42 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ResourceDictionary xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Spindler.Resources.Styles.Galaxy">
+    <Color x:Key="Primary">#76B569</Color>
+    <Color x:Key="Warning">#B34C51</Color>
+    <Color x:Key="Background">#211C35</Color>
+    <Color x:Key="TextColor">#F0F6EE</Color>
+    <Color x:Key="PlaceholderColor">#A1B2BA</Color>
+    <Color x:Key="DisabledTextColor">#A1B2BA</Color>
+    <Color x:Key="CardBackground">#B34C51</Color>
+    <Color x:Key="BorderColor">#F0F6EE</Color>
+    <x:String x:Key="StatusString">Background</x:String>
+
+    <!-- Copied and changed from Setters.xaml -->
+    <Style TargetType="Button">
+        <Setter Property="TextColor" Value="{DynamicResource Background}" />
+        <Setter Property="BackgroundColor" Value="{DynamicResource Primary}" />
+        <Setter Property="FontFamily" Value="OpenSansRegular"/>
+        <Setter Property="FontSize" Value="14"/>
+        <Setter Property="CornerRadius" Value="8"/>
+        <Setter Property="Padding" Value="14,10"/>
+        <Setter Property="VisualStateManager.VisualStateGroups">
+            <VisualStateGroupList>
+                <VisualStateGroup x:Name="CommonStates">
+                    <VisualState x:Name="Normal">
+                        <VisualState.Setters>
+                            <Setter Property="TextColor" Value="{DynamicResource Background}" />
+                            <Setter Property="BackgroundColor" Value="{DynamicResource Primary}" />
+                        </VisualState.Setters>
+                    </VisualState>
+                    <VisualState x:Name="Disabled">
+                        <VisualState.Setters>
+                            <Setter Property="TextColor" Value="{DynamicResource DisabledTextColor}" />
+                            <Setter Property="BackgroundColor" Value="{DynamicResource Background}" />
+                        </VisualState.Setters>
+                    </VisualState>
+                </VisualStateGroup>
+            </VisualStateGroupList>
+        </Setter>
+    </Style>
+</ResourceDictionary>

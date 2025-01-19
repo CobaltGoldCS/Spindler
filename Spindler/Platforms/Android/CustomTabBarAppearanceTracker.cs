@@ -10,11 +10,9 @@ namespace Spindler.Platforms.Android;
 
 class CustomTabBarAppearanceTracker : ShellBottomNavViewAppearanceTracker
 {
-    private readonly IShellContext shellContext;
 
     public CustomTabBarAppearanceTracker(IShellContext shellContext, ShellItem shellItem) : base(shellContext, shellItem)
     {
-        this.shellContext = shellContext;
     }
 
     public override void SetAppearance(BottomNavigationView bottomView, IShellAppearanceElement appearance)

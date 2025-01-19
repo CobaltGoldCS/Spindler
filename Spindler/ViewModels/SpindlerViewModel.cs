@@ -20,7 +20,7 @@ public abstract class SpindlerViewModel : ObservableObject
     protected IDataService Database {
         get
         {
-            ArgumentNullException.ThrowIfNull(nameof(database));
+            ArgumentNullException.ThrowIfNull(database, nameof(database));
             return database!;
         }
         set => database = value;

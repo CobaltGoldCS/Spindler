@@ -18,8 +18,7 @@ namespace Spindler.ViewModels
         /// A list of valid colors to pick from in the color picker 
         /// </summary>
         [ObservableProperty]
-        public static IList<ChooseColor> colorList = new List<ChooseColor>()
-        {
+        public static IList<ChooseColor> colorList = [
             new (Colors.Black),
             new (Colors.White),
             new (Colors.Wheat ),
@@ -39,7 +38,7 @@ namespace Spindler.ViewModels
             new (Colors.Red ),
             new (Colors.Purple ),
             new (Colors.Pink ),
-        };
+        ];
         BookList booklist;
         public BookList Booklist
         {
@@ -49,6 +48,8 @@ namespace Spindler.ViewModels
                 SetProperty(ref booklist, value);
             }
         }
+
+
 
         public BookListDetailViewModel(IDataService dataService, BookList booklist) : base(dataService)
         {
@@ -86,7 +87,7 @@ namespace Spindler.ViewModels
         [RelayCommand]
         private async Task Delete()
         {
-            if (Booklist.Id > 0 && await Application.Current!.MainPage!.DisplayAlert("Warning!", "Are you sure you want to delete this booklist?", "Yes", "No"))
+            if (Booklist.Id > 0 && await Application.Current!.Windows[0].Page.DisplayAlert("Warning!", "Are you sure you want to delete this booklist?", "Yes", "No"))
             {
                 await Database.DeleteBookListAsync(Booklist);
             }

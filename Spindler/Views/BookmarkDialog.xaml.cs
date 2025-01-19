@@ -78,7 +78,7 @@ public partial class BookmarkDialog : Popup
         Bookmark bookmark = GetNewBookmark.Invoke();
         Bookmarks.Add(bookmark);
         Book.Bookmarks = Bookmarks.ToList();
-        await Book.UpdateViewTimeAndSave(Database);
+        await Book.SaveInfo(Database);
     }
 
     [RelayCommand]
@@ -94,6 +94,6 @@ public partial class BookmarkDialog : Popup
         Bookmarks.Remove(bookmark);
 
         Book.Bookmarks = Bookmarks;
-        await Book.UpdateViewTimeAndSave(Database);
+        await Book.SaveInfo(Database);
     }
 }

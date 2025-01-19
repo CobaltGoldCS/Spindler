@@ -42,6 +42,10 @@ public record Book : IIndexedModel
     /// </summary>
     public bool Pinned { get; set; } = false;
 
+    /// <summary>
+    /// Whether the book has been completed by the original author
+    /// </summary>
+    public bool Completed { get; set; } = false;
 
     [Ignore]
     public IList<Bookmark> Bookmarks
@@ -65,10 +69,10 @@ public record Book : IIndexedModel
     public bool HasNextChapter { get; set; } = false;
 
     /// <summary>
-    /// Updates <see cref="LastViewed"/> to the current time, and saves booklist in the database.
+    /// Saves a book
     /// </summary>
     /// <returns>An awaitable <see cref="Task"/></returns>
-    public async Task UpdateViewTimeAndSave(IDataService service)
+    public async Task SaveInfo(IDataService service)
     {
         LastViewed = DateTime.UtcNow;
         await service.SaveItemAsync(this);
@@ -76,21 +80,16 @@ public record Book : IIndexedModel
 }
 
 
-public record Bookmark : IIndexedModel
+public record Bookmark
 {
-    public Bookmark(string name, double position, string url)
+    public Bookmark(string Name, double Position, string Url)
     {
-        Name = name;
-        Position = position;
-        Url = url;
+        this.Name = Name;
+        this.Position = Position;
+        this.Url = Url;
     }
 
     public string Name { get; set; } = string.Empty;
     public string Url { get; set; } = string.Empty;
     public double Position { get; set; } = 0;
-
-    public int GetId()
-    {
-        throw new NotImplementedException();
-    }
 }

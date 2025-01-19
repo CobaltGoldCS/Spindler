@@ -5,7 +5,9 @@ using Spindler.Views;
 using Spindler.Views.Book_Pages;
 
 #if ANDROID
+using Microsoft.Maui.Handlers;
 using Spindler.Platforms.Android;
+using Microsoft.Maui.Controls.Compatibility.Platform.Android;
 #endif
 
 namespace Spindler;
@@ -29,16 +31,17 @@ public static class MauiProgram
                 fonts.AddFont("SignikaNegative-Bold.ttf", "Signika (Bold)");
                 fonts.AddFont("SignikaNegative-Regular.ttf", "Signika");
                 fonts.AddFont("spindler_icons.ttf", "SPIcon");
+                fonts.AddFont("GreatVibes-Regular.ttf", "Great Vibes");
             })
             .ConfigureMauiHandlers(handlers =>
             {
 #if ANDROID
-                // THIS IS A TEMPORARY WORKAROUND TO FIX 'Collectionview not defined' ERRORS
-                handlers.AddHandler<CollectionView, CustomCollectionViewHandler>();
                 handlers.AddHandler<Shell, ShellHandler>();
 #endif
             })
         ;
+
+
         builder.Services
             .AddPages()
             .AddSingleton<IDataService, DataService>()

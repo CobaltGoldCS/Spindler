@@ -3,7 +3,9 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:local="clr-namespace:Spindler"
              xmlns:views="clr-namespace:Spindler.Views"
-             x:Class="Spindler.App">
+             x:Class="Spindler.App"
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit">
+
     <Application.Resources>
         <ResourceDictionary Source="Resources/Styles/Default.xaml"/>
         <ResourceDictionary Source="Resources/Setters.xaml" />

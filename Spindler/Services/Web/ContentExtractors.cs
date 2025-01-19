@@ -40,18 +40,10 @@ public abstract partial class BaseContentExtractor
     {
         StringWriter stringWriter = new();
 
-        string? desiredName = null;
 
         foreach (HtmlNode child in node.ChildNodes)
         {
-            if (BadTags.Contains(child.OriginalName))
-            {
-                continue;
-            }
-
-            desiredName ??= child.OriginalName;
-            // "Smart" Filter certain tags together.
-            if (config.FilteringContentEnabled && child.OriginalName != desiredName)
+            if (config.FilteringContentEnabled && BadTags.Contains(child.OriginalName))
             {
                 continue;
             }
@@ -65,7 +57,7 @@ public abstract partial class BaseContentExtractor
                 }
                 continue;
             }
-            stringWriter.Write($"{HttpUtility.HtmlDecode(child.InnerText.Trim()).Replace("\n", config.Separator)}");
+            stringWriter.Write($"{HttpUtility.HtmlDecode(child.InnerText).Replace("\n", config.Separator)}");
             stringWriter.Write(config.Separator);
         }
         return stringWriter.ToString().Trim();
@@ -77,23 +69,20 @@ public abstract partial class BaseContentExtractor
 
 public abstract class HtmlExtractor : BaseContentExtractor
 {
+    /// <summary>
+    /// Extract the child text in html format of each child of <paramref name="node"/>
+    /// </summary>
+    /// <param name="node">The parent node to extract text from</param>
+    /// <param name="config">Configuration information for targetting relevant text</param>
+    /// <returns>Sanitized / formatted child text in HTML format</returns>
     protected override string ExtractChildText(HtmlNode node, Config config)
     {
         string htmlSeparator = config.Separator.Replace("\n", "<br>").Replace("\t", "&#9;");
         StringBuilder builder = new();
 
-        string? desiredName = null;
-
         foreach (HtmlNode child in node.ChildNodes)
         {
-            if (BadTags.Contains(child.OriginalName))
-            {
-                continue;
-            }
-
-            desiredName ??= child.OriginalName;
-            // "Smart" Filter certain tags together.
-            if (config.FilteringContentEnabled && child.OriginalName != desiredName)
+            if (config.FilteringContentEnabled && BadTags.Contains(child.OriginalName))
             {
                 continue;
             }
@@ -170,8 +159,8 @@ public class AllTagsContentExtractor : BaseContentExtractor
         Path contentPath = service.GetPath(ConfigService.Selector.Content);
         IEnumerable<HtmlNode> nodes = contentPath.PathType switch
         {
-            Path.Type.Css => nav.QuerySelectorAll(contentPath.PathString).AsEnumerable(),
-            Path.Type.XPath => nav.DocumentNode.SelectNodes(contentPath.PathString).AsEnumerable(),
+            Path.Type.Css => nav.QuerySelectorAll(contentPath.PathString),
+            Path.Type.XPath => nav.DocumentNode.SelectNodes(contentPath.PathString),
             _ => throw new NotImplementedException("This path type has not been implemented {ConfigService.GetContent}"),
         };
 

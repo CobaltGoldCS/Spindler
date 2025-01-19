@@ -15,7 +15,7 @@
         <Color x:Key="TrueColor">Transparent</Color>
         <Color x:Key="FalseColor">#55FFFFFF</Color>
         <toolkit:BoolToObjectConverter x:Key="BorderColorConverter" FalseObject="{StaticResource FalseColor}" TrueObject="{StaticResource TrueColor}"/>
-        
+
         <DataTemplate x:Key="ListLayout" x:DataType="models:Book">
             <items:BookItem 
                         BookParameter="{Binding Path=., Mode=OneTime}"
@@ -97,8 +97,12 @@
                     VerticalOptions="Center"
                     FontAutoScalingEnabled="False"
                     FontSize="27">
+
+                <Label.GestureRecognizers>
+                    <TapGestureRecognizer Command="{Binding AddToolBarItemCommand}"/>
+                </Label.GestureRecognizers>
                 <Label.Behaviors>
-                    <toolkit:AnimationBehavior Command="{Binding AddToolBarItemCommand, Mode=OneWay}">
+                    <toolkit:AnimationBehavior>
                         <toolkit:AnimationBehavior.AnimationType>
                             <util:RotationAnimation/>
                         </toolkit:AnimationBehavior.AnimationType>

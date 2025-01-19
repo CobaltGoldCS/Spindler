@@ -15,7 +15,7 @@
         <Viewmodels:SettingsViewmodel/>
     </ContentPage.BindingContext>
     <ScrollView x:Name="Scroll" Orientation="Vertical" IsEnabled="True" Margin="10,20">
-        <Grid ColumnDefinitions="*, 70, 70" RowDefinitions="auto, 50, auto, auto, auto, 50" VerticalOptions="FillAndExpand" CompressedLayout.IsHeadless="True">
+        <Grid ColumnDefinitions="*, 70, 70" RowDefinitions="auto, 50, auto, auto, auto, 50, *" VerticalOptions="FillAndExpand" CompressedLayout.IsHeadless="True">
             <FlexLayout Grid.ColumnSpan="3">
                 <Label Text="The quick brown fox jumps over the lazy dog"
                        FontSize="{Binding FontSize}" 
@@ -50,6 +50,13 @@
                         BackgroundColor="{DynamicResource Warning}"
                         Command="{Binding ImportCommand}" />
             </HorizontalStackLayout>
+
+            <Label Grid.ColumnSpan="3"
+                   Grid.Row="6"
+                   VerticalOptions="End"
+                   HorizontalOptions="Center"
+                   TextColor="{DynamicResource DisabledTextColor}"
+                   Text="Theme changes require restart to fully update"/>
         </Grid>
     </ScrollView>
 </ContentPage>

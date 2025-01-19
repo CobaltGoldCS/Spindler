@@ -37,11 +37,13 @@
     <Shell.TitleView>
         <Grid ColumnDefinitions="*, auto">
 
-            <Label Text="Book Lists"
+            <Label Text="Spindler"
                    Grid.Column="0"
-                   FontSize="Large"
                    VerticalOptions="Center"
-                   HorizontalOptions="FillAndExpand"
+                   HorizontalOptions="StartAndExpand"
+                   FontFamily="Great Vibes"
+                   FontSize="30"
+                   CharacterSpacing="1.3"
                    TextColor="{DynamicResource Primary}"/>
             <Button Style="{DynamicResource IconButton}"
                     Grid.Column="1"

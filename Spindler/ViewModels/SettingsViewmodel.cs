@@ -76,7 +76,7 @@ public partial class SettingsViewmodel() : SpindlerViewModel(database: null)
 
     [ObservableProperty]
     public Theme[] possibleThemes = ((Themes[])Enum.GetValues(typeof(Themes)))
-        .Select(themes => Theme.FromThemeType(themes))
+        .Select(Theme.FromThemeType)
         .ToArray();
 
 

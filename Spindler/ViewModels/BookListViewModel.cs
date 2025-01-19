@@ -2,15 +2,16 @@
 using CommunityToolkit.Mvvm.Input;
 using Spindler.Models;
 using Spindler.Services;
+using Spindler.Utilities;
 using Spindler.Views;
 using Spindler.Views.Book_Pages;
 using System.Collections.ObjectModel;
 
 namespace Spindler.ViewModels
 {
-    public partial class BookListViewModel : SpindlerViewModel
+    public partial class BookListViewModel(IDataService database, HttpClient client) : SpindlerViewModel(database)
     {
-        private readonly HttpClient Client;
+        private readonly HttpClient Client = client;
 
         #region Bindings
         [ObservableProperty]
@@ -19,13 +20,13 @@ namespace Spindler.ViewModels
         public int id;
 
         [ObservableProperty]
-        List<Book> currentList = new();
+        List<Book> currentList = [];
 
         [ObservableProperty]
-        ObservableCollection<Book> displayedBooks = new();
+        ObservableCollection<Book> displayedBooks = [];
 
         [ObservableProperty]
-        ObservableCollection<Book> pinnedBooks = new();
+        ObservableCollection<Book> pinnedBooks = [];
 
         [ObservableProperty]
         bool isLoading = true;
@@ -49,31 +50,22 @@ namespace Spindler.ViewModels
             set
             {
                 filterText = value;
-                DisplayedBooks.Clear();
                 var lowercase = value.ToLower();
-                foreach (var book in CurrentList
-                                        .Where(book => book.Name.ToLower()
-                                        .Contains(lowercase))
-                                        .Take(NUM_ITEMS_ADDED_TO_LIST))
-                {
-                    DisplayedBooks.Add(book);
-                }
+
+                DisplayedBooks.PopulateAndNotify(CurrentList
+                                        .Where(book => book.Name.Contains(lowercase, StringComparison.CurrentCultureIgnoreCase))
+                                        .Take(NUM_ITEMS_ADDED_TO_LIST),
+                                        shouldClear: true);
                 SetProperty(ref filterText, value);
             }
         }
 
         #endregion
 
-        public BookListViewModel(IDataService database, HttpClient client) : base(database)
-        {
-            Client = client;
-        }
-
         public void SetBookListAndProperties(BookList list)
         {
             Id = list.Id;
             Title = list.Name;
-
         }
 
         /// <summary>
@@ -87,7 +79,7 @@ namespace Spindler.ViewModels
             {
                 { "book", book }
             };
-            await NavigateTo($"{nameof(BookDetailPage)}", parameters);
+            await NavigateTo(nameof(BookDetailPage), parameters);
         }
 
         /// <summary>
@@ -106,7 +98,7 @@ namespace Spindler.ViewModels
                     }
                 }
             };
-            await NavigateTo($"{nameof(BookDetailPage)}", parameters);
+            await NavigateTo(nameof(BookDetailPage), parameters);
         }
 
         object locker = new();
@@ -158,7 +150,14 @@ namespace Spindler.ViewModels
             var parameters = new Dictionary<string, object>()
             {
                 { "book", selection},
-                { "type", config?.UsesHeadless ?? false ? ReaderPage.ReaderType.Headless : ReaderPage.ReaderType.Standard }
+                { "type", config?.UsesHeadless switch
+                    {
+                        true => ReaderPage.ReaderType.Headless,
+                        false => ReaderPage.ReaderType.Standard,
+                        null => ReaderPage.ReaderType.Standard,
+                    }
+                }
+
             };
 
             string pageName = nameof(ReaderPage);
@@ -167,7 +166,7 @@ namespace Spindler.ViewModels
                 pageName = nameof(WebviewReaderPage);
             }
 
-            await NavigateTo($"{pageName}", parameters);
+            await NavigateTo(pageName, parameters);
 
             Executing = false;
         }
@@ -181,17 +180,10 @@ namespace Spindler.ViewModels
         {
             IsLoading = true;
             CurrentList = await Database.GetBooksByBooklistIdAsync(Id);
-            DisplayedBooks.Clear();
-            PinnedBooks.Clear();
-            foreach (var book in CurrentList.Take(NUM_ITEMS_ADDED_TO_LIST))
-            {
-                DisplayedBooks.Add(book);
-            }
 
-            foreach (var book in CurrentList.Where(book => book.Pinned))
-            {
-                PinnedBooks.Add(book);
-            }
+            PinnedBooks.PopulateAndNotify(CurrentList.Where(book => book.Pinned), shouldClear: true);
+            DisplayedBooks.PopulateAndNotify(CurrentList.Take(NUM_ITEMS_ADDED_TO_LIST), shouldClear: true);
+
             PinnedBooksAreVisible = PinnedBooks.Count > 0;
             IsLoading = false;
         }
@@ -212,13 +204,12 @@ namespace Spindler.ViewModels
 
             LoaderHeightRequest = 20;
             IsExpanding = true;
-            foreach (Book book in CurrentList!
+            DisplayedBooks.PopulateAndNotify(CurrentList!
                                     .Where(book => book.Name.Contains(FilterText))
                                     .Skip(DisplayedBooks.Count)
-                                    .Take(NUM_ITEMS_ADDED_TO_LIST))
-            {
-                DisplayedBooks!.Add(book);
-            }
+                                    .Take(NUM_ITEMS_ADDED_TO_LIST),
+                                    shouldClear: false);
+
             IsExpanding = false;
             LoaderHeightRequest = 0;
         }

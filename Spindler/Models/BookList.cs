@@ -48,12 +48,11 @@ public class BookList : IIndexedModel
     public static string GetRandomPlaceholderImageUrl()
     {
         Random rand = new();
-        List<string> images = new()
-        {
+        List<string> images = [
             "https://images.unsplash.com/photo-1553532434-5ab5b6b84993?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1074&q=80",
             "https://images.unsplash.com/flagged/photo-1579268351234-073f85929562?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1074&q=80",
             "https://images.unsplash.com/photo-1555679427-1f6dfcce943b?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=735&q=80"
-        };
+        ];
         int index = rand.Next(images.Count - 1);
         return images[index];
     }

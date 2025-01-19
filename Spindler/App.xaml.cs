@@ -3,15 +3,23 @@ using CommunityToolkit.Maui.Core;
 using CommunityToolkit.Maui.Core.Extensions;
 using CommunityToolkit.Mvvm.Messaging;
 using Spindler.Resources;
-using Spindler.Services;
 using Spindler.Utilities;
 using Spindler.Views;
 using Spindler.Views.Book_Pages;
 using SQLitePCL;
 
+using Microsoft.Maui.Handlers;
+using Microsoft.Maui.Controls.PlatformConfiguration;
+
+#if ANDROID
+using Microsoft.Maui.Handlers;
+using Spindler.Platforms.Android;
+using Microsoft.Maui.Controls.Compatibility.Platform.Android;
+#endif
+
 namespace Spindler;
 
-public partial class App : Application
+public partial class App : Application, IRecipient<ThemeChangedMessage>, IRecipient<StatusColorUpdateMessage>
 {
     private ResourceDictionary Setters = new Setters();
 
@@ -22,10 +30,7 @@ public partial class App : Application
         Batteries.Init();
         RegisterRoutes();
 
-        WeakReferenceMessenger.Default.Register<ThemeChangedMessage>(this, (theme, message) =>
-        {
-            SetTheme(message.Value);
-        });
+        WeakReferenceMessenger.Default.RegisterAll(this);
     }
 
     private static void RegisterRoutes()
@@ -44,6 +49,34 @@ public partial class App : Application
         Routing.RegisterRoute("GeneralConfig/" + nameof(ConfigDetailPage), typeof(ConfigDetailPage));
     }
 
+    public void Receive(ThemeChangedMessage message)
+    {
+        SetTheme(message.Value);
+    }
+
+    public void Receive(StatusColorUpdateMessage message)
+    {
+        ResourceDictionary themeDictionary = Current!.Resources.MergedDictionaries.ElementAt(1);
+
+
+        string? statusString = message.Value;
+        statusString ??= themeDictionary.TryGetValue("StatusString", out object status)
+            ? (string)status
+            : "CardBackground";
+
+        var statusBarColor = ((Color)themeDictionary[statusString]);
+        StatusBarStyle bestContrast = (statusBarColor.GetByteRed() * 0.299 + statusBarColor.GetByteGreen() * 0.587 + statusBarColor.GetByteBlue() * 0.114) > 186
+            ? StatusBarStyle.DarkContent
+            : StatusBarStyle.LightContent;
+
+#if !MACCATALYST
+        MainPage.Behaviors.Add(new StatusBarBehavior
+        {
+            StatusBarColor = statusBarColor,
+            StatusBarStyle = bestContrast
+        });
+#endif
+    }
 
     public void SetTheme()
     {
@@ -60,24 +93,13 @@ public partial class App : Application
             Themes.Dracula => new Resources.Styles.Dracula(),
             Themes.Seasalt => new Resources.Styles.Seasalt(),
             Themes.TeaRose => new Resources.Styles.Tearose(),
-            _ => throw new NotImplementedException()
+            Themes.Gunmetal => new Resources.Styles.Gunmetal(),
+            Themes.Galaxy => new Resources.Styles.Galaxy(),
+            _ => throw new NotImplementedException(),
         };
         MainPage.Behaviors.Clear();
         Current!.Resources.MergedDictionaries.Add(resourceDictionary);
         Current!.Resources.MergedDictionaries.Add(Setters);
-
-        var statusBarColor = (Color)resourceDictionary["CardBackground"];
-        StatusBarStyle bestContrast = (statusBarColor.GetByteRed() * 0.299 + statusBarColor.GetByteGreen() * 0.587 + statusBarColor.GetByteBlue() * 0.114) > 186 
-            ? StatusBarStyle.DarkContent 
-            : StatusBarStyle.LightContent;
-
-#if !MACCATALYST
-        MainPage.Behaviors.Add(new StatusBarBehavior
-        {
-            StatusBarColor = statusBarColor,
-            StatusBarStyle = bestContrast
-        });
-#endif
 
         // These are necessary in order to prevent crashing while allowing themes to override styles
         // Add a resource dictionary with lower priority, then remove the one with top priority
@@ -86,8 +108,12 @@ public partial class App : Application
 
 
         WeakReferenceMessenger.Default.Send(new ResourceDictionaryUpdatedMessage(resourceDictionary));
+
+        Receive(new StatusColorUpdateMessage(null));
     }
 }
+
+
 
 
 public enum Themes
@@ -95,19 +121,15 @@ public enum Themes
     Default,
     Dracula,
     Seasalt,
-    TeaRose
+    TeaRose,
+    Gunmetal,
+    Galaxy,
 }
 
-public class Theme
+public class Theme(string safeName, Themes theme)
 {
-    public string safeName;
-    public Themes theme;
-
-    public Theme(string safeName, Themes theme)
-    {
-        this.safeName = safeName;
-        this.theme = theme;
-    }
+    public string safeName = safeName;
+    public Themes theme = theme;
 
     public override string ToString()
     {
