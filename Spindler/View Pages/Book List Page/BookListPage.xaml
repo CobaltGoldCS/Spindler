@@ -162,25 +162,25 @@
                                        />
                             </Grid>
                         </toolkit:Expander.Header>
-                        <CollectionView x:Name="PinnedBooksList"
-                                        ItemsSource="{Binding PinnedBooks, Mode=OneTime}"
-                                        SelectionMode="Single"
-                                        Margin="0,5">
-                            <CollectionView.ItemsLayout>
-                                <LinearItemsLayout Orientation="Horizontal"
-                                                   ItemSpacing="5"
+                        <CarouselView x:Name="PinnedBooksList"
+                                      ItemsSource="{Binding PinnedBooks, Mode=OneTime}"
+                                      PeekAreaInsets="0"
+                                      IsScrollAnimated="True">
+                            <CarouselView.ItemsLayout>
+                                <LinearItemsLayout ItemSpacing="5"
+                                                   Orientation="Horizontal"
                                                    SnapPointsAlignment="Center"
                                                    SnapPointsType="Mandatory"/>
-                            </CollectionView.ItemsLayout>
-                            <CollectionView.ItemTemplate>
+                            </CarouselView.ItemsLayout>
+                            <CarouselView.ItemTemplate>
                                 <DataTemplate x:DataType="models:Book">
                                     <items:PinnedBookItem 
                                         BookParameter="{Binding Path=.}"
                                         SelectionCommand="{Binding Source={x:RelativeSource AncestorType={x:Type viewmodels:BookListViewModel}}, Path=SelectionCommand, Mode=OneTime}"
                                         DoubleTappedCommand="{Binding Source={x:RelativeSource AncestorType={x:Type viewmodels:BookListViewModel}}, Path=DoubleTappedCommand, Mode=OneTime}" />
                                 </DataTemplate>
-                            </CollectionView.ItemTemplate>
-                        </CollectionView>
+                            </CarouselView.ItemTemplate>
+                        </CarouselView>
                     </toolkit:Expander>
                 </Border>
             </CollectionView.Header>
