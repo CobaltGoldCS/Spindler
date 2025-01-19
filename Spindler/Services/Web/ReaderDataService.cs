@@ -114,18 +114,19 @@ public partial class ReaderDataService : ObservableObject
 
         var html = await WebService.GetHtmlFromUrl(url);
 
-        Result<LoadedData> returnValue = Result.Error<LoadedData>("Uninitialized Data");
-        html.HandleError((error) =>
+        Result<LoadedData> returnValue;
+
+        if (html is Result<string>.Err invalidMessage)
         {
             HtmlDocument invalidHtml = new();
-            invalidHtml.LoadHtml(error.Message);
+            invalidHtml.LoadHtml(invalidMessage.Message);
             string innerText = invalidHtml.DocumentNode.InnerText.Trim();
             returnValue = Result.Error<LoadedData>(MatchNewlines().Replace(innerText, Environment.NewLine));
-        });
-        html.HandleSuccess(async (value) =>
+        } else
         {
-            returnValue = await LoadReaderData(url, value);
-        });
+            var okResult = html as Result<string>.Ok;
+            returnValue = await LoadReaderData(url, okResult!.Value);
+        }
         return returnValue;
     }
 
