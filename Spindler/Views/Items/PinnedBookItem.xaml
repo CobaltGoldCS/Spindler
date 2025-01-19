@@ -33,18 +33,18 @@
     <Grid
         CompressedLayout.IsHeadless="True"
         BackgroundColor="{DynamicResource Background}"
-        ColumnDefinitions="200" RowDefinitions="200">
+        ColumnDefinitions="170" RowDefinitions="200">
         <Image Source="{Binding Source={Reference this}, Path=BookParameter.ImageUrl, Mode=OneWay}"
                Background="{Binding Background, Mode=OneWay}"
                Aspect="AspectFill">
         </Image>
         <Label
-            FontSize="Body"
+            FontSize="Caption"
             x:Name="TitleLabel"
             Text="{Binding Source={x:Reference this}, Path=BookParameter.Title}"
             TextColor="{StaticResource White}"
             MaxLines="4"
-            Padding="0,0,0,10"
+            Padding="2,0,0,2"
             VerticalTextAlignment="End"
             HorizontalTextAlignment="Center">
             <Label.Shadow>
@@ -52,8 +52,4 @@
             </Label.Shadow>
         </Label>
     </Grid>
-
-    <Border.Shadow>
-        <Shadow Brush="Black" Offset="10,10" Radius="100"/>
-    </Border.Shadow>
 </Border>

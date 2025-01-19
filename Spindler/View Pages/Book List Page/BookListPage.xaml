@@ -165,12 +165,13 @@
                         <CarouselView x:Name="PinnedBooksList"
                                       ItemsSource="{Binding PinnedBooks, Mode=OneTime}"
                                       PeekAreaInsets="0"
+                                      Loop="False"
                                       IsScrollAnimated="True">
                             <CarouselView.ItemsLayout>
-                                <LinearItemsLayout ItemSpacing="5"
+                                <LinearItemsLayout ItemSpacing="10"
                                                    Orientation="Horizontal"
-                                                   SnapPointsAlignment="Center"
-                                                   SnapPointsType="Mandatory"/>
+                                                   SnapPointsAlignment="End"
+                                                   SnapPointsType="MandatorySingle"/>
                             </CarouselView.ItemsLayout>
                             <CarouselView.ItemTemplate>
                                 <DataTemplate x:DataType="models:Book">

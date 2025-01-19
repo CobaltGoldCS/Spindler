@@ -12,7 +12,6 @@ using Microsoft.Maui.Handlers;
 using Microsoft.Maui.Controls.PlatformConfiguration;
 
 #if ANDROID
-using Microsoft.Maui.Handlers;
 using Spindler.Platforms.Android;
 using Microsoft.Maui.Controls.Compatibility.Platform.Android;
 #endif
