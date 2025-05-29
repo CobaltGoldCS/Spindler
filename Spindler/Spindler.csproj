@@ -199,6 +199,9 @@
 	  <MauiXaml Update="Views\AddButtonGroup.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
+	  <MauiXaml Update="Views\AppShell.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
 	  <MauiXaml Update="Views\BookmarkDialog.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>

@@ -1,9 +1,8 @@
 using CommunityToolkit.Mvvm.Input;
 using Spindler.Models;
 using Spindler.Services;
-using Spindler.Views.Reader_Pages;
 
-namespace Spindler.Views;
+namespace Spindler.Views.Reader_Pages;
 
 public partial class WebviewReaderPage : ContentPage, IQueryAttributable, IReader
 {

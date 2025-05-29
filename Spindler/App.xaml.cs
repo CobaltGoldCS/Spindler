@@ -10,6 +10,7 @@ using SQLitePCL;
 
 using Microsoft.Maui.Handlers;
 using Microsoft.Maui.Controls.PlatformConfiguration;
+using Spindler.Views.Reader_Pages;
 
 #if ANDROID
 using Spindler.Platforms.Android;
@@ -25,11 +26,20 @@ public partial class App : Application, IRecipient<ThemeChangedMessage>, IRecipi
     public App()
     {
         InitializeComponent();
-        SetTheme();
         Batteries.Init();
         RegisterRoutes();
 
         WeakReferenceMessenger.Default.RegisterAll(this);
+    }
+
+    protected override Window CreateWindow(IActivationState? activationState)
+    {
+        Window mainWindow = new Window(new AppShell());
+        mainWindow.Created += (object? sender, EventArgs e) =>
+        {
+            SetTheme();
+        };
+        return mainWindow;
     }
 
     private static void RegisterRoutes()
@@ -69,7 +79,7 @@ public partial class App : Application, IRecipient<ThemeChangedMessage>, IRecipi
             : StatusBarStyle.LightContent;
 
 #if !MACCATALYST
-        MainPage.Behaviors.Add(new StatusBarBehavior
+        Windows[0].Page!.Behaviors.Add(new StatusBarBehavior
         {
             StatusBarColor = statusBarColor,
             StatusBarStyle = bestContrast
@@ -96,7 +106,10 @@ public partial class App : Application, IRecipient<ThemeChangedMessage>, IRecipi
             Themes.Galaxy => new Resources.Styles.Galaxy(),
             _ => throw new NotImplementedException(),
         };
-        MainPage.Behaviors.Clear();
+        if (Windows.Count > 0)
+        {
+            Windows[0].Page?.Behaviors.Clear();
+        }
         Current!.Resources.MergedDictionaries.Add(resourceDictionary);
         Current!.Resources.MergedDictionaries.Add(Setters);
 

@@ -3,6 +3,7 @@ using Spindler.Services;
 using Spindler.ViewModels;
 using Spindler.Views;
 using Spindler.Views.Book_Pages;
+using Spindler.Views.Reader_Pages;
 
 #if ANDROID
 using Microsoft.Maui.Handlers;

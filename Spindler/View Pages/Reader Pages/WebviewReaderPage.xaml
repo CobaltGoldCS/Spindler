@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="Spindler.Views.WebviewReaderPage"
+             x:Class="Spindler.Views.Reader_Pages.WebviewReaderPage"
              xmlns:Model="clr-namespace:Spindler.Models"
              xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
              xmlns:utils="clr-namespace:Spindler.Utilities"
@@ -13,14 +13,10 @@
     </ContentPage.BindingContext>
     <Grid RowDefinitions="*, auto" 
           ColumnDefinitions="*, *, *" 
-          VerticalOptions="FillAndExpand"
-          HorizontalOptions="FillAndExpand"
           CompressedLayout.IsHeadless="True">
         <WebView x:Name="ReaderBrowser"
                  Grid.Row="0" 
                  Grid.ColumnSpan="3"
-                 VerticalOptions="FillAndExpand"
-                 HorizontalOptions="FillAndExpand"
                  Navigated="WebViewOnNavigated"/>
         
         <Button x:Name="backButton" 
