@@ -18,7 +18,7 @@ public partial class SettingsViewmodel() : SpindlerViewModel(database: null)
         set
         {
             SetProperty(ref font, value);
-            Preferences.Set("font", value);
+            Preferences.Default.Set("font", value);
         }
     }
 
@@ -29,7 +29,7 @@ public partial class SettingsViewmodel() : SpindlerViewModel(database: null)
         set
         {
             SetProperty(ref fontSize, value);
-            Preferences.Set("font_size", value);
+            Preferences.Default.Set("font_size", value);
         }
     }
 
@@ -40,7 +40,7 @@ public partial class SettingsViewmodel() : SpindlerViewModel(database: null)
         set
         {
             SetProperty(ref fontSpacing, value);
-            Preferences.Set("line_spacing", value);
+            Preferences.Default.Set("line_spacing", value);
         }
     }
 
@@ -54,7 +54,18 @@ public partial class SettingsViewmodel() : SpindlerViewModel(database: null)
         set
         {
             SetProperty(ref selectedLayout, value);
-            Preferences.Set("book list layout", value);
+            Preferences.Default.Set("book list layout", value);
+        }
+    }
+
+    private float paragraphSpacing = Preferences.Default.Get("item_spacing", 5f);
+    public float ParagraphSpacing
+    {
+        get => paragraphSpacing;
+        set
+        {
+            SetProperty(ref paragraphSpacing, value);
+            Preferences.Default.Set("item_spacing", value);
         }
     }
 
@@ -69,7 +80,7 @@ public partial class SettingsViewmodel() : SpindlerViewModel(database: null)
             if (selectedTheme == value)
                 return;
             SetProperty(ref selectedTheme, value);
-            Preferences.Set("theme", (int)value.theme);
+            Preferences.Default.Set("theme", (int)value.theme);
             WeakReferenceMessenger.Default.Send(new ThemeChangedMessage(value));
         }
     }

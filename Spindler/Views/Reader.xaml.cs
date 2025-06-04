@@ -1,20 +1,63 @@
+using CommunityToolkit.Mvvm.ComponentModel;
+using System.Collections.ObjectModel;
 using System.Windows.Input;
 
 namespace Spindler.CustomControls;
 
 public partial class Reader : Grid
 {
+    private string fontFamily = Preferences.Default.Get("font", "OpenSans (Regular)");
+    public string FontFamily
+    {
+        get => fontFamily;
+        set
+        {
+            fontFamily = value;
+            OnPropertyChanged(nameof(FontFamily));
+        }
+    }
+
+    private int fontSize = Preferences.Default.Get("font_size", 15);
+    public int FontSize
+    {
+        get => fontSize;
+        set
+        {
+            fontSize = value;
+            OnPropertyChanged(nameof(FontSize));
+        }
+    }
+
+    private float lineHeight = Preferences.Default.Get("line_spacing", 1.5f);
+    public float LineHeight
+    {
+        get => lineHeight;
+        set
+        {
+            lineHeight = value;
+            OnPropertyChanged(nameof(LineHeight));
+        }
+    }
+
+    private float itemSpacing = Preferences.Default.Get("item_spacing", 3f);
+    public float ItemSpacing
+    {
+        get => itemSpacing;
+        set
+        {
+            itemSpacing = value;
+            OnPropertyChanged(nameof(ItemSpacing));
+        }
+    }
+
+
     public Reader()
     {
         InitializeComponent();
-        TextView.FontFamily = Preferences.Default.Get("font", "OpenSans (Regular)");
-        TextView.FontSize = Preferences.Default.Get("font_size", 15);
-        TextView.LineHeight = Preferences.Default.Get("line_spacing", 1.5f);
-        TitleView.FontFamily = Preferences.Default.Get("font", "OpenSans (Regular)");
     }
 
     public static readonly BindableProperty TextProperty =
-                BindableProperty.Create(nameof(Text), typeof(string), typeof(Grid));
+                BindableProperty.Create(nameof(Text), typeof(ObservableCollection<string>), typeof(Grid));
 
     public static readonly BindableProperty TextTypeProperty =
                 BindableProperty.Create(nameof(TextType), typeof(TextType), typeof(Grid));
@@ -46,11 +89,15 @@ public partial class Reader : Grid
     public event EventHandler? PrevClicked;
     public event EventHandler? NextClicked;
 
-    public string Text
+    public ObservableCollection<string> Text
     {
-        get => (string)GetValue(TextProperty);
+        get
+        {
+            return (ObservableCollection<string>)GetValue(TextProperty);
+        }
         set { SetValue(TextProperty, value); }
     }
+
 
     public TextType TextType
     {

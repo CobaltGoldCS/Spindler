@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using Spindler.Utilities;
+using System.Collections.ObjectModel;
 
 namespace Spindler.Models;
 
@@ -11,7 +12,7 @@ public partial class LoadedData : ObservableObject
     /// <summary>
     /// The text content of the loaded page
     /// </summary>
-    public string Text { get; set; }
+    public ObservableCollection<string> Text { get; set; }
 
     /// <summary>
     /// A url pointing to the "next chapter" of the book
@@ -41,7 +42,7 @@ public partial class LoadedData : ObservableObject
     private bool nextUrlValid;
 
 
-    public LoadedData(string title, string text, string currentUrl, string prevUrl, string nextUrl)
+    public LoadedData(string title, ObservableCollection<string> text, string currentUrl, string prevUrl, string nextUrl)
     {
         this.Title = title;
         this.Text = text;
@@ -55,12 +56,12 @@ public partial class LoadedData : ObservableObject
         PrevUrlValid = WebUtilities.IsUrl(prevUrl);
     }
 
-    public static LoadedData CreatePlaceholder() => new("Loading", string.Empty);
+    public static LoadedData CreatePlaceholder() => new("Loading", [string.Empty]);
 
     public void InvalidateNextUrl() => NextUrlValid = false;
     public void InvalidatePrevUrl() => PrevUrlValid = false;
 
-    private LoadedData(string title, string text)
+    private LoadedData(string title, ObservableCollection<string> text)
     {
         this.Title = title;
         this.Text = text;
