@@ -250,9 +250,7 @@ public partial class ReaderViewModel : SpindlerViewModel, IReader
 
     private void ScrollReader(double position, bool? isAnimated = null)
     {
-        if (isAnimated is null) {
-            isAnimated = ReaderService.Config.HasAutoscrollAnimation;
-        }
+        isAnimated ??= ReaderService.Config.HasAutoscrollAnimation;
         WeakReferenceMessenger.Default.Send(
             new ChangeScrollMessage(new(position, (bool)isAnimated)));
     }

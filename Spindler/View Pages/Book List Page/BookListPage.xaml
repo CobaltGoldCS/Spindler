@@ -19,8 +19,8 @@
         <DataTemplate x:Key="ListLayout" x:DataType="models:Book">
             <items:BookItem 
                         BookParameter="{Binding Path=., Mode=OneTime}"
-                        SelectionCommand="{Binding Source={x:RelativeSource AncestorType={x:Type viewmodels:BookListViewModel}}, Path=SelectionCommand, Mode=OneTime}"
-                        DoubleTappedCommand="{Binding Source={x:RelativeSource AncestorType={x:Type viewmodels:BookListViewModel}}, Path=DoubleTappedCommand, Mode=OneTime}"/>
+                        SelectionCommand="{Binding x:DataType='viewmodels:BookListViewModel', Source={x:RelativeSource AncestorType={x:Type viewmodels:BookListViewModel}}, Path=SelectionCommand, Mode=OneTime}"
+                        DoubleTappedCommand="{Binding x:DataType='viewmodels:BookListViewModel', Source={x:RelativeSource AncestorType={x:Type viewmodels:BookListViewModel}}, Path=DoubleTappedCommand, Mode=OneTime}"/>
         </DataTemplate>
         <LinearItemsLayout x:Key="ListItemsLayout" ItemSpacing="5" Orientation="Vertical"/>
         
@@ -31,10 +31,10 @@
                   CompressedLayout.IsHeadless="True">
                 <Grid.GestureRecognizers>
                     <TapGestureRecognizer NumberOfTapsRequired="1" 
-                                          Command="{Binding Source={x:RelativeSource AncestorType={x:Type viewmodels:BookListViewModel}}, Path=SelectionCommand, Mode=OneTime}"
+                                          Command="{Binding x:DataType='viewmodels:BookListViewModel', Source={RelativeSource AncestorType={x:Type viewmodels:BookListViewModel}}, Path=SelectionCommand, Mode=OneTime}"
                                           CommandParameter="{Binding Path=., Mode=OneTime}"/>
                     <TapGestureRecognizer NumberOfTapsRequired="2"
-                                          Command="{Binding Source={x:RelativeSource AncestorType={x:Type viewmodels:BookListViewModel}}, Path=DoubleTappedCommand, Mode=OneTime}"
+                                          Command="{Binding x:DataType='viewmodels:BookListViewModel', Source={RelativeSource AncestorType={x:Type viewmodels:BookListViewModel}}, Path=DoubleTappedCommand, Mode=OneTime}"
                                           CommandParameter="{Binding Path=., Mode=OneTime}"/>
                 </Grid.GestureRecognizers>
                 <Border Grid.ColumnSpan="2"
@@ -177,8 +177,8 @@
                                 <DataTemplate x:DataType="models:Book">
                                     <items:PinnedBookItem 
                                         BookParameter="{Binding Path=.}"
-                                        SelectionCommand="{Binding Source={x:RelativeSource AncestorType={x:Type viewmodels:BookListViewModel}}, Path=SelectionCommand, Mode=OneTime}"
-                                        DoubleTappedCommand="{Binding Source={x:RelativeSource AncestorType={x:Type viewmodels:BookListViewModel}}, Path=DoubleTappedCommand, Mode=OneTime}" />
+                                        SelectionCommand="{Binding x:DataType='viewmodels:BookListViewModel', Source={RelativeSource AncestorType={x:Type viewmodels:BookListViewModel}}, Path=SelectionCommand, Mode=OneTime}"
+                                        DoubleTappedCommand="{Binding x:DataType='viewmodels:BookListViewModel', Source={RelativeSource AncestorType={x:Type viewmodels:BookListViewModel}}, Path=DoubleTappedCommand, Mode=OneTime}" />
                                 </DataTemplate>
                             </CarouselView.ItemTemplate>
                         </CarouselView>

@@ -1,12 +1,23 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <Grid xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
       xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+      xmlns:local="clr-namespace:Spindler.CustomControls"
       x:Class="Spindler.CustomControls.Reader"
       RowDefinitions="auto, 25, auto, *, 40"
       x:Name="this"
       CompressedLayout.IsHeadless="True"
       BackgroundColor="{DynamicResource CardBackground}"
       >
+    <Grid.Resources>
+        <DataTemplate x:Key="TextTemplate" x:DataType="x:String">
+            <Label Text="{Binding .}"
+               FontSize="{Binding x:DataType='local:Reader', Path=FontSize, Source={x:RelativeSource AncestorType={x:Type local:Reader}}, Mode=OneTime}" 
+               FontFamily="{Binding x:DataType='local:Reader', Path=Font, Source={x:RelativeSource AncestorType={x:Type local:Reader}}, Mode=OneTime}"
+               LineHeight="{Binding x:DataType='local:Reader', Path=LineHeight, Source={x:RelativeSource AncestorType={x:Type local:Reader}}, Mode=OneTime}"
+               TextType="{Binding x:DataType='local:Reader', Path=TextType, Source={x:RelativeSource AncestorType={x:Type local:Reader}}, Mode=OneTime}"
+               FontAutoScalingEnabled="False"/>
+        </DataTemplate>
+    </Grid.Resources>
     <Label x:Name="TitleView"
            Text="{Binding Source = {x:Reference this}, Path = Title}"
            BackgroundColor="{DynamicResource CardBackground}"
@@ -39,17 +50,23 @@
         CompressedLayout.IsHeadless="True"
         x:Name="TextContainer"
         StrokeShape="RoundRectangle 20,20,20,20"
-        Padding="0,30,0,0"
+        Padding="30,60,30,50"
         Grid.Row="3"
         BackgroundColor="{DynamicResource Background}"
         InputTransparent="True"
         StrokeThickness="0">
-        <Label  x:Name="TextView" Grid.Row="3"
-                Padding="30,30,30,50"
-                FontAutoScalingEnabled="False"
-                TextType="{Binding Source = {x:Reference this}, Path = TextType}"
-                Text="{Binding Source = {x:Reference this}, Path = Text}"
-            />
+        <CollectionView 
+            BindingContext="{x:Reference this}"
+            ItemsSource="{Binding Source={x:Reference this}, Path=Text}"
+            ItemTemplate="{StaticResource TextTemplate}"
+            VerticalScrollBarVisibility="Always"
+            SelectionMode="Single">
+            <CollectionView.ItemsLayout>
+                <LinearItemsLayout 
+                    ItemSpacing="{Binding ItemSpacing, Source={x:Reference this}}"
+                    Orientation="Vertical" />
+            </CollectionView.ItemsLayout>
+        </CollectionView>
     </Border>
     
     <ContentView 

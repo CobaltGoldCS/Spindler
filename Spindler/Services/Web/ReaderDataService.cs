@@ -161,9 +161,10 @@ public partial class ReaderDataService : ObservableObject
 
             IsContentHtml = contentExtractor is HtmlExtractor;
 
+            Task<IEnumerable<string>> textTask = Task.Run(() => contentExtractor.GetContent(doc, Config, ConfigService));
+
             Task<string>[] selectorOperations =
             [
-                Task.Run(() => contentExtractor.GetContent(doc, Config, ConfigService)),
                 Task.Run(() => GetTitle(html)),
                 Task.Run(() => ConfigService.PrettyWrapSelector(html, ConfigService.Selector.NextUrl, SelectorType.Link)),
                 Task.Run(() => ConfigService.PrettyWrapSelector(html, ConfigService.Selector.PrevUrl, SelectorType.Link)),
@@ -171,10 +172,10 @@ public partial class ReaderDataService : ObservableObject
             string[] content = await Task.WhenAll(selectorOperations);
 
             LoadedData data = new(
-                title: content[1],
-                text: content[0],
-                nextUrl: content[2],
-                prevUrl: content[3],
+                title: content[0],
+                text: new(await textTask),
+                nextUrl: content[1],
+                prevUrl: content[2],
                 currentUrl: url
             );
 

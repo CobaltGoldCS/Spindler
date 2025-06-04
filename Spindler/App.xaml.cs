@@ -78,7 +78,7 @@ public partial class App : Application, IRecipient<ThemeChangedMessage>, IRecipi
             ? StatusBarStyle.DarkContent
             : StatusBarStyle.LightContent;
 
-#if !MACCATALYST
+#if !MACCATALYST13_1_OR_GREATER
         Windows[0].Page!.Behaviors.Add(new StatusBarBehavior
         {
             StatusBarColor = statusBarColor,
@@ -150,7 +150,7 @@ public class Theme(string safeName, Themes theme)
 
     public static Theme FromThemeType(Themes theme)
     {
-        return new Theme(Enum.GetName(typeof(Themes), theme)!, theme);
+        return new Theme(Enum.GetName(theme)!, theme);
     }
 }
 

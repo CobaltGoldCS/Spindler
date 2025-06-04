@@ -23,7 +23,7 @@ public abstract partial class BaseContentExtractor
     /// <param name="nav">The document to analyze</param>
     /// <param name="config">Configuration information for the HTML content</param>
     /// <returns>Main Content according to Config and Document</returns>
-    public abstract string GetContent(HtmlDocument nav, Config config, ConfigService service);
+    public abstract IEnumerable<string> GetContent(HtmlDocument nav, Config config, ConfigService service);
 
     /// <summary>
     /// Tags that should not be included (Generally)
@@ -36,9 +36,9 @@ public abstract partial class BaseContentExtractor
     /// <param name="node">The parent node to extract child text from</param>
     /// <param name="config">The configuration options to use for extracting text</param>
     /// <returns>A string containing the sanitized, formatted, and extracted child text</returns>
-    protected virtual string ExtractChildText(HtmlNode node, Config config)
+    protected virtual IEnumerable<string> ExtractChildText(HtmlNode node, Config config)
     {
-        StringWriter stringWriter = new();
+        List<string> stringWriter = [];
 
 
         foreach (HtmlNode child in node.ChildNodes)
@@ -51,16 +51,11 @@ public abstract partial class BaseContentExtractor
             string innerText = WhitespaceOnlyRegex().Replace(HttpUtility.HtmlDecode(child.InnerText), string.Empty);
             if (innerText.Length == 0)
             {
-                if (child.OriginalName == "br" && child.NextSibling?.OriginalName != "br")
-                {
-                    stringWriter.Write(config.Separator);
-                }
                 continue;
             }
-            stringWriter.Write($"{HttpUtility.HtmlDecode(child.InnerText).Replace("\n", config.Separator)}");
-            stringWriter.Write(config.Separator);
+            stringWriter.AddRange(HttpUtility.HtmlDecode(child.InnerText).Split("\n").Where(str => str.Length > 0));
         }
-        return stringWriter.ToString().Trim();
+        return stringWriter;
     }
 
     [GeneratedRegex("^\\s+$", RegexOptions.Multiline)]
@@ -75,10 +70,9 @@ public abstract class HtmlExtractor : BaseContentExtractor
     /// <param name="node">The parent node to extract text from</param>
     /// <param name="config">Configuration information for targetting relevant text</param>
     /// <returns>Sanitized / formatted child text in HTML format</returns>
-    protected override string ExtractChildText(HtmlNode node, Config config)
+    protected override IEnumerable<string> ExtractChildText(HtmlNode node, Config config)
     {
-        string htmlSeparator = config.Separator.Replace("\n", "<br>").Replace("\t", "&#9;");
-        StringBuilder builder = new();
+        List<string> builder = [];
 
         foreach (HtmlNode child in node.ChildNodes)
         {
@@ -87,10 +81,9 @@ public abstract class HtmlExtractor : BaseContentExtractor
                 continue;
             }
 
-            builder.Append(child.InnerHtml);
-            builder.Append(htmlSeparator);
+            builder.AddRange(child.InnerHtml.Split("\n").Where(str => str.Length > 0));
         }
-        return builder.ToString();
+        return builder;
     }
 }
 
@@ -100,7 +93,7 @@ public abstract class HtmlExtractor : BaseContentExtractor
 /// </summary>
 public class HtmlContentExtractor : HtmlExtractor
 {
-    public override string GetContent(HtmlDocument nav, Config config, ConfigService service)
+    public override IEnumerable<string> GetContent(HtmlDocument nav, Config config, ConfigService service)
     {
         Path contentPath = service.GetPath(ConfigService.Selector.Content);
 
@@ -111,12 +104,10 @@ public class HtmlContentExtractor : HtmlExtractor
             _ => throw new NotImplementedException("This path type has not been implemented {ConfigService.GetContent}"),
         };
 
-        string htmlSeparator = config.Separator.Replace("\n", "<br>").Replace("\t", "&#9;");
-
-        if (node == null) return string.Empty;
+        if (node == null) return [];
         if (!node.HasChildNodes)
         {
-            return HttpUtility.HtmlDecode(node.InnerHtml).Replace("\n", htmlSeparator);
+            return HttpUtility.HtmlDecode(node.InnerHtml).Split("\n").Where(str =>  str.Length > 0);
         }
 
         return ExtractChildText(node, config);
@@ -128,7 +119,7 @@ public class HtmlContentExtractor : HtmlExtractor
 /// </summary>
 public class TextContentExtractor : BaseContentExtractor
 {
-    public override string GetContent(HtmlDocument nav, Config config, ConfigService service)
+    public override IEnumerable<string> GetContent(HtmlDocument nav, Config config, ConfigService service)
     {
         Path contentPath = service.GetPath(ConfigService.Selector.Content);
         HtmlNode node = contentPath.PathType switch
@@ -138,10 +129,10 @@ public class TextContentExtractor : BaseContentExtractor
             _ => throw new NotImplementedException("This path type has not been implemented {ConfigService.GetContent}"),
         };
 
-        if (node == null) return string.Empty;
+        if (node == null) return [];
         if (!node.HasChildNodes)
         {
-            return HttpUtility.HtmlDecode(node.InnerText).Replace("\n", config.Separator).Trim();
+            return HttpUtility.HtmlDecode(node.InnerHtml).Split("\n").Where(str => str.Length > 0);
         }
 
         return ExtractChildText(node, config);
@@ -154,7 +145,7 @@ public class TextContentExtractor : BaseContentExtractor
 /// </summary>
 public class AllTagsContentExtractor : BaseContentExtractor
 {
-    public override string GetContent(HtmlDocument nav, Config config, ConfigService service)
+    public override IEnumerable<string> GetContent(HtmlDocument nav, Config config, ConfigService service)
     {
         Path contentPath = service.GetPath(ConfigService.Selector.Content);
         IEnumerable<HtmlNode> nodes = contentPath.PathType switch
@@ -164,7 +155,7 @@ public class AllTagsContentExtractor : BaseContentExtractor
             _ => throw new NotImplementedException("This path type has not been implemented {ConfigService.GetContent}"),
         };
 
-        StringBuilder builder = new();
+        List<string> builder = [];
 
         foreach (HtmlNode node in nodes)
         {
@@ -172,15 +163,14 @@ public class AllTagsContentExtractor : BaseContentExtractor
 
             if (!node.HasChildNodes)
             {
-                builder.Append(HttpUtility.HtmlDecode(node.InnerText).Replace("\n", config.Separator).Trim());
+                builder.AddRange(HttpUtility.HtmlDecode(node.InnerHtml).Split("\n").Where(str => str.Length > 0));
             }
             else
             {
-                builder.Append(ExtractChildText(node, config));
+                builder.AddRange(ExtractChildText(node, config).Where(str => str.Length > 0));
             }
-            builder.Append(config.Separator);
         }
 
-        return builder.ToString();
+        return builder;
     }
 }

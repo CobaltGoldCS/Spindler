@@ -1,13 +1,16 @@
 namespace Spindler.Views;
 
+using CommunityToolkit.Mvvm.Input;
 using Spindler.Models;
 using Spindler.Services;
 using Spindler.ViewModels;
 using System.Collections.Generic;
+using System.Diagnostics;
 
 public partial class BookListPage : ContentPage, IQueryAttributable
 {
     IDataService Database;
+
     public async void ApplyQueryAttributes(IDictionary<string, object> query)
     {
         BookList? bookList = query["booklist"]! as BookList;

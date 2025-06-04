@@ -31,16 +31,15 @@
                        FontAttributes="Bold"
                        HeightRequest="50"
                        VerticalTextAlignment="Center"
-                       HorizontalOptions="FillAndExpand"
                        TextColor="{DynamicResource Primary}"/>
             </ScrollView>
             <Button x:Name="BookmarkItem"
                    Style="{DynamicResource IconButton}"
                    Text="&#xE801;"
                    FontSize="24"
-                   HorizontalOptions="EndAndExpand"
                    VerticalOptions="Center"
                    Padding="15,0,15,0"
+                   Grid.Column="1"
                    FontAutoScalingEnabled="False">
                 <Button.GestureRecognizers>
                     <TapGestureRecognizer Command="{Binding BookmarkCommand}"/>
