@@ -39,6 +39,7 @@
                    FontSize="24"
                    VerticalOptions="Center"
                    Padding="15,0,15,0"
+                   Grid.Column="1"
                    FontAutoScalingEnabled="False">
                 <Button.GestureRecognizers>
                     <TapGestureRecognizer Command="{Binding BookmarkCommand}"/>

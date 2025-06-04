@@ -59,7 +59,7 @@
             <Entry x:Name="FontSizeEntry" Text="{Binding FontSize}" Keyboard="Numeric" Grid.Row="1" Grid.Column="2"/>
             
             <Label Text="Line and Paragraph Spacing" Padding="3,0,0,0" FontSize="Medium" VerticalTextAlignment="Center" Grid.Row="2"/>
-            <Stepper x:Name="FontSpacingStepper"  Value="{Binding FontSpacing}"  Maximum="5.0" Minimum="1.0" Increment="0.5" Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="1"/>
+            <Stepper x:Name="FontSpacingStepper"  Value="{Binding FontSpacing}"  Maximum="5.0" Minimum="1.0" Increment="0.2" Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="1"/>
             <Stepper x:Name="ParagraphSpacingStepper" Value="{Binding ParagraphSpacing}" Maximum="30.0" Minimum="1" Increment="1" Grid.Row="2" Grid.Column="2" ToolTipProperties.Text="Paragraph Spacing" />
             
             <Picker x:Name="ThemePicker" ItemsSource="{Binding PossibleThemes}" SelectedItem="{Binding SelectedTheme}" Title="Current Theme" Grid.ColumnSpan="3" Grid.Row="3"/>
