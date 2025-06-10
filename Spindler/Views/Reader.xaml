@@ -28,6 +28,7 @@
             ItemTemplate="{StaticResource TextTemplate}"
             BackgroundColor="{DynamicResource Background}"
             VerticalScrollBarVisibility="Always"
+            Scrolled="OnScroll"
             x:Name="LabelHolder"
             SelectionMode="Single">
         <CollectionView.ItemsLayout>

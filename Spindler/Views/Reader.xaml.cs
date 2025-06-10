@@ -57,24 +57,13 @@ public partial class Reader : Grid, IRecipient<ChangeScrollMessage>
     {
         InitializeComponent();
         WeakReferenceMessenger.Default.RegisterAll(this);
-        LabelHolder.Scrolled += OnScroll;
-        Unloaded += OnUnloaded;
     }
 
-    private void OnUnloaded(object? sender, EventArgs e)
-    {
-        Unloaded -= OnUnloaded;
-        LabelHolder.Scrolled -= OnScroll;
-    }
 
+    private DateTime lastUpdateTime = DateTime.MinValue;
     private void OnScroll(object? sender, ItemsViewScrolledEventArgs e)
     {
-        var newData = new ReaderUIData
-        {
-            ParagraphIndex = e.FirstVisibleItemIndex,
-            Scrollposition = e.VerticalDelta
-        };
-        ReaderData = newData;
+        FirstVisibleParagraphIndex = e.FirstVisibleItemIndex;
     }
 
     public static readonly BindableProperty TextProperty =
@@ -107,8 +96,8 @@ public partial class Reader : Grid, IRecipient<ChangeScrollMessage>
     public static readonly BindableProperty NextCommandParameterProperty =
             BindableProperty.Create(nameof(NextCommandParameter), typeof(object), typeof(Grid));
 
-    public static readonly BindableProperty ReaderDataProperty =
-            BindableProperty.Create(nameof(ReaderData), typeof(object), typeof(Grid), defaultValueCreator: (_) => new ReaderUIData(), defaultBindingMode: BindingMode.OneWayToSource);
+    public static readonly BindableProperty FirstVisibleParagraphIndexProperty =
+            BindableProperty.Create(nameof(FirstVisibleParagraphIndex), typeof(int), typeof(Grid), defaultValueCreator: (_) => 0, defaultBindingMode: BindingMode.OneWayToSource);
 
     public event EventHandler? PrevClicked;
     public event EventHandler? NextClicked;
@@ -179,10 +168,10 @@ public partial class Reader : Grid, IRecipient<ChangeScrollMessage>
         set { SetValue(NextCommandParameterProperty, value); }
     }
 
-    public ReaderUIData ReaderData
+    public int FirstVisibleParagraphIndex
     {
-        get => (ReaderUIData)GetValue(ReaderDataProperty);
-        set { SetValue(ReaderDataProperty, value); }
+        get => (int)GetValue(FirstVisibleParagraphIndexProperty);
+        set { SetValue(FirstVisibleParagraphIndexProperty, value); }
     }
 
     private void Prev_Clicked(object sender, EventArgs e)
@@ -204,11 +193,11 @@ public partial class Reader : Grid, IRecipient<ChangeScrollMessage>
         ScrollChangedArgs arguments = message.Value;
         if (arguments.index < 0)
         {
-            LabelHolder.ScrollTo(Text.Count - 1, animate: arguments.IsAnimated);
+            LabelHolder.ScrollTo(Text.Count - 1, position: ScrollToPosition.Start, animate: arguments.IsAnimated);
         }
         else
         {
-            LabelHolder.ScrollTo(arguments.index, animate: arguments.IsAnimated);
+            LabelHolder.ScrollTo(arguments.index, position: ScrollToPosition.Start, animate: arguments.IsAnimated);
         }
     });
 }

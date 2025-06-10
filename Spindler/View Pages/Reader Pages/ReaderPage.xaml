@@ -85,7 +85,7 @@
                                  PreviousCommandParameter="{x:Static services:ReaderDataService+UrlType.Previous}"
                                  NextCommand="{Binding ChangeChapterCommand}"
                                  NextCommandParameter="{x:Static services:ReaderDataService+UrlType.Next}"
-                                 ReaderData="{Binding ReaderData}"
+                                 FirstVisibleParagraphIndex="{Binding FirstVisibleParagraphIndex}"
                                  Grid.Row="0"/>
             <controls:WebScraperBrowser x:Name="HeadlessBrowser" Visible="False" Grid.Row="1"/>
             <controls:WebScraperBrowser x:Name="NextChapterBrowser" Visible="False" Grid.Row="2"/>

@@ -60,7 +60,7 @@ public partial class ReaderViewModel : SpindlerViewModel, IReader
     private bool isLoading = false;
 
     [ObservableProperty]
-    ReaderUIData readerData = new();
+    int firstVisibleParagraphIndex = 0;
 
     #endregion
     #endregion
@@ -197,7 +197,7 @@ public partial class ReaderViewModel : SpindlerViewModel, IReader
         Popup view = new BookmarkDialog(
             Database,
             CurrentBook,
-            getNewBookmark: () => new Bookmark(CurrentData.Title!, ReaderData.ParagraphIndex, CurrentData.currentUrl!)
+            getNewBookmark: () => new Bookmark(CurrentData.Title!, FirstVisibleParagraphIndex, CurrentData.currentUrl!)
         );
 
         WeakReferenceMessenger.Default.Send(new CreateBottomSheetMessage(view));
@@ -266,7 +266,7 @@ public partial class ReaderViewModel : SpindlerViewModel, IReader
         nextChapterToken.Cancel();
         if (e.Target.Location.OriginalString == "..")
         {
-            CurrentBook.ParagraphIndex = ReaderData.ParagraphIndex;
+            CurrentBook.ParagraphIndex = FirstVisibleParagraphIndex;
             CurrentBook.HasNextChapter = CurrentData!.NextUrlValid && !CurrentBook.Completed;
             await CurrentBook.SaveInfo(Database);
         }
