@@ -1,10 +1,12 @@
 using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Messaging;
+using Spindler.ViewModels;
 using System.Collections.ObjectModel;
 using System.Windows.Input;
 
 namespace Spindler.CustomControls;
 
-public partial class Reader : Grid
+public partial class Reader : Grid, IRecipient<ChangeScrollMessage>
 {
     private string fontFamily = Preferences.Default.Get("font", "OpenSans (Regular)");
     public string FontFamily
@@ -54,6 +56,25 @@ public partial class Reader : Grid
     public Reader()
     {
         InitializeComponent();
+        WeakReferenceMessenger.Default.RegisterAll(this);
+        LabelHolder.Scrolled += OnScroll;
+        Unloaded += OnUnloaded;
+    }
+
+    private void OnUnloaded(object? sender, EventArgs e)
+    {
+        Unloaded -= OnUnloaded;
+        LabelHolder.Scrolled -= OnScroll;
+    }
+
+    private void OnScroll(object? sender, ItemsViewScrolledEventArgs e)
+    {
+        var newData = new ReaderUIData
+        {
+            ParagraphIndex = e.FirstVisibleItemIndex,
+            Scrollposition = e.VerticalDelta
+        };
+        ReaderData = newData;
     }
 
     public static readonly BindableProperty TextProperty =
@@ -85,6 +106,9 @@ public partial class Reader : Grid
 
     public static readonly BindableProperty NextCommandParameterProperty =
             BindableProperty.Create(nameof(NextCommandParameter), typeof(object), typeof(Grid));
+
+    public static readonly BindableProperty ReaderDataProperty =
+            BindableProperty.Create(nameof(ReaderData), typeof(object), typeof(Grid), defaultValueCreator: (_) => new ReaderUIData(), defaultBindingMode: BindingMode.OneWayToSource);
 
     public event EventHandler? PrevClicked;
     public event EventHandler? NextClicked;
@@ -155,6 +179,12 @@ public partial class Reader : Grid
         set { SetValue(NextCommandParameterProperty, value); }
     }
 
+    public ReaderUIData ReaderData
+    {
+        get => (ReaderUIData)GetValue(ReaderDataProperty);
+        set { SetValue(ReaderDataProperty, value); }
+    }
+
     private void Prev_Clicked(object sender, EventArgs e)
     {
         PrevClicked?.Invoke(sender, e);
@@ -164,4 +194,27 @@ public partial class Reader : Grid
     {
         NextClicked?.Invoke(sender, e);
     }
+
+    /// <summary>
+    /// In charge of scrolling to positions. NOTE: Negative values scroll to bottom
+    /// </summary>
+    /// <param name="message">A message containing ParagraphIndex (int) and isAnimated (bool)</param>
+    async void IRecipient<ChangeScrollMessage>.Receive(ChangeScrollMessage message) => await MainThread.InvokeOnMainThreadAsync(() =>
+    {
+        ScrollChangedArgs arguments = message.Value;
+        if (arguments.index < 0)
+        {
+            LabelHolder.ScrollTo(Text.Count - 1, animate: arguments.IsAnimated);
+        }
+        else
+        {
+            LabelHolder.ScrollTo(arguments.index, animate: arguments.IsAnimated);
+        }
+    });
+}
+
+public record ReaderUIData()
+{
+    public int ParagraphIndex { get; set; } = 0;
+    public double Scrollposition { get; set; } = 0;
 }

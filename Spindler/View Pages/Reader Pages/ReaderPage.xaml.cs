@@ -7,7 +7,7 @@ using Spindler.ViewModels;
 
 namespace Spindler;
 
-public partial class ReaderPage : ContentPage, IQueryAttributable, IRecipient<ChangeScrollMessage>
+public partial class ReaderPage : ContentPage, IQueryAttributable
 {
     HttpClient Client { get; set; }
     IDataService DataService { get; set; }
@@ -54,23 +54,6 @@ public partial class ReaderPage : ContentPage, IQueryAttributable, IRecipient<Ch
         BindingContext = ViewModel;
 
         await ViewModel.StartLoad();
-    }
-
-    /// <summary>
-    /// In charge of scrolling to positions. NOTE: Negative values scroll to bottom
-    /// </summary>
-    /// <param name="message">A message containing position (double) and isAnimated (bool)</param>
-    async void IRecipient<ChangeScrollMessage>.Receive(ChangeScrollMessage message)
-    {
-        ScrollChangedArgs arguments = message.Value;
-        if (arguments.Position < 0)
-        {
-            await ReadingLayout.ScrollToAsync(ReaderView, ScrollToPosition.End, arguments.IsAnimated);
-        }
-        else
-        {
-            await ReadingLayout.ScrollToAsync(ReadingLayout.ScrollX, arguments.Position, arguments.IsAnimated);
-        }
     }
 
 

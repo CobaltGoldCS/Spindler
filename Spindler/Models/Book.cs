@@ -62,9 +62,9 @@ public record Book : IIndexedModel
     /// <summary>
     /// A date time representing when this book was last opened
     /// </summary>
-    public DateTime LastViewed { get; set; } = DateTime.UtcNow;
+    public DateTime LastViewed { get; set; } = DateTime.Now;
 
-    public double Position { get; set; }
+    public int ParagraphIndex { get; set; } = 0;
 
     public bool HasNextChapter { get; set; } = false;
 
@@ -82,14 +82,14 @@ public record Book : IIndexedModel
 
 public record Bookmark
 {
-    public Bookmark(string Name, double Position, string Url)
+    public Bookmark(string Name, int ParagraphIndex, string Url)
     {
         this.Name = Name;
-        this.Position = Position;
+        this.ParagraphIndex = ParagraphIndex;
         this.Url = Url;
     }
 
     public string Name { get; set; } = string.Empty;
     public string Url { get; set; } = string.Empty;
-    public double Position { get; set; } = 0;
+    public int ParagraphIndex { get; set; } = 0;
 }

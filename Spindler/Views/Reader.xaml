@@ -3,14 +3,16 @@
       xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
       xmlns:local="clr-namespace:Spindler.CustomControls"
       x:Class="Spindler.CustomControls.Reader"
-      RowDefinitions="auto, 25, auto, *, 40"
+      RowDefinitions="*"
       x:Name="this"
       CompressedLayout.IsHeadless="True"
+      x:DataType="local:Reader"
       BackgroundColor="{DynamicResource CardBackground}"
       >
     <Grid.Resources>
         <DataTemplate x:Key="TextTemplate" x:DataType="x:String">
             <Label Text="{Binding .}"
+               Padding="30, 0, 30, 0"
                FontSize="{Binding x:DataType='local:Reader', Path=FontSize, Source={x:RelativeSource AncestorType={x:Type local:Reader}}, Mode=OneTime}" 
                FontFamily="{Binding x:DataType='local:Reader', Path=Font, Source={x:RelativeSource AncestorType={x:Type local:Reader}}, Mode=OneTime}"
                LineHeight="{Binding x:DataType='local:Reader', Path=LineHeight, Source={x:RelativeSource AncestorType={x:Type local:Reader}}, Mode=OneTime}"
@@ -18,73 +20,72 @@
                FontAutoScalingEnabled="False"/>
         </DataTemplate>
     </Grid.Resources>
-    <Label x:Name="TitleView"
-           Text="{Binding Source = {x:Reference this}, Path = Title}"
-           BackgroundColor="{DynamicResource CardBackground}"
-           VerticalTextAlignment="Center"
-           HorizontalTextAlignment="Start"
-           FontAttributes="Bold"
-           FontSize="Title"
-           Padding="30,20,30,25"/>
-    <Button x:Name="PrevButton"
-            IsVisible="{Binding Source = {x:Reference this}, Path = PrevVisible}"
-            ZIndex="1"
-            Margin="50,6,50,-25"
-            Padding="0,0,5,0"
-            CornerRadius="10"
-            Grid.Row="1"
-            FontSize="Large"
-            Text="Previous"
-            Clicked="Prev_Clicked"
-            FontAutoScalingEnabled="False"
-            Command="{Binding Source = {x:Reference this}, Path = PreviousCommand}"
-            CommandParameter="{Binding Source = {x:Reference this}, Path=PreviousCommandParameter}"
-            />
-    <ActivityIndicator
-        IsRunning="{Binding Source = {x:Reference this}, Path = Loading}"
-        IsVisible="{Binding Source = {x:Reference this}, Path = Loading}"
-        Color="{StaticResource Primary}"
-        Grid.Row="2"/>
-    
-    <Border
-        CompressedLayout.IsHeadless="True"
-        x:Name="TextContainer"
-        StrokeShape="RoundRectangle 20,20,20,20"
-        Padding="30,60,30,50"
-        Grid.Row="3"
-        BackgroundColor="{DynamicResource Background}"
-        InputTransparent="True"
-        StrokeThickness="0">
-        <CollectionView 
+
+
+    <CollectionView 
             BindingContext="{x:Reference this}"
             ItemsSource="{Binding Source={x:Reference this}, Path=Text}"
             ItemTemplate="{StaticResource TextTemplate}"
+            BackgroundColor="{DynamicResource Background}"
             VerticalScrollBarVisibility="Always"
+            x:Name="LabelHolder"
             SelectionMode="Single">
-            <CollectionView.ItemsLayout>
-                <LinearItemsLayout 
+        <CollectionView.ItemsLayout>
+            <LinearItemsLayout 
                     ItemSpacing="{Binding ItemSpacing, Source={x:Reference this}}"
                     Orientation="Vertical" />
-            </CollectionView.ItemsLayout>
-        </CollectionView>
-    </Border>
-    
-    <ContentView 
-        Grid.Row="4"
-        Padding="0,0,0,40"
-        BackgroundColor="{DynamicResource CardBackground}"
-        CompressedLayout.IsHeadless="True">
-        <Button x:Name="NextButton"
-            IsVisible="{Binding Source = {x:Reference this}, Path = NextVisible}"
-            CornerRadius="10"
-            Margin="50,-25,50,-20"
-            Padding="0,0,5,0"
-            Grid.Row="4"
-            Text="Next"
-            FontSize="Large"
-            Clicked="Next_Clicked"
-            FontAutoScalingEnabled="False"
-            Command="{Binding Source = {x:Reference this}, Path = NextCommand}"
-            CommandParameter="{Binding Source = {x:Reference this}, Path=NextCommandParameter}"/>
-    </ContentView>
+        </CollectionView.ItemsLayout>
+
+        <CollectionView.Header>
+            <Grid RowDefinitions="auto, 40, auto"
+                      BackgroundColor="{DynamicResource CardBackground}">
+                <Label x:Name="TitleView"
+                       Text="{Binding Source = {x:Reference this}, Path = Title}"
+                       BackgroundColor="{DynamicResource CardBackground}"
+                       VerticalTextAlignment="Center"
+                       HorizontalTextAlignment="Start"
+                       FontAttributes="Bold"
+                       FontSize="Title"
+                       Padding="30,20,30,25"/>
+                <Button x:Name="PrevButton"
+                        IsVisible="{Binding Source = {x:Reference this}, Path = PrevVisible}"
+                        ZIndex="5"
+                        Margin="50,0,50,5"
+                        Padding="0,0,5,0"
+                        CornerRadius="10"
+                        Grid.Row="1"
+                        FontSize="Large"
+                        Text="Previous"
+                        Clicked="Prev_Clicked"
+                        FontAutoScalingEnabled="False"
+                        Command="{Binding Source = {x:Reference this}, Path = PreviousCommand}"
+                        CommandParameter="{Binding Source = {x:Reference this}, Path=PreviousCommandParameter}"
+                        />
+                <ActivityIndicator
+                        IsRunning="{Binding Source = {x:Reference this}, Path = Loading}"
+                        IsVisible="{Binding Source = {x:Reference this}, Path = Loading}"
+                        Color="{StaticResource Primary}"
+                        Grid.Row="2"/>
+            </Grid>
+        </CollectionView.Header>
+
+        <CollectionView.Footer>
+            <ContentView
+                    Padding="0,0,0,40"
+                    BackgroundColor="{DynamicResource CardBackground}"
+                    CompressedLayout.IsHeadless="True">
+                <Button x:Name="NextButton"
+                        IsVisible="{Binding Source = {x:Reference this}, Path = NextVisible}"
+                        CornerRadius="10"
+                        Margin="50,5,50,0"
+                        Padding="0,5,5,4"
+                        Text="Next"
+                        FontSize="Large"
+                        Clicked="Next_Clicked"
+                        FontAutoScalingEnabled="False"
+                        Command="{Binding Source = {x:Reference this}, Path = NextCommand}"
+                        CommandParameter="{Binding Source = {x:Reference this}, Path=NextCommandParameter}"/>
+            </ContentView>
+        </CollectionView.Footer>
+    </CollectionView>
 </Grid>

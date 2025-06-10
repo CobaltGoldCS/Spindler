@@ -59,11 +59,8 @@ public partial class ReaderViewModel : SpindlerViewModel, IReader
     [ObservableProperty]
     private bool isLoading = false;
 
-    /// <summary>
-    /// The current Scroll position of the view
-    /// </summary>
     [ObservableProperty]
-    double readerScrollPosition = 0;
+    ReaderUIData readerData = new();
 
     #endregion
     #endregion
@@ -105,9 +102,9 @@ public partial class ReaderViewModel : SpindlerViewModel, IReader
 
         await AutoPopulateImageIfUnknown();
 
-        if (CurrentBook.Position > 0)
+        if (CurrentBook.ParagraphIndex > 0)
         {
-            ScrollReader(CurrentBook.Position);
+            ScrollReader(CurrentBook.ParagraphIndex);
         }
 
         StartBookChecking();
@@ -200,7 +197,7 @@ public partial class ReaderViewModel : SpindlerViewModel, IReader
         Popup view = new BookmarkDialog(
             Database,
             CurrentBook,
-            getNewBookmark: () => new Bookmark(CurrentData.Title!, ReaderScrollPosition, CurrentData.currentUrl!)
+            getNewBookmark: () => new Bookmark(CurrentData.Title!, ReaderData.ParagraphIndex, CurrentData.currentUrl!)
         );
 
         WeakReferenceMessenger.Default.Send(new CreateBottomSheetMessage(view));
@@ -231,9 +228,9 @@ public partial class ReaderViewModel : SpindlerViewModel, IReader
         // Cleanup 
         IsLoading = false;
 
-        if (bookmark.Position > 0)
+        if (bookmark.ParagraphIndex > 0)
         {
-            ScrollReader(bookmark.Position);
+            ScrollReader(bookmark.ParagraphIndex);
         }
 
         CurrentBook!.Url = CurrentData!.currentUrl!;
@@ -248,11 +245,11 @@ public partial class ReaderViewModel : SpindlerViewModel, IReader
         WeakReferenceMessenger.Default.Send(new ChangeScrollMessage(
             ScrollChangedArgs.ScrollBottom(ReaderService.Config.HasAutoscrollAnimation)));
 
-    private void ScrollReader(double position, bool? isAnimated = null)
+    private void ScrollReader(int index, bool? isAnimated = null)
     {
         isAnimated ??= ReaderService.Config.HasAutoscrollAnimation;
         WeakReferenceMessenger.Default.Send(
-            new ChangeScrollMessage(new(position, (bool)isAnimated)));
+            new ChangeScrollMessage(new(index, (bool)isAnimated)));
     }
     #endregion
 
@@ -269,7 +266,7 @@ public partial class ReaderViewModel : SpindlerViewModel, IReader
         nextChapterToken.Cancel();
         if (e.Target.Location.OriginalString == "..")
         {
-            CurrentBook.Position = ReaderScrollPosition;
+            CurrentBook.ParagraphIndex = ReaderData.ParagraphIndex;
             CurrentBook.HasNextChapter = CurrentData!.NextUrlValid && !CurrentBook.Completed;
             await CurrentBook.SaveInfo(Database);
         }
@@ -357,7 +354,7 @@ class ChangeScrollMessage(ScrollChangedArgs value) : ValueChangedMessage<ScrollC
 {
 }
 
-record ScrollChangedArgs(double Position, bool IsAnimated)
+record ScrollChangedArgs(int index, bool IsAnimated)
 {
     public static ScrollChangedArgs ScrollBottom(bool isAnimated) => new(-1, isAnimated);
 }
