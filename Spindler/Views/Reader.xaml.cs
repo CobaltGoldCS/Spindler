@@ -1,5 +1,7 @@
 using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
+using Spindler.Utilities;
 using Spindler.ViewModels;
 using System.Collections.ObjectModel;
 using System.Windows.Input;
@@ -52,6 +54,23 @@ public partial class Reader : Grid, IRecipient<ChangeScrollMessage>
         }
     }
 
+    public ObservableCollection<string> displayedParagraphs = new ObservableCollection<string>();
+    public ObservableCollection<string> DisplayedParagraphs
+    {
+        get => displayedParagraphs;
+        set
+        {
+            displayedParagraphs = value;
+            OnPropertyChanged(nameof(DisplayedParagraphs));
+        }
+    }
+
+    [RelayCommand]
+    public void EndOfReaderReached()
+    {
+        DisplayedParagraphs.PopulateAndNotify(Text.Skip(DisplayedParagraphs.Count).Take(7));
+    }
+
 
     public Reader()
     {
@@ -60,7 +79,6 @@ public partial class Reader : Grid, IRecipient<ChangeScrollMessage>
     }
 
 
-    private DateTime lastUpdateTime = DateTime.MinValue;
     private void OnScroll(object? sender, ItemsViewScrolledEventArgs e)
     {
         FirstVisibleParagraphIndex = e.FirstVisibleItemIndex;
@@ -200,10 +218,4 @@ public partial class Reader : Grid, IRecipient<ChangeScrollMessage>
             LabelHolder.ScrollTo(arguments.index, position: ScrollToPosition.Start, animate: arguments.IsAnimated);
         }
     });
-}
-
-public record ReaderUIData()
-{
-    public int ParagraphIndex { get; set; } = 0;
-    public double Scrollposition { get; set; } = 0;
 }
