@@ -17,12 +17,10 @@ public class BookmarkClickedMessage : ValueChangedMessage<Bookmark>
     public BookmarkClickedMessage(Bookmark value) : base(value) { }
 }
 
-public partial class BookmarkDialog : Popup
+public partial class BookmarkDialog : Popup<Bookmark>
 {
     private readonly IDataService Database;
     private readonly Func<Bookmark> GetNewBookmark;
-
-    public double Width = DeviceDisplay.MainDisplayInfo.Width / DeviceDisplay.MainDisplayInfo.Density - 20;
 
     private ObservableCollection<Bookmark> bookmarks = new();
     public ObservableCollection<Bookmark> Bookmarks
@@ -66,10 +64,8 @@ public partial class BookmarkDialog : Popup
         Book = book;
         Bookmarks = new(Book.Bookmarks);
         GetNewBookmark = getNewBookmark;
-        var width = DeviceDisplay.MainDisplayInfo.Width / DeviceDisplay.MainDisplayInfo.Density;
-        var height = .5 * (DeviceDisplay.MainDisplayInfo.Height / DeviceDisplay.MainDisplayInfo.Density);
-        Size = new(width, height);
-        ResultWhenUserTapsOutsideOfPopup = null;
+        WidthRequest = DeviceDisplay.MainDisplayInfo.Width / DeviceDisplay.MainDisplayInfo.Density;
+        HeightRequest = .5 * (DeviceDisplay.MainDisplayInfo.Height / DeviceDisplay.MainDisplayInfo.Density);
     }
 
     [RelayCommand]
@@ -82,9 +78,9 @@ public partial class BookmarkDialog : Popup
     }
 
     [RelayCommand]
-    private void ItemClicked()
+    private async Task ItemClicked()
     {
-        Close(SelectedBookmark);
+        await CloseAsync(SelectedBookmark);
     }
 
     private async void DeleteItem_Clicked(object sender, EventArgs e)

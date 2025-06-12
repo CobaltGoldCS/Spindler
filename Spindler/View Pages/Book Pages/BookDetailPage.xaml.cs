@@ -1,3 +1,6 @@
+using CommunityToolkit.Maui;
+using CommunityToolkit.Maui.Core;
+using CommunityToolkit.Maui.Extensions;
 using CommunityToolkit.Maui.Views;
 using Spindler.Behaviors;
 using Spindler.CustomControls;
@@ -91,10 +94,10 @@ public partial class BookDetailPage : ContentPage, IQueryAttributable
 
     private async void SwitchBookList_Clicked(object sender, EventArgs e)
     {
-        var popup = new PickerPopup("Switch Book Lists", await DataService.GetBookListsAsync());
-        object? result = await this.ShowPopupAsync(popup);
-        if (result is not BookList list) return;
-        Book!.BookListId = list.Id;
+        PickerPopup popup = new("Switch Book Lists", await DataService.GetBookListsAsync());
+        IPopupResult<IIndexedModel> result = await this.ShowPopupAsync<IIndexedModel>(popup);
+        if (result.WasDismissedByTappingOutsideOfPopup) return;
+        Book!.BookListId = ((BookList)result.Result!).Id;
     }
 
     /// A Regular Expression for selecting letters to capitalize for title case

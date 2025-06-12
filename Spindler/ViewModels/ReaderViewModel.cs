@@ -1,4 +1,6 @@
-﻿using CommunityToolkit.Maui.Alerts;
+﻿using CommunityToolkit.Maui;
+using CommunityToolkit.Maui.Alerts;
+using CommunityToolkit.Maui.Extensions;
 using CommunityToolkit.Maui.Views;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -201,9 +203,11 @@ public partial class ReaderViewModel : SpindlerViewModel, IReader
         );
 
         WeakReferenceMessenger.Default.Send(new CreateBottomSheetMessage(view));
-        
-        if (!CurrentPage.TryGetTarget(out Page? currentPage) ||
-            await PopupExtensions.ShowPopupAsync(currentPage, view) is not Bookmark bookmark)
+
+        var result = await Shell.Current.ShowPopupAsync<Bookmark>(view, options: new PopupOptions { CanBeDismissedByTappingOutsideOfPopup = true });
+
+
+        if (result.Result is not Bookmark bookmark)
         {
             return;
         }

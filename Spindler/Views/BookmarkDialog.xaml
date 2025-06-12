@@ -3,11 +3,12 @@
 <toolkit:Popup xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
                xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
                xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+               xmlns:models="clr-namespace:Spindler.Models"
                x:Class="Spindler.Views.BookmarkDialog"
                x:Name="_this"
+               x:TypeArguments="models:Bookmark"
                VerticalOptions="End"
-               Color="{DynamicResource Background}"
-               xmlns:models="clr-namespace:Spindler.Models">
+               BackgroundColor="{DynamicResource Background}">
     <Grid RowDefinitions="auto, *"
           HorizontalOptions="Fill"
           VerticalOptions="Fill"

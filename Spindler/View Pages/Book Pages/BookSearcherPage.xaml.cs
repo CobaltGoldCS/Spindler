@@ -1,4 +1,5 @@
 using CommunityToolkit.Maui.Alerts;
+using CommunityToolkit.Maui.Extensions;
 using CommunityToolkit.Maui.Views;
 using CommunityToolkit.Mvvm.Input;
 using HtmlAgilityPack;
@@ -194,9 +195,9 @@ public partial class BookSearcherPage : ContentPage
         string html = await SearchBrowser.GetHtmlUnsafe();
 
         PickerPopup bookListPopup = new("Choose Book List of Book", await Database.GetAllItemsAsync<BookList>());
-        var result = await this.ShowPopupAsync(bookListPopup);
+        var result = await Shell.Current.ShowPopupAsync<IIndexedModel>(bookListPopup);
 
-        if (result is not BookList)
+        if (result.WasDismissedByTappingOutsideOfPopup)
         {
             return;
         }
@@ -209,7 +210,7 @@ public partial class BookSearcherPage : ContentPage
         await Database.SaveItemAsync(
             new Book
             {
-                BookListId = ((BookList)result).Id,
+                BookListId = ((BookList)result.Result!).Id,
                 Title = title,
                 Url = Source,
             }
@@ -225,9 +226,9 @@ public partial class BookSearcherPage : ContentPage
     {
         if (IsLoading) return;
         PickerPopup popup = new("Choose a config to search", await Database.GetAllItemsAsync<Config>());
-        var result = await this.ShowPopupAsync(popup);
+        var result = await this.ShowPopupAsync<IIndexedModel>(popup);
 
-        if (result is not Config config ||
+        if (result.Result is not Config config ||
             !Uri.TryCreate("https://" + config.DomainName, new UriCreationOptions(), out Uri? url))
             return;
         Source = url.OriginalString ?? "";

@@ -5,7 +5,7 @@ using Spindler.Models;
 
 namespace Spindler.CustomControls;
 
-public partial class PickerPopup : Popup
+public partial class PickerPopup : Popup<IIndexedModel>
 {
     private IList<IIndexedModel>? items;
     public IList<IIndexedModel> Items
@@ -29,8 +29,8 @@ public partial class PickerPopup : Popup
         }
     }
 
-    private object? selectedItem;
-    public object SelectedItem
+    private IIndexedModel? selectedItem;
+    public IIndexedModel SelectedItem
     {
         get => selectedItem!;
         set
@@ -43,15 +43,14 @@ public partial class PickerPopup : Popup
     {
         InitializeComponent();
         Title = title;
-        double width = 0.9 * (DeviceDisplay.MainDisplayInfo.Width / DeviceDisplay.MainDisplayInfo.Density);
-        double height = 0.8 * (DeviceDisplay.MainDisplayInfo.Height / DeviceDisplay.MainDisplayInfo.Density);
-        Size = new(width, height);
+        WidthRequest = 0.9 * (DeviceDisplay.MainDisplayInfo.Width / DeviceDisplay.MainDisplayInfo.Density);
+        HeightRequest = 0.8 * (DeviceDisplay.MainDisplayInfo.Height / DeviceDisplay.MainDisplayInfo.Density);
         Items = items.ToList();
     }
 
     [RelayCommand]
-    private void SelectionChanged()
+    private async Task SelectionChanged()
     {
-        Close(selectedItem);
+        await CloseAsync(SelectedItem);
     }
 }
