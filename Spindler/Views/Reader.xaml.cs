@@ -85,7 +85,7 @@ public partial class Reader : Grid, IRecipient<ChangeScrollMessage>
     }
 
     public static readonly BindableProperty TextProperty =
-                BindableProperty.Create(nameof(Text), typeof(ObservableCollection<string>), typeof(Grid));
+                BindableProperty.Create(nameof(Text), typeof(IEnumerable<string>), typeof(Grid));
 
     public static readonly BindableProperty TextTypeProperty =
                 BindableProperty.Create(nameof(TextType), typeof(TextType), typeof(Grid));
@@ -120,11 +120,11 @@ public partial class Reader : Grid, IRecipient<ChangeScrollMessage>
     public event EventHandler? PrevClicked;
     public event EventHandler? NextClicked;
 
-    public ObservableCollection<string> Text
+    public IEnumerable<string> Text
     {
         get
         {
-            return (ObservableCollection<string>)GetValue(TextProperty);
+            return (IEnumerable<string>)GetValue(TextProperty);
         }
         set { SetValue(TextProperty, value); }
     }
@@ -211,7 +211,7 @@ public partial class Reader : Grid, IRecipient<ChangeScrollMessage>
         ScrollChangedArgs arguments = message.Value;
         if (arguments.index < 0)
         {
-            LabelHolder.ScrollTo(Text.Count - 1, position: ScrollToPosition.Start, animate: arguments.IsAnimated);
+            LabelHolder.ScrollTo(Text.Count() - 1, position: ScrollToPosition.Start, animate: arguments.IsAnimated);
         }
         else
         {
