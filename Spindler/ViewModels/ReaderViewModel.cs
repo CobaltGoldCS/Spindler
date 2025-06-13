@@ -202,9 +202,10 @@ public partial class ReaderViewModel : SpindlerViewModel, IReader
             getNewBookmark: () => new Bookmark(CurrentData.Title!, FirstVisibleParagraphIndex, CurrentData.currentUrl!)
         );
 
-        WeakReferenceMessenger.Default.Send(new CreateBottomSheetMessage(view));
-
-        var result = await Shell.Current.ShowPopupAsync<Bookmark>(view, options: new PopupOptions { CanBeDismissedByTappingOutsideOfPopup = true });
+        var result = await Shell.Current.ShowPopupAsync<Bookmark>(view, options: new PopupOptions
+        {
+            Shape = null
+        });
 
 
         if (result.Result is not Bookmark bookmark)

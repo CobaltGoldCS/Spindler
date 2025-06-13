@@ -1,3 +1,4 @@
+using CommunityToolkit.Maui.Alerts;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
@@ -204,16 +205,17 @@ public partial class Reader : Grid, IRecipient<ChangeScrollMessage>
     /// In charge of scrolling to positions. NOTE: Negative values scroll to bottom
     /// </summary>
     /// <param name="message">A message containing ParagraphIndex (int) and isAnimated (bool)</param>
-    async void IRecipient<ChangeScrollMessage>.Receive(ChangeScrollMessage message) => await MainThread.InvokeOnMainThreadAsync(() =>
+    void IRecipient<ChangeScrollMessage>.Receive(ChangeScrollMessage message) 
     {
         ScrollChangedArgs arguments = message.Value;
-        if (arguments.index < 0)
+
+        var index = arguments.index >= 0 ? arguments.index : Text.Count() - 1;
+        // This is all slightly inefficient, but it is perhaps safer, and less crash-prone
+        if (Text.Count() < index - 1)
         {
-            LabelHolder.ScrollTo(Text.Count() - 1, position: ScrollToPosition.Start, animate: arguments.IsAnimated);
+            Toast.Make("Error Scrolling: Paragraph Index out of Range").Show();
+            return;
         }
-        else
-        {
-            LabelHolder.ScrollTo(arguments.index, position: ScrollToPosition.Start, animate: arguments.IsAnimated);
-        }
-    });
+        LabelHolder.ScrollTo(Text.ElementAt(index), position: ScrollToPosition.Start, animate: arguments.IsAnimated);
+    }
 }

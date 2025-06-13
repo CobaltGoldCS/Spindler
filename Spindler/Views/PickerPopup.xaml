@@ -6,7 +6,7 @@
              x:Class="Spindler.CustomControls.PickerPopup"
              x:TypeArguments="Models:IIndexedModel"
              x:Name="_this">
-    <Grid RowDefinitions="40, *" HorizontalOptions="Fill" VerticalOptions="Fill" Background="{DynamicResource Background}">
+    <Grid RowDefinitions="40, *" Background="{DynamicResource Background}">
         <Label Text="{Binding Source={x:Reference _this}, Path=Title}" HorizontalTextAlignment="Center" Padding="0,10,0,0"/>
         <CollectionView
             x:Name="PickerView"

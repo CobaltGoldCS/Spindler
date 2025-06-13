@@ -7,11 +7,6 @@ using System.Collections.ObjectModel;
 
 namespace Spindler.Views;
 
-public class CreateBottomSheetMessage : ValueChangedMessage<Popup>
-{
-    public CreateBottomSheetMessage(Popup view) : base(view) { }
-}
-
 public class BookmarkClickedMessage : ValueChangedMessage<Bookmark>
 {
     public BookmarkClickedMessage(Bookmark value) : base(value) { }
@@ -73,7 +68,7 @@ public partial class BookmarkDialog : Popup<Bookmark>
     {
         Bookmark bookmark = GetNewBookmark.Invoke();
         Bookmarks.Add(bookmark);
-        Book.Bookmarks = Bookmarks.ToList();
+        Book.Bookmarks = [.. Bookmarks];
         await Book.SaveInfo(Database);
     }
 

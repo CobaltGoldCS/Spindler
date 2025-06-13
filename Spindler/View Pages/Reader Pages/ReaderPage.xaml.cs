@@ -12,6 +12,8 @@ public partial class ReaderPage : ContentPage, IQueryAttributable
     HttpClient Client { get; set; }
     IDataService DataService { get; set; }
 
+    private bool HasLoaded { get; set; } = false;
+
     public enum ReaderType
     {
         Standard,
@@ -20,6 +22,12 @@ public partial class ReaderPage : ContentPage, IQueryAttributable
 
     public async void ApplyQueryAttributes(IDictionary<string, object> query)
     {
+        if (HasLoaded)
+        {
+            // ApplyQueryAttributes can run multiple times, but we only want it to run once
+            return;
+        }
+        HasLoaded = true;
         Book book = (query["book"] as Book)!;
 
         ReaderType type = (ReaderType)query["type"];
@@ -53,6 +61,7 @@ public partial class ReaderPage : ContentPage, IQueryAttributable
 
         BindingContext = ViewModel;
 
+        
         await ViewModel.StartLoad();
     }
 
