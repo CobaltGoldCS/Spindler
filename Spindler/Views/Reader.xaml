@@ -21,13 +21,14 @@
                FontAutoScalingEnabled="False"/>
         </DataTemplate>
 
-        <ContentView
-            Padding="0,0,0,40"
+        <Grid
             BackgroundColor="{DynamicResource CardBackground}"
             x:Key="FooterLayout"
-            CompressedLayout.IsHeadless="True">
+            CompressedLayout.IsHeadless="True"
+            RowDefinitions="auto,20">
             <Button x:Name="NextButton"
                 IsVisible="{Binding Source = {x:Reference this}, Path = NextVisible}"
+                ZIndex="5"
                 CornerRadius="10"
                 Margin="50,5,50,0"
                 Padding="0,5,5,4"
@@ -37,7 +38,14 @@
                 FontAutoScalingEnabled="False"
                 Command="{Binding Source = {x:Reference this}, Path = NextCommand}"
                 CommandParameter="{Binding Source = {x:Reference this}, Path=NextCommandParameter}"/>
-        </ContentView>
+            <!--This is used to give that rounded effect on the footer-->
+            <Border InputTransparent="True"
+                StrokeThickness="0"
+                BackgroundColor="{DynamicResource Background}"
+                Padding="0,20,0,0"
+                StrokeShape="RoundRectangle 20,20,20,20"
+                Margin="0,-12,0,20"/>
+        </Grid>
 
         <Grid RowDefinitions="auto, 40, auto"
       x:Key="HeaderLayout"
@@ -49,7 +57,7 @@
            HorizontalTextAlignment="Start"
            FontAttributes="Bold"
            FontSize="Title"
-           Padding="30,20,30,25"/>
+           Padding="30,50,30,25"/>
             <Button x:Name="PrevButton"
             IsVisible="{Binding Source = {x:Reference this}, Path = PrevVisible}"
             ZIndex="5"
@@ -64,6 +72,14 @@
             Command="{Binding Source = {x:Reference this}, Path = PreviousCommand}"
             CommandParameter="{Binding Source = {x:Reference this}, Path=PreviousCommandParameter}"
             />
+            <!--This is used to give that rounded effect on the header-->
+            <Border InputTransparent="True"
+                    Grid.Row="1"
+                    StrokeThickness="0"
+                    BackgroundColor="{DynamicResource Background}"
+                    Padding="0,0,0,20"
+                    StrokeShape="RoundRectangle 20,20,20,20"
+                    Margin="0,15,0,-20"/>
             <ActivityIndicator
             IsRunning="{Binding Source = {x:Reference this}, Path = Loading}"
             IsVisible="{Binding Source = {x:Reference this}, Path = Loading}"
