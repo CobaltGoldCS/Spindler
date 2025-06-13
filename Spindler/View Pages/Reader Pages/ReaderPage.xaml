@@ -72,7 +72,6 @@
         <Grid RowDefinitions="*, 0, 0"
                   CompressedLayout.IsHeadless="True"
                   VerticalOptions="FillAndExpand"
-                  Padding="0,40,0,0"
                   BackgroundColor="{DynamicResource CardBackground}">
             <controls:Reader x:Name="ReaderView"
                                  Text="{Binding CurrentData.Text}"

@@ -1,6 +1,7 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
+using Microsoft.Maui.Platform;
 using Spindler.Utilities;
 using Spindler.ViewModels;
 using System.Collections.ObjectModel;
@@ -54,21 +55,18 @@ public partial class Reader : Grid, IRecipient<ChangeScrollMessage>
         }
     }
 
-    public ObservableCollection<string> displayedParagraphs = new ObservableCollection<string>();
-    public ObservableCollection<string> DisplayedParagraphs
+    // This is a complete workaround. Ideally we would use the item spacing built into the 
+    // itemlayout of collectionview, but that is bugged for now
+    // see Reader.xaml for more details.
+    private Thickness itemSpace = new Thickness(30, Preferences.Default.Get("item_spacing", 3f) / 2);
+    public Thickness ItemSpace
     {
-        get => displayedParagraphs;
+        get => itemSpace;
         set
         {
-            displayedParagraphs = value;
-            OnPropertyChanged(nameof(DisplayedParagraphs));
+            itemSpace = value;
+            OnPropertyChanged(nameof(ItemSpace));
         }
-    }
-
-    [RelayCommand]
-    public void EndOfReaderReached()
-    {
-        DisplayedParagraphs.PopulateAndNotify(Text.Skip(DisplayedParagraphs.Count).Take(7));
     }
 
 
