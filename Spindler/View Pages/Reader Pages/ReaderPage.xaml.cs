@@ -1,3 +1,4 @@
+using CommunityToolkit.Maui;
 using CommunityToolkit.Maui.Alerts;
 using CommunityToolkit.Mvvm.Messaging;
 using Spindler.Models;
@@ -11,6 +12,7 @@ public partial class ReaderPage : ContentPage, IQueryAttributable
 {
     HttpClient Client { get; set; }
     IDataService DataService { get; set; }
+    IPopupService PopupService { get; set; }
 
     private bool HasLoaded { get; set; } = false;
 
@@ -49,7 +51,7 @@ public partial class ReaderPage : ContentPage, IQueryAttributable
             return;
         }
 
-        var ViewModel = new ReaderViewModelBuilder(DataService, Client, NextChapterBrowser)
+        var ViewModel = new ReaderViewModelBuilder(DataService, PopupService, Client, NextChapterBrowser)
             .SetRequiredInfo(new((Config)configObject, type switch
             {
                 ReaderType.Headless => HeadlessBrowser,
@@ -67,11 +69,12 @@ public partial class ReaderPage : ContentPage, IQueryAttributable
 
 
 
-    public ReaderPage(HttpClient client, IDataService dataService)
+    public ReaderPage(HttpClient client, IPopupService popupService, IDataService dataService)
     {
         InitializeComponent();
         Client = client;
         DataService = dataService;
+        PopupService = popupService;
         WeakReferenceMessenger.Default.RegisterAll(this);
     }
 }

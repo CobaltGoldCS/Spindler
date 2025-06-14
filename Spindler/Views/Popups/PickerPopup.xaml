@@ -3,18 +3,20 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
              xmlns:Models="clr-namespace:Spindler.Models"
+             xmlns:popups="clr-namespace:Spindler.Views"
              x:Class="Spindler.CustomControls.PickerPopup"
              x:TypeArguments="Models:IIndexedModel"
+             x:DataType="popups:PickerPopupViewmodel"
              x:Name="_this">
     <Grid RowDefinitions="40, *" Background="{DynamicResource Background}">
-        <Label Text="{Binding Source={x:Reference _this}, Path=Title}" HorizontalTextAlignment="Center" Padding="0,10,0,0"/>
+        <Label Text="{Binding Title}" HorizontalTextAlignment="Center" Padding="0,10,0,0"/>
         <CollectionView
             x:Name="PickerView"
             Margin="5, 0"
             SelectionMode="Single"
-            SelectedItem="{Binding Source={x:Reference _this}, Path=SelectedItem}"
-            SelectionChangedCommand="{Binding Source={x:Reference _this}, Path=SelectionChangedCommand}"
-            ItemsSource="{Binding Source={x:Reference _this}, Path=Items}"
+            SelectedItem="{Binding SelectedItem}"
+            SelectionChangedCommand="{Binding SelectionChangedCommand}"
+            ItemsSource="{Binding Items}"
             Grid.Row="1">
             <CollectionView.ItemsLayout>
                 <LinearItemsLayout 

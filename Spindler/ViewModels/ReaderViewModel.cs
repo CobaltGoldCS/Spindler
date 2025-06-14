@@ -35,6 +35,7 @@ public partial class ReaderViewModel : SpindlerViewModel, IReader
 
 
     private readonly WebScraperBrowser NextChapterBrowser;
+    private readonly IPopupService PopupService;
 
     /// <summary>
     /// A cancellation token for the next chapter background service
@@ -71,10 +72,11 @@ public partial class ReaderViewModel : SpindlerViewModel, IReader
     /// <summary>
     /// Creates a new ReaderViewModel Instance (please use ReaderViewModelBuilder)
     /// </summary>
-    internal ReaderViewModel(IDataService database, HttpClient client, WebScraperBrowser nextChapterBrowser) : base(database)
+    internal ReaderViewModel(IDataService database, IPopupService popupService, HttpClient client, WebScraperBrowser nextChapterBrowser) : base(database)
     {
         Client = client;
         NextChapterBrowser = nextChapterBrowser;
+        PopupService = popupService;
         WeakReferenceMessenger.Default.Send(new StatusColorUpdateMessage("CardBackground"));
         Shell.Current.Navigating += OnShellNavigating;
     }
@@ -196,15 +198,14 @@ public partial class ReaderViewModel : SpindlerViewModel, IReader
         {
             return;
         }
-        Popup view = new BookmarkDialog(
-            Database,
-            CurrentBook,
-            getNewBookmark: () => new Bookmark(CurrentData.Title!, FirstVisibleParagraphIndex, CurrentData.currentUrl!)
-        );
 
-        var result = await Shell.Current.ShowPopupAsync<Bookmark>(view, options: new PopupOptions
+        var result = await PopupService.ShowPopupAsync<BookmarkDialogViewmodel,Bookmark>(Shell.Current, options: new PopupOptions
         {
             Shape = null
+        }, new Dictionary<string, object>
+        {
+            ["book"] = CurrentBook,
+            ["newBookmarkFunction"] = () => new Bookmark(CurrentData.Title!, FirstVisibleParagraphIndex, CurrentData.currentUrl!),
         });
 
 
@@ -309,9 +310,9 @@ public partial class ReaderViewModel : SpindlerViewModel, IReader
 public class ReaderViewModelBuilder
 {
     private readonly ReaderViewModel Target;
-    public ReaderViewModelBuilder(IDataService database, HttpClient client, WebScraperBrowser NextChapterBrowser)
+    public ReaderViewModelBuilder(IDataService database, IPopupService popupService, HttpClient client, WebScraperBrowser NextChapterBrowser)
     {
-        Target = new ReaderViewModel(database, client, NextChapterBrowser);
+        Target = new ReaderViewModel(database, popupService, client, NextChapterBrowser);
     }
 
     /// <summary>

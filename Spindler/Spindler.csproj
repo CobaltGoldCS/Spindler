@@ -202,7 +202,7 @@
 	  <MauiXaml Update="Views\AppShell.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
-	  <MauiXaml Update="Views\BookmarkDialog.xaml">
+	  <MauiXaml Update="Views\Popups\BookmarkDialog.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="Views\CustomSwitchCell.xaml">
@@ -217,7 +217,7 @@
 	  <MauiXaml Update="Views\Items\PinnedBookItem.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
-	  <MauiXaml Update="Views\PickerPopup.xaml">
+	  <MauiXaml Update="Views\Popups\PickerPopup.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="Views\Reader.xaml">
