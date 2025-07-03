@@ -32,24 +32,34 @@
 
     <Grid
         CompressedLayout.IsHeadless="True"
-        BackgroundColor="{DynamicResource Background}"
-        ColumnDefinitions="170" RowDefinitions="200">
+        BackgroundColor="{DynamicResource CardBackground}"
+        ColumnDefinitions="140, *" RowDefinitions="100,50">
         <Image Source="{Binding Source={Reference this}, Path=BookParameter.ImageUrl, Mode=OneWay}"
                Background="{Binding Background, Mode=OneWay}"
+               Grid.RowSpan="2"
                Aspect="AspectFill">
         </Image>
         <Label
-            FontSize="Caption"
+            FontSize="Medium"
             x:Name="TitleLabel"
             Text="{Binding Source={x:Reference this}, Path=BookParameter.Title}"
-            TextColor="{StaticResource White}"
+            TextColor="{DynamicResource TextColor}"
             MaxLines="4"
-            Padding="2,0,0,2"
-            VerticalTextAlignment="End"
-            HorizontalTextAlignment="Center">
+            Padding="0,20,0,0"
+            VerticalTextAlignment="Center"
+            HorizontalTextAlignment="Center"
+            Grid.Column="1">
             <Label.Shadow>
                 <Shadow Brush="Black" Radius="10" Opacity="1"/>
             </Label.Shadow>
         </Label>
+        <Label 
+            FontSize="Caption"
+            Text="{Binding Source={x:Reference this}, Path=BookParameter.Url}"
+            TextColor="{DynamicResource DisabledTextColor}"
+            HorizontalTextAlignment="Center"
+            Grid.Row="1"
+            Grid.Column="1"
+            MaxLines="1"/>
     </Grid>
 </Border>

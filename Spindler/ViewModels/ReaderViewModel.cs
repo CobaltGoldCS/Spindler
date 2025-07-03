@@ -6,6 +6,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using CommunityToolkit.Mvvm.Messaging.Messages;
+using Microsoft.Maui.Controls.Shapes;
 using Spindler.CustomControls;
 using Spindler.Models;
 using Spindler.Services;
@@ -199,9 +200,9 @@ public partial class ReaderViewModel : SpindlerViewModel, IReader
             return;
         }
 
-        var result = await PopupService.ShowPopupAsync<BookmarkDialogViewmodel,Bookmark>(Shell.Current, options: new PopupOptions
+        var result = await PopupService.ShowPopupAsync<BookmarkDialogViewmodel, Bookmark>(Shell.Current, options: new PopupOptions
         {
-            Shape = null
+            Shape = null,
         }, new Dictionary<string, object>
         {
             ["book"] = CurrentBook,
