@@ -7,6 +7,7 @@
              x:Class="Spindler.CustomControls.PickerPopup"
              x:TypeArguments="Models:IIndexedModel"
              x:DataType="popups:PickerPopupViewmodel"
+             Padding="0,0,0,0"
              x:Name="_this">
     <Grid RowDefinitions="40, *" Background="{DynamicResource Background}">
         <Label Text="{Binding Title}" HorizontalTextAlignment="Center" Padding="0,10,0,0"/>

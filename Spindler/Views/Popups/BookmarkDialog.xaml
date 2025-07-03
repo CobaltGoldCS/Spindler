@@ -9,12 +9,13 @@
                x:Name="_this"
                x:TypeArguments="models:Bookmark"
                x:DataType="popups:BookmarkDialogViewmodel"
-               VerticalOptions="End"
+               Padding="0,0,0,0"
                BackgroundColor="{DynamicResource Background}">
     <Grid RowDefinitions="auto, *"
           HorizontalOptions="Fill"
           VerticalOptions="Fill"
-          ColumnDefinitions="*, 50">
+          ColumnDefinitions="*, 50"
+          Padding="0,0,0,10">
         <Label Text="Bookmarks"
                FontSize="30"
                FontAutoScalingEnabled="False"
@@ -25,8 +26,7 @@
                 Text="&#xE805;"
                 FontSize="30"
                 Command="{Binding AddCommand}"/>
-        <CollectionView Margin="5,0,5,50"
-                        Grid.Row="1"
+        <CollectionView Grid.Row="1"
                         Grid.ColumnSpan="2"
                         SelectionMode="Single"
                         SelectedItem="{Binding SelectedBookmark}"
