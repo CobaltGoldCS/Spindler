@@ -96,7 +96,7 @@ public partial class BookDetailPage : ContentPage, IQueryAttributable
         canRespond = false;
         Dictionary<string, object?> parameters = new()
         {
-            { "source", Book?.Url ?? "localhost" }
+            { "source", Book?.Url ?? "about:blank" }
 
         };
         await Shell.Current.GoToAsync("../" + nameof(BookSearcherPage), parameters: parameters);

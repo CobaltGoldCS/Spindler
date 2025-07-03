@@ -40,7 +40,6 @@
             <Label Text="Spindler"
                    Grid.Column="0"
                    VerticalOptions="Center"
-                   HorizontalOptions="StartAndExpand"
                    FontFamily="Great Vibes"
                    FontSize="30"
                    CharacterSpacing="1.3"
