@@ -76,7 +76,13 @@ public partial class BookSearcherPage : ContentPage, IQueryAttributable
             return;
         }
         HasLoaded = true;
-        Source = (string)query["source"];
+        if (query.TryGetValue("source", out object? source))
+        {
+            Source = (string)source;
+        } else
+        {
+            Source = "https://google.com";
+        }
         NavigateToSource();
     }
 

@@ -99,7 +99,11 @@ public partial class BookDetailPage : ContentPage, IQueryAttributable
             { "source", Book?.Url ?? "about:blank" }
 
         };
-        await Shell.Current.GoToAsync("../" + nameof(BookSearcherPage), parameters: parameters);
+        // Workaround for a problem with BookSearcherPage being initialized twice for some reason
+        // This is why we don't have just one GoToAsync call.
+        await Shell.Current.GoToAsync("..");
+        await Shell.Current.GoToAsync(nameof(BookSearcherPage), parameters: parameters);
+        
         canRespond = true;
     }
 
