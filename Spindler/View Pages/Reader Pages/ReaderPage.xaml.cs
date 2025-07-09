@@ -1,3 +1,4 @@
+using CommunityToolkit.Maui;
 using CommunityToolkit.Maui.Alerts;
 using CommunityToolkit.Mvvm.Messaging;
 using Spindler.Models;
@@ -7,10 +8,13 @@ using Spindler.ViewModels;
 
 namespace Spindler;
 
-public partial class ReaderPage : ContentPage, IQueryAttributable, IRecipient<ChangeScrollMessage>
+public partial class ReaderPage : ContentPage, IQueryAttributable
 {
     HttpClient Client { get; set; }
     IDataService DataService { get; set; }
+    IPopupService PopupService { get; set; }
+
+    private bool HasLoaded { get; set; } = false;
 
     public enum ReaderType
     {
@@ -20,6 +24,12 @@ public partial class ReaderPage : ContentPage, IQueryAttributable, IRecipient<Ch
 
     public async void ApplyQueryAttributes(IDictionary<string, object> query)
     {
+        if (HasLoaded)
+        {
+            // ApplyQueryAttributes can run multiple times, but we only want it to run once
+            return;
+        }
+        HasLoaded = true;
         Book book = (query["book"] as Book)!;
 
         ReaderType type = (ReaderType)query["type"];
@@ -41,7 +51,7 @@ public partial class ReaderPage : ContentPage, IQueryAttributable, IRecipient<Ch
             return;
         }
 
-        var ViewModel = new ReaderViewModelBuilder(DataService, Client, NextChapterBrowser)
+        var ViewModel = new ReaderViewModelBuilder(DataService, PopupService, Client, NextChapterBrowser)
             .SetRequiredInfo(new((Config)configObject, type switch
             {
                 ReaderType.Headless => HeadlessBrowser,
@@ -53,33 +63,18 @@ public partial class ReaderPage : ContentPage, IQueryAttributable, IRecipient<Ch
 
         BindingContext = ViewModel;
 
+        
         await ViewModel.StartLoad();
     }
 
-    /// <summary>
-    /// In charge of scrolling to positions. NOTE: Negative values scroll to bottom
-    /// </summary>
-    /// <param name="message">A message containing position (double) and isAnimated (bool)</param>
-    async void IRecipient<ChangeScrollMessage>.Receive(ChangeScrollMessage message)
-    {
-        ScrollChangedArgs arguments = message.Value;
-        if (arguments.Position < 0)
-        {
-            await ReadingLayout.ScrollToAsync(ReaderView, ScrollToPosition.End, arguments.IsAnimated);
-        }
-        else
-        {
-            await ReadingLayout.ScrollToAsync(ReadingLayout.ScrollX, arguments.Position, arguments.IsAnimated);
-        }
-    }
 
 
-
-    public ReaderPage(HttpClient client, IDataService dataService)
+    public ReaderPage(HttpClient client, IPopupService popupService, IDataService dataService)
     {
         InitializeComponent();
         Client = client;
         DataService = dataService;
+        PopupService = popupService;
         WeakReferenceMessenger.Default.RegisterAll(this);
     }
 }

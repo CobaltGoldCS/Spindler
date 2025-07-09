@@ -4,6 +4,10 @@ using Spindler.ViewModels;
 using Spindler.Views;
 using Spindler.Views.Book_Pages;
 using Spindler.Views.Reader_Pages;
+using Spindler.CustomControls;
+using CommunityToolkit.Maui.Services;
+
+
 
 #if ANDROID
 using Microsoft.Maui.Handlers;
@@ -46,6 +50,7 @@ public static class MauiProgram
         builder.Services
             .AddPages()
             .AddSingleton<IDataService, DataService>()
+            .AddSingleton<IPopupService, PopupService>()
             .AddHttpClient();
 
         var mauiapp = builder.Build();
@@ -76,6 +81,9 @@ public static class MauiProgram
         service.AddTransient<ReaderPage>();
 
         service.AddTransientWithShellRoute<BookListPage, BookListViewModel>($"{nameof(HomePage)}/{nameof(BookListPage)}");
+
+        service.AddTransientPopup<PickerPopup, PickerPopupViewmodel>();
+        service.AddTransientPopup<BookmarkDialog, BookmarkDialogViewmodel>();
 
         return service;
     }

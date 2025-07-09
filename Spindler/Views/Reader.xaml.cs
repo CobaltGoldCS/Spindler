@@ -1,10 +1,16 @@
+using CommunityToolkit.Maui.Alerts;
 using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
+using CommunityToolkit.Mvvm.Messaging;
+using Microsoft.Maui.Platform;
+using Spindler.Utilities;
+using Spindler.ViewModels;
 using System.Collections.ObjectModel;
 using System.Windows.Input;
 
 namespace Spindler.CustomControls;
 
-public partial class Reader : Grid
+public partial class Reader : Grid, IRecipient<ChangeScrollMessage>
 {
     private string fontFamily = Preferences.Default.Get("font", "OpenSans (Regular)");
     public string FontFamily
@@ -50,14 +56,34 @@ public partial class Reader : Grid
         }
     }
 
+    // This is a complete workaround. Ideally we would use the item spacing built into the 
+    // itemlayout of collectionview, but that is bugged for now
+    // see Reader.xaml for more details.
+    private Thickness itemSpace = new Thickness(30, Preferences.Default.Get("item_spacing", 3f) / 2);
+    public Thickness ItemSpace
+    {
+        get => itemSpace;
+        set
+        {
+            itemSpace = value;
+            OnPropertyChanged(nameof(ItemSpace));
+        }
+    }
 
     public Reader()
     {
         InitializeComponent();
+        WeakReferenceMessenger.Default.RegisterAll(this);
+    }
+
+
+    private void OnScroll(object? sender, ItemsViewScrolledEventArgs e)
+    {
+        FirstVisibleParagraphIndex = e.FirstVisibleItemIndex;
     }
 
     public static readonly BindableProperty TextProperty =
-                BindableProperty.Create(nameof(Text), typeof(ObservableCollection<string>), typeof(Grid));
+                BindableProperty.Create(nameof(Text), typeof(IEnumerable<string>), typeof(Grid));
 
     public static readonly BindableProperty TextTypeProperty =
                 BindableProperty.Create(nameof(TextType), typeof(TextType), typeof(Grid));
@@ -86,14 +112,17 @@ public partial class Reader : Grid
     public static readonly BindableProperty NextCommandParameterProperty =
             BindableProperty.Create(nameof(NextCommandParameter), typeof(object), typeof(Grid));
 
+    public static readonly BindableProperty FirstVisibleParagraphIndexProperty =
+            BindableProperty.Create(nameof(FirstVisibleParagraphIndex), typeof(int), typeof(Grid), defaultValueCreator: (_) => 0, defaultBindingMode: BindingMode.OneWayToSource);
+
     public event EventHandler? PrevClicked;
     public event EventHandler? NextClicked;
 
-    public ObservableCollection<string> Text
+    public IEnumerable<string> Text
     {
         get
         {
-            return (ObservableCollection<string>)GetValue(TextProperty);
+            return (IEnumerable<string>)GetValue(TextProperty);
         }
         set { SetValue(TextProperty, value); }
     }
@@ -155,6 +184,12 @@ public partial class Reader : Grid
         set { SetValue(NextCommandParameterProperty, value); }
     }
 
+    public int FirstVisibleParagraphIndex
+    {
+        get => (int)GetValue(FirstVisibleParagraphIndexProperty);
+        set { SetValue(FirstVisibleParagraphIndexProperty, value); }
+    }
+
     private void Prev_Clicked(object sender, EventArgs e)
     {
         PrevClicked?.Invoke(sender, e);
@@ -163,5 +198,23 @@ public partial class Reader : Grid
     private void Next_Clicked(object sender, EventArgs e)
     {
         NextClicked?.Invoke(sender, e);
+    }
+
+    /// <summary>
+    /// In charge of scrolling to positions. NOTE: Negative values scroll to bottom
+    /// </summary>
+    /// <param name="message">A message containing ParagraphIndex (int) and isAnimated (bool)</param>
+    void IRecipient<ChangeScrollMessage>.Receive(ChangeScrollMessage message) 
+    {
+        ScrollChangedArgs arguments = message.Value;
+
+        var index = arguments.index >= 0 ? arguments.index : Text.Count() - 1;
+        // This is all slightly inefficient, but it is perhaps safer, and less crash-prone
+        if (Text.Count() < index - 1)
+        {
+            Toast.Make("Error Scrolling: Paragraph Index out of Range").Show();
+            return;
+        }
+        LabelHolder.ScrollTo(Text.ElementAt(index), position: ScrollToPosition.Start, animate: arguments.IsAnimated);
     }
 }

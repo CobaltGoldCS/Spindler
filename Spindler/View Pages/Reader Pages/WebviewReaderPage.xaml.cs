@@ -30,7 +30,7 @@ public partial class WebviewReaderPage : ContentPage, IQueryAttributable, IReade
     {
         if (@event.Result != WebNavigationResult.Success) return;
         Book!.Url = @event.Url;
-        Book.Position = 0;
+        Book.ParagraphIndex = 0;
 
         backButton.IsEnabled = ReaderBrowser.CanGoBack;
         forwardButton.IsEnabled = ReaderBrowser.CanGoForward;

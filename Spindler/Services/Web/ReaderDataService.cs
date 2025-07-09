@@ -173,7 +173,7 @@ public partial class ReaderDataService : ObservableObject
 
             LoadedData data = new(
                 title: content[0],
-                text: new(await textTask),
+                text: await textTask,
                 nextUrl: content[1],
                 prevUrl: content[2],
                 currentUrl: url

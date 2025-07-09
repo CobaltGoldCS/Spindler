@@ -1,3 +1,6 @@
+using CommunityToolkit.Maui;
+using CommunityToolkit.Maui.Core;
+using CommunityToolkit.Maui.Extensions;
 using CommunityToolkit.Maui.Views;
 using Spindler.Behaviors;
 using Spindler.CustomControls;
@@ -12,8 +15,17 @@ public partial class BookDetailPage : ContentPage, IQueryAttributable
     #region QueryProperty Handler
     Book? Book;
 
+    private bool HasLoaded { get; set; } = false;
+
     public void ApplyQueryAttributes(IDictionary<string, object> query)
     {
+        // TODO: For some reason, it seems like the MCT popup will specifically try and reopen one of these
+        // after using a popup on the BookSearcherPage
+        if (HasLoaded)
+        {
+            return;
+        }
+        HasLoaded = true;
         Book = query["book"] as Book;
         if (Book!.Id < 0)
         {
@@ -28,10 +40,12 @@ public partial class BookDetailPage : ContentPage, IQueryAttributable
     #endregion
 
     IDataService DataService;
-    public BookDetailPage(IDataService dataService)
+    IPopupService PopupService;
+    public BookDetailPage(IDataService dataService, IPopupService popupService)
     {
         InitializeComponent();
         DataService = dataService;
+        PopupService = popupService;
         urlEntry.Behaviors.Add(new TextValidationBehavior((string text) =>
         {
             return Uri.TryCreate(text, UriKind.Absolute, out Uri? uriresult) && (uriresult.Scheme == Uri.UriSchemeHttp || uriresult.Scheme == Uri.UriSchemeHttps);
@@ -82,19 +96,33 @@ public partial class BookDetailPage : ContentPage, IQueryAttributable
         canRespond = false;
         Dictionary<string, object?> parameters = new()
         {
-            { "source", Book?.Url ?? "localhost" }
+            { "source", Book?.Url ?? "about:blank" }
 
         };
+        // Workaround for a problem with BookSearcherPage being initialized twice for some reason
+        // This is why we don't have just one GoToAsync call.
+        await Shell.Current.GoToAsync("..");
         await Shell.Current.GoToAsync(nameof(BookSearcherPage), parameters: parameters);
+        
         canRespond = true;
     }
 
     private async void SwitchBookList_Clicked(object sender, EventArgs e)
     {
-        var popup = new PickerPopup("Switch Book Lists", await DataService.GetBookListsAsync());
-        object? result = await this.ShowPopupAsync(popup);
-        if (result is not BookList list) return;
-        Book!.BookListId = list.Id;
+        var result = await PopupService.ShowPopupAsync<PickerPopupViewmodel, IIndexedModel>(
+            Shell.Current,
+            new PopupOptions
+            {
+                Shape = null,
+                Shadow = null
+            }, new Dictionary<string, object>
+            {
+                ["title"] = "Switch Book Lists",
+                ["items"] = await DataService.GetAllItemsAsync<BookList>(),
+            }
+        );
+        if (result.WasDismissedByTappingOutsideOfPopup) return;
+        Book!.BookListId = ((BookList)result.Result!).Id;
     }
 
     /// A Regular Expression for selecting letters to capitalize for title case

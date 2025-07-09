@@ -1,4 +1,6 @@
+using CommunityToolkit.Maui;
 using CommunityToolkit.Maui.Alerts;
+using CommunityToolkit.Maui.Extensions;
 using CommunityToolkit.Maui.Views;
 using CommunityToolkit.Mvvm.Input;
 using HtmlAgilityPack;
@@ -9,8 +11,7 @@ using Path = Spindler.Models.Path;
 
 namespace Spindler.Views.Book_Pages;
 
-[QueryProperty(nameof(InitialSource), "source")]
-public partial class BookSearcherPage : ContentPage
+public partial class BookSearcherPage : ContentPage, IQueryAttributable
 {
     #region Page Properties
     /// <summary>
@@ -31,6 +32,7 @@ public partial class BookSearcherPage : ContentPage
 
     public HttpClient Client;
     public IDataService Database;
+    private IPopupService PopupService;
 
     /// <summary>
     /// Whether <see cref="SearchBrowser"/> is busy loading and checking a page or not
@@ -54,25 +56,34 @@ public partial class BookSearcherPage : ContentPage
     #endregion
 
     #region Initialization
-    /// <summary>
-    /// Initial loader variable for setting url when book searcher page is navigated to 
-    /// </summary>
-    public string InitialSource
-    {
-        set
-        {
-            Source = value;
-            Return();
-        }
-    }
 
 
-    public BookSearcherPage(IDataService database, HttpClient client)
+    public BookSearcherPage(IDataService database, IPopupService popupService, HttpClient client)
     {
         InitializeComponent();
         SwitchUiBasedOnState(State.BookNotFound);
         Database = database;
         Client = client;
+        PopupService = popupService;
+    }
+
+
+    private bool HasLoaded { get; set; } = false;
+    public void ApplyQueryAttributes(IDictionary<string, object> query)
+    {
+        if (HasLoaded)
+        {
+            return;
+        }
+        HasLoaded = true;
+        if (query.TryGetValue("source", out object? source))
+        {
+            Source = (string)source;
+        } else
+        {
+            Source = "https://google.com";
+        }
+        NavigateToSource();
     }
 
     /// <summary>
@@ -193,10 +204,18 @@ public partial class BookSearcherPage : ContentPage
     {
         string html = await SearchBrowser.GetHtmlUnsafe();
 
-        PickerPopup bookListPopup = new("Choose Book List of Book", await Database.GetAllItemsAsync<BookList>());
-        var result = await this.ShowPopupAsync(bookListPopup);
+        var result = await PopupService.ShowPopupAsync<PickerPopupViewmodel, IIndexedModel>(
+            Shell.Current, 
+            new PopupOptions {
+                Shape = null,
+                Shadow = null
+        }, new Dictionary<string, object>
+        {
+            ["title"] = "Choose Book List of Book",
+            ["items"] = await Database.GetAllItemsAsync<BookList>(),
+        });
 
-        if (result is not BookList)
+        if (result.WasDismissedByTappingOutsideOfPopup)
         {
             return;
         }
@@ -209,7 +228,7 @@ public partial class BookSearcherPage : ContentPage
         await Database.SaveItemAsync(
             new Book
             {
-                BookListId = ((BookList)result).Id,
+                BookListId = ((BookList)result.Result!).Id,
                 Title = title,
                 Url = Source,
             }
@@ -224,10 +243,21 @@ public partial class BookSearcherPage : ContentPage
     private async Task UseConfigAsDomainUrl()
     {
         if (IsLoading) return;
-        PickerPopup popup = new("Choose a config to search", await Database.GetAllItemsAsync<Config>());
-        var result = await this.ShowPopupAsync(popup);
 
-        if (result is not Config config ||
+        var result = await PopupService.ShowPopupAsync<PickerPopupViewmodel, IIndexedModel>(
+            Shell.Current,
+            new PopupOptions
+            {
+                Shape = null,
+                Shadow = null
+            }, new Dictionary<string, object>
+            {
+                ["title"] = "Choose a Config to Search",
+                ["items"] = await Database.GetAllItemsAsync<Config>(),
+            }
+        );
+
+        if (result.Result is not Config config ||
             !Uri.TryCreate("https://" + config.DomainName, new UriCreationOptions(), out Uri? url))
             return;
         Source = url.OriginalString ?? "";
@@ -260,7 +290,7 @@ public partial class BookSearcherPage : ContentPage
     /// </summary>
     /// <seealso cref="SearchBrowser"/>
     [RelayCommand]
-    public void Return()
+    public void NavigateToSource()
     {
         if (IsLoading || string.IsNullOrEmpty(Source)) return;
         if (!Source.StartsWith("http"))
@@ -268,5 +298,7 @@ public partial class BookSearcherPage : ContentPage
         SearchBrowser.Source = Source;
         IsLoading = true;
     }
+
+
     #endregion
 }

@@ -28,7 +28,7 @@
 
 		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">15.0</SupportedOSPlatformVersion>
 		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'maccatalyst'">15.0</SupportedOSPlatformVersion>
-		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">23.0</SupportedOSPlatformVersion>
+		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">29.0</SupportedOSPlatformVersion>
 		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.17763.0</SupportedOSPlatformVersion>
 		<TargetPlatformMinVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.17763.0</TargetPlatformMinVersion>
 		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'tizen'">6.5</SupportedOSPlatformVersion>
@@ -145,15 +145,15 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <PackageReference Include="Microsoft.Maui.Controls" Version="9.0.21" />
-	  <PackageReference Include="CommunityToolkit.Maui" Version="10.0.0" />
+	  <PackageReference Include="Microsoft.Maui.Controls" Version="9.0.80" />
+	  <PackageReference Include="CommunityToolkit.Maui" Version="12.0.0" />
 	  <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" GeneratePathProperty="true" />
-	  <PackageReference Include="HtmlAgilityPack" Version="1.11.71" GeneratePathProperty="true" />
+	  <PackageReference Include="HtmlAgilityPack" Version="1.12.1" GeneratePathProperty="true" />
 	  <PackageReference Include="HtmlAgilityPack.CssSelectors.NetCore" Version="1.2.1" GeneratePathProperty="true" />
 	  <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
 	  <PackageReference Include="sqlite-net-pcl" Version="1.9.172" GeneratePathProperty="true" />
-	  <PackageReference Include="SQLitePCLRaw.bundle_green" Version="2.1.10" />
-	  <PackageReference Include="SQLitePCLRaw.provider.dynamic_cdecl" Version="2.1.10" />
+	  <PackageReference Include="SQLitePCLRaw.bundle_green" Version="2.1.11" />
+	  <PackageReference Include="SQLitePCLRaw.provider.dynamic_cdecl" Version="2.1.11" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -202,7 +202,7 @@
 	  <MauiXaml Update="Views\AppShell.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
-	  <MauiXaml Update="Views\BookmarkDialog.xaml">
+	  <MauiXaml Update="Views\Popups\BookmarkDialog.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="Views\CustomSwitchCell.xaml">
@@ -217,7 +217,7 @@
 	  <MauiXaml Update="Views\Items\PinnedBookItem.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
-	  <MauiXaml Update="Views\PickerPopup.xaml">
+	  <MauiXaml Update="Views\Popups\PickerPopup.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="Views\Reader.xaml">

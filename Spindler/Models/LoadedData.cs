@@ -12,7 +12,8 @@ public partial class LoadedData : ObservableObject
     /// <summary>
     /// The text content of the loaded page
     /// </summary>
-    public ObservableCollection<string> Text { get; set; }
+    [ObservableProperty]
+    public IEnumerable<string> text;
 
     /// <summary>
     /// A url pointing to the "next chapter" of the book
@@ -42,10 +43,10 @@ public partial class LoadedData : ObservableObject
     private bool nextUrlValid;
 
 
-    public LoadedData(string title, ObservableCollection<string> text, string currentUrl, string prevUrl, string nextUrl)
+    public LoadedData(string title, IEnumerable<string> text, string currentUrl, string prevUrl, string nextUrl)
     {
         this.Title = title;
-        this.Text = text;
+        Text = text;
         this.currentUrl = currentUrl;
         this.prevUrl = prevUrl;
         this.nextUrl = nextUrl;

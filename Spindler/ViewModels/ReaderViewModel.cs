@@ -1,9 +1,12 @@
-﻿using CommunityToolkit.Maui.Alerts;
+﻿using CommunityToolkit.Maui;
+using CommunityToolkit.Maui.Alerts;
+using CommunityToolkit.Maui.Extensions;
 using CommunityToolkit.Maui.Views;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using CommunityToolkit.Mvvm.Messaging.Messages;
+using Microsoft.Maui.Controls.Shapes;
 using Spindler.CustomControls;
 using Spindler.Models;
 using Spindler.Services;
@@ -33,6 +36,7 @@ public partial class ReaderViewModel : SpindlerViewModel, IReader
 
 
     private readonly WebScraperBrowser NextChapterBrowser;
+    private readonly IPopupService PopupService;
 
     /// <summary>
     /// A cancellation token for the next chapter background service
@@ -59,11 +63,8 @@ public partial class ReaderViewModel : SpindlerViewModel, IReader
     [ObservableProperty]
     private bool isLoading = false;
 
-    /// <summary>
-    /// The current Scroll position of the view
-    /// </summary>
     [ObservableProperty]
-    double readerScrollPosition = 0;
+    int firstVisibleParagraphIndex = 0;
 
     #endregion
     #endregion
@@ -72,10 +73,11 @@ public partial class ReaderViewModel : SpindlerViewModel, IReader
     /// <summary>
     /// Creates a new ReaderViewModel Instance (please use ReaderViewModelBuilder)
     /// </summary>
-    internal ReaderViewModel(IDataService database, HttpClient client, WebScraperBrowser nextChapterBrowser) : base(database)
+    internal ReaderViewModel(IDataService database, IPopupService popupService, HttpClient client, WebScraperBrowser nextChapterBrowser) : base(database)
     {
         Client = client;
         NextChapterBrowser = nextChapterBrowser;
+        PopupService = popupService;
         WeakReferenceMessenger.Default.Send(new StatusColorUpdateMessage("CardBackground"));
         Shell.Current.Navigating += OnShellNavigating;
     }
@@ -105,9 +107,9 @@ public partial class ReaderViewModel : SpindlerViewModel, IReader
 
         await AutoPopulateImageIfUnknown();
 
-        if (CurrentBook.Position > 0)
+        if (CurrentBook.ParagraphIndex > 0)
         {
-            ScrollReader(CurrentBook.Position);
+            ScrollReader(CurrentBook.ParagraphIndex);
         }
 
         StartBookChecking();
@@ -197,16 +199,18 @@ public partial class ReaderViewModel : SpindlerViewModel, IReader
         {
             return;
         }
-        Popup view = new BookmarkDialog(
-            Database,
-            CurrentBook,
-            getNewBookmark: () => new Bookmark(CurrentData.Title!, ReaderScrollPosition, CurrentData.currentUrl!)
-        );
 
-        WeakReferenceMessenger.Default.Send(new CreateBottomSheetMessage(view));
-        
-        if (!CurrentPage.TryGetTarget(out Page? currentPage) ||
-            await PopupExtensions.ShowPopupAsync(currentPage, view) is not Bookmark bookmark)
+        var result = await PopupService.ShowPopupAsync<BookmarkDialogViewmodel, Bookmark>(Shell.Current, options: new PopupOptions
+        {
+            Shape = null,
+        }, new Dictionary<string, object>
+        {
+            ["book"] = CurrentBook,
+            ["newBookmarkFunction"] = () => new Bookmark(CurrentData.Title!, FirstVisibleParagraphIndex, CurrentData.currentUrl!),
+        });
+
+
+        if (result.Result is not Bookmark bookmark)
         {
             return;
         }
@@ -231,9 +235,9 @@ public partial class ReaderViewModel : SpindlerViewModel, IReader
         // Cleanup 
         IsLoading = false;
 
-        if (bookmark.Position > 0)
+        if (bookmark.ParagraphIndex > 0)
         {
-            ScrollReader(bookmark.Position);
+            ScrollReader(bookmark.ParagraphIndex);
         }
 
         CurrentBook!.Url = CurrentData!.currentUrl!;
@@ -248,11 +252,11 @@ public partial class ReaderViewModel : SpindlerViewModel, IReader
         WeakReferenceMessenger.Default.Send(new ChangeScrollMessage(
             ScrollChangedArgs.ScrollBottom(ReaderService.Config.HasAutoscrollAnimation)));
 
-    private void ScrollReader(double position, bool? isAnimated = null)
+    private void ScrollReader(int index, bool? isAnimated = null)
     {
         isAnimated ??= ReaderService.Config.HasAutoscrollAnimation;
         WeakReferenceMessenger.Default.Send(
-            new ChangeScrollMessage(new(position, (bool)isAnimated)));
+            new ChangeScrollMessage(new(index, (bool)isAnimated)));
     }
     #endregion
 
@@ -269,7 +273,7 @@ public partial class ReaderViewModel : SpindlerViewModel, IReader
         nextChapterToken.Cancel();
         if (e.Target.Location.OriginalString == "..")
         {
-            CurrentBook.Position = ReaderScrollPosition;
+            CurrentBook.ParagraphIndex = FirstVisibleParagraphIndex;
             CurrentBook.HasNextChapter = CurrentData!.NextUrlValid && !CurrentBook.Completed;
             await CurrentBook.SaveInfo(Database);
         }
@@ -307,9 +311,9 @@ public partial class ReaderViewModel : SpindlerViewModel, IReader
 public class ReaderViewModelBuilder
 {
     private readonly ReaderViewModel Target;
-    public ReaderViewModelBuilder(IDataService database, HttpClient client, WebScraperBrowser NextChapterBrowser)
+    public ReaderViewModelBuilder(IDataService database, IPopupService popupService, HttpClient client, WebScraperBrowser NextChapterBrowser)
     {
-        Target = new ReaderViewModel(database, client, NextChapterBrowser);
+        Target = new ReaderViewModel(database, popupService, client, NextChapterBrowser);
     }
 
     /// <summary>
@@ -357,7 +361,7 @@ class ChangeScrollMessage(ScrollChangedArgs value) : ValueChangedMessage<ScrollC
 {
 }
 
-record ScrollChangedArgs(double Position, bool IsAnimated)
+record ScrollChangedArgs(int index, bool IsAnimated)
 {
     public static ScrollChangedArgs ScrollBottom(bool isAnimated) => new(-1, isAnimated);
 }

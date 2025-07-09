@@ -3,15 +3,19 @@
 <toolkit:Popup xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
                xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
                xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+               xmlns:models="clr-namespace:Spindler.Models"
+               xmlns:popups="clr-namespace:Spindler.Views"
                x:Class="Spindler.Views.BookmarkDialog"
                x:Name="_this"
-               VerticalOptions="End"
-               Color="{DynamicResource Background}"
-               xmlns:models="clr-namespace:Spindler.Models">
+               x:TypeArguments="models:Bookmark"
+               x:DataType="popups:BookmarkDialogViewmodel"
+               Padding="0,0,0,0"
+               BackgroundColor="{DynamicResource Background}">
     <Grid RowDefinitions="auto, *"
           HorizontalOptions="Fill"
           VerticalOptions="Fill"
-          ColumnDefinitions="*, 50">
+          ColumnDefinitions="*, 50"
+          Padding="0,0,0,10">
         <Label Text="Bookmarks"
                FontSize="30"
                FontAutoScalingEnabled="False"
@@ -21,14 +25,13 @@
                 Grid.Column="1"
                 Text="&#xE805;"
                 FontSize="30"
-                Command="{Binding Source={Reference _this}, Path=AddCommand}"/>
-        <CollectionView Margin="5,0,5,50"
-                        Grid.Row="1"
+                Command="{Binding AddCommand}"/>
+        <CollectionView Grid.Row="1"
                         Grid.ColumnSpan="2"
                         SelectionMode="Single"
-                        SelectedItem="{Binding Source={Reference _this}, Path=SelectedBookmark}"
-                        SelectionChangedCommand="{Binding Source={Reference _this}, Path=ItemClickedCommand}"
-                        ItemsSource="{Binding Source={Reference _this}, Path=Bookmarks}"
+                        SelectedItem="{Binding SelectedBookmark}"
+                        SelectionChangedCommand="{Binding ItemClickedCommand}"
+                        ItemsSource="{Binding Bookmarks}"
                         x:Name="bookmarkView">
             <CollectionView.ItemsLayout>
                 <LinearItemsLayout ItemSpacing="10" Orientation="Vertical"/>
@@ -52,7 +55,8 @@
                                 FontAutoScalingEnabled="False"
                                 TextColor="{DynamicResource TextColor}"
                                 BackgroundColor="{StaticResource Warning}"
-                                Clicked="DeleteItem_Clicked"/>
+                                Command="{Binding Source={RelativeSource AncestorType={x:Type popups:BookmarkDialogViewmodel}}, Path=DeleteCommand}"
+                                CommandParameter="{Binding .}"/>
                     </Grid>
                 </DataTemplate>
             </CollectionView.ItemTemplate>

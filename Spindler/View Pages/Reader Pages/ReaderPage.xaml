@@ -54,14 +54,8 @@
             </Button>
         </Grid>
     </Shell.TitleView>
-    <ScrollView x:Name="ReadingLayout"
-                Orientation="Vertical"
-                ScrollY="{Binding ReaderScrollPosition}"
-                IsEnabled="True"
-                VerticalScrollBarVisibility="Always"
-                CompressedLayout.IsHeadless="True">
-        <Grid CompressedLayout.IsHeadless="True">
-            <Button 
+    <Grid CompressedLayout.IsHeadless="True">
+        <Button 
                 CornerRadius="20"
                 Text="&#xF175;" 
                 FontFamily="SPIcon"
@@ -75,12 +69,11 @@
                 WidthRequest="35"
                 FontAutoScalingEnabled="False"
                 FontSize="20"/>
-            <Grid RowDefinitions="*, 0, 0"
+        <Grid RowDefinitions="*, 0, 0"
                   CompressedLayout.IsHeadless="True"
                   VerticalOptions="FillAndExpand"
-                  Padding="0,40,0,0"
                   BackgroundColor="{DynamicResource CardBackground}">
-                <controls:Reader x:Name="ReaderView"
+            <controls:Reader x:Name="ReaderView"
                                  Text="{Binding CurrentData.Text}"
                                  TextType="{Binding Path=ReaderService.IsContentHtml, Converter={StaticResource TextTypeConverter}}"
                                  Title="{Binding CurrentData.Title}"
@@ -91,10 +84,10 @@
                                  PreviousCommandParameter="{x:Static services:ReaderDataService+UrlType.Previous}"
                                  NextCommand="{Binding ChangeChapterCommand}"
                                  NextCommandParameter="{x:Static services:ReaderDataService+UrlType.Next}"
+                                 FirstVisibleParagraphIndex="{Binding FirstVisibleParagraphIndex}"
                                  Grid.Row="0"/>
-                <controls:WebScraperBrowser x:Name="HeadlessBrowser" Visible="False" Grid.Row="1"/>
-                <controls:WebScraperBrowser x:Name="NextChapterBrowser" Visible="False" Grid.Row="2"/>
-            </Grid>
+            <controls:WebScraperBrowser x:Name="HeadlessBrowser" Visible="False" Grid.Row="1"/>
+            <controls:WebScraperBrowser x:Name="NextChapterBrowser" Visible="False" Grid.Row="2"/>
         </Grid>
-    </ScrollView>
+    </Grid>
 </ContentPage>

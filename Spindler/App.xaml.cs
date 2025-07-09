@@ -45,7 +45,7 @@ public partial class App : Application, IRecipient<ThemeChangedMessage>, IRecipi
     private static void RegisterRoutes()
     {
         Routing.RegisterRoute($"{nameof(HomePage)}/{nameof(BookDetailPage)}", typeof(BookDetailPage));
-        Routing.RegisterRoute($"{nameof(HomePage)}/{nameof(BookDetailPage)}/{nameof(BookSearcherPage)}", typeof(BookSearcherPage));
+        Routing.RegisterRoute($"{nameof(HomePage)}/{nameof(BookSearcherPage)}", typeof(BookSearcherPage));
 
         Routing.RegisterRoute($"{nameof(HomePage)}/{nameof(BookPage)}", typeof(BookPage));
 
