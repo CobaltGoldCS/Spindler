@@ -70,7 +70,6 @@ public partial class Reader : Grid, IRecipient<ChangeScrollMessage>
         }
     }
 
-
     public Reader()
     {
         InitializeComponent();
