@@ -215,6 +215,13 @@ public partial class Reader : Grid, IRecipient<ChangeScrollMessage>
             Toast.Make("Error Scrolling: Paragraph Index out of Range").Show();
             return;
         }
-        LabelHolder.ScrollTo(Text.ElementAt(index), position: ScrollToPosition.Start, animate: arguments.IsAnimated);
+
+        try
+        {
+            LabelHolder.ScrollTo(Text.ElementAt(index), position: ScrollToPosition.Start, animate: arguments.IsAnimated);
+        } catch(Exception e)
+        {
+            Toast.Make($"Error Scrolling: {e.Message}").Show();
+        }
     }
 }
