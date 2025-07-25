@@ -3,7 +3,12 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31611.283
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Spindler", "Spindler\Spindler.csproj", "{4DF43B21-0369-493B-8BD2-051DFDFB2662}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Spindler.App", "Spindler\Spindler.App.csproj", "{4DF43B21-0369-493B-8BD2-051DFDFB2662}"
+	ProjectSection(ProjectDependencies) = postProject
+		{D302F219-14DD-4DF0-AB29-CC8D6952B6A6} = {D302F219-14DD-4DF0-AB29-CC8D6952B6A6}
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Spindler.Services", "Spindler.Services\Spindler.Services.csproj", "{D302F219-14DD-4DF0-AB29-CC8D6952B6A6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -17,6 +22,10 @@ Global
 		{4DF43B21-0369-493B-8BD2-051DFDFB2662}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4DF43B21-0369-493B-8BD2-051DFDFB2662}.Release|Any CPU.Build.0 = Release|Any CPU
 		{4DF43B21-0369-493B-8BD2-051DFDFB2662}.Release|Any CPU.Deploy.0 = Release|Any CPU
+		{D302F219-14DD-4DF0-AB29-CC8D6952B6A6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D302F219-14DD-4DF0-AB29-CC8D6952B6A6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D302F219-14DD-4DF0-AB29-CC8D6952B6A6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D302F219-14DD-4DF0-AB29-CC8D6952B6A6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

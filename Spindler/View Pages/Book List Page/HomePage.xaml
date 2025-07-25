@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:models="clr-namespace:Spindler.Models"
+             xmlns:models="clr-namespace:Spindler.Models;assembly=Spindler.Services"
              xmlns:viewmodels="clr-namespace:Spindler.ViewModels"
              xmlns:utils="clr-namespace:Spindler.Utilities"
              xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"

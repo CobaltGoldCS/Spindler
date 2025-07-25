@@ -1,4 +1,6 @@
-﻿using Newtonsoft.Json;
+﻿using Microsoft.Maui.Controls;
+using Microsoft.Maui.Graphics;
+using Newtonsoft.Json;
 using Spindler.Services;
 using SQLite;
 
