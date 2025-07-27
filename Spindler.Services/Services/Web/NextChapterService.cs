@@ -15,6 +15,10 @@ namespace Spindler.Services.Web
             {
                 Book updated = await CheckNextChapterBook(book, token);
                 await _Database.SaveItemAsync(updated);
+                if (token.IsCancellationRequested)
+                {
+                    return;
+                }
             }
         }
 

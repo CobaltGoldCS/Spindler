@@ -15,18 +15,34 @@ public class DataService : IDataService
                 SQLiteOpenFlags.Create |
                 SQLiteOpenFlags.SharedCache
             );
-        database.CreateTablesAsync(createFlags: CreateFlags.None, typeof(Book), typeof(BookList), typeof(Config), typeof(GeneralizedConfig)).Wait();
+        database.CreateTablesAsync(
+            createFlags: CreateFlags.None, 
+            typeof(Book),
+            typeof(BookList),
+            typeof(Config),
+            typeof(GeneralizedConfig)
+        ).Wait();
     }
 
     // NOTE: This is used for dependency injection
     public DataService()
     {
-        database = new SQLiteAsyncConnection(System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Spindler.db"),
+        database = new SQLiteAsyncConnection(
+                System.IO.Path.Combine(
+                    Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+                    "Spindler.db"
+                ),
                 SQLiteOpenFlags.ReadWrite |
                 SQLiteOpenFlags.Create |
                 SQLiteOpenFlags.SharedCache
             );
-        database.CreateTablesAsync(createFlags: CreateFlags.None, typeof(Book), typeof(BookList), typeof(Config), typeof(GeneralizedConfig)).Wait();
+        database.CreateTablesAsync(
+            createFlags: CreateFlags.None,
+            typeof(Book),
+            typeof(BookList),
+            typeof(Config),
+            typeof(GeneralizedConfig))
+        .Wait();
     }
 
     #region Generic functions for database
@@ -44,7 +60,7 @@ public class DataService : IDataService
     public async Task SaveItemsAsync<T>(IEnumerable<T> items)
         where T : IIndexedModel, new()
     {
-        var itemsToInsert = items.Where((T item) => item.GetId() < 0);
+        var itemsToInsert = items.Where(item => item.GetId() < 0);
         var itemsToUpdate = items.Where(item => item.GetId() >= 0);
         await database.UpdateAllAsync(itemsToUpdate);
         await database.InsertAllAsync(itemsToInsert);
