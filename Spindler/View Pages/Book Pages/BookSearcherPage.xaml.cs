@@ -1,10 +1,7 @@
 using CommunityToolkit.Maui;
 using CommunityToolkit.Maui.Alerts;
-using CommunityToolkit.Maui.Extensions;
-using CommunityToolkit.Maui.Views;
 using CommunityToolkit.Mvvm.Input;
 using HtmlAgilityPack;
-using Spindler.CustomControls;
 using Spindler.Models;
 using Spindler.Services;
 using Path = Spindler.Models.Path;
@@ -79,7 +76,8 @@ public partial class BookSearcherPage : ContentPage, IQueryAttributable
         if (query.TryGetValue("source", out object? source))
         {
             Source = (string)source;
-        } else
+        }
+        else
         {
             Source = "https://google.com";
         }
@@ -205,15 +203,16 @@ public partial class BookSearcherPage : ContentPage, IQueryAttributable
         string html = await SearchBrowser.GetHtmlUnsafe();
 
         var result = await PopupService.ShowPopupAsync<PickerPopupViewmodel, IIndexedModel>(
-            Shell.Current, 
-            new PopupOptions {
+            Shell.Current,
+            new PopupOptions
+            {
                 Shape = null,
                 Shadow = null
-        }, new Dictionary<string, object>
-        {
-            ["title"] = "Choose Book List of Book",
-            ["items"] = await Database.GetAllItemsAsync<BookList>(),
-        });
+            }, new Dictionary<string, object>
+            {
+                ["title"] = "Choose Book List of Book",
+                ["items"] = await Database.GetAllItemsAsync<BookList>(),
+            });
 
         if (result.WasDismissedByTappingOutsideOfPopup)
         {

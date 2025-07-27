@@ -1,5 +1,4 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
-using HtmlAgilityPack;
+﻿using HtmlAgilityPack;
 using Newtonsoft.Json;
 using Spindler.Services;
 using Spindler.Services.Web;

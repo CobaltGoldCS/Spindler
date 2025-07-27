@@ -1,7 +1,4 @@
 using CommunityToolkit.Maui;
-using CommunityToolkit.Maui.Core;
-using CommunityToolkit.Maui.Extensions;
-using CommunityToolkit.Maui.Views;
 using Spindler.Behaviors;
 using Spindler.CustomControls;
 using Spindler.Models;
@@ -103,7 +100,7 @@ public partial class BookDetailPage : ContentPage, IQueryAttributable
         // This is why we don't have just one GoToAsync call.
         await Shell.Current.GoToAsync("..");
         await Shell.Current.GoToAsync(nameof(BookSearcherPage), parameters: parameters);
-        
+
         canRespond = true;
     }
 

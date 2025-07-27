@@ -3,12 +3,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Spindler.Models;
 using Spindler.Services;
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Spindler.Views;
 
@@ -23,7 +18,7 @@ public partial class BookmarkDialogViewmodel : ObservableObject, IQueryAttributa
 
     [ObservableProperty]
     private Bookmark? selectedBookmark;
-    
+
     private Book? relatedBook;
 
     public Book RelatedBook

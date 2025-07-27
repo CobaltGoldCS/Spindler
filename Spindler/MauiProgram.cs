@@ -1,11 +1,11 @@
 ﻿using CommunityToolkit.Maui;
+using CommunityToolkit.Maui.Services;
+using Spindler.CustomControls;
 using Spindler.Services;
 using Spindler.ViewModels;
 using Spindler.Views;
 using Spindler.Views.Book_Pages;
 using Spindler.Views.Reader_Pages;
-using Spindler.CustomControls;
-using CommunityToolkit.Maui.Services;
 
 
 

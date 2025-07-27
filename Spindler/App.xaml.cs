@@ -3,14 +3,12 @@ using CommunityToolkit.Maui.Core;
 using CommunityToolkit.Maui.Core.Extensions;
 using CommunityToolkit.Mvvm.Messaging;
 using Spindler.Resources;
+using Spindler.Services;
 using Spindler.Utilities;
 using Spindler.Views;
 using Spindler.Views.Book_Pages;
-using SQLitePCL;
-
-using Microsoft.Maui.Handlers;
-using Microsoft.Maui.Controls.PlatformConfiguration;
 using Spindler.Views.Reader_Pages;
+using SQLitePCL;
 
 #if ANDROID
 using Spindler.Platforms.Android;
@@ -26,7 +24,7 @@ public partial class App : Application, IRecipient<ThemeChangedMessage>, IRecipi
     public App()
     {
         InitializeComponent();
-        Batteries.Init();
+        DataService.BatteriesInit();
         RegisterRoutes();
 
         WeakReferenceMessenger.Default.RegisterAll(this);

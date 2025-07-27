@@ -1,5 +1,4 @@
 using CommunityToolkit.Maui.Views;
-using CommunityToolkit.Mvvm.Input;
 using Spindler.Models;
 using Spindler.Views;
 

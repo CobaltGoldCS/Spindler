@@ -1,5 +1,6 @@
 ﻿using Spindler.Models;
 using SQLite;
+using SQLitePCL;
 
 namespace Spindler.Services;
 
@@ -44,7 +45,7 @@ public class DataService : IDataService
         where T : IIndexedModel, new()
     {
         var itemsToInsert = items.Where((T item) => item.GetId() < 0);
-        var itemsToUpdate = items.Where((T item) => item.GetId() >= 0);
+        var itemsToUpdate = items.Where(item => item.GetId() >= 0);
         await database.UpdateAllAsync(itemsToUpdate);
         await database.InsertAllAsync(itemsToInsert);
     }
@@ -96,5 +97,7 @@ public class DataService : IDataService
         .Where((item) => item.DomainName == domain.Replace("www.", ""))
         .FirstOrDefaultAsync();
     #endregion
+
+    public static void BatteriesInit() => Batteries.Init();
 }
 

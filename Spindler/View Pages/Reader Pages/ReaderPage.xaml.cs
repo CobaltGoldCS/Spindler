@@ -63,7 +63,7 @@ public partial class ReaderPage : ContentPage, IQueryAttributable
 
         BindingContext = ViewModel;
 
-        
+
         await ViewModel.StartLoad();
     }
 

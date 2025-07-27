@@ -2,7 +2,6 @@
 using CommunityToolkit.Mvvm.Input;
 using Spindler.Models;
 using Spindler.Services;
-using Spindler.Views;
 using Spindler.Views.Book_Pages;
 using Spindler.Views.Reader_Pages;
 

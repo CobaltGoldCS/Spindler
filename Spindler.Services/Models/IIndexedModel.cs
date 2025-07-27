@@ -10,12 +10,4 @@ public interface IIndexedModel
     /// </summary>
     /// <returns>The UID associated with a given model</returns>
     int GetId();
-
-    /// <summary>
-    /// Gets a formatted name for display
-    /// </summary>
-    string Name
-    {
-        get;
-    }
 }

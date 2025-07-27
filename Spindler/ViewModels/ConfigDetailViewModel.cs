@@ -2,7 +2,6 @@
 using CommunityToolkit.Maui.Storage;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using Microsoft.Maui.Controls;
 using Newtonsoft.Json;
 using Spindler.Models;
 using Spindler.Services;
@@ -58,7 +57,7 @@ public partial class ConfigDetailViewModel(IDataService database) : SpindlerView
         }
     }
 
-    private ContentExtractorOption[] possibleExtractors = ((TargetType[]) Enum.GetValues(typeof(TargetType)))
+    private ContentExtractorOption[] possibleExtractors = ((TargetType[])Enum.GetValues(typeof(TargetType)))
            .Select(ContentExtractorOption.FromContentType)
            .ToArray();
 
@@ -96,7 +95,7 @@ public partial class ConfigDetailViewModel(IDataService database) : SpindlerView
     [RelayCommand]
     public async Task Delete()
     {
-        if (Config.Id == -1 || (CurrentPage.TryGetTarget(out Page? currentPage) && 
+        if (Config.Id == -1 || (CurrentPage.TryGetTarget(out Page? currentPage) &&
             !await currentPage!.DisplayAlert("Warning!", "Are you sure you want to delete this config?", "Yes", "No")))
             return;
 
@@ -166,11 +165,11 @@ public partial class ConfigDetailViewModel(IDataService database) : SpindlerView
         await contents.CopyToAsync(stream);
 
         string JSON = Encoding.Default.GetString(stream.ToArray());
-        Config? config; 
+        Config? config;
         if (IsGeneralizedConfig())
         {
-           config = JsonConvert.DeserializeObject<GeneralizedConfig>(JSON);
-        } 
+            config = JsonConvert.DeserializeObject<GeneralizedConfig>(JSON);
+        }
         else
         {
             config = JsonConvert.DeserializeObject<Config>(JSON);

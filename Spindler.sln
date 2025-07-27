@@ -8,7 +8,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Spindler.App", "Spindler\Sp
 		{D302F219-14DD-4DF0-AB29-CC8D6952B6A6} = {D302F219-14DD-4DF0-AB29-CC8D6952B6A6}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Spindler.Services", "Spindler.Services\Spindler.Services.csproj", "{D302F219-14DD-4DF0-AB29-CC8D6952B6A6}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Spindler.Core", "Spindler.Services\Spindler.Core.csproj", "{D302F219-14DD-4DF0-AB29-CC8D6952B6A6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

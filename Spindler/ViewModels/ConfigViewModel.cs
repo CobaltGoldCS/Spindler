@@ -13,7 +13,7 @@ public partial class ConfigViewModel(IDataService service) : SpindlerViewModel(s
 
     [ObservableProperty]
     public Config? selectedItem;
-    
+
     [ObservableProperty]
     public ObservableCollection<Config> configItems = [];
 
@@ -21,17 +21,18 @@ public partial class ConfigViewModel(IDataService service) : SpindlerViewModel(s
     public bool isRefreshing = false;
 
     [RelayCommand]
-    public async Task ReloadItems() 
+    public async Task ReloadItems()
     {
         IsRefreshing = true;
         if (IsGeneralized)
         {
             ConfigItems.PopulateAndNotify(await Database.GetAllItemsAsync<GeneralizedConfig>(), shouldClear: true);
-        } else
+        }
+        else
         {
             ConfigItems.PopulateAndNotify(await Database.GetAllItemsAsync<Config>(), shouldClear: true);
         }
-        
+
         IsRefreshing = false;
     }
 

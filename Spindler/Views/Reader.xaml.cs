@@ -1,11 +1,6 @@
 using CommunityToolkit.Maui.Alerts;
-using CommunityToolkit.Mvvm.ComponentModel;
-using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
-using Microsoft.Maui.Platform;
-using Spindler.Utilities;
 using Spindler.ViewModels;
-using System.Collections.ObjectModel;
 using System.Windows.Input;
 
 namespace Spindler.CustomControls;
@@ -204,11 +199,11 @@ public partial class Reader : Grid, IRecipient<ChangeScrollMessage>
     /// In charge of scrolling to positions. NOTE: Negative values scroll to bottom
     /// </summary>
     /// <param name="message">A message containing ParagraphIndex (int) and isAnimated (bool)</param>
-    void IRecipient<ChangeScrollMessage>.Receive(ChangeScrollMessage message) 
+    void IRecipient<ChangeScrollMessage>.Receive(ChangeScrollMessage message)
     {
         ScrollChangedArgs arguments = message.Value;
 
-        var index = arguments.index >= 0 ? arguments.index : Text.Count() - 1;
+        var index = arguments.Index >= 0 ? arguments.Index : Text.Count() - 1;
         // This is all slightly inefficient, but it is perhaps safer, and less crash-prone
         if (Text.Count() < index - 1)
         {
@@ -219,7 +214,8 @@ public partial class Reader : Grid, IRecipient<ChangeScrollMessage>
         try
         {
             LabelHolder.ScrollTo(Text.ElementAt(index), position: ScrollToPosition.Start, animate: arguments.IsAnimated);
-        } catch(Exception e)
+        }
+        catch (Exception e)
         {
             Toast.Make($"Error Scrolling: {e.Message}").Show();
         }

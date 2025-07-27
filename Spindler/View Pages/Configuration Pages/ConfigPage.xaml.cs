@@ -16,7 +16,7 @@ public partial class ConfigPage : ContentPage
     private void Navigated(object? sender, ShellNavigatedEventArgs e)
     {
         ViewModel.IsGeneralized = e.Current.Location.OriginalString == "//GeneralConfig";
-     
+
         BindingContext = ViewModel;
         _ = ViewModel.ReloadItems();
         Shell.Current.Navigated -= Navigated;

@@ -9,7 +9,7 @@ public class GeneralizedConfig : Config
     /// </summary>
     public string MatchPath { get; set; } = "";
 
-    public override bool IsValidConfig() => DomainName != String.Empty 
+    public override bool IsValidConfig() => DomainName != String.Empty
         && ConfigService.IsValidSelector(MatchPath)
         && ConfigService.IsValidSelector(ContentPath)
         && ConfigService.IsValidSelector(NextUrlPath)

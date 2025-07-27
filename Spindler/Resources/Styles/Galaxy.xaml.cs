@@ -2,8 +2,8 @@ namespace Spindler.Resources.Styles;
 
 public partial class Galaxy : ResourceDictionary
 {
-	public Galaxy()
-	{
-		InitializeComponent();
-	}
+    public Galaxy()
+    {
+        InitializeComponent();
+    }
 }

@@ -1,6 +1,4 @@
-﻿using Microsoft.Maui.Controls;
-using Microsoft.Maui.Graphics;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using Spindler.Services;
 using SQLite;
 
@@ -9,7 +7,7 @@ namespace Spindler.Models;
 /// <summary>
 /// A Model representing configurations between the SQLite database and the backend code
 /// </summary>
-public class BookList : IIndexedModel
+public partial class BookList : IIndexedModel
 {
 
     /// <summary>
@@ -71,6 +69,13 @@ public class BookList : IIndexedModel
 
     public int GetId() => Id;
 
+}
+
+
+// These are MAUI exclusive properties, so they have been moved out of the 
+// main class definition for possible reusability purposes
+public partial class BookList
+{
     /// <summary>
     /// Gets the background as a linear gradient brush
     /// </summary>

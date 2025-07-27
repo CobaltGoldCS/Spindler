@@ -17,7 +17,8 @@ public abstract class SpindlerViewModel : ObservableObject
     /// Database Handler. Will throw if constructor is passed a null database parameter.
     /// </summary>
     [NotNullIfNotNull(nameof(database))]
-    protected IDataService Database {
+    protected IDataService Database
+    {
         get
         {
             ArgumentNullException.ThrowIfNull(database, nameof(database));

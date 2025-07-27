@@ -2,7 +2,6 @@
 using HtmlAgilityPack.CssSelectors.NetCore;
 using Spindler.Models;
 using Spindler.Services.Web;
-using System.Text;
 using System.Text.RegularExpressions;
 using System.Web;
 using Path = Spindler.Models.Path;
@@ -107,7 +106,7 @@ public class HtmlContentExtractor : HtmlExtractor
         if (node == null) return [];
         if (!node.HasChildNodes)
         {
-            return HttpUtility.HtmlDecode(node.InnerHtml).Split("\n").Where(str =>  str.Length > 0);
+            return HttpUtility.HtmlDecode(node.InnerHtml).Split("\n").Where(str => str.Length > 0);
         }
 
         return ExtractChildText(node, config);

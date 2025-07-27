@@ -122,7 +122,8 @@ public partial class ReaderDataService : ObservableObject
             invalidHtml.LoadHtml(invalidMessage.Message);
             string innerText = invalidHtml.DocumentNode.InnerText.Trim();
             returnValue = Result.Error<LoadedData>(MatchNewlines().Replace(innerText, Environment.NewLine));
-        } else
+        }
+        else
         {
             var okResult = html as Result<string>.Ok;
             returnValue = await LoadReaderData(url, okResult!.Value);

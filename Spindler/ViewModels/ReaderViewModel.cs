@@ -1,12 +1,9 @@
 ﻿using CommunityToolkit.Maui;
 using CommunityToolkit.Maui.Alerts;
-using CommunityToolkit.Maui.Extensions;
-using CommunityToolkit.Maui.Views;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using CommunityToolkit.Mvvm.Messaging.Messages;
-using Microsoft.Maui.Controls.Shapes;
 using Spindler.CustomControls;
 using Spindler.Models;
 using Spindler.Services;
@@ -22,7 +19,7 @@ namespace Spindler.ViewModels;
 public partial class ReaderViewModel : SpindlerViewModel, IReader
 {
     #region Class Attributes
-    
+
 
     /// <summary>
     /// The HttpClient used for Loading book information and/or Determining the correct config
@@ -101,7 +98,8 @@ public partial class ReaderViewModel : SpindlerViewModel, IReader
             case Result<LoadedData>.Ok value:
                 CurrentData = value!.Value;
                 break;
-        };
+        }
+        ;
 
         IsLoading = false;
 
@@ -134,7 +132,8 @@ public partial class ReaderViewModel : SpindlerViewModel, IReader
             CurrentBook.ImageUrl = ReaderService.ConfigService.PrettyWrapSelector(
                                 (html as Result<string>.Ok)!.Value, ConfigService.Selector.ImageUrl, SelectorType.Link);
         }
-        catch (XPathException) {
+        catch (XPathException)
+        {
             Toast.Make("Invalid Image Url Selector");
         }
     }
@@ -230,7 +229,8 @@ public partial class ReaderViewModel : SpindlerViewModel, IReader
             case Result<LoadedData>.Ok value:
                 CurrentData = value!.Value;
                 break;
-        };
+        }
+        ;
 
         // Cleanup 
         IsLoading = false;
@@ -248,7 +248,7 @@ public partial class ReaderViewModel : SpindlerViewModel, IReader
     /// Scrolls to the bottom of the view
     /// </summary>
     [RelayCommand]
-    public void ScrollBottom() => 
+    public void ScrollBottom() =>
         WeakReferenceMessenger.Default.Send(new ChangeScrollMessage(
             ScrollChangedArgs.ScrollBottom(ReaderService.Config.HasAutoscrollAnimation)));
 
@@ -361,7 +361,7 @@ class ChangeScrollMessage(ScrollChangedArgs value) : ValueChangedMessage<ScrollC
 {
 }
 
-record ScrollChangedArgs(int index, bool IsAnimated)
+record ScrollChangedArgs(int Index, bool IsAnimated)
 {
     public static ScrollChangedArgs ScrollBottom(bool isAnimated) => new(-1, isAnimated);
 }

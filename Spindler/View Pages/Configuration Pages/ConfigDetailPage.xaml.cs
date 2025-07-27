@@ -1,7 +1,5 @@
-using CommunityToolkit.Maui.Alerts;
 using Spindler.Behaviors;
 using Spindler.Models;
-using Spindler.Services;
 using Spindler.Services.Web;
 using Spindler.ViewModels;
 using System.Text.RegularExpressions;
@@ -34,7 +32,8 @@ public partial class ConfigDetailPage : ContentPage, IQueryAttributable
         if (config is GeneralizedConfig)
         {
             GeneralizedConfigInfo.IsVisible = true;
-        } else
+        }
+        else
         {
             SpecializedConfigInfo.IsVisible = true;
         }

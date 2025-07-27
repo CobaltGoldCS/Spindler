@@ -118,7 +118,8 @@ public partial class SettingsViewmodel() : SpindlerViewModel(database: null)
         {
             filePath.EnsureSuccess();
             await Toast.Make($"File saved at {filePath.FilePath}").Show(cancellationToken);
-        } else
+        }
+        else
         {
             await Toast.Make($"File not saved: {filePath.Exception}").Show(cancellationToken);
         }
