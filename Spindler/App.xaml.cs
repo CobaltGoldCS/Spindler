@@ -8,7 +8,6 @@ using Spindler.Utilities;
 using Spindler.Views;
 using Spindler.Views.Book_Pages;
 using Spindler.Views.Reader_Pages;
-using SQLitePCL;
 
 #if ANDROID
 using Spindler.Platforms.Android;
@@ -76,7 +75,7 @@ public partial class App : Application, IRecipient<ThemeChangedMessage>, IRecipi
             ? StatusBarStyle.DarkContent
             : StatusBarStyle.LightContent;
 
-#if !MACCATALYST13_1_OR_GREATER
+#if !MACCATALYST
         Windows[0].Page!.Behaviors.Add(new StatusBarBehavior
         {
             StatusBarColor = statusBarColor,
