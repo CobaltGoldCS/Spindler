@@ -17,13 +17,5 @@
         /// <param name="message">The error to pass to the user</param>
         /// <returns>True if the value is not null, or false if it is </returns>
         public Task<bool> SafeAssertNotNull(object? value, string message) => SafeAssert(value is not null, message);
-
-        /// <summary>
-        /// Handler for when Shell Navigates to a new page
-        /// </summary>
-        /// <param name="sender">The view that triggered the navigation</param>
-        /// <param name="e">The navigating arguments</param>
-        protected void OnShellNavigating(object? sender,
-                           ShellNavigatingEventArgs e);
     }
 }

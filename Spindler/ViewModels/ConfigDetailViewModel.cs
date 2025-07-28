@@ -132,9 +132,6 @@ public partial class ConfigDetailViewModel(IDataService database) : SpindlerView
     }
 
     [RelayCommand]
-    public static async Task Cancel() => await NavigateTo("..");
-
-    [RelayCommand]
     public async Task Export()
     {
         string output = JsonConvert.SerializeObject(Config);

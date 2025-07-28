@@ -99,7 +99,7 @@
         <controls:AddButtonGroup x:Name="AddButtonGroup"
                                  Grid.Row="2"
                                  DeleteCommand="{Binding DeleteCommand}"
-                                 CancelCommand="{Binding CancelCommand}"
+                                 CancelCommand="{Binding BackCommand}"
                                  OkCommand="{Binding AddCommand}"
                                  HorizontalOptions="FillAndExpand"/>
 

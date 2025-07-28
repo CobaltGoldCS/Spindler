@@ -148,7 +148,11 @@ public partial class ReaderViewModel : SpindlerViewModel, IReader
         books.Remove(CurrentBook);
 
         NextChapterService chapterService = new(Client, NextChapterBrowser, Database);
-        _ = Task.Run(async () => await chapterService.SaveBooks(books, nextChapterToken.Token));
+        Task checkTask = chapterService.StartIndependentCheckingThread(books, nextChapterToken.Token);
+
+#if DEBUG
+        await checkTask.ContinueWith(_ => MainThread.InvokeOnMainThreadAsync(() => Toast.Make("Debug: Check Next Chapter Completed").Show()));
+#endif
     }
     #endregion
 

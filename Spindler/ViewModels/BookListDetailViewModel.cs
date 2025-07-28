@@ -61,7 +61,7 @@ namespace Spindler.ViewModels
             chosenColor2 = new(Booklist.Color2);
         }
 
-        private static async Task Close()
+        private async Task Close()
         {
             await NavigateTo("..");
         }

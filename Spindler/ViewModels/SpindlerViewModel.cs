@@ -1,10 +1,11 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using Spindler.Services;
 using System.Diagnostics.CodeAnalysis;
 
 namespace Spindler.ViewModels;
 
-public abstract class SpindlerViewModel : ObservableObject
+public abstract partial class SpindlerViewModel : ObservableObject
 {
     private IDataService? database;
     protected WeakReference<Page> CurrentPage
@@ -37,14 +38,23 @@ public abstract class SpindlerViewModel : ObservableObject
     }
 
 #nullable disable
-    protected static async Task NavigateTo(string route)
+
+    protected async Task NavigateTo(string route)
     {
         await NavigateTo(route, new Dictionary<string, object>());
     }
 
-    protected static async Task NavigateTo(string route, IDictionary<string, object> parameters, bool animated = true)
+    /// <summary>
+    /// Overridable Navigation Function.<br></br>
+    /// To override Navigation Completely, use Shell.BackButtonCommand with the Back Command defined in this class.
+    /// </summary>
+    /// <returns>Task Related to Navigating with Shell</returns>
+    protected virtual async Task NavigateTo(string route, IDictionary<string, object> parameters, bool animated = true)
     {
         await Shell.Current.GoToAsync(route, animated, parameters: parameters);
     }
+
+    [RelayCommand]
+    protected virtual async Task Back() => await NavigateTo("..");
 #nullable enable
 }

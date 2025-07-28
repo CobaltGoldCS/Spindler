@@ -75,6 +75,5 @@ public partial class ReaderPage : ContentPage, IQueryAttributable
         Client = client;
         DataService = dataService;
         PopupService = popupService;
-        WeakReferenceMessenger.Default.RegisterAll(this);
     }
 }
