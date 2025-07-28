@@ -12,6 +12,10 @@
              Title="{Binding CurrentData.Title}"
              Shell.BackgroundColor="{DynamicResource CardBackground}"
              Shell.TabBarIsVisible="False">
+
+    <Shell.BackButtonBehavior>
+        <BackButtonBehavior Command="{Binding BackCommand}"/>
+    </Shell.BackButtonBehavior>
     <ContentPage.Resources>
         <toolkit:BoolToObjectConverter x:Key="TextTypeConverter" TrueObject="{Static TextType.Html}" FalseObject="{Static TextType.Text}"/>
     </ContentPage.Resources>

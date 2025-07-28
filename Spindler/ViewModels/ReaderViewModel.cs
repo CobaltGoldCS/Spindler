@@ -76,7 +76,6 @@ public partial class ReaderViewModel : SpindlerViewModel, IReader
         NextChapterBrowser = nextChapterBrowser;
         PopupService = popupService;
         WeakReferenceMessenger.Default.Send(new StatusColorUpdateMessage("CardBackground"));
-        Shell.Current.Navigating += OnShellNavigating;
     }
 
 
@@ -264,18 +263,10 @@ public partial class ReaderViewModel : SpindlerViewModel, IReader
     }
     #endregion
 
-
-
-    /// <summary>
-    /// Overrides navigation methods
-    /// </summary>
-    /// <param name="sender">The sender of the navigation events</param>
-    /// <param name="e">The navigation events</param>
-    public async void OnShellNavigating(object? sender,
-                       ShellNavigatingEventArgs e)
+    protected override async Task NavigateTo(string route, IDictionary<string, object> parameters, bool animated = true)
     {
         nextChapterToken.Cancel();
-        if (e.Target.Location.OriginalString == "..")
+        if (route == "..")
         {
             CurrentBook.ParagraphIndex = FirstVisibleParagraphIndex;
             CurrentBook.HasNextChapter = CurrentData!.NextUrlValid && !CurrentBook.Completed;
@@ -284,7 +275,7 @@ public partial class ReaderViewModel : SpindlerViewModel, IReader
 
         // Set statusbar color back
         WeakReferenceMessenger.Default.Send(new StatusColorUpdateMessage(null));
-        Shell.Current.Navigating -= OnShellNavigating;
+        await base.NavigateTo(route, parameters, animated);
     }
 
 
