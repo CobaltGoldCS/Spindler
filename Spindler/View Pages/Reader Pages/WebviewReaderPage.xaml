@@ -8,6 +8,10 @@
              x:Name="_this"
              Title="{Binding Title}"
              Shell.TabBarIsVisible="False">
+
+    <Shell.BackButtonBehavior>
+        <BackButtonBehavior Command="{Binding Source={Reference _this}, Path=BackButtonCommand}"/>
+    </Shell.BackButtonBehavior>
     <ContentPage.BindingContext>
         <Model:Book/>
     </ContentPage.BindingContext>

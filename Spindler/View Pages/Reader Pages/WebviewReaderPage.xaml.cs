@@ -22,7 +22,6 @@ public partial class WebviewReaderPage : ContentPage, IQueryAttributable, IReade
     {
         InitializeComponent();
         DataService = dataService;
-        Shell.Current.Navigating += OnShellNavigating;
     }
 
     #region Event Handlers
@@ -56,15 +55,11 @@ public partial class WebviewReaderPage : ContentPage, IQueryAttributable, IReade
         ReaderBrowser.GoForward();
     }
 
-    public async void OnShellNavigating(object? sender,
-                           ShellNavigatingEventArgs e)
+    [RelayCommand]
+    private async Task BackButton()
     {
-        if (e.Target.Location.OriginalString == "..")
-        {
-            await DataService.SaveItemAsync(Book!);
-        }
-        Shell.Current.Navigating -= OnShellNavigating;
-        ReaderBrowser.Navigated -= WebViewOnNavigated;
+        await DataService.SaveItemAsync(Book!);
+        await Shell.Current.GoToAsync("..");
     }
 
     #endregion
