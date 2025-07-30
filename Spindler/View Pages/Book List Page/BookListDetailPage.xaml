@@ -54,7 +54,7 @@
         <controls:AddButtonGroup x:Name="AddButtonGroup"
                                  Grid.Row="1"
                                  DeleteCommand="{Binding DeleteCommand}"
-                                 CancelCommand="{Binding CancelCommand}"
+                                 CancelCommand="{Binding BackCommand}"
                                  OkCommand="{Binding OkCommand}"
                                  HorizontalOptions="FillAndExpand"/>
     </Grid>

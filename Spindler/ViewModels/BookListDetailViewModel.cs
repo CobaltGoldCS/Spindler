@@ -61,11 +61,6 @@ namespace Spindler.ViewModels
             chosenColor2 = new(Booklist.Color2);
         }
 
-        private async Task Close()
-        {
-            await NavigateTo("..");
-        }
-
         #region Click Handlers
 
         /// <summary>
@@ -78,7 +73,7 @@ namespace Spindler.ViewModels
             {
                 await Booklist.UpdateAccessTimeToNow(Database);
             }
-            await Close();
+            await Back();
         }
 
         /// <summary>
@@ -87,21 +82,13 @@ namespace Spindler.ViewModels
         [RelayCommand]
         private async Task Delete()
         {
-            if (Booklist.Id > 0 && await Application.Current!.Windows[0].Page.DisplayAlert("Warning!", "Are you sure you want to delete this booklist?", "Yes", "No"))
+            if (Booklist.Id > 0 && await Shell.Current.DisplayAlert("Warning!", "Are you sure you want to delete this booklist?", "Yes", "No"))
             {
                 await Database.DeleteBookListAsync(Booklist);
             }
-            await Close();
+            await Back();
         }
 
-        /// <summary>
-        /// A handler for when the Cancel button is clicked
-        /// </summary>
-        [RelayCommand]
-        private async Task Cancel()
-        {
-            await Close();
-        }
 
         [RelayCommand]
         public void Color1Picked()
