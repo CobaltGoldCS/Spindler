@@ -26,7 +26,7 @@ public partial class ConfigDetailViewModel(IDataService database) : SpindlerView
 
         public static ContentExtractorOption FromContentType(TargetType type)
         {
-            return new ContentExtractorOption(Enum.GetName(typeof(TargetType), type)!, type);
+            return new ContentExtractorOption(Enum.GetName(type)!, type);
         }
 
         public override string ToString()
@@ -57,9 +57,7 @@ public partial class ConfigDetailViewModel(IDataService database) : SpindlerView
         }
     }
 
-    private ContentExtractorOption[] possibleExtractors = ((TargetType[])Enum.GetValues(typeof(TargetType)))
-           .Select(ContentExtractorOption.FromContentType)
-           .ToArray();
+    private ContentExtractorOption[] possibleExtractors = [.. Enum.GetValues<TargetType>().Select(ContentExtractorOption.FromContentType)];
 
     public ContentExtractorOption[] PossibleExtractors
     {

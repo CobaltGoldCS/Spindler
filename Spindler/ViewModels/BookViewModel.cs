@@ -77,7 +77,11 @@ public partial class BookViewModel(IDataService database, HttpClient client) : S
         {
             { "book", book! },
             { "config", config },
-            { "type", config?.UsesHeadless ?? true ? ReaderPage.ReaderType.Headless : ReaderPage.ReaderType.Standard }
+            { "type", config?.UsesHeadless switch  {
+                    false => ReaderPage.ReaderType.Standard,
+                    _ => ReaderPage.ReaderType.Headless
+                } 
+            }
         };
 
         string pageName = nameof(ReaderPage);
