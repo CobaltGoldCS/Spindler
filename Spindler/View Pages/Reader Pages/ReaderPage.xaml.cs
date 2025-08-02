@@ -15,6 +15,7 @@ public partial class ReaderPage : ContentPage, IQueryAttributable
     IPopupService PopupService { get; set; }
 
     private bool HasLoaded { get; set; } = false;
+    ReaderViewModel ViewModel;
 
     public enum ReaderType
     {
@@ -51,7 +52,7 @@ public partial class ReaderPage : ContentPage, IQueryAttributable
             return;
         }
 
-        var ViewModel = new ReaderViewModelBuilder(DataService, PopupService, Client, NextChapterBrowser)
+        ViewModel = new ReaderViewModelBuilder(DataService, PopupService, Client, NextChapterBrowser)
             .SetRequiredInfo(new((Config)configObject, type switch
             {
                 ReaderType.Headless => HeadlessBrowser,
@@ -75,5 +76,11 @@ public partial class ReaderPage : ContentPage, IQueryAttributable
         Client = client;
         DataService = dataService;
         PopupService = popupService;
+    }
+
+    protected override bool OnBackButtonPressed()
+    {
+        _ = ViewModel.Back();
+        return true;
     }
 }

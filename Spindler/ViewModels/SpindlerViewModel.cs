@@ -55,6 +55,6 @@ public abstract partial class SpindlerViewModel : ObservableObject
     }
 
     [RelayCommand]
-    protected virtual async Task Back() => await NavigateTo("..");
+    public virtual async Task Back() => await NavigateTo("..");
 #nullable enable
 }
