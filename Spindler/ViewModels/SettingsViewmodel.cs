@@ -95,7 +95,7 @@ public partial class SettingsViewmodel() : SpindlerViewModel(database: null)
     [RelayCommand]
     private async Task Import()
     {
-        if (!CurrentPage.TryGetTarget(out Page? currentPage) || !await currentPage!.DisplayAlert("Warning!", "Importing a new file will delete previous data", "Import", "Nevermind"))
+        if (!CurrentPage.TryGetTarget(out Page? currentPage) || !await currentPage!.DisplayAlertAsync("Warning!", "Importing a new file will delete previous data", "Import", "Nevermind"))
             return;
         FileResult? file = await FilePicker.Default.PickAsync(PickOptions.Default);
         if (file is null)

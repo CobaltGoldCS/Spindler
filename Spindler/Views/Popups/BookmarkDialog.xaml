@@ -15,7 +15,8 @@
           HorizontalOptions="Fill"
           VerticalOptions="Fill"
           ColumnDefinitions="*, 50"
-          Padding="0,0,0,10">
+          Padding="0,0,0,10"
+          Background="{DynamicResource Background}">
         <Label Text="Bookmarks"
                FontSize="30"
                FontAutoScalingEnabled="False"

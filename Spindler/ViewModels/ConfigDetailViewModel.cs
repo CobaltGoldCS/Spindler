@@ -94,7 +94,7 @@ public partial class ConfigDetailViewModel(IDataService database) : SpindlerView
     public async Task Delete()
     {
         if (Config.Id == -1 || (CurrentPage.TryGetTarget(out Page? currentPage) &&
-            !await currentPage!.DisplayAlert("Warning!", "Are you sure you want to delete this config?", "Yes", "No")))
+            !await currentPage!.DisplayAlertAsync("Warning!", "Are you sure you want to delete this config?", "Yes", "No")))
             return;
 
         if (IsGeneralizedConfig())

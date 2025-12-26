@@ -1,11 +1,11 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFrameworks>net9.0-ios;net9.0-maccatalyst;net9.0-android</TargetFrameworks>
+		<TargetFrameworks>net10.0-ios;net10.0-maccatalyst;net10.0-android</TargetFrameworks>
 		<!-- We don't Support windows anymore -->
-		<!-- <TargetFrameworks Condition="$([MSBuild]::IsOSPlatform('windows'))">$(TargetFrameworks);net9.0-windows10.0.19041.0</TargetFrameworks> -->
+		<!-- <TargetFrameworks Condition="$([MSBuild]::IsOSPlatform('windows'))">$(TargetFrameworks);net10.0-windows10.0.19041.0</TargetFrameworks> -->
 		<!-- Uncomment to also build the tizen app. You will need to install tizen by following this: https://github.com/Samsung/Tizen.NET -->
-		<!-- <TargetFrameworks>$(TargetFrameworks);net9.0-tizen</TargetFrameworks> -->
+		<!-- <TargetFrameworks>$(TargetFrameworks);net10.0-tizen</TargetFrameworks> -->
 		<OutputType>Exe</OutputType>
     <RootNamespace>Spindler</RootNamespace>
 		<UseMaui>true</UseMaui>
@@ -33,7 +33,7 @@
 		<TargetPlatformMinVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.17763.0</TargetPlatformMinVersion>
 		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'tizen'">6.5</SupportedOSPlatformVersion>
 
-    <SupportedOSPlatformVersion Condition="'$(TargetFramework)' == 'net9.0-android'">21.0</SupportedOSPlatformVersion>
+    <SupportedOSPlatformVersion Condition="'$(TargetFramework)' == 'net10.0-android'">21.0</SupportedOSPlatformVersion>
 
     <SignAssembly>False</SignAssembly>
 
@@ -43,19 +43,19 @@
 
 	</PropertyGroup>
 
-	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net9.0-android|AnyCPU'">
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net10.0-android|AnyCPU'">
 	  <AndroidKeyStore>False</AndroidKeyStore>
 	  <DebugType>embedded</DebugType>
 	  <Debugger>Xamarin</Debugger>
 	</PropertyGroup>
 
-	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net9.0-android|AnyCPU'">
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net10.0-android|AnyCPU'">
     <AndroidKeyStore>False</AndroidKeyStore>
 	  <DebugType>embedded</DebugType>
 	  <Debugger>Xamarin</Debugger>
 	</PropertyGroup>
 
-	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net9.0-ios|AnyCPU'">
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net10.0-ios|AnyCPU'">
 	  <AndroidKeyStore>False</AndroidKeyStore>
 	  <DebugType>embedded</DebugType>
 	  <ApplicationVersion>3</ApplicationVersion>
@@ -63,29 +63,14 @@
 	  <Optimize>False</Optimize>
 	</PropertyGroup>
 
-	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net9.0-ios|AnyCPU'">
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net10.0-ios|AnyCPU'">
 	  <AndroidKeyStore>False</AndroidKeyStore>
 	  <DebugType>embedded</DebugType>
 	  <ApplicationVersion>3</ApplicationVersion>
 	  <ApplicationDisplayVersion>2022.2.28</ApplicationDisplayVersion>
 	</PropertyGroup>
 
-	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net9.0-maccatalyst|AnyCPU'">
-	  <AndroidKeyStore>False</AndroidKeyStore>
-	  <DebugType>embedded</DebugType>
-	  <ApplicationVersion>3</ApplicationVersion>
-	  <ApplicationDisplayVersion>2022.2.28</ApplicationDisplayVersion>
-	  <Optimize>False</Optimize>
-	</PropertyGroup>
-
-	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net9.0-maccatalyst|AnyCPU'">
-	  <AndroidKeyStore>False</AndroidKeyStore>
-	  <DebugType>embedded</DebugType>
-	  <ApplicationVersion>3</ApplicationVersion>
-	  <ApplicationDisplayVersion>2022.2.28</ApplicationDisplayVersion>
-	</PropertyGroup>
-
-	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net9.0-windows10.0.19041.0|AnyCPU'">
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net10.0-maccatalyst|AnyCPU'">
 	  <AndroidKeyStore>False</AndroidKeyStore>
 	  <DebugType>embedded</DebugType>
 	  <ApplicationVersion>3</ApplicationVersion>
@@ -93,7 +78,22 @@
 	  <Optimize>False</Optimize>
 	</PropertyGroup>
 
-	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net9.0-windows10.0.19041.0|AnyCPU'">
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net10.0-maccatalyst|AnyCPU'">
+	  <AndroidKeyStore>False</AndroidKeyStore>
+	  <DebugType>embedded</DebugType>
+	  <ApplicationVersion>3</ApplicationVersion>
+	  <ApplicationDisplayVersion>2022.2.28</ApplicationDisplayVersion>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net10.0-windows10.0.19041.0|AnyCPU'">
+	  <AndroidKeyStore>False</AndroidKeyStore>
+	  <DebugType>embedded</DebugType>
+	  <ApplicationVersion>3</ApplicationVersion>
+	  <ApplicationDisplayVersion>2022.2.28</ApplicationDisplayVersion>
+	  <Optimize>False</Optimize>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net10.0-windows10.0.19041.0|AnyCPU'">
 	  <AndroidKeyStore>False</AndroidKeyStore>
 	  <DebugType>embedded</DebugType>
 	  <ApplicationVersion>3</ApplicationVersion>
@@ -145,11 +145,11 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <PackageReference Include="Microsoft.Maui.Controls" Version="9.0.90">
+	  <PackageReference Include="Microsoft.Maui.Controls" Version="10.0.20">
 	    <TreatAsUsed>true</TreatAsUsed>
 	  </PackageReference>
-	  <PackageReference Include="CommunityToolkit.Maui" Version="12.1.0" />
-	  <PackageReference Include="SQLitePCLRaw.provider.dynamic_cdecl" Version="2.1.11" />
+	  <PackageReference Include="CommunityToolkit.Maui" Version="13.0.0" />
+	  <PackageReference Include="SQLitePCLRaw.provider.dynamic_cdecl" Version="3.0.2" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -203,9 +203,6 @@
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="Views\Popups\BookmarkDialog.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </MauiXaml>
-	  <MauiXaml Update="Views\CustomSwitchCell.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="Views\Items\BookItem.xaml">
@@ -271,25 +268,25 @@
 	</ItemGroup>
 
 	<!-- Android -->
-	<ItemGroup Condition="$(TargetFramework.StartsWith('net9.0-android')) != true">
+	<ItemGroup Condition="$(TargetFramework.StartsWith('net10.0-android')) != true">
 		<Compile Remove="**\**\*.Android.cs" />
 		<None Include="**\**\*.Android.cs" Exclude="$(DefaultItemExcludes);$(DefaultExcludesInProjectFolder)" />
 	</ItemGroup>
 
 	<!-- iOS -->
-	<ItemGroup Condition="$(TargetFramework.StartsWith('net9.0-ios')) != true">
+	<ItemGroup Condition="$(TargetFramework.StartsWith('net10.0-ios')) != true">
 		<Compile Remove="**\**\*.iOS.cs" />
 		<None Include="**\**\*.iOS.cs" Exclude="$(DefaultItemExcludes);$(DefaultExcludesInProjectFolder)" />
 	</ItemGroup>
 
 	<!-- Mac Catalyst -->
-	<ItemGroup Condition="$(TargetFramework.StartsWith('net9.0-maccatalyst')) != true">
+	<ItemGroup Condition="$(TargetFramework.StartsWith('net10.0-maccatalyst')) != true">
 		<Compile Remove="**\**\*.MacCatalyst.cs" />
 		<None Include="**\**\*.MacCatalyst.cs" Exclude="$(DefaultItemExcludes);$(DefaultExcludesInProjectFolder)" />
 	</ItemGroup>
 
 	<!-- Windows -->
-	<ItemGroup Condition="$(TargetFramework.StartsWith('net9.0-windows')) != true">
+	<ItemGroup Condition="$(TargetFramework.StartsWith('net10.0-windows')) != true">
 		<Compile Remove="**\*.Windows.cs" />
 		<None Include="**\*.Windows.cs" Exclude="$(DefaultItemExcludes);$(DefaultExcludesInProjectFolder)" />
 	</ItemGroup>

@@ -82,7 +82,7 @@ namespace Spindler.ViewModels
         [RelayCommand]
         private async Task Delete()
         {
-            if (Booklist.Id > 0 && await Shell.Current.DisplayAlert("Warning!", "Are you sure you want to delete this booklist?", "Yes", "No"))
+            if (Booklist.Id > 0 && await Shell.Current.DisplayAlertAsync("Warning!", "Are you sure you want to delete this booklist?", "Yes", "No"))
             {
                 await Database.DeleteBookListAsync(Booklist);
             }

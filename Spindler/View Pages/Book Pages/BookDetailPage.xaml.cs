@@ -73,7 +73,7 @@ public partial class BookDetailPage : ContentPage, IQueryAttributable
 
     private async void DeleteButton_clicked(object sender, EventArgs e)
     {
-        if (Book!.Id > 0 && await DisplayAlert("Warning!", "Are you sure you want to delete this book?", "Yes", "No"))
+        if (Book!.Id > 0 && await DisplayAlertAsync("Warning!", "Are you sure you want to delete this book?", "Yes", "No"))
         {
             await DataService.DeleteItemAsync(Book);
         }

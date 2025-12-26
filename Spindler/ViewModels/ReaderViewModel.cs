@@ -205,6 +205,7 @@ public partial class ReaderViewModel : SpindlerViewModel, IReader
         var result = await PopupService.ShowPopupAsync<BookmarkDialogViewmodel, Bookmark>(Shell.Current, options: new PopupOptions
         {
             Shape = null,
+            PageOverlayColor = Colors.Transparent
         }, new Dictionary<string, object>
         {
             ["book"] = CurrentBook,

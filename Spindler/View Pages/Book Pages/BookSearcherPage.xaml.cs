@@ -207,7 +207,8 @@ public partial class BookSearcherPage : ContentPage, IQueryAttributable
             new PopupOptions
             {
                 Shape = null,
-                Shadow = null
+                Shadow = null,
+                PageOverlayColor = Colors.Transparent,
             }, new Dictionary<string, object>
             {
                 ["title"] = "Choose Book List of Book",
@@ -248,7 +249,8 @@ public partial class BookSearcherPage : ContentPage, IQueryAttributable
             new PopupOptions
             {
                 Shape = null,
-                Shadow = null
+                Shadow = null,
+                PageOverlayColor = Colors.Transparent,
             }, new Dictionary<string, object>
             {
                 ["title"] = "Choose a Config to Search",
