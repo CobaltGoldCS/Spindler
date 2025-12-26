@@ -93,7 +93,7 @@ public partial class BookDetailPage : ContentPage, IQueryAttributable
         canRespond = false;
         Dictionary<string, object?> parameters = new()
         {
-            { "source", Book?.Url ?? "about:blank" }
+            { "source", Book!.Url ?? "about:blank" }
 
         };
         // Workaround for a problem with BookSearcherPage being initialized twice for some reason

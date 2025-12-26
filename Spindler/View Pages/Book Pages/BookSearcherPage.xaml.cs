@@ -58,10 +58,10 @@ public partial class BookSearcherPage : ContentPage, IQueryAttributable
     public BookSearcherPage(IDataService database, IPopupService popupService, HttpClient client)
     {
         InitializeComponent();
-        SwitchUiBasedOnState(State.BookNotFound);
         Database = database;
         Client = client;
         PopupService = popupService;
+        SwitchUiBasedOnState(State.BookNotFound);
     }
 
 
@@ -293,7 +293,7 @@ public partial class BookSearcherPage : ContentPage, IQueryAttributable
     [RelayCommand]
     public void NavigateToSource()
     {
-        if (IsLoading || string.IsNullOrEmpty(Source)) return;
+        if (IsLoading) return;
         if (!Source.StartsWith("http"))
             Source = "https://" + Source;
         SearchBrowser.Source = Source;

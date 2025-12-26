@@ -9,14 +9,14 @@
              x:Name="BookSearcher">
     
     <Grid 
-        RowDefinitions="45, 5, *, 40, 40"
+        RowDefinitions="45, 5, *, 40, 45"
         ColumnDefinitions="*, 60"
         >
         <Entry x:Name="addressBar"
                Placeholder="Search for a webpage"
                ReturnType="Search"
                Margin="2,0,3,0"
-               ReturnCommand="{Binding Source={x:Reference BookSearcher}, Path=ReturnCommand}"
+               ReturnCommand="{Binding Source={x:Reference BookSearcher}, Path=NavigateToSourceCommand}"
                Text="{Binding Source={x:Reference BookSearcher}, Path=Source}"/>
         <Button Text="&#xE803;"
                 Command="{Binding Source={x:Reference BookSearcher}, Path=UseConfigAsDomainUrlCommand}"
@@ -26,7 +26,7 @@
                 Margin="0,0,4,0"
                 Grid.Column="1">
         </Button>
-        <ProgressBar x:Name="SearchProgress" Grid.Row="1" Grid.ColumnSpan="2" ProgressColor="{StaticResource Primary}"/>
+        <ProgressBar x:Name="SearchProgress" Grid.Row="1" Grid.ColumnSpan="2" ProgressColor="{DynamicResource Primary}"/>
         <controls:WebScraperBrowser x:Name="SearchBrowser"
                  Navigated="PageLoaded"
                  Navigating="PageLoading"
@@ -34,25 +34,24 @@
                  Grid.ColumnSpan="2"
                  Visible="True"
                  />
-        <Border Stroke="{StaticResource White}" 
-                Grid.Row="3">
-            <Button Text="←" 
-                Padding="0,0,0,5"
+        <Button Text="←" 
+                Padding="0,0,10,0"
                 CornerRadius="0"
-                Command="{Binding Source={x:Reference BookSearcher}, Path=NavigateBackwardCommand}"/>
-        </Border>
-
-        <Border Stroke="{StaticResource White}" 
                 Grid.Row="3"
-                Grid.Column="1">
-            <Button Text="→" 
+                Margin="0,0,5,0"
+                FontSize="Large"
+                Command="{Binding Source={x:Reference BookSearcher}, Path=NavigateBackwardCommand}"/>
+
+        <Button Text="→" 
                 Padding="0,0,0,5"
                 CornerRadius="0"
+                Grid.Row="3"
+                Grid.Column="1"
                 Command="{Binding Source={x:Reference BookSearcher}, Path=NavigateForwardCommand}"/>
-        </Border>
         <Button x:Name="CheckButton"
                 Grid.Row="4"
                 Text="Check if this url is a valid book"
+                Margin="0,5,0,0"
                 IsVisible="false"
                 Command="{Binding Source={x:Reference BookSearcher}, Path=CheckCompatibleCommand}"
                 CornerRadius="0"

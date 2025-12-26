@@ -364,3 +364,6 @@ FodyWeavers.xsd
 
 # Global Json Configuration
 Spindler/global.json
+
+# Visual Studio Files Folder
+Visual Studio 18
