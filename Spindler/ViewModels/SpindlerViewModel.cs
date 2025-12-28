@@ -35,9 +35,14 @@ public abstract partial class SpindlerViewModel : ObservableObject
             Database = database;
         }
         LazyPage = new Lazy<WeakReference<Page>>(() => new WeakReference<Page>(Shell.Current.CurrentPage));
+
+        
     }
 
-#nullable disable
+    private void NavigatingHandler(object? sender, ShellNavigatingEventArgs e)
+    {
+        Console.WriteLine("Not Implemented");
+    }
 
     protected async Task NavigateTo(string route)
     {
@@ -56,5 +61,5 @@ public abstract partial class SpindlerViewModel : ObservableObject
 
     [RelayCommand]
     public virtual async Task Back() => await NavigateTo("..");
-#nullable enable
+
 }

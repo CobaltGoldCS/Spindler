@@ -62,10 +62,8 @@ public partial class ReaderPage : ContentPage, IQueryAttributable
             .SetCurrentBook(book)
             .Build();
 
+        _ =  ViewModel.StartLoad();
         BindingContext = ViewModel;
-
-
-        await ViewModel.StartLoad();
     }
 
 
@@ -78,9 +76,12 @@ public partial class ReaderPage : ContentPage, IQueryAttributable
         PopupService = popupService;
     }
 
-    protected override bool OnBackButtonPressed()
-    {
-        _ = ViewModel.Back();
-        return true;
-    }
+    // TODO: Somehow microsoft managed to break ALL functionality relating to how the back button works
+    //       are we joking??
+    //protected override bool OnBackButtonPressed()
+    //{
+    //    _ = ViewModel.Back();
+    //    base.onB
+    //    return true;
+    //}
 }

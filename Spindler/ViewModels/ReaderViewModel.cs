@@ -76,6 +76,22 @@ public partial class ReaderViewModel : SpindlerViewModel, IReader
         NextChapterBrowser = nextChapterBrowser;
         PopupService = popupService;
         WeakReferenceMessenger.Default.Send(new StatusColorUpdateMessage("CardBackground"));
+        Shell.Current.Navigating += NavigatingWorkaroundTempNet10;
+    }
+
+    bool isDisposedProperly = false;
+    /// <summary>
+    /// Workaround for forwarding shell back button to the navigateTo function <br></br>
+    /// currently in .net10 <see cref="BackButtonBehavior"/> is completely broken, so we have to forward
+    /// it through shell navigating event args
+    /// </summary>
+    private async void NavigatingWorkaroundTempNet10(object? sender, ShellNavigatingEventArgs e)
+    {
+        if (e.Target.Location.OriginalString == ".." && !isDisposedProperly)
+        {
+            e.Cancel();
+            await NavigateTo("..");
+        }
     }
 
 
@@ -274,6 +290,7 @@ public partial class ReaderViewModel : SpindlerViewModel, IReader
             await CurrentBook.SaveInfo(Database);
         }
 
+        isDisposedProperly = true;
         // Set statusbar color back
         WeakReferenceMessenger.Default.Send(new StatusColorUpdateMessage(null));
         await base.NavigateTo(route, parameters, animated);
@@ -287,7 +304,7 @@ public partial class ReaderViewModel : SpindlerViewModel, IReader
         if (condition)
             return true;
 
-        Dictionary<string, object?> parameters = new()
+        Dictionary<string, object> parameters = new()
         {
             { "errormessage", message },
             { "config", ReaderService.Config }
