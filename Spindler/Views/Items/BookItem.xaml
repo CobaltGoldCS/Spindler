@@ -3,7 +3,6 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
         x:Class="Spindler.Views.CustomControls.Items.BookItem"
         xmlns:models="clr-namespace:Spindler.Models;assembly=Spindler.Core"
-        CompressedLayout.IsHeadless="True"
         x:Name="this">
     <Border.Shadow>
         <Shadow Brush="Black" Offset="10,10" Radius="100"/>

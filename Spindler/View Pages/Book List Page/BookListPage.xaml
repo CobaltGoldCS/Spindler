@@ -18,7 +18,7 @@
 
         <DataTemplate x:Key="ListLayout" x:DataType="models:Book">
             <items:BookItem 
-                        BookParameter="{Binding Path=., Mode=OneTime}"
+                        BookParameter="{Binding Path=.}"
                         SelectionCommand="{Binding x:DataType='viewmodels:BookListViewModel', Source={x:RelativeSource AncestorType={x:Type viewmodels:BookListViewModel}}, Path=SelectionCommand, Mode=OneTime}"
                         DoubleTappedCommand="{Binding x:DataType='viewmodels:BookListViewModel', Source={x:RelativeSource AncestorType={x:Type viewmodels:BookListViewModel}}, Path=DoubleTappedCommand, Mode=OneTime}"/>
         </DataTemplate>
@@ -27,8 +27,7 @@
         <DataTemplate x:Key="GridLayout" x:DataType="models:Book">
             <Grid RowDefinitions="160,50"
                   HeightRequest="210"
-                  WidthRequest="120"
-                  CompressedLayout.IsHeadless="True">
+                  WidthRequest="120">
                 <Grid.GestureRecognizers>
                     <TapGestureRecognizer NumberOfTapsRequired="1" 
                                           Command="{Binding x:DataType='viewmodels:BookListViewModel', Source={RelativeSource AncestorType={x:Type viewmodels:BookListViewModel}}, Path=SelectionCommand, Mode=OneTime}"
@@ -41,9 +40,7 @@
                         WidthRequest="100"
                         HeightRequest="150"
                         StrokeShape="RoundRectangle 3,3,3,3"
-                        Stroke="{Binding Path=HasImageUrl, Mode=OneTime, Converter={StaticResource BorderColorConverter}}"
-                        CompressedLayout.IsHeadless="True"
-                        >
+                        Stroke="{Binding Path=HasImageUrl, Mode=OneTime, Converter={StaticResource BorderColorConverter}}">
                     <Grid>
                         <Image Source="{Binding Path=ImageUrl, Mode=OneTime, TargetNullValue=spindler_icon.svg}" 
                            Aspect="AspectFill">
@@ -76,14 +73,13 @@
 
 
     <Shell.TitleView>
-        <Grid  ColumnDefinitions="*, auto" CompressedLayout.IsHeadless="True">
+        <Grid  ColumnDefinitions="*, auto" >
 
             <Entry Placeholder="{Binding Title}"
                    Text="{Binding FilterText}"
                    Grid.Column="0"
                    FontSize="Medium"
                    VerticalOptions="Center"
-                   HorizontalOptions="FillAndExpand"
                    FontAutoScalingEnabled="False"
                    FontFamily="OpenSans (Semibold)"
                    Margin="0,0,30,0"
@@ -127,15 +123,12 @@
                         StrokeThickness="0"
                         Background="{DynamicResource CardBackground}"
                         Margin="5,0"
-                        IsVisible="{Binding PinnedBooksAreVisible}"
-                        CompressedLayout.IsHeadless="True">
+                        IsVisible="{Binding PinnedBooksAreVisible}">
                     <toolkit:Expander x:Name="PinView"
-                              Padding="7,-1,8,5"
-                              CompressedLayout.IsHeadless="True">
+                              Padding="7,-1,8,5">
                         <toolkit:Expander.Header>
                             <Grid ColumnDefinitions="50, *, 25"
                                       Padding="0,7,0,0"
-                                      CompressedLayout.IsHeadless="True"
                                       VerticalOptions="Center"
                                       BackgroundColor="{DynamicResource CardBackground}">
                                 <Label  TextColor="{DynamicResource TextColor}"

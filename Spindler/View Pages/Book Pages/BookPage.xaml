@@ -14,7 +14,6 @@
                    Grid.Column="0"
                    FontSize="Large"
                    FontAutoScalingEnabled="False"
-                   HorizontalOptions="FillAndExpand"
                    VerticalTextAlignment="Center"
                    TextColor="{DynamicResource Primary}"
                    MaxLines="2"/>
@@ -69,7 +68,7 @@
                         Command="{Binding ReadClickedCommand}"
                 />
 
-            <Border Padding="0,20,0,0"
+            <Border Padding="0,40,0,0"
                         Grid.Row="3"
                         BackgroundColor="{DynamicResource Background}"
                         StrokeThickness="0">

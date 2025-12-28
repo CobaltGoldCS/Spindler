@@ -1,6 +1,5 @@
 using CommunityToolkit.Maui;
 using CommunityToolkit.Maui.Alerts;
-using CommunityToolkit.Mvvm.Messaging;
 using Spindler.Models;
 using Spindler.Services;
 using Spindler.Services.Web;
