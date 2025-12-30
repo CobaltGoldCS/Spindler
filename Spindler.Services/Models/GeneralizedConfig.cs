@@ -10,8 +10,8 @@ public class GeneralizedConfig : Config
     public string MatchPath { get; set; } = "";
 
     public override bool IsValidConfig() => DomainName != String.Empty
-        && ConfigService.IsValidSelector(MatchPath)
-        && ConfigService.IsValidSelector(ContentPath)
-        && ConfigService.IsValidSelector(NextUrlPath)
-        && ConfigService.IsValidSelector(PrevUrlPath);
+        && SelectionService.IsValidSelector(MatchPath)
+        && SelectionService.IsValidSelector(ContentPath)
+        && SelectionService.IsValidSelector(NextUrlPath)
+        && SelectionService.IsValidSelector(PrevUrlPath);
 }

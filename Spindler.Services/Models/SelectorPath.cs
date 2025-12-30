@@ -8,7 +8,7 @@ namespace Spindler.Models;
 /// <summary>
 /// Dataclass representing a selector path, such as an xpath or csspath
 /// </summary>
-public class Path
+public class SelectorPath
 {
     public string PathString;
     public Type PathType { get; private set; }
@@ -21,7 +21,7 @@ public class Path
         XPath
     }
 
-    public Path(string pathString)
+    public SelectorPath(string pathString)
     {
         PathString = pathString;
         PathType = PathString.StartsWith('/') ? Type.XPath : Type.Css;
@@ -65,8 +65,8 @@ public enum SelectorType
 
 public partial interface IHTMLSelector
 {
-    public string? Select(HtmlDocument nav, Path path, SelectorType type);
-    public string? Select(string html, Path path, SelectorType type)
+    public string? Select(HtmlDocument nav, SelectorPath path, SelectorType type);
+    public string? Select(string html, SelectorPath path, SelectorType type)
     {
         HtmlDocument doc = new();
         doc.LoadHtml(html);
@@ -79,7 +79,7 @@ public partial interface IHTMLSelector
 
 public partial class XPathSelector : IHTMLSelector
 {
-    public string? Select(HtmlDocument nav, Path path, SelectorType type)
+    public string? Select(HtmlDocument nav, SelectorPath path, SelectorType type)
     {
         // Custom $ Syntax
         MatchCollection attributes = IHTMLSelector.CustomSyntax().Matches(path.PathString);
@@ -124,7 +124,7 @@ public partial class XPathSelector : IHTMLSelector
 
 public partial class CSSPathSelector : IHTMLSelector
 {
-    public string? Select(HtmlDocument nav, Path path, SelectorType type)
+    public string? Select(HtmlDocument nav, SelectorPath path, SelectorType type)
     {
         // Custom $ Syntax
         MatchCollection attributes = IHTMLSelector.CustomSyntax().Matches(path.PathString);
@@ -170,5 +170,5 @@ public partial class CSSPathSelector : IHTMLSelector
 
 public static class PathExtensions
 {
-    public static Path AsPath(this string str) => new(str);
+    public static SelectorPath AsPath(this string str) => new(str);
 }

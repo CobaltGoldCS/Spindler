@@ -3,50 +3,50 @@ using System.Xml.XPath;
 
 namespace Spindler.Services.Web;
 
-using SelectorPath = Models.Path;
-public partial class ConfigService
+using SelectorPath = Models.SelectorPath;
+public partial class SelectionService
 {
 
-    private SelectorPath titlepath;
-    private SelectorPath contentpath;
-    private SelectorPath nextpath;
-    private SelectorPath previouspath;
-    private SelectorPath imageUrlPath;
+    private readonly SelectorPath titlepath;
+    private readonly SelectorPath contentpath;
+    private readonly SelectorPath nextpath;
+    private readonly SelectorPath previouspath;
+    private readonly SelectorPath imageUrlPath;
 
 
-    public ConfigService(Config config)
+    public SelectionService(Config config)
     {
         if (string.IsNullOrEmpty(config.TitlePath))
         {
             config.TitlePath = "//title";
         }
-        titlepath = new(config.TitlePath);
-        contentpath = new(config.ContentPath);
-        nextpath = new(config.NextUrlPath);
-        previouspath = new(config.PrevUrlPath);
-        imageUrlPath = new(config.ImageUrlPath);
+        titlepath = config.TitlePath.AsPath();
+        contentpath = config.ContentPath.AsPath();
+        nextpath = config.NextUrlPath.AsPath();
+        previouspath = config.PrevUrlPath.AsPath();
+        imageUrlPath = config.ImageUrlPath.AsPath();
     }
 
     public enum Selector
     {
         /// <summary>
-        /// Title Path
+        /// Title SelectorPath
         /// </summary>
         Title,
         /// <summary>
-        /// Content Path
+        /// Content SelectorPath
         /// </summary>
         Content,
         /// <summary>
-        /// Next Url Path
+        /// Next Url SelectorPath
         /// </summary>
         NextUrl,
         /// <summary>
-        /// Previous Url Path
+        /// Previous Url SelectorPath
         /// </summary>
         PrevUrl,
         /// <summary>
-        /// Image Url Path
+        /// Image Url SelectorPath
         /// </summary>
         ImageUrl,
     }
@@ -61,7 +61,7 @@ public partial class ConfigService
         if (path is null || path.Length == 0) return false;
         try
         {
-            _ = path.AsPath().Select(path, SelectorType.Text) != null;
+            _ = path.AsPath().Select(path, SelectorType.Text);
             return true;
         }
         catch (Exception e) when (
@@ -86,7 +86,7 @@ public partial class ConfigService
         _ => throw new NotImplementedException("Selector not implemented (ConfigService.GetPath)")
     };
 
-    public string PrettyWrapSelector(string html, Selector selector, SelectorType type)
+    public string Select(string html, Selector selector, SelectorType type)
     {
         return GetPath(selector).Select(html, type);
     }

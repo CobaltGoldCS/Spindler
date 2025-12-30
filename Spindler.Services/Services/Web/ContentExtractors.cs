@@ -4,7 +4,7 @@ using Spindler.Models;
 using Spindler.Services.Web;
 using System.Text.RegularExpressions;
 using System.Web;
-using Path = Spindler.Models.Path;
+using SelectorPath = Spindler.Models.SelectorPath;
 
 namespace Spindler.Services;
 
@@ -22,7 +22,7 @@ public abstract partial class BaseContentExtractor
     /// <param name="nav">The document to analyze</param>
     /// <param name="config">Configuration information for the HTML content</param>
     /// <returns>Main Content according to Config and Document</returns>
-    public abstract IEnumerable<string> GetContent(HtmlDocument nav, Config config, ConfigService service);
+    public abstract IEnumerable<string> GetContent(HtmlDocument nav, Config config, SelectionService service);
 
     /// <summary>
     /// Tags that should not be included (Generally)
@@ -92,14 +92,14 @@ public abstract class HtmlExtractor : BaseContentExtractor
 /// </summary>
 public class HtmlContentExtractor : HtmlExtractor
 {
-    public override IEnumerable<string> GetContent(HtmlDocument nav, Config config, ConfigService service)
+    public override IEnumerable<string> GetContent(HtmlDocument nav, Config config, SelectionService service)
     {
-        Path contentPath = service.GetPath(ConfigService.Selector.Content);
+        SelectorPath contentPath = service.GetPath(SelectionService.Selector.Content);
 
         HtmlNode node = contentPath.PathType switch
         {
-            Path.Type.Css => nav.QuerySelector(contentPath.PathString),
-            Path.Type.XPath => nav.DocumentNode.SelectSingleNode(contentPath.PathString),
+            SelectorPath.Type.Css => nav.QuerySelector(contentPath.PathString),
+            SelectorPath.Type.XPath => nav.DocumentNode.SelectSingleNode(contentPath.PathString),
             _ => throw new NotImplementedException("This path type has not been implemented {ConfigService.GetContent}"),
         };
 
@@ -118,13 +118,13 @@ public class HtmlContentExtractor : HtmlExtractor
 /// </summary>
 public class TextContentExtractor : BaseContentExtractor
 {
-    public override IEnumerable<string> GetContent(HtmlDocument nav, Config config, ConfigService service)
+    public override IEnumerable<string> GetContent(HtmlDocument nav, Config config, SelectionService service)
     {
-        Path contentPath = service.GetPath(ConfigService.Selector.Content);
+        SelectorPath contentPath = service.GetPath(SelectionService.Selector.Content);
         HtmlNode node = contentPath.PathType switch
         {
-            Path.Type.Css => nav.QuerySelector(contentPath.PathString),
-            Path.Type.XPath => nav.DocumentNode.SelectSingleNode(contentPath.PathString),
+            SelectorPath.Type.Css => nav.QuerySelector(contentPath.PathString),
+            SelectorPath.Type.XPath => nav.DocumentNode.SelectSingleNode(contentPath.PathString),
             _ => throw new NotImplementedException("This path type has not been implemented {ConfigService.GetContent}"),
         };
 
@@ -144,13 +144,13 @@ public class TextContentExtractor : BaseContentExtractor
 /// </summary>
 public class AllTagsContentExtractor : BaseContentExtractor
 {
-    public override IEnumerable<string> GetContent(HtmlDocument nav, Config config, ConfigService service)
+    public override IEnumerable<string> GetContent(HtmlDocument nav, Config config, SelectionService service)
     {
-        Path contentPath = service.GetPath(ConfigService.Selector.Content);
+        SelectorPath contentPath = service.GetPath(SelectionService.Selector.Content);
         IEnumerable<HtmlNode> nodes = contentPath.PathType switch
         {
-            Path.Type.Css => nav.QuerySelectorAll(contentPath.PathString),
-            Path.Type.XPath => nav.DocumentNode.SelectNodes(contentPath.PathString),
+            SelectorPath.Type.Css => nav.QuerySelectorAll(contentPath.PathString),
+            SelectorPath.Type.XPath => nav.DocumentNode.SelectNodes(contentPath.PathString),
             _ => throw new NotImplementedException("This path type has not been implemented {ConfigService.GetContent}"),
         };
 

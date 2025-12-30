@@ -1,6 +1,6 @@
 ﻿namespace Spindler.Utilities;
 
-public class WebUtilities
+public class UrlBuilder
 {
     private Uri? baseUrl;
     private Uri BaseUrl
@@ -15,12 +15,12 @@ public class WebUtilities
             baseUrl ??= value;
         }
     }
-    public WebUtilities(Uri baseUrl)
+    public UrlBuilder(Uri baseUrl)
     {
         BaseUrl = baseUrl;
     }
 
-    public WebUtilities()
+    public UrlBuilder()
     {
     }
 

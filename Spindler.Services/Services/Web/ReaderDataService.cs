@@ -13,9 +13,9 @@ public partial class ReaderDataService : ObservableObject
 {
     // This is so other things can access lower level APIs
     /// <summary>
-    /// Internal ConfigService
+    /// Internal SelectionService
     /// </summary>
-    public ConfigService ConfigService { get; private set; }
+    public SelectionService ConfigService { get; private set; }
     /// <summary>
     /// Internal WebService
     /// </summary>
@@ -25,11 +25,16 @@ public partial class ReaderDataService : ObservableObject
     /// </summary>
     public Config Config { get; private set; }
 
+    /// <summary>
+    /// The Extractor in charge of extracting the main content of the chapter.
+    /// </summary>
+    private BaseContentExtractor ContentExtractor { get; set; }
+
     [ObservableProperty]
     public bool isContentHtml = false;
 
 
-    private readonly WebUtilities WebUtilities = new();
+    private readonly UrlBuilder UrlBuilder = new();
 
     private readonly Task<Result<LoadedData>>[] LoadingDataTask =
     [
@@ -46,9 +51,18 @@ public partial class ReaderDataService : ObservableObject
     public ReaderDataService(Config config, IWebService webService)
     {
         Config = config;
-
-        ConfigService = new(config);
         WebService = webService;
+        ConfigService = new(config);
+
+        ContentExtractor = (TargetType)Config.ContentType switch
+        {
+            TargetType.Text => new TextContentExtractor(),
+            TargetType.Html => new HtmlContentExtractor(),
+            TargetType.All_Tags_Matching_Path => new AllTagsContentExtractor(),
+            _ => throw new InvalidDataException("Content Type Not Supported")
+        };
+
+        IsContentHtml = ContentExtractor is HtmlExtractor;
     }
 
     public void InvalidatePreloadedData()
@@ -100,17 +114,17 @@ public partial class ReaderDataService : ObservableObject
     /// <returns>A LoadedData task holding either a null LoadedData, or a LoadedData with valid values</returns>
     public async Task<Result<LoadedData>> LoadUrl(string url)
     {
-        if (!WebUtilities.IsUrl(url))
+        if (!UrlBuilder.IsUrl(url))
         {
             return Result.Error<LoadedData>($"'{url}' is not a valid url");
         }
-        var baseUrlResult = WebUtilities.SetBaseUrlSafe(url);
+        var baseUrlResult = UrlBuilder.SetBaseUrlSafe(url);
         if (baseUrlResult is Result<string>.Err error)
         {
             return Result.Error<LoadedData>(error.Message);
         }
 
-        url = WebUtilities.MakeAbsoluteUrl(url).ToString();
+        url = UrlBuilder.MakeAbsoluteUrl(url).ToString();
 
         var html = await WebService.GetHtmlFromUrl(url);
 
@@ -126,7 +140,7 @@ public partial class ReaderDataService : ObservableObject
         else
         {
             var okResult = html as Result<string>.Ok;
-            returnValue = await LoadReaderData(url, okResult!.Value);
+            returnValue = await ExtractFromHtml(url, okResult!.Value);
         }
         return returnValue;
     }
@@ -137,38 +151,22 @@ public partial class ReaderDataService : ObservableObject
     /// <param name="url">The url used to obtain the reader data (this is not processed in this function)</param>
     /// <param name="html">The html to search for relevant data</param>
     /// <returns>A loaded data object containing the required data from the target website</returns>
-    public async Task<Result<LoadedData>> LoadReaderData(string url, string html)
+    public async Task<Result<LoadedData>> ExtractFromHtml(string url, string html)
     {
 
         HtmlDocument doc = new();
         doc.LoadHtml(html);
 
-        var baseUrlResult = WebUtilities.SetBaseUrlSafe(url);
-        if (baseUrlResult is Result<string>.Err error)
-        {
-            return Result.Error<LoadedData>(error.Message);
-        }
-
         try
         {
 
-            BaseContentExtractor contentExtractor = (TargetType)Config.ContentType switch
-            {
-                TargetType.Text => new TextContentExtractor(),
-                TargetType.Html => new HtmlContentExtractor(),
-                TargetType.All_Tags_Matching_Path => new AllTagsContentExtractor(),
-                _ => throw new InvalidDataException("Content Type Not Supported")
-            };
-
-            IsContentHtml = contentExtractor is HtmlExtractor;
-
-            Task<IEnumerable<string>> textTask = Task.Run(() => contentExtractor.GetContent(doc, Config, ConfigService));
+            Task<IEnumerable<string>> textTask = Task.Run(() => ContentExtractor.GetContent(doc, Config, ConfigService));
 
             Task<string>[] selectorOperations =
             [
                 Task.Run(() => GetTitle(html)),
-                Task.Run(() => ConfigService.PrettyWrapSelector(html, ConfigService.Selector.NextUrl, SelectorType.Link)),
-                Task.Run(() => ConfigService.PrettyWrapSelector(html, ConfigService.Selector.PrevUrl, SelectorType.Link)),
+                Task.Run(() => ConfigService.Select(html, SelectionService.Selector.NextUrl, SelectorType.Link)),
+                Task.Run(() => ConfigService.Select(html, SelectionService.Selector.PrevUrl, SelectorType.Link)),
             ];
             string[] content = await Task.WhenAll(selectorOperations);
 
@@ -196,7 +194,7 @@ public partial class ReaderDataService : ObservableObject
     /// <returns>A title determined by the title selector</returns>
     public string GetTitle(string html)
     {
-        return HttpUtility.HtmlDecode(ConfigService.PrettyWrapSelector(html, ConfigService.Selector.Title, type: SelectorType.Text)).Trim();
+        return HttpUtility.HtmlDecode(ConfigService.Select(html, SelectionService.Selector.Title, type: SelectorType.Text)).Trim();
     }
 
     [GeneratedRegex("[\\s]{2,}")]

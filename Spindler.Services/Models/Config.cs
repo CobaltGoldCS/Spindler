@@ -208,9 +208,9 @@ public partial class Config : IIndexedModel
     }
 
     public virtual bool IsValidConfig() => DomainValidation().IsMatch(DomainName)
-        && ConfigService.IsValidSelector(ContentPath)
-        && ConfigService.IsValidSelector(NextUrlPath)
-        && ConfigService.IsValidSelector(PrevUrlPath);
+        && SelectionService.IsValidSelector(ContentPath)
+        && SelectionService.IsValidSelector(NextUrlPath)
+        && SelectionService.IsValidSelector(PrevUrlPath);
 
 
     [GeneratedRegex("^(?!www\\.)(((?!\\-))(xn\\-\\-)?[a-z0-9\\-_]{0,61}[a-z0-9]{1,1}\\.)*(xn\\-\\-)?([a-z0-9\\-]{1,61}|[a-z0-9\\-]{1,30})\\.[a-z]{2,}$")]

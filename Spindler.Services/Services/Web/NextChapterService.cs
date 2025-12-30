@@ -43,8 +43,8 @@ public class NextChapterService(HttpClient client, IWebService browser, IDataSer
         if (config is null || config.UsesWebview)
             return book;
 
-        string nextUrl = new ConfigService(config).PrettyWrapSelector(html, ConfigService.Selector.NextUrl, SelectorType.Link);
-        book.HasNextChapter = WebUtilities.IsUrl(nextUrl);
+        string nextUrl = new SelectionService(config).Select(html, SelectionService.Selector.NextUrl, SelectorType.Link);
+        book.HasNextChapter = UrlBuilder.IsUrl(nextUrl);
         return book;
     }
 

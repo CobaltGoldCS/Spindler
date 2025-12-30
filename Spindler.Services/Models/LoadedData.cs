@@ -53,8 +53,8 @@ public partial class LoadedData : ObservableObject
 
         ConvertUrlsToAbsolute();
 
-        NextUrlValid = WebUtilities.IsUrl(nextUrl);
-        PrevUrlValid = WebUtilities.IsUrl(prevUrl);
+        NextUrlValid = UrlBuilder.IsUrl(nextUrl);
+        PrevUrlValid = UrlBuilder.IsUrl(prevUrl);
     }
 
     public static LoadedData CreatePlaceholder() => new("Loading", [string.Empty]);
