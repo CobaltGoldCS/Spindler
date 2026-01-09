@@ -4,7 +4,7 @@ using CommunityToolkit.Mvvm.Input;
 using HtmlAgilityPack;
 using Spindler.Models;
 using Spindler.Services;
-using Path = Spindler.Models.Path;
+using SelectorPath = Spindler.Models.SelectorPath;
 
 namespace Spindler.Views.Book_Pages;
 
@@ -170,7 +170,7 @@ public partial class BookSearcherPage : ContentPage, IQueryAttributable
 
         try
         {
-            Path contentPath = Config.ContentPath.AsPath();
+            SelectorPath contentPath = Config.ContentPath.AsPath();
             string content = contentPath.Select(doc, SelectorType.Text);
 
             SwitchUiBasedOnState(!string.IsNullOrEmpty(content) ? State.BookFound : State.BookNotFound);
@@ -223,7 +223,7 @@ public partial class BookSearcherPage : ContentPage, IQueryAttributable
         HtmlDocument doc = new();
         doc.LoadHtml(html);
 
-        Models.Path titlePath = Config!.TitlePath.AsPath();
+        Models.SelectorPath titlePath = Config!.TitlePath.AsPath();
         string title = titlePath.Select(doc, SelectorType.Text);
         await Database.SaveItemAsync(
             new Book

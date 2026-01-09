@@ -107,8 +107,8 @@ public partial class BookViewModel(IDataService database, HttpClient client) : S
     {
         return path.AsPath().PathType switch
         {
-            Models.Path.Type.XPath => "X Path",
-            Models.Path.Type.Css => "CSS Path",
+            Models.SelectorPath.Type.XPath => "X Path",
+            Models.SelectorPath.Type.Css => "CSS Path",
             _ => "Unknown",
         };
     }

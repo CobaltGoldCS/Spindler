@@ -79,7 +79,7 @@ public partial class WebScraperBrowser : WebView, IWebService
 
         string html;
         // Attempt to bypass cloudflare
-        Models.Path cloudflareDetectPath = new("body.no-js > div.main-wrapper > div.main-content > h2#challenge-running");
+        Models.SelectorPath cloudflareDetectPath = new("body.no-js > div.main-wrapper > div.main-content > h2#challenge-running");
         try
         {
 

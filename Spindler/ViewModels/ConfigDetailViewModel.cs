@@ -117,7 +117,7 @@ public partial class ConfigDetailViewModel(IDataService database) : SpindlerView
             return;
         }
 
-        if (!ConfigService.IsValidSelector(Config.ImageUrlPath))
+        if (!SelectionService.IsValidSelector(Config.ImageUrlPath))
             Config.ImageUrlPath = "";
 
         Config.Separator = SeparatorText
