@@ -3,6 +3,8 @@ using HtmlAgilityPack;
 using Spindler.Models;
 using Spindler.Services.Web;
 using Spindler.Utilities;
+using System.Collections.Concurrent;
+using System.Diagnostics;
 using System.Text.RegularExpressions;
 using System.Web;
 using System.Xml.XPath;
@@ -25,22 +27,19 @@ public partial class ReaderDataService : ObservableObject
     /// </summary>
     public Config Config { get; private set; }
 
-    /// <summary>
-    /// The Extractor in charge of extracting the main content of the chapter.
-    /// </summary>
-    private BaseContentExtractor ContentExtractor { get; set; }
+    
 
     [ObservableProperty]
     public bool isContentHtml = false;
 
 
     private readonly UrlBuilder UrlBuilder = new();
+    private PersistantChapterDataStore Chapters = new();
 
-    private readonly Task<Result<LoadedData>>[] LoadingDataTask =
-    [
-        Task.FromResult(Result.Error<LoadedData>("Uninitialized Data")),
-        Task.FromResult(Result.Error<LoadedData>("Uninitialized Data"))
-    ];
+    /// <summary>
+    /// The Extractor in charge of extracting the main content of the chapter.
+    /// </summary>
+    private BaseContentExtractor ContentExtractor { get; set; }
 
     public enum UrlType
     {
@@ -65,54 +64,12 @@ public partial class ReaderDataService : ObservableObject
         IsContentHtml = ContentExtractor is HtmlExtractor;
     }
 
-    public void InvalidatePreloadedData()
-    {
-        LoadingDataTask[0] = Task.FromResult(Result.Error<LoadedData>("Uninitialized Data"));
-        LoadingDataTask[1] = Task.FromResult(Result.Error<LoadedData>("Uninitialized Data"));
-    }
-
-    public async Task<Result<LoadedData>> GetLoadedData(UrlType urlType, LoadedData currentData)
-    {
-
-        var targetData = await LoadingDataTask[(int)urlType];
-        // Attempt to reload the return data if it fails the first time
-        Result<LoadedData> returnData = targetData switch
-        {
-            Result<LoadedData>.Ok => targetData,
-            Result<LoadedData>.Err => await LoadUrl(urlType == UrlType.Previous ? currentData.prevUrl : currentData.nextUrl),
-            _ => throw new NotImplementedException("Result must be ok or invalid")
-        };
-
-        var priorData = currentData;
-
-        returnData.HandleSuccess((data) =>
-        {
-            switch (urlType)
-            {
-                // User Clicked the previous chapter button
-                case UrlType.Previous:
-                    LoadingDataTask[(int)UrlType.Previous] = LoadUrl(data.prevUrl);
-                    LoadingDataTask[(int)UrlType.Next] = Task.FromResult(Result.Success(priorData));
-                    break;
-                // User Clicked the next chapter button
-                case UrlType.Next:
-                    LoadingDataTask[(int)UrlType.Next] = LoadUrl(data.nextUrl);
-                    LoadingDataTask[(int)UrlType.Previous] = Task.FromResult(Result.Success(priorData));
-                    break;
-                default:
-                    throw new NotImplementedException();
-            }
-        });
-
-        return returnData;
-    }
-
     /// <summary>
     /// Obtain data from <paramref name="url"/>
     /// </summary>
     /// <param name="url">The url to obtain data from</param>
     /// <returns>A LoadedData task holding either a null LoadedData, or a LoadedData with valid values</returns>
-    public async Task<Result<LoadedData>> LoadUrl(string url)
+    public async Task<Result<LoadedData>> LoadChapter(string url)
     {
         if (!UrlBuilder.IsUrl(url))
         {
@@ -125,6 +82,11 @@ public partial class ReaderDataService : ObservableObject
         }
 
         url = UrlBuilder.MakeAbsoluteUrl(url).ToString();
+
+        if (Chapters.TryGetValue(url, out LoadedData? chapter))
+        {
+            return Result.Success(chapter!);
+        }
 
         var html = await WebService.GetHtmlFromUrl(url);
 
@@ -142,7 +104,39 @@ public partial class ReaderDataService : ObservableObject
             var okResult = html as Result<string>.Ok;
             returnValue = await ExtractFromHtml(url, okResult!.Value);
         }
+
+        if (returnValue is Result<LoadedData>.Ok data)
+        {
+            Chapters[url] = data.Value;
+        }
         return returnValue;
+    }
+
+    CancellationTokenSource tokenSource = new();
+    /// <summary>
+    /// Load Chapter Given previously known chapter. This overload is given in order to optimize
+    /// chapter fetching by giving Spindler a direction to load new chapters into. Use if possible.
+    /// </summary>
+    /// <param name="direction">The next chapter (relative) to load</param>
+    /// <returns></returns>
+    /// <exception cref="NullReferenceException"></exception>
+    /// <exception cref="ArgumentException"></exception>
+    public async Task<Result<LoadedData>> LoadChapter(UrlType direction, LoadedData currentChapter)
+    {
+
+        var chapterUrl = direction switch
+        {
+            UrlType.Previous => currentChapter.prevUrl,
+            UrlType.Next => currentChapter.nextUrl,
+            _ => throw new ArgumentException("Unknown UrlType (LOADCHAPTER)")
+        };
+
+        Result<LoadedData> returnChapter = await LoadChapter(chapterUrl);
+        tokenSource.Cancel();
+        tokenSource = new();
+        StartPreloadDataThread(currentChapter, direction, tokenSource.Token);
+
+        return returnChapter;
     }
 
     /// <summary>
@@ -199,4 +193,78 @@ public partial class ReaderDataService : ObservableObject
 
     [GeneratedRegex("[\\s]{2,}")]
     private static partial Regex MatchNewlines();
+
+    private void StartPreloadDataThread(LoadedData? anchor, UrlType direction, CancellationToken token)
+    {
+        Task.Run(async () =>
+        {
+
+            if (anchor == null)
+            {
+                return;
+            }
+
+            LoadedData currentInterestedData = direction switch
+            {
+                UrlType.Previous => Chapters.FindAbsoluteFirstChapter(anchor),
+                UrlType.Next => Chapters.FindAbsoluteLastChapter(anchor),
+                _ => throw new NullReferenceException("Unknown UrlType (PreloadDataThread)"),
+            };
+
+            switch (direction)
+            {
+                case UrlType.Previous:
+                    while (currentInterestedData.PrevUrlValid && !token.IsCancellationRequested)
+                    {
+                        Result<LoadedData> result = await LoadChapter(currentInterestedData.prevUrl);
+                        result.HandleSuccess((data) =>
+                        {
+                            currentInterestedData = data;
+                            Chapters[data.currentUrl] = data;
+                        });
+                    }
+                    break;
+                case UrlType.Next:
+                    while (currentInterestedData.NextUrlValid && !token.IsCancellationRequested)
+                    {
+                        Result<LoadedData> result = await LoadChapter(currentInterestedData.nextUrl);
+                        result.HandleSuccess((data) =>
+                        {
+                            currentInterestedData = data;
+                            Chapters[data.currentUrl] = data;
+                        });
+                    }
+                    break;
+                default:
+                    Debug.WriteLine("Invalid URLTYPE given: PreloadDataThread");
+                    return;
+            }
+        }, token);
+    }
+}
+
+internal partial class PersistantChapterDataStore : ConcurrentDictionary<string, LoadedData>
+{
+
+    public LoadedData FindAbsoluteFirstChapter(LoadedData anchor)
+    {
+        var firstKnownChapter = anchor;
+        while (ContainsKey(firstKnownChapter.prevUrl))
+        {
+            firstKnownChapter = this[firstKnownChapter.prevUrl];
+        }
+
+        return firstKnownChapter;
+    }
+
+    public LoadedData FindAbsoluteLastChapter(LoadedData anchor)
+    {
+        var lastKnownChapter = anchor;
+        while (ContainsKey(lastKnownChapter.nextUrl))
+        {
+            lastKnownChapter = this[lastKnownChapter.nextUrl];
+        }
+
+        return lastKnownChapter;
+    }
 }

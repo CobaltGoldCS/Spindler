@@ -104,7 +104,7 @@ public partial class ReaderViewModel : SpindlerViewModel, IReader
     {
         IsLoading = true;
 
-        var data = await ReaderService.LoadUrl(CurrentBook!.Url);
+        var data = await ReaderService.LoadChapter(CurrentBook!.Url);
         switch (data)
         {
             case Result<LoadedData>.Err error:
@@ -196,7 +196,7 @@ public partial class ReaderViewModel : SpindlerViewModel, IReader
             _ => throw new InvalidDataException("Invalid value for selector; selector must be prev or next url")
         };
 
-        var dataResult = await ReaderService.GetLoadedData(selector, CurrentData!);
+        var dataResult = await ReaderService.LoadChapter(selector, CurrentData);
         if (dataResult is Result<LoadedData>.Err error)
         {
             await SafeAssert(false, error.Message);
@@ -237,10 +237,7 @@ public partial class ReaderViewModel : SpindlerViewModel, IReader
         // UI Changes
         IsLoading = true;
 
-        // Preloaded Data is no longer valid for the bookmark
-        ReaderService.InvalidatePreloadedData();
-
-        var data = await ReaderService.LoadUrl(bookmark!.Url);
+        var data = await ReaderService.LoadChapter(bookmark!.Url);
         switch (data)
         {
             case Result<LoadedData>.Err error:
@@ -249,8 +246,7 @@ public partial class ReaderViewModel : SpindlerViewModel, IReader
             case Result<LoadedData>.Ok value:
                 CurrentData = value!.Value;
                 break;
-        }
-        ;
+        };
 
         // Cleanup 
         IsLoading = false;
