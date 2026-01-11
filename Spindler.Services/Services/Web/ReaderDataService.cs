@@ -68,36 +68,36 @@ public partial class ReaderDataService : ObservableObject
     /// Obtain data from <paramref name="url"/>
     /// </summary>
     /// <param name="url">The url to obtain data from</param>
-    /// <returns>A LoadedData task holding either a null LoadedData, or a LoadedData with valid values</returns>
-    public async Task<Result<LoadedData>> LoadChapter(string url)
+    /// <returns>A Chapter task holding either a null Chapter, or a Chapter with valid values</returns>
+    public async Task<Result<Chapter>> LoadChapter(string url)
     {
         if (!UrlBuilder.IsUrl(url))
         {
-            return Result.Error<LoadedData>($"'{url}' is not a valid url");
+            return Result.Error<Chapter>($"'{url}' is not a valid url");
         }
         var baseUrlResult = UrlBuilder.SetBaseUrlSafe(url);
         if (baseUrlResult is Result<string>.Err error)
         {
-            return Result.Error<LoadedData>(error.Message);
+            return Result.Error<Chapter>(error.Message);
         }
 
         url = UrlBuilder.MakeAbsoluteUrl(url).ToString();
 
-        if (Chapters.TryGetValue(url, out LoadedData? chapter))
+        if (Chapters.TryGetValue(url, out Chapter? chapter))
         {
             return Result.Success(chapter!);
         }
 
         var html = await WebService.GetHtmlFromUrl(url);
 
-        Result<LoadedData> returnValue;
+        Result<Chapter> returnValue;
 
         if (html is Result<string>.Err invalidMessage)
         {
             HtmlDocument invalidHtml = new();
             invalidHtml.LoadHtml(invalidMessage.Message);
             string innerText = invalidHtml.DocumentNode.InnerText.Trim();
-            returnValue = Result.Error<LoadedData>(MatchNewlines().Replace(innerText, Environment.NewLine));
+            returnValue = Result.Error<Chapter>(MatchNewlines().Replace(innerText, Environment.NewLine));
         }
         else
         {
@@ -105,7 +105,7 @@ public partial class ReaderDataService : ObservableObject
             returnValue = await ExtractFromHtml(url, okResult!.Value);
         }
 
-        if (returnValue is Result<LoadedData>.Ok data)
+        if (returnValue is Result<Chapter>.Ok data)
         {
             Chapters[url] = data.Value;
         }
@@ -121,7 +121,7 @@ public partial class ReaderDataService : ObservableObject
     /// <returns></returns>
     /// <exception cref="NullReferenceException"></exception>
     /// <exception cref="ArgumentException"></exception>
-    public async Task<Result<LoadedData>> LoadChapter(UrlType direction, LoadedData currentChapter)
+    public async Task<Result<Chapter>> LoadChapter(UrlType direction, Chapter currentChapter)
     {
 
         var chapterUrl = direction switch
@@ -131,7 +131,7 @@ public partial class ReaderDataService : ObservableObject
             _ => throw new ArgumentException("Unknown UrlType (LOADCHAPTER)")
         };
 
-        Result<LoadedData> returnChapter = await LoadChapter(chapterUrl);
+        Result<Chapter> returnChapter = await LoadChapter(chapterUrl);
         tokenSource.Cancel();
         tokenSource = new();
         StartPreloadDataThread(currentChapter, direction, tokenSource.Token);
@@ -140,12 +140,12 @@ public partial class ReaderDataService : ObservableObject
     }
 
     /// <summary>
-    /// Loads all necessary reader data into a LoadedData object
+    /// Loads all necessary reader data into a Chapter object
     /// </summary>
     /// <param name="url">The url used to obtain the reader data (this is not processed in this function)</param>
     /// <param name="html">The html to search for relevant data</param>
     /// <returns>A loaded data object containing the required data from the target website</returns>
-    public async Task<Result<LoadedData>> ExtractFromHtml(string url, string html)
+    public async Task<Result<Chapter>> ExtractFromHtml(string url, string html)
     {
 
         HtmlDocument doc = new();
@@ -164,7 +164,7 @@ public partial class ReaderDataService : ObservableObject
             ];
             string[] content = await Task.WhenAll(selectorOperations);
 
-            LoadedData data = new(
+            Chapter data = new(
                 title: content[0],
                 text: await textTask,
                 nextUrl: content[1],
@@ -176,7 +176,7 @@ public partial class ReaderDataService : ObservableObject
         }
         catch (XPathException)
         {
-            return Result.Error<LoadedData>("Invalid XPath");
+            return Result.Error<Chapter>("Invalid XPath");
         }
     }
 
@@ -194,9 +194,9 @@ public partial class ReaderDataService : ObservableObject
     [GeneratedRegex("[\\s]{2,}")]
     private static partial Regex MatchNewlines();
 
-    private void StartPreloadDataThread(LoadedData? anchor, UrlType direction, CancellationToken token)
+    private void StartPreloadDataThread(Chapter? anchor, UrlType direction, CancellationToken token)
     {
-        Task.Run(async () =>
+        Task.Run((Func<Task?>)(async () =>
         {
 
             if (anchor == null)
@@ -204,7 +204,7 @@ public partial class ReaderDataService : ObservableObject
                 return;
             }
 
-            LoadedData currentInterestedData = direction switch
+            Chapter currentInterestedData = direction switch
             {
                 UrlType.Previous => Chapters.FindAbsoluteFirstChapter(anchor),
                 UrlType.Next => Chapters.FindAbsoluteLastChapter(anchor),
@@ -216,7 +216,7 @@ public partial class ReaderDataService : ObservableObject
                 case UrlType.Previous:
                     while (currentInterestedData.PrevUrlValid && !token.IsCancellationRequested)
                     {
-                        Result<LoadedData> result = await LoadChapter(currentInterestedData.prevUrl);
+                        Result<Chapter> result = await LoadChapter(currentInterestedData.prevUrl);
                         result.HandleSuccess((data) =>
                         {
                             currentInterestedData = data;
@@ -227,7 +227,7 @@ public partial class ReaderDataService : ObservableObject
                 case UrlType.Next:
                     while (currentInterestedData.NextUrlValid && !token.IsCancellationRequested)
                     {
-                        Result<LoadedData> result = await LoadChapter(currentInterestedData.nextUrl);
+                        Result<Chapter> result = await LoadChapter(currentInterestedData.nextUrl);
                         result.HandleSuccess((data) =>
                         {
                             currentInterestedData = data;
@@ -239,14 +239,14 @@ public partial class ReaderDataService : ObservableObject
                     Debug.WriteLine("Invalid URLTYPE given: PreloadDataThread");
                     return;
             }
-        }, token);
+        }), token);
     }
 }
 
-internal partial class PersistantChapterDataStore : ConcurrentDictionary<string, LoadedData>
+internal partial class PersistantChapterDataStore : ConcurrentDictionary<string, Chapter>
 {
 
-    public LoadedData FindAbsoluteFirstChapter(LoadedData anchor)
+    public Chapter FindAbsoluteFirstChapter(Chapter anchor)
     {
         var firstKnownChapter = anchor;
         while (ContainsKey(firstKnownChapter.prevUrl))
@@ -257,7 +257,7 @@ internal partial class PersistantChapterDataStore : ConcurrentDictionary<string,
         return firstKnownChapter;
     }
 
-    public LoadedData FindAbsoluteLastChapter(LoadedData anchor)
+    public Chapter FindAbsoluteLastChapter(Chapter anchor)
     {
         var lastKnownChapter = anchor;
         while (ContainsKey(lastKnownChapter.nextUrl))

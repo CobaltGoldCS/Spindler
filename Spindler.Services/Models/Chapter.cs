@@ -7,7 +7,7 @@ namespace Spindler.Models;
 /// <summary>
 /// A model whoose job is to hold the loaded data of a given webpage for display in the user interface
 /// </summary>
-public partial class LoadedData : ObservableObject
+public partial class Chapter : ObservableObject
 {
     /// <summary>
     /// The text content of the loaded page
@@ -43,7 +43,7 @@ public partial class LoadedData : ObservableObject
     private bool nextUrlValid;
 
 
-    public LoadedData(string title, IEnumerable<string> text, string currentUrl, string prevUrl, string nextUrl)
+    public Chapter(string title, IEnumerable<string> text, string currentUrl, string prevUrl, string nextUrl)
     {
         this.Title = title;
         Text = text;
@@ -57,12 +57,12 @@ public partial class LoadedData : ObservableObject
         PrevUrlValid = UrlBuilder.IsUrl(prevUrl);
     }
 
-    public static LoadedData CreatePlaceholder() => new("Loading", [string.Empty]);
+    public static Chapter CreatePlaceholder() => new("Loading", [string.Empty]);
 
     public void InvalidateNextUrl() => NextUrlValid = false;
     public void InvalidatePrevUrl() => PrevUrlValid = false;
 
-    private LoadedData(string title, ObservableCollection<string> text)
+    private Chapter(string title, ObservableCollection<string> text)
     {
         this.Title = title;
         this.Text = text;

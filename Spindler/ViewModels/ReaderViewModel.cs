@@ -52,7 +52,7 @@ public partial class ReaderViewModel : SpindlerViewModel, IReader
     /// The Current Data the User interface uses to populate various UI elements
     /// </summary>
     [ObservableProperty]
-    public LoadedData currentData = LoadedData.CreatePlaceholder();
+    public Chapter currentData = Chapter.CreatePlaceholder();
 
     /// <summary>
     /// Flag for whether the View Model is loading book data
@@ -107,10 +107,10 @@ public partial class ReaderViewModel : SpindlerViewModel, IReader
         var data = await ReaderService.LoadChapter(CurrentBook!.Url);
         switch (data)
         {
-            case Result<LoadedData>.Err error:
+            case Result<Chapter>.Err error:
                 await SafeAssert(false, error.Message);
                 return;
-            case Result<LoadedData>.Ok value:
+            case Result<Chapter>.Ok value:
                 CurrentData = value!.Value;
                 break;
         }
@@ -197,13 +197,13 @@ public partial class ReaderViewModel : SpindlerViewModel, IReader
         };
 
         var dataResult = await ReaderService.LoadChapter(selector, CurrentData);
-        if (dataResult is Result<LoadedData>.Err error)
+        if (dataResult is Result<Chapter>.Err error)
         {
             await SafeAssert(false, error.Message);
             return;
         }
         IsLoading = false;
-        CurrentData = (dataResult as Result<LoadedData>.Ok)!.Value;
+        CurrentData = (dataResult as Result<Chapter>.Ok)!.Value;
         await CurrentBook.SaveInfo(Database);
     }
 
@@ -240,10 +240,10 @@ public partial class ReaderViewModel : SpindlerViewModel, IReader
         var data = await ReaderService.LoadChapter(bookmark!.Url);
         switch (data)
         {
-            case Result<LoadedData>.Err error:
+            case Result<Chapter>.Err error:
                 await SafeAssert(false, error.Message);
                 return;
-            case Result<LoadedData>.Ok value:
+            case Result<Chapter>.Ok value:
                 CurrentData = value!.Value;
                 break;
         };
