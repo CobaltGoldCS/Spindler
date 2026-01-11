@@ -8,6 +8,8 @@ using Spindler.Utilities;
 using Spindler.Views;
 using Spindler.Views.Book_Pages;
 using Spindler.Views.Reader_Pages;
+using CommunityToolkit.Maui.Core.Platform;
+
 
 #if ANDROID
 using Spindler.Platforms.Android;
@@ -75,12 +77,10 @@ public partial class App : Application, IRecipient<ThemeChangedMessage>, IRecipi
             ? StatusBarStyle.DarkContent
             : StatusBarStyle.LightContent;
 
+
 #if !MACCATALYST
-        Windows[0].Page!.Behaviors.Add(new StatusBarBehavior
-        {
-            StatusBarColor = statusBarColor,
-            StatusBarStyle = bestContrast
-        });
+        StatusBar.SetColor(statusBarColor);
+        StatusBar.SetStyle(bestContrast);
 #endif
     }
 
