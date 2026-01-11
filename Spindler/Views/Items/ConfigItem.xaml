@@ -2,19 +2,20 @@
 <Border Margin="8,0"
         xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
         xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+        xmlns:models="clr-namespace:Spindler.Models;assembly=Spindler.Core"
         x:Class="Spindler.Views.CustomControls.Items.ConfigItem"
-        CompressedLayout.IsHeadless="True"
         BackgroundColor="{DynamicResource Background}"
-        x:Name="this">
+        x:Name="this"
+        BindingContext="{Binding Source={x:Reference this}, Path=ConfigParameter}"
+        x:DataType="models:Config">
     <Border.Shadow>
         <Shadow Radius="2"/>
     </Border.Shadow>
-    <Grid RowDefinitions="auto"
-          CompressedLayout.IsHeadless="True">
+    <Grid RowDefinitions="auto">
         <Label  Margin="10" 
                 VerticalTextAlignment="Center" 
                 FontSize="Large"
                 x:Name="DomainNameLabel"
-                Text="{Binding Source={x:Reference this}, Path=ConfigParameter.DomainName, Mode=OneWay}"/>
+                Text="{Binding DomainName, Mode=OneWay}"/>
     </Grid>
 </Border>

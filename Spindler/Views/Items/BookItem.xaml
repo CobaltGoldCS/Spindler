@@ -2,27 +2,33 @@
 <Border xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
         xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
         x:Class="Spindler.Views.CustomControls.Items.BookItem"
+        xmlns:viewitems="clr-namespace:Spindler.Views.CustomControls.Items"
         xmlns:models="clr-namespace:Spindler.Models;assembly=Spindler.Core"
-        x:Name="this">
+        x:Name="this"
+        BindingContext="{x:Reference this}"
+        x:DataType="viewitems:BookItem">
     <Border.Shadow>
         <Shadow Brush="Black" Offset="10,10" Radius="100"/>
     </Border.Shadow>
     <Border.GestureRecognizers>
-        <TapGestureRecognizer 
-            Command="{Binding Source={x:Reference this}, Path=DoubleTappedCommand, Mode=OneWay}"
-            CommandParameter="{Binding Source={x:Reference this}, Path=BookParameter, Mode=OneWay}"
+        <TapGestureRecognizer
+            BindingContext="{x:Reference this}"
+            Command="{Binding DoubleTappedCommand, Mode=OneWay}"
+            CommandParameter="{Binding BookParameter, Mode=OneWay}"
             NumberOfTapsRequired="2"/>
-        <TapGestureRecognizer 
-            Command="{Binding Source={x:Reference this}, Path=SelectionCommand, Mode=OneWay}"
-            CommandParameter="{Binding Source={x:Reference this}, Path=BookParameter, Mode=OneWay}"/>
+        <TapGestureRecognizer
+            BindingContext="{x:Reference this}"
+            Command="{Binding SelectionCommand, Mode=OneWay}"
+            CommandParameter="{Binding BookParameter, Mode=OneWay}"/>
     </Border.GestureRecognizers>
     <Grid
-        x:DataType="models:Book"
         ColumnDefinitions="85, *"
         RowDefinitions="65, 45"
         Style="{DynamicResource CardLayout}"
+        BindingContext="{Binding Source={Reference this}, Path=BookParameter}"
+        x:DataType="models:Book"
         >
-        <Image Source="{Binding Source={x:Reference this}, Path=BookParameter.ImageUrl, Mode=OneWay}"
+        <Image Source="{Binding ImageUrl, Mode=OneWay}"
                Aspect="AspectFill"
                Grid.RowSpan="2">
         </Image>
@@ -33,19 +39,19 @@
               HorizontalOptions="Start"
               VerticalOptions="Start"
               Margin="0,0,0,0"
-              IsVisible="{Binding Source={x:Reference this}, Path=BookParameter.HasNextChapter, Mode=OneWay}"/>
+              IsVisible="{Binding HasNextChapter, Mode=OneWay}"/>
         <Label VerticalTextAlignment="Center"
                HorizontalTextAlignment="Center"
                Grid.Column="1"
                Padding="5,0"
                FontSize="18"
                x:Name="TitleLabel"
-               Text="{Binding Source={x:Reference this}, Path=BookParameter.Title, Mode=OneWay}"
+               Text="{Binding Title, Mode=OneWay}"
                MaxLines="2"
                FontAutoScalingEnabled="False"
                LineBreakMode="WordWrap"/>
         <Label x:Name="UrlLabel"
-               Text="{Binding Source={x:Reference this}, Path=BookParameter.Url, Mode=OneWay}"
+               Text="{Binding Url, Mode=OneWay}"
                MaxLines="2"
                FontSize="Small"
                Grid.Column="1"
