@@ -65,6 +65,15 @@ public partial class ReaderDataService : ObservableObject
     }
 
     /// <summary>
+    /// Cancellation token in charge of cancelling the preload thread operations.
+    /// </summary>
+    CancellationTokenSource preloadTokenSource = new();
+    ~ReaderDataService()
+    {
+        preloadTokenSource.Cancel();
+    }
+
+    /// <summary>
     /// Obtain data from <paramref name="url"/>
     /// </summary>
     /// <param name="url">The url to obtain data from</param>
@@ -112,7 +121,6 @@ public partial class ReaderDataService : ObservableObject
         return returnValue;
     }
 
-    CancellationTokenSource tokenSource = new();
     /// <summary>
     /// Load Chapter Given previously known chapter. This overload is given in order to optimize
     /// chapter fetching by giving Spindler a direction to load new chapters into. Use if possible.
@@ -132,9 +140,9 @@ public partial class ReaderDataService : ObservableObject
         };
 
         Result<Chapter> returnChapter = await LoadChapter(chapterUrl);
-        tokenSource.Cancel();
-        tokenSource = new();
-        StartPreloadDataThread(currentChapter, direction, tokenSource.Token);
+        preloadTokenSource.Cancel();
+        preloadTokenSource = new();
+        StartPreloadDataThread(currentChapter, direction, preloadTokenSource.Token);
 
         return returnChapter;
     }
