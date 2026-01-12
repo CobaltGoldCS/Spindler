@@ -23,8 +23,7 @@
     <Shell.TitleView>
         <Grid ColumnDefinitions="*, auto"
               BackgroundColor="{DynamicResource CardBackground}"
-              HeightRequest="50"
-              CompressedLayout.IsHeadless="True">
+              HeightRequest="50">
 
             <ScrollView Grid.Column="0" 
                         Orientation="Horizontal"
@@ -58,7 +57,7 @@
             </Button>
         </Grid>
     </Shell.TitleView>
-    <Grid CompressedLayout.IsHeadless="True">
+    <Grid>
         <Button 
                 CornerRadius="20"
                 Text="&#xF175;" 
@@ -74,7 +73,6 @@
                 FontAutoScalingEnabled="False"
                 FontSize="20"/>
         <Grid RowDefinitions="*, 0, 0"
-                  CompressedLayout.IsHeadless="True"
                   VerticalOptions="FillAndExpand"
                   BackgroundColor="{DynamicResource CardBackground}">
             <controls:Reader x:Name="ReaderView"
