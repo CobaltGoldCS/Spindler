@@ -48,7 +48,7 @@ public partial class ConfigDetailPage : ContentPage, IQueryAttributable
 
         ViewModel = viewModel;
 
-        TextValidationBehavior validSelectorBehavior = new(SelectionService.IsValidSelector);
+        TextValidationBehavior validSelectorBehavior = new((text) => text.AsPath().IsValid());
         contentEntry.Behaviors.Add(validSelectorBehavior);
         nextEntry.Behaviors.Add(validSelectorBehavior);
         prevEntry.Behaviors.Add(validSelectorBehavior);

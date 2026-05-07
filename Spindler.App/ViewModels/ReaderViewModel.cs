@@ -144,8 +144,9 @@ public partial class ReaderViewModel : SpindlerViewModel, IReader
 
         try
         {
-            CurrentBook.ImageUrl = ReaderService.ConfigService.Select(
-                                (html as Result<string>.Ok)!.Value, SelectionService.Selector.ImageUrl, SelectorType.Link);
+            string htmlStr = (html as Result<string>.Ok)!.Value;
+            CurrentBook.ImageUrl = ReaderService.Config.ImageUrlPath.AsPath()
+                .Select(htmlStr, SelectorType.Link);
         }
         catch (XPathException)
         {

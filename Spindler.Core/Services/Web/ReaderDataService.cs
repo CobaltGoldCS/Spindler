@@ -15,10 +15,6 @@ public partial class ReaderDataService : ObservableObject
 {
     // This is so other things can access lower level APIs
     /// <summary>
-    /// Internal SelectionService
-    /// </summary>
-    public SelectionService ConfigService { get; private set; }
-    /// <summary>
     /// Internal WebService
     /// </summary>
     public IWebService WebService { get; private set; }
@@ -51,7 +47,6 @@ public partial class ReaderDataService : ObservableObject
     {
         Config = config;
         WebService = webService;
-        ConfigService = new(config);
 
         ContentExtractor = (TargetType)Config.ContentType switch
         {
@@ -162,13 +157,13 @@ public partial class ReaderDataService : ObservableObject
         try
         {
 
-            Task<IEnumerable<string>> textTask = Task.Run(() => ContentExtractor.GetContent(doc, Config, ConfigService));
+            Task<IEnumerable<string>> textTask = Task.Run(() => ContentExtractor.GetContent(doc, Config));
 
             Task<string>[] selectorOperations =
             [
                 Task.Run(() => GetTitle(html)),
-                Task.Run(() => ConfigService.Select(html, SelectionService.Selector.NextUrl, SelectorType.Link)),
-                Task.Run(() => ConfigService.Select(html, SelectionService.Selector.PrevUrl, SelectorType.Link)),
+                Task.Run(() => Config.NextUrlPath.AsPath().Select(html, SelectorType.Link)),
+                Task.Run(() => Config.PrevUrlPath.AsPath().Select(html, SelectorType.Link)),
             ];
             string[] content = await Task.WhenAll(selectorOperations);
 
@@ -196,7 +191,7 @@ public partial class ReaderDataService : ObservableObject
     /// <returns>A title determined by the title selector</returns>
     public string GetTitle(string html)
     {
-        return HttpUtility.HtmlDecode(ConfigService.Select(html, SelectionService.Selector.Title, type: SelectorType.Text)).Trim();
+        return HttpUtility.HtmlDecode(Config.TitlePath.AsPath().Select(html, SelectorType.Text)).Trim();
     }
 
     [GeneratedRegex("[\\s]{2,}")]
@@ -204,7 +199,7 @@ public partial class ReaderDataService : ObservableObject
 
     private void StartPreloadDataThread(Chapter? anchor, UrlType direction, CancellationToken token)
     {
-        Task.Run((Func<Task?>)(async () =>
+        Task.Run(async () =>
         {
 
             if (anchor == null)
@@ -247,7 +242,7 @@ public partial class ReaderDataService : ObservableObject
                     Debug.WriteLine("Invalid URLTYPE given: PreloadDataThread");
                     return;
             }
-        }), token);
+        }, token);
     }
 }
 

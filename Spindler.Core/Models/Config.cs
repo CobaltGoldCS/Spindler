@@ -1,7 +1,6 @@
 ﻿using HtmlAgilityPack;
 using Newtonsoft.Json;
 using Spindler.Services;
-using Spindler.Services.Web;
 using SQLite;
 using System.Text.RegularExpressions;
 using System.Xml.XPath;
@@ -208,9 +207,9 @@ public partial class Config : IIndexedModel
     }
 
     public virtual bool IsValidConfig() => DomainValidation().IsMatch(DomainName)
-        && SelectionService.IsValidSelector(ContentPath)
-        && SelectionService.IsValidSelector(NextUrlPath)
-        && SelectionService.IsValidSelector(PrevUrlPath);
+        && ContentPath.AsPath().IsValid()
+        && NextUrlPath.AsPath().IsValid()
+        && PrevUrlPath.AsPath().IsValid();
 
 
     [GeneratedRegex("^(?!www\\.)(((?!\\-))(xn\\-\\-)?[a-z0-9\\-_]{0,61}[a-z0-9]{1,1}\\.)*(xn\\-\\-)?([a-z0-9\\-]{1,61}|[a-z0-9\\-]{1,30})\\.[a-z]{2,}$")]

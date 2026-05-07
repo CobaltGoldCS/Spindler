@@ -3,12 +3,12 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31611.283
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Spindler.App", "Spindler\Spindler.App.csproj", "{4DF43B21-0369-493B-8BD2-051DFDFB2662}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Spindler.App", "Spindler.App\Spindler.App.csproj", "{4DF43B21-0369-493B-8BD2-051DFDFB2662}"
 	ProjectSection(ProjectDependencies) = postProject
 		{D302F219-14DD-4DF0-AB29-CC8D6952B6A6} = {D302F219-14DD-4DF0-AB29-CC8D6952B6A6}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Spindler.Core", "Spindler.Services\Spindler.Core.csproj", "{D302F219-14DD-4DF0-AB29-CC8D6952B6A6}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Spindler.Core", "Spindler.Core\Spindler.Core.csproj", "{D302F219-14DD-4DF0-AB29-CC8D6952B6A6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

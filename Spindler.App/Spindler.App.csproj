@@ -1,7 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFrameworks>net10.0-ios;net10.0-maccatalyst;net10.0-android</TargetFrameworks>
+		<TargetFramework>net10.0-android</TargetFramework>
+		<TargetFrameworks Condition="!$([MSBuild]::IsOSPlatform('linux'))">$(TargetFrameworks);net10.0-ios;net10.0-maccatalyst;</TargetFrameworks>
 		<!-- We don't Support windows anymore -->
 		<!-- <TargetFrameworks Condition="$([MSBuild]::IsOSPlatform('windows'))">$(TargetFrameworks);net10.0-windows10.0.19041.0</TargetFrameworks> -->
 		<!-- Uncomment to also build the tizen app. You will need to install tizen by following this: https://github.com/Samsung/Tizen.NET -->
@@ -53,6 +54,7 @@
     <AndroidKeyStore>False</AndroidKeyStore>
 	  <DebugType>embedded</DebugType>
 	  <Debugger>Xamarin</Debugger>
+		<TargetFrameworkVersion>37.0</TargetFrameworkVersion>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net10.0-ios|AnyCPU'">
@@ -153,7 +155,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <ProjectReference Include="..\Spindler.Services\Spindler.Core.csproj" />
+	  <ProjectReference Include="..\Spindler.Core\Spindler.Core.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>

@@ -1,7 +1,6 @@
 ﻿using HtmlAgilityPack;
 using HtmlAgilityPack.CssSelectors.NetCore;
 using Spindler.Models;
-using Spindler.Services.Web;
 using System.Text.RegularExpressions;
 using System.Web;
 using SelectorPath = Spindler.Models.SelectorPath;
@@ -22,7 +21,7 @@ public abstract partial class BaseContentExtractor
     /// <param name="nav">The document to analyze</param>
     /// <param name="config">Configuration information for the HTML content</param>
     /// <returns>Main Content according to Config and Document</returns>
-    public abstract IEnumerable<string> GetContent(HtmlDocument nav, Config config, SelectionService service);
+    public abstract IEnumerable<string> GetContent(HtmlDocument nav, Config config);
 
     /// <summary>
     /// Tags that should not be included (Generally)
@@ -92,9 +91,9 @@ public abstract class HtmlExtractor : BaseContentExtractor
 /// </summary>
 public class HtmlContentExtractor : HtmlExtractor
 {
-    public override IEnumerable<string> GetContent(HtmlDocument nav, Config config, SelectionService service)
+    public override IEnumerable<string> GetContent(HtmlDocument nav, Config config)
     {
-        SelectorPath contentPath = service.GetPath(SelectionService.Selector.Content);
+        SelectorPath contentPath = config.ContentPath.AsPath();
 
         HtmlNode node = contentPath.PathType switch
         {
@@ -118,9 +117,9 @@ public class HtmlContentExtractor : HtmlExtractor
 /// </summary>
 public class TextContentExtractor : BaseContentExtractor
 {
-    public override IEnumerable<string> GetContent(HtmlDocument nav, Config config, SelectionService service)
+    public override IEnumerable<string> GetContent(HtmlDocument nav, Config config)
     {
-        SelectorPath contentPath = service.GetPath(SelectionService.Selector.Content);
+        SelectorPath contentPath = config.ContentPath.AsPath();
         HtmlNode node = contentPath.PathType switch
         {
             SelectorPath.Type.Css => nav.QuerySelector(contentPath.PathString),
@@ -144,9 +143,9 @@ public class TextContentExtractor : BaseContentExtractor
 /// </summary>
 public class AllTagsContentExtractor : BaseContentExtractor
 {
-    public override IEnumerable<string> GetContent(HtmlDocument nav, Config config, SelectionService service)
+    public override IEnumerable<string> GetContent(HtmlDocument nav, Config config)
     {
-        SelectorPath contentPath = service.GetPath(SelectionService.Selector.Content);
+        SelectorPath contentPath = config.ContentPath.AsPath();
         IEnumerable<HtmlNode> nodes = contentPath.PathType switch
         {
             SelectorPath.Type.Css => nav.QuerySelectorAll(contentPath.PathString),
